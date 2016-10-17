@@ -1,56 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="bookmark">
-    <meta name="author" content="luchenqun">
-    <title>Express Angular Starter</title>
-    <link href="/css/externe/semantic.min.css " rel="stylesheet" />
-    <link href="/css/style.css " rel="stylesheet" />
-    <base href="/">
-</head>
-
-<body ng-app="bookmarkApp">
-    <div class="ui container">
-        <div id="header">
-            <div class="wrap">
-
-                <div class="ui inverted segment js-logged-in">
-                    <div class="ui inverted secondary menu">
-                        <a class="item" href="/mytags" id="btn-mytags">书签分类</a>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="bookmark">
+        <meta name="author" content="luchenqun">
+        <title>我的书签</title>
+        <link href="/css/externe/semantic.min.css " rel="stylesheet"/>
+        <link href="/css/style.css " rel="stylesheet"/>
+        <base href="/">
+    </head>
+    <body ng-app="bookmarkApp">
+        <div class="ui container ">
+            <div id="header">
+                <div class="wrap">
+                    <div class="ui small menu js-logged-in">
+                        <a class="item active" href="/mytags" id="btn-mytags">书签分类</a>
                         <a class="item" href="/" id="btn-addbookmark">增加书签</a>
-                        <a class="item" href="/account" id="btn-account">我的账号</a>
-                        <a class="item" href="/logout" id="btn-logout">登出</a>
-                        <div class="right item">
-                            <div class="ui action input">
-                                <input type="text" placeholder="Search...">
-                                <button class="ui button">搜索</button>
+                        <a class="item" href="/account" id="btn-account">设置</a>
+                        <div class="right menu">
+                            <div class="ui dropdown item">搜索选项
+                                <i class="dropdown icon"></i>
+                                <div class="menu">
+                                    <a class="item">自己</a>
+                                    <a class="item">全站</a>
+                                </div>
+                            </div>
+                            <div class="ui category right search item">
+                                <div class="ui transparent icon input">
+                                    <input class="prompt" type="text" placeholder="请输入书签的Url...">
+                                    <i class="search link icon"></i>
+                                </div>
+                                <div class="results"></div>
+                            </div>
+                            <div class="item">
+                                <div class="ui primary button">登出</div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- <div class="ui horizontal list">
+                    <!-- <div class="ui horizontal list">
                     <div class="item"><a href="/login" id="btn-login">登陆</a></div>
                 </div>
 
                 <a href="/" id="btn-home"><img src="/images/logo.png" alt="bookmarkly" /></a> -->
-
+                </div>
             </div>
+            <div class="view-container">
+                <div ui-view></div>
+            </div>
+            <div class="foot"></div>
         </div>
-
-        <div class="view-container">
-            <div ui-view></div>
-        </div>
-
-        <div class="foot"></div>
-    </div>
-    <script src="/scripts/externe/jquery-3.1.1.min.js"></script>
-    <script src="/scripts/externe/angular.min.js"></script>
-    <script src="/scripts/externe/angular-ui-router.min.js"></script>
-    <script src="/scripts/externe/semantic.min.js"></script>
-</body>
-
+        <script src="/scripts/externe/jquery-3.1.1.min.js"></script>
+        <script src="/scripts/externe/angular.min.js"></script>
+        <script src="/scripts/externe/angular-ui-router.min.js"></script>
+        <script src="/scripts/externe/semantic.min.js"></script>
+        <script src="/scripts/semantic-init.js"></script>
+    </body>
 </html>

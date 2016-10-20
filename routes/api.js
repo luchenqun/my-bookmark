@@ -1,7 +1,9 @@
 
 var api = require('express').Router();
 
-api.get('/bookmarks', function (req, res) {
+api.get('/bookmarks/:pageId', function (req, res) {
+	console.log('hello query', JSON.stringify(req.params.pageId));
+
 	var data = [
 		{title:'谷歌', description:'一个网站', url:'https://www.google.com.hk/', tags:['搜索','常用']},
 		{title:'百度', description:'二个网站', url:'https://www.baidu.com/', tags:['搜索','常用']},

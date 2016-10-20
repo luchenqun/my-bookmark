@@ -11,10 +11,10 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
     };
 
     // Return a promise object.
-    function getBookmarks() {
+    function getBookmarks(pageId) {
         var def = $q.defer();
 
-        $http.get('/api/bookmarks')
+        $http.get('/api/bookmarks/'+pageId)
             .success(function(data) {
                 def.resolve(data);
             })

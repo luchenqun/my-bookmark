@@ -2,7 +2,8 @@ app.controller('bookmarksCtr', ['$scope', '$filter', 'bookmarkService', function
     $scope.bookmarks = [];  // 书签数据
 
     // 获取书签数据
-    bookmarkService.getBookmarks().then(
+    var pageId = 1;
+    bookmarkService.getBookmarks(pageId).then(
         function(data) {
             console.log(data);
             $scope.bookmarks = data;

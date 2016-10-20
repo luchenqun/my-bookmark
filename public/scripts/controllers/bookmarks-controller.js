@@ -1,18 +1,14 @@
-app.controller('bookmarksController', ['$scope', '$filter', 'bookmarkService', function($scope, $filter, bookmarkService) {
-    'use strict';
+app.controller('bookmarksCtr', ['$scope', '$filter', 'bookmarkService', function($scope, $filter, bookmarkService) {
+    $scope.bookmarks = [];  // 书签数据
 
-    // var todoList = this;
-    //
-    // // Retrieve data from mongodb, by angular service.
-    // var todos = todoList.todos = [];
-    $scope.bookmarks = []
-    bookmarkService.getBookmarks()
-        .then(function(data) {
-                console.log(data);
-                $scope.bookmarks = data;
-            },
-            function(errorMsg) {
-                console.log(errorMsg);
-            });
-
+    // 获取书签数据
+    bookmarkService.getBookmarks().then(
+        function(data) {
+            console.log(data);
+            $scope.bookmarks = data;
+        },
+        function(errorMsg) {
+            console.log(errorMsg);
+        }
+    );
 }]);

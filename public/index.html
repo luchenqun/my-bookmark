@@ -14,42 +14,40 @@
 
 <body ng-app="bookmarkApp">
     <div class="ui container ">
-        <div id="header">
-            <div class="wrap">
-                <div class="ui small menu js-logged-in">
-                    <a class="item active" ui-sref="bookmarks">我的书签</a>
-                    <a class="item" ui-sref="tags">书签分类</a>
-                    <a class="item" ui-sref="advice">建议</a>
-                    <a class="item" ui-sref="settings">设置</a>
-                    <div class="right menu">
-                        <div class="ui dropdown item">
-                            <div class="text">搜索设置</div>
-                            <i class="dropdown icon"></i>
-                            <div class="menu">
-                                <div class="item">自己书签</div>
-                                <div class="item">全站书签</div>
-                            </div>
-                        </div>
-                        <div class="ui category right search item">
-                            <div class="ui transparent icon input">
-                                <input class="prompt" type="text" placeholder="请输入书签的Url...">
-                                <i class="search link icon"></i>
-                            </div>
-                            <div class="results"></div>
-                        </div>
-                        <div class="item">
-                            <div class="ui button">添加书签</div>
-                        </div>
-                        <div class="item">
-                            <div class="ui button">退出</div>
+        <div id="header" class="js-menu" ng-controller="menuCtr">
+            <div class="ui small menu js-login-in" ng-show="login">
+                <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in loginMenus">{{ menu.title}}</a>
+                <div class="right menu">
+                    <div class="ui dropdown item">
+                        <div class="text">搜索设置</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item">自己书签</div>
+                            <div class="item">全站书签</div>
                         </div>
                     </div>
+                    <div class="ui category right search item">
+                        <div class="ui transparent icon input">
+                            <input class="prompt" type="text" placeholder="请输入书签的Url...">
+                            <i class="search link icon"></i>
+                        </div>
+                        <div class="results"></div>
+                    </div>
+                    <div class="item">
+                        <div class="ui button">添加书签</div>
+                    </div>
+                    <div class="item">
+                        <div class="ui button">退出</div>
+                    </div>
                 </div>
-                <!-- <div class="ui horizontal list">
-                    <div class="item"><a href="/login" id="btn-login">登陆</a></div>
+            </div>
+            <div class="ui small menu js-not-login-in" ng-hide="login">
+                <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
+                <div class="right menu">
+                    <div class="item">
+                        <div class="ui button">登陆</div>
+                    </div>
                 </div>
-
-                <a href="/" id="btn-home"><img src="/images/logo.png" alt="bookmarkly" /></a> -->
             </div>
         </div>
         <div class="ui container" style="width:100%;height:20px"> </div>
@@ -64,6 +62,7 @@
     <script src="/scripts/app-angular.js"></script>
     <script src="/scripts/services/bookmark-services.js"></script>
     <script src="/scripts/controllers/bookmarks-controller.js"></script>
+    <script src="/scripts/controllers/menu-controller.js"></script>
     <script src="/scripts/externe/semantic.min.js"></script>
     <script src="/scripts/semantic-init.js"></script>
 </body>

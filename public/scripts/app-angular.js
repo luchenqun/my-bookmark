@@ -9,7 +9,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         url:'/bookmarks',
         templateUrl: '/views/bookmarks.html',
         // controllerAs: 'bookmarksCtrl',
-        controller: 'bookmarksController'
+        controller: 'bookmarksCtr'
     })
     .state('tags', {
         url:'/tags',
@@ -22,6 +22,14 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     .state('settings', {
         url:'/settings',
         templateUrl: '/views/settings.html',
+    })
+    .state('register', {
+            url:'/register',
+            templateUrl: '/views/register.html'
+    })
+    .state('intro', {
+            url:'/intro',
+            templateUrl: '/views/intro.html'
     })
     .state('/', {
         url:'/',

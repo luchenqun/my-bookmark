@@ -1,23 +1,29 @@
-app.controller('bookmarksCtr', ['$scope', '$filter', 'bookmarkService', function($scope, $filter, bookmarkService) {
-    $scope.bookmarks = [];  // 书签数据
-    // 获取书签数据
-    var pageId = 1;
-    bookmarkService.getBookmarks(pageId).then(
-        function(data) {
-            console.log(data);
-            $scope.bookmarks = data;
-            $('.ui.dropdown').dropdown({
-                forceSelection:false
-            });
-            $('.ui.checkbox').checkbox();
-        },
-        function(errorMsg) {
-            console.log(errorMsg);
-        }
-    );
+app.controller('bookmarksCtr', ['$scope', '$filter', 'bookmarkService', 'pubSubService', function($scope, $filter, bookmarkService, pubSubService) {
+    console.log("Hello bookmarksCtr...");
+    $scope.bookmarks = []; // 书签数据
+    getBookmarks({
+        s: 111,
+        b: 222,
+        i: 'lcq'
+    });
 
-    $scope.addTag = function(){
-        console.log('Hello , you click addtag btn...')
+    pubSubService.subscribe('MenuCtr.bookmarks', $scope, function(event, data) {
+        console.log('subscribe MenuCtr.bookmarks', data);
+    });
+
+    pubSubService.subscribe('MenuCtr.searchBookmarks', $scope, function(event, data) {
+        console.log(data);
+    });
+
+    function getBookmarks(params) {
+        bookmarkService.getBookmarks(params).then(
+            function(data) {
+                console.log(data);
+                $scope.bookmarks = data;
+            },
+            function(errorMsg) {
+                console.log(errorMsg);
+            }
+        );
     }
-
 }]);

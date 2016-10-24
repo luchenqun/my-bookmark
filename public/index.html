@@ -29,7 +29,7 @@
                     <div class="ui category right search item">
                         <div class="ui transparent icon input">
                             <input class="prompt" type="text" placeholder="请输入书签的Url...">
-                            <i class="search link icon"></i>
+                            <i class="search link icon" ng-click="searchBookmarks()"></i>
                         </div>
                         <div class="results"></div>
                     </div>
@@ -60,8 +60,10 @@
     <script src="/scripts/externe/angular.min.js"></script>
     <script src="/scripts/externe/angular-ui-router.min.js"></script>
     <script src="/scripts/app-angular.js"></script>
-    <script src="/scripts/services/bookmark-services.js"></script>
+    <script src="/scripts/services/bookmark-service.js"></script>
+    <script src="/scripts/services/pub-sub-service.js"></script>
     <script src="/scripts/controllers/bookmarks-controller.js"></script>
+    <script src="/scripts/controllers/tags-controller.js"></script>
     <script src="/scripts/controllers/menu-controller.js"></script>
     <script src="/scripts/externe/semantic.min.js"></script>
     <script src="/scripts/semantic-init.js"></script>

@@ -14,6 +14,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     .state('tags', {
         url:'/tags',
         templateUrl: '/views/tags.html',
+        controller: 'tagsCtr'
     })
     .state('advice', {
         url:'/advice',

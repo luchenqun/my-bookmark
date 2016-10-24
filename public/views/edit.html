@@ -1,0 +1,54 @@
+<div class="ui modal js-add-bookmark" ng-controller="editCtr">
+    <i class="close icon"></i>
+    <div class="header">
+        添加书签
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>书签链接</label>
+                <input type="text" placeholder="">
+            </div>
+            <div class="field">
+                <label>书签标题</label>
+                <input type="text" placeholder="">
+            </div>
+            <div class="field">
+                <label>书签分类</label>
+                <div class="fields">
+                    <div class="eleven wide field">
+                        <select class="ui fluid search dropdown" multiple="">
+                            <option value="">选择已有分类</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Blaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Frkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Solorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                        </select>
+                    </div>
+                    <div class="five wide field">
+                        <div class="ui action input">
+                            <input type="text" placeholder="多个分类请用 , 隔开">
+                            <button class="ui button" ng-click="addTag()">添加新分类</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui segment">
+                <div class="field">
+                    <div class="ui toggle checkbox checked">
+                        <input type="checkbox" name="gift" tabindex="0" class="hidden">
+                        <label>我要公开此收藏的链接供别人搜索</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui button">取消</div>
+        <div class="ui green button">发送</div>
+    </div>
+</div>

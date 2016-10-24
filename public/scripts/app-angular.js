@@ -11,6 +11,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         // controllerAs: 'bookmarksCtrl',
         controller: 'bookmarksCtr'
     })
+    .state('addBookmark', {
+        url:'/addBookmark',
+        templateUrl: '/views/addBookmark.html',
+    })
     .state('tags', {
         url:'/tags',
         templateUrl: '/views/tags.html',

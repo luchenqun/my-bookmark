@@ -13,6 +13,7 @@ app.controller('menuCtr', ['$scope', '$state', function($scope, $state) {
     // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.loginMenus = [
         {uiSref:'bookmarks', title:'我的书签'},
+        // {uiSref:'addBookmark', title:'添加书签'},
         {uiSref:'tags', title:'书签分类'},
         {uiSref:'advice', title:'建议'},
         {uiSref:'settings', title:'设置'},
@@ -37,5 +38,9 @@ app.controller('menuCtr', ['$scope', '$state', function($scope, $state) {
         } else {
             $scope.selectNotLoginIndex = index;
         }
+    }
+
+    $scope.showAddBookmarkMoadl = function(){
+        $('.ui.modal.js-add-bookmark').modal('show');
     }
 }]);

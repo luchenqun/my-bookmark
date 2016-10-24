@@ -1,70 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="bookmark">
-    <meta name="author" content="luchenqun">
-    <title>我的书签</title>
-    <link href="/css/externe/semantic.min.css " rel="stylesheet" />
-    <link href="/css/style.css " rel="stylesheet" />
-    <base href="/">
-</head>
-
-<body ng-app="bookmarkApp">
-    <div class="ui container ">
-        <div id="header" class="js-menu" ng-controller="menuCtr">
-            <div class="ui small menu js-login-in" ng-show="login">
-                <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in loginMenus">{{ menu.title}}</a>
-                <div class="right menu">
-                    <div class="ui dropdown item">
-                        <div class="text">搜索设置</div>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            <div class="item">自己书签</div>
-                            <div class="item">全站书签</div>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="bookmark">
+        <meta name="author" content="luchenqun">
+        <title>我的书签</title>
+        <link href="/css/externe/semantic.min.css " rel="stylesheet"/>
+        <link href="/css/style.css " rel="stylesheet"/>
+        <base href="/">
+    </head>
+    <body ng-app="bookmarkApp">
+        <div class="ui container ">
+            <div id="header" class="js-menu" ng-controller="menuCtr">
+                <div class="ui small menu js-login-in" ng-show="login">
+                    <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in loginMenus">{{ menu.title}}</a>
+                    <div class="right menu">
+                        <div class="ui dropdown item">
+                            <div class="text">搜索设置</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <div class="item">自己书签</div>
+                                <div class="item">全站书签</div>
+                            </div>
+                        </div>
+                        <div class="ui category right search item">
+                            <div class="ui transparent icon input">
+                                <input class="prompt" type="text" placeholder="请输入书签的Url...">
+                                <i class="search link icon"></i>
+                            </div>
+                            <div class="results"></div>
+                        </div>
+                        <div class="item">
+                            <div class="ui button" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks">添加书签</div>
+                        </div>
+                        <div class="item">
+                            <div class="ui button">退出</div>
                         </div>
                     </div>
-                    <div class="ui category right search item">
-                        <div class="ui transparent icon input">
-                            <input class="prompt" type="text" placeholder="请输入书签的Url...">
-                            <i class="search link icon"></i>
+                </div>
+                <div class="ui small menu js-not-login-in" ng-hide="login">
+                    <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
+                    <div class="right menu">
+                        <div class="item">
+                            <div class="ui button">登陆</div>
                         </div>
-                        <div class="results"></div>
-                    </div>
-                    <div class="item">
-                        <div class="ui button">添加书签</div>
-                    </div>
-                    <div class="item">
-                        <div class="ui button">退出</div>
                     </div>
                 </div>
             </div>
-            <div class="ui small menu js-not-login-in" ng-hide="login">
-                <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
-                <div class="right menu">
-                    <div class="item">
-                        <div class="ui button">登陆</div>
-                    </div>
-                </div>
+            <div class="ui container" style="width:100%;height:20px"></div>
+            <div class="ui container">
+                <div ui-view></div>
             </div>
+            <div class="foot"></div>
+            <edit></edit>
         </div>
-        <div class="ui container" style="width:100%;height:20px"> </div>
-        <div class="ui container">
-            <div ui-view></div>
-        </div>
-        <div class="foot"></div>
-    </div>
-    <script src="/scripts/externe/jquery-3.1.1.min.js"></script>
-    <script src="/scripts/externe/angular.min.js"></script>
-    <script src="/scripts/externe/angular-ui-router.min.js"></script>
-    <script src="/scripts/app-angular.js"></script>
-    <script src="/scripts/services/bookmark-services.js"></script>
-    <script src="/scripts/controllers/bookmarks-controller.js"></script>
-    <script src="/scripts/controllers/menu-controller.js"></script>
-    <script src="/scripts/externe/semantic.min.js"></script>
-    <script src="/scripts/semantic-init.js"></script>
-</body>
-
+        <script src="/scripts/externe/jquery-3.1.1.min.js"></script>
+        <script src="/scripts/externe/angular.min.js"></script>
+        <script src="/scripts/externe/angular-ui-router.min.js"></script>
+        <script src="/scripts/app-angular.js"></script>
+        <script src="/scripts/services/bookmark-services.js"></script>
+        <script src="/scripts/directives/edit-directive.js"></script>
+        <script src="/scripts/controllers/bookmarks-controller.js"></script>
+        <script src="/scripts/controllers/menu-controller.js"></script>
+        <script src="/scripts/controllers/edit-controller.js"></script>
+        <script src="/scripts/externe/semantic.min.js"></script>
+        <script src="/scripts/semantic-init.js"></script>
+    </body>
 </html>

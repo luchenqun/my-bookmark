@@ -3,7 +3,25 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
 
     // service interface
     var service = {
-        getBookmarks: getBookmarks,
+        /**
+         * @func
+         * @desc 根据显示页数的索引，获取书签的数据
+         * @param {number} pageNum - 页数
+         */
+        getBookmarks: function getBookmarks(pageNum) {
+            var def = $q.defer();
+
+            $http.get('/api/bookmarks/' + pageNum)
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    def.reject('Failed to get todos');
+                });
+
+            return def.promise;
+        },
         // addBookmark: addBookmark,
         // delBookmark: delBookmark,
         // editBookmark: editBookmark,
@@ -11,20 +29,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
     };
 
     // Return a promise object.
-    function getBookmarks(pageId) {
-        var def = $q.defer();
 
-        $http.get('/api/bookmarks/'+pageId)
-            .success(function(data) {
-                def.resolve(data);
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-                def.reject('Failed to get todos');
-            });
-
-        return def.promise;
-    }
 
 
     return service;

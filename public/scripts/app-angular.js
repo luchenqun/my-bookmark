@@ -35,6 +35,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: '/intro',
             templateUrl: '/views/intro.html'
         })
+        .state('search', {
+            url: '/search',
+            templateUrl: '/views/search.html'
+        })
         .state('/', {
             url: '/',
             templateUrl: '/views/intro.html'

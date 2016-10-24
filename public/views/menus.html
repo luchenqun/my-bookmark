@@ -1,0 +1,36 @@
+<div class="js-menu" ng-controller="menuCtr">
+    <div class="ui small menu js-login-in" ng-show="login">
+        <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ng-click="selectMenu($index, login)" ng-repeat="menu in loginMenus">{{ menu.title}}</a>
+        <div class="right menu">
+            <div class="ui dropdown item">
+                <div class="text">搜索设置</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" ng-click="showSearchInput = true">自己书签</div>
+                    <div class="item" ng-click="searchDetail()" ui-sref="search">详情搜索</div>
+                </div>
+            </div>
+            <div class="ui category right search item" ng-show="showSearchInput">
+                <div class="ui transparent icon input">
+                    <input class="prompt" type="text" ng-model="keyword" placeholder="标题，链接，分类...">
+                    <i class="search link icon" ng-click="searchBookmarks()" ui-sref="bookmarks"></i>
+                </div>
+                <div class="results"></div>
+            </div>
+            <div class="item">
+                <div class="ui button" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks">添加书签</div>
+            </div>
+            <div class="item">
+                <div class="ui button">退出</div>
+            </div>
+        </div>
+    </div>
+    <div class="ui small menu js-not-login-in" ng-hide="login">
+        <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
+        <div class="right menu">
+            <div class="item">
+                <div class="ui button">登陆</div>
+            </div>
+        </div>
+    </div>
+</div>

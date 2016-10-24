@@ -1,7 +1,7 @@
-app.directive('edit',function(){
+app.directive('edit', function() {
     return {
-        restrict:'EAC',
+        restrict: 'EAC',
         templateUrl: '/views/edit.html',
-        replace:true
+        replace: true
     }
 });

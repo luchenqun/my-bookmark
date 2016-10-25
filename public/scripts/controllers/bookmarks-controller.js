@@ -13,10 +13,13 @@ app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', 'bookmarkSe
 
     pubSubService.subscribe('MenuCtr.bookmarks', $scope, function(event, data) {
         console.log('subscribe MenuCtr.bookmarks', data);
-        $scope.showSearch = (Math.random() >= 0.5);
-        if ($scope.showSearch) {
-            semanticInit();
-        }
+        // $scope.showSearch = (Math.random() >= 0.5);
+        // if ($scope.showSearch) {
+        //     setTimeout(() => {
+        //         semanticInit();
+        //     }, 100);
+        //
+        // }
         getBookmarks(data);
     });
 

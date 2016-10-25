@@ -8,11 +8,14 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
     /**
      * @todo http://stackoverflow.com/questions/31449948/ui-router-state-go-not-working
      */
-     if ($scope.login) {
-         setTimeout(() => {
-             $state.go('bookmarks', {foo: 'i love you', bar: 'hello world'})
-         }, 0);
-     }
+    if ($scope.login) {
+        setTimeout(() => {
+            $state.go('bookmarks', {
+                foo: 'i love you',
+                bar: 'hello world'
+            })
+        }, 0);
+    }
 
     // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.loginMenus = [{
@@ -86,6 +89,9 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
     }
 
     function semanticInit() {
-        $('.ui.dropdown').dropdown();
+        // $('.ui.dropdown').dropdown();
+        $('.ui.dropdown.js-bookmark-dropdown').dropdown({
+            maxSelections: 2,
+        });
     }
 }]);

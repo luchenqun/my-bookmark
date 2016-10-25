@@ -7,7 +7,6 @@
             <div class="item">全站书签</div>
         </div>
     </div>
-
     <div class="item" style="width:136px;">
         <div class="ui calendar js-date-begin">
             <div class="ui transparent input left icon">
@@ -24,7 +23,6 @@
             </div>
         </div>
     </div>
-
     <div class="ui dropdown item">
         <div class="text">点击次数</div>
         <i class="dropdown icon"></i>
@@ -33,30 +31,26 @@
             <div class="item">小于</div>
         </div>
     </div>
-
     <div class="ui item transparent icon input" style="width:120px;">
         <input class="prompt" type="text" ng-model="keyword" placeholder="点击次数">
     </div>
-
     <div class="ui item transparent icon input" style="width:120px;">
         <input class="prompt" type="text" ng-model="keyword" placeholder="用户账号">
     </div>
-
     <div class="ui item transparent icon input" style="width:160px;">
         <input type="text" placeholder="标题，链接，分类">
     </div>
-
     <div class="right item">
         <div class="ui button">搜索</div>
     </div>
-
 </div>
-
 <table class="ui celled table" ng-show="bookmarks.length > 0">
     <thead>
         <tr>
             <th>标题</th>
-            <th>描述</th>
+            <th>创建日期</th>
+            <th>最后点击日期</th>
+            <th>点击次数</th>
             <th>链接</th>
             <th>标签</th>
         </tr>
@@ -64,14 +58,16 @@
     <tbody>
         <tr ng-repeat="bookmark in bookmarks">
             <td>{{ bookmark.title }}</td>
-            <td>{{ bookmark.description }}</td>
+            <td>{{ bookmark.create_date }}</td>
+            <td>{{ bookmark.click_latest_date }}</td>
+            <td>{{ bookmark.click_count }}</td>
             <td>{{ bookmark.url }}</td>
             <td>{{ bookmark.tags }}</td>
         </tr>
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="4">
+            <th colspan="6">
                 <div class="ui right floated pagination menu">
                     <a class="icon item">
                         <i class="left chevron icon"></i>

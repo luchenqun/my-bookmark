@@ -1,6 +1,33 @@
 <div class="js-menu" ng-controller="menuCtr">
     <div class="ui small menu js-login-in" ng-show="login">
-        <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ng-click="selectMenu($index, login)" ng-repeat="menu in loginMenus">{{ menu.title}}</a>
+        <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ng-click="selectMenu($index, login)" ng-repeat="menu in loginMenus">{{ menu.title }}
+            <div class="ui inline labeled dropdown js-bookmark-dropdown" ng-if="$index==0">&nbsp;
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="header">显示方式</div>
+                    <div class="divider"></div>
+                    <div class="item">导航</div>
+                    <div class="item">表格</div>
+                    <div class="item">卡片</div>
+                    <div class="divider"></div>
+                    <div class="header">搜索方式</div>
+                    <div class="item">状态</div>
+                    <div class="item">取消</div>
+                </div>
+            </div>
+        </a>
+        <div class="ui buttons menu">
+            <div class="ui button">切换</div>
+            <div class="ui floating dropdown icon button">
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" data-value="drop">下拉</div>
+                    <div class="item" data-value="horizontal flip">水平翻转</div>
+                    <div class="item" data-value="fade up">渐隐</div>
+                    <div class="item" data-value="scale">规模</div>
+                </div>
+            </div>
+        </div>
         <div class="right menu">
             <div class="ui category right search item">
                 <div class="ui transparent icon input">

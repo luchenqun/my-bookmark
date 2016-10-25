@@ -3,23 +3,16 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.keyword = ''; /**< 搜索关键字 */
-    $scope.showSearchInput = true; /**< 是否显示输入搜索关键字的输入框 */
-    if ($scope.login) {
-        setTimeout(() => {
-            $state.go('bookmarks')
-        }, 0);
-    }
     semanticInit();
-
 
     /**
      * @todo http://stackoverflow.com/questions/31449948/ui-router-state-go-not-working
      */
-    if ($scope.login) {
-        setTimeout(() => {
-            $state.go('bookmarks')
-        }, 0);
-    }
+     if ($scope.login) {
+         setTimeout(() => {
+             $state.go('bookmarks', {foo: 'i love you', bar: 'hello world'})
+         }, 0);
+     }
 
     // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.loginMenus = [{
@@ -84,7 +77,6 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
      * @desc 点击下拉列表详情搜索
      */
     $scope.searchDetail = function() {
-        $scope.showSearchInput = false;
         pubSubService.publish('MenuCtr.searchDetail', {
             'key': 'JavaScript'
         });

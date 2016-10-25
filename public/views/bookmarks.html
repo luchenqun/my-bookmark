@@ -1,4 +1,58 @@
-<table class="ui celled table">
+<div class="ui small menu js-search-detail" ng-if="showSearch">
+    <div class="ui dropdown item">
+        <div class="text">搜索范围</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item">自己书签</div>
+            <div class="item">全站书签</div>
+        </div>
+    </div>
+
+    <div class="item" style="width:136px;">
+        <div class="ui calendar js-date-begin">
+            <div class="ui transparent input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="开始日期">
+            </div>
+        </div>
+    </div>
+    <div class="item" style="width:136px;">
+        <div class="ui calendar js-date-end">
+            <div class="ui transparent input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="结束日期">
+            </div>
+        </div>
+    </div>
+
+    <div class="ui dropdown item">
+        <div class="text">点击次数</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item">大于</div>
+            <div class="item">小于</div>
+        </div>
+    </div>
+
+    <div class="ui item transparent icon input" style="width:120px;">
+        <input class="prompt" type="text" ng-model="keyword" placeholder="点击次数">
+    </div>
+
+    <div class="ui item transparent icon input" style="width:120px;">
+        <input class="prompt" type="text" ng-model="keyword" placeholder="用户账号">
+    </div>
+
+    <div class="ui item transparent icon input" style="width:160px;">
+        <input type="text" placeholder="标题，链接，分类">
+    </div>
+
+    <div class="right item">
+        <div class="ui button">搜索</div>
+    </div>
+
+</div>
+
+<table class="ui celled table" ng-show="bookmarks.length > 0">
     <thead>
         <tr>
             <th>标题</th>

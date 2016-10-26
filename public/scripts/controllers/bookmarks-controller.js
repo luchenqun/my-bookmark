@@ -3,6 +3,27 @@ app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', 'bookmarkSe
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 书签数据
     $scope.showStyle = 'table'; // 显示风格'navigate', 'card', 'table'
+    $scope.test = [{
+        a: 1
+    }, {
+        a: 1
+    }, {
+        a: 1
+    }, {
+        a: 1
+    }, {
+        a: 1
+    }, {
+        a: 1
+    }, {
+        a: 1
+    }, {
+        a: 1
+    }, {
+        a: 1
+    }, {
+        a: 1
+    }];
 
     semanticInit();
 

@@ -1,3 +1,22 @@
+<div class="ui segment">
+    <div class="ui grid">
+        <div class="row" ng-repeat="ss in test">
+            <div class="one wide column">
+                ssssss
+            </div>
+            <div class="fifteen wide column">
+                <div class="ui cards">
+                    <div class="card" ng-repeat="ss in test">
+                        <div class="content">
+                            <div class="header">Elliot Fu</div>
+                            <div class="meta">Friend</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="ui small menu js-search-detail" ng-if="showSearch">
     <div class="ui dropdown item">
         <div class="text">搜索范围</div>
@@ -44,11 +63,10 @@
         <div class="ui button">搜索</div>
     </div>
 </div>
-
 <table class="ui celled table" ng-if="showStyle === 'table'">
     <thead>
         <tr>
-            <th class="center aligned">标题</th>
+            <th>标题</th>
             <th>链接</th>
             <th>点击次数</th>
             <th>创建日期</th>
@@ -58,7 +76,13 @@
     </thead>
     <tbody>
         <tr ng-repeat="bookmark in bookmarks">
-            <td class="center aligned"><a href="{{ bookmark.url }}" target="_blank">{{ bookmark.title }}</a></td>
+            <td>
+                <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{bookmark.url}}" style="width:16px;height:16px">
+                <span>
+                    <a href="{{ bookmark.url }}" target="_blank">{{ bookmark.title }}
+                    </a>
+                </span>
+            </td>
             <td>{{ bookmark.url }}</td>
             <td>{{ bookmark.click_count }}</td>
             <td>{{ bookmark.created_at }}</td>
@@ -88,4 +112,17 @@
             </th>
         </tr>
     </tfoot>
+</table>
+ght chevron icon"></i>
+</a>
+</div>
+</th>
+</tr>
+</tfoot>
+</table>
+/a>
+</div>
+</th>
+</tr>
+</tfoot>
 </table>

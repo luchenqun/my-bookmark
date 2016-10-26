@@ -44,25 +44,30 @@
         <div class="ui button">搜索</div>
     </div>
 </div>
-<table class="ui celled table" ng-show="bookmarks.length > 0">
+
+<table class="ui celled table" ng-if="showStyle === 'table'">
     <thead>
         <tr>
-            <th>标题</th>
+            <th class="center aligned">标题</th>
+            <th>链接</th>
+            <th>点击次数</th>
             <th>创建日期</th>
             <th>最后点击日期</th>
-            <th>点击次数</th>
-            <th>链接</th>
-            <th>标签</th>
+            <th>分类</th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="bookmark in bookmarks">
-            <td>{{ bookmark.title }}</td>
-            <td>{{ bookmark.create_date }}</td>
-            <td>{{ bookmark.click_latest_date }}</td>
-            <td>{{ bookmark.click_count }}</td>
+            <td class="center aligned"><a href="{{ bookmark.url }}" target="_blank">{{ bookmark.title }}</a></td>
             <td>{{ bookmark.url }}</td>
-            <td>{{ bookmark.tags }}</td>
+            <td>{{ bookmark.click_count }}</td>
+            <td>{{ bookmark.created_at }}</td>
+            <td>{{ bookmark.last_click }}</td>
+            <td>
+                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}">
+                    {{ tag.name }}
+                </div>
+            </td>
         </tr>
     </tbody>
     <tfoot>

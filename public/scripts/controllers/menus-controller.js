@@ -46,25 +46,6 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
 
     /**
      * @func
-     * @desc 根据点击的菜单，更新选择的索引
-     * @param {number} index - 点击的索引
-     * @param {bool} login - 登陆标志
-     */
-    $scope.selectMenu = function(index, login) {
-        var msg = 'MenuCtr.';
-        if (login) {
-            $scope.selectLoginIndex = index;
-            msg += $scope.loginMenus[index].uiSref;
-        } else {
-            $scope.selectNotLoginIndex = index;
-            msg += $scope.notLoginMenus[index].uiSref;
-        }
-        console.log(msg);
-        pubSubService.publish(msg);
-    }
-
-    /**
-     * @func
      * @desc 点击搜索按钮搜索书签
      */
     $scope.searchBookmarks = function() {
@@ -89,9 +70,18 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
     }
 
     function semanticInit() {
-        // $('.ui.dropdown').dropdown();
-        $('.ui.dropdown.js-bookmark-dropdown').dropdown({
-            maxSelections: 2,
-        });
+        setTimeout(() => {
+            $('.ui.dropdown').dropdown({
+                action: 'nothing',
+            });
+            $('.ui.checkbox').checkbox();
+            $('.ui.checkbox.js-radio-navigate').checkbox('check');
+            $('.ui.menu a.item').on('click', function() {
+                $(this)
+                    .addClass('active')
+                    .siblings()
+                    .removeClass('active');
+            });
+        }, 100);
     }
 }]);

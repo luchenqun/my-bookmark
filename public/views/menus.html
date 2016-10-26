@@ -1,33 +1,41 @@
 <div class="js-menu" ng-controller="menuCtr">
-    <div class="ui small menu js-login-in" ng-show="login">
-        <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ng-click="selectMenu($index, login)" ng-repeat="menu in loginMenus">{{ menu.title }}
-            <div class="ui inline labeled dropdown js-bookmark-dropdown" ng-if="$index==0">&nbsp;
+    <div class="ui menu js-login-in" ng-if="login">
+        <a class="item" ng-class="{active:$index==selectLoginIndex}"  ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus">
+            <div>{{ menu.title }}</div>
+            <div class="ui floating dropdown icon js-bookmark-dropdown" ng-if="$index==0">
                 <i class="dropdown icon"></i>
                 <div class="menu">
                     <div class="header">显示方式</div>
                     <div class="divider"></div>
-                    <div class="item">导航</div>
-                    <div class="item">表格</div>
-                    <div class="item">卡片</div>
+                    <div class="field item">
+                        <div class="ui radio checkbox js-radio-navigate">
+                            <input type="radio" name="fruit">
+                            <label>导航</label>
+                        </div>
+                    </div>
+                    <div class="field item">
+                        <div class="ui radio checkbox js-radio-table">
+                            <input type="radio" name="fruit">
+                            <label>表格</label>
+                        </div>
+                    </div>
+                    <div class="field item">
+                        <div class="ui radio checkbox js-radio-card">
+                            <input type="radio" name="fruit">
+                            <label>卡片</label>
+                        </div>
+                    </div>
                     <div class="divider"></div>
-                    <div class="header">搜索方式</div>
-                    <div class="item">状态</div>
-                    <div class="item">取消</div>
+                    <div class="header">搜索选项</div>
+                    <div class="item">
+                        <div class="ui checkbox" ng-click="searchDetail()">
+                            <input type="checkbox" name="fun">
+                            <label>显示详细搜索</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </a>
-        <div class="ui buttons menu">
-            <div class="ui button">切换</div>
-            <div class="ui floating dropdown icon button">
-                <i class="dropdown icon"></i>
-                <div class="menu">
-                    <div class="item" data-value="drop">下拉</div>
-                    <div class="item" data-value="horizontal flip">水平翻转</div>
-                    <div class="item" data-value="fade up">渐隐</div>
-                    <div class="item" data-value="scale">规模</div>
-                </div>
-            </div>
-        </div>
         <div class="right menu">
             <div class="ui category right search item">
                 <div class="ui transparent icon input">
@@ -36,9 +44,9 @@
                 </div>
                 <div class="results"></div>
             </div>
-            <div class="item">
+            <!-- <div class="item">
                 <div class="ui button" ng-click="searchDetail()" ui-sref="bookmarks">详情搜索</div>
-            </div>
+            </div> -->
             <div class="item">
                 <div class="ui button" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks">添加书签</div>
             </div>
@@ -47,7 +55,7 @@
             </div>
         </div>
     </div>
-    <div class="ui small menu js-not-login-in" ng-hide="login">
+    <div class="ui small menu js-not-login-in" ng-if="!login">
         <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
         <div class="right menu">
             <div class="item">

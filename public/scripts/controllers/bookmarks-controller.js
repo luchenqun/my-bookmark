@@ -27,7 +27,6 @@ app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', '$window', 
     function getBookmarks(params) {
         bookmarkService.getBookmarks(params).then(
             function(data) {
-                console.log(data);
                 $scope.bookmarks = data;
             },
             function(errorMsg) {

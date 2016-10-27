@@ -21,8 +21,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
-        addBookmark: function() {
-
+        addBookmark: function(params) {
+            var def = $q.defer();
+            $http.post('/api/addBookmark/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    def.reject('Failed to get todos');
+                });
+            return def.promise;
         },
         delBookmark: function() {
 
@@ -49,7 +60,20 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
-        // register: register
+        addTags: function(params) {
+            var def = $q.defer();
+            $http.post('/api/addTags/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    def.reject('Failed to get todos');
+                });
+            return def.promise;
+        },
     };
 
     return service;

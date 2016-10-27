@@ -1,21 +1,21 @@
 var api = require('express').Router();
 var mysql = require('mysql');
-var client = mysql.createConnection({
-    host: '172.24.13.5',
-    user: 'root',
-    password: 'root123',
-    database: 'mybookmarks',
-    multipleStatements: true,
-    port: 3306
-});
 // var client = mysql.createConnection({
-//     host: '127.0.0.1',
-//     user: 'lcq',
-//     password: '123456',
+//     host: '172.24.13.5',
+//     user: 'root',
+//     password: 'root123',
 //     database: 'mybookmarks',
 //     multipleStatements: true,
 //     port: 3306
 // });
+var client = mysql.createConnection({
+    host: '127.0.0.1',
+    user: 'lcq',
+    password: '123456',
+    database: 'mybookmarks',
+    multipleStatements: true,
+    port: 3306
+});
 client.connect();
 
 api.get('/bookmarks', function(req, res) {
@@ -105,8 +105,31 @@ api.get('/bookmarks', function(req, res) {
 
 api.get('/tags', function(req, res) {
     console.log('hello tags', JSON.stringify(req.query));
-    var data = ['搜索', '常用', '新闻', '博文', 'JavaScript']
-    res.json(data);
+    var user_id = req.query.user_id;
+    var sql = "SELECT id, name FROM `tags` WHERE `user_id` = '" + user_id + "'"
+    client.query(sql, function(error, result, fields) {
+        if (error) {
+            res.json({
+                error: 'error tags'
+            });
+        } else {
+            res.json(result);
+        }
+    })
+});
+
+api.post('/addBookmark', function(req, res) {
+    console.log('hello addBookmark', JSON.stringify(req.query), JSON.stringify(req.body));
+    res.json({
+        a: 'i love this world, too!'
+    });
+});
+
+api.post('/addTags', function(req, res) {
+    console.log('hello addTags', JSON.stringify(req.query), JSON.stringify(req.body));
+    res.json({
+        a: 'i love this world, too!'
+    });
 });
 // client.end();
 

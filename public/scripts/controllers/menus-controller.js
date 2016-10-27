@@ -66,7 +66,9 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
         });
     }
     $scope.showAddBookmarkMoadl = function() {
-        $('.ui.modal.js-add-bookmark').modal('show');
+        pubSubService.publish('MenuCtr.showAddBookmarkMoadl', {
+            'action': 'add'
+        });
     }
 
     function semanticInit() {

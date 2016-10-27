@@ -1,54 +1,27 @@
-app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, bookmarkService, pubSubService) {
+app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $window, bookmarkService, pubSubService) {
     console.log("Hello bookmarksCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 书签数据
-    $scope.showStyle = 'table'; // 显示风格'navigate', 'card', 'table'
-    $scope.test = [{
-        a: 1
-    }, {
-        a: 1
-    }, {
-        a: 1
-    }, {
-        a: 1
-    }, {
-        a: 1
-    }, {
-        a: 1
-    }, {
-        a: 1
-    }, {
-        a: 1
-    }, {
-        a: 1
-    }, {
-        a: 1
-    }];
-
+    $scope.showStyle = 'navigate'; // 显示风格'navigate', 'card', 'table'
     semanticInit();
 
     var params = {
-        s: 111,
-        b: 222,
-        i: 'lcq'
+        show: $scope.showStyle,
     }
     getBookmarks(params);
+    $scope.jumpToUrl = function(url) {
+        console.log(url);
+        $window.open(url, '_blank');
+    }
 
-    pubSubService.subscribe('MenuCtr.bookmarks', $scope, function(event, data) {
-        console.log('subscribe MenuCtr.bookmarks', data);
-        // $scope.showSearch = (Math.random() >= 0.5);
-        // if ($scope.showSearch) {
-        //     setTimeout(() => {
-        //         semanticInit();
-        //     }, 100);
-        //
-        // }
-        getBookmarks(data);
+    pubSubService.subscribe('MenuCtr.bookmarks', $scope, function(event, params) {
+        console.log('subscribe MenuCtr.bookmarks', params);
+        getBookmarks(params);
     });
 
-    pubSubService.subscribe('MenuCtr.searchBookmarks', $scope, function(event, data) {
-        console.log('subscribe MenuCtr.searchBookmarks', data);
-        getBookmarks(data);
+    pubSubService.subscribe('MenuCtr.searchBookmarks', $scope, function(event, params) {
+        console.log('subscribe MenuCtr.searchBookmarks', params);
+        getBookmarks(params);
     });
 
     function getBookmarks(params) {
@@ -64,32 +37,41 @@ app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', 'bookmarkSe
     }
 
     function semanticInit() {
-        $('.ui.dropdown').dropdown();
-        $('.ui.calendar.js-date-begin').calendar({
-            type: 'date',
-            formatter: {
-                date: function(date, settings) {
-                    if (!date) return '';
-                    var day = date.getDate();
-                    var month = date.getMonth() + 1;
-                    var year = date.getFullYear();
-                    return year + '/' + month + '/' + day;
-                }
-            },
-            endCalendar: $('.ui.calendar.js-date-end')
-        });
-        $('.ui.calendar.js-date-end').calendar({
-            type: 'date',
-            formatter: {
-                date: function(date, settings) {
-                    if (!date) return '';
-                    var day = date.getDate();
-                    var month = date.getMonth() + 1;
-                    var year = date.getFullYear();
-                    return year + '/' + month + '/' + day;
-                }
-            },
-            startCalendar: $('.ui.calendar.js-date-begin')
-        });
+        setTimeout(() => {
+            $('.ui.dropdown').dropdown();
+            $('.ui.calendar.js-date-begin').calendar({
+                type: 'date',
+                formatter: {
+                    date: function(date, settings) {
+                        if (!date) return '';
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '/' + month + '/' + day;
+                    }
+                },
+                endCalendar: $('.ui.calendar.js-date-end')
+            });
+            $('.ui.calendar.js-date-end').calendar({
+                type: 'date',
+                formatter: {
+                    date: function(date, settings) {
+                        if (!date) return '';
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '/' + month + '/' + day;
+                    }
+                },
+                startCalendar: $('.ui.calendar.js-date-begin')
+            });
+
+            $('.js-navigate-bookmark').hover(function() {
+                $(this).addClass('div-hover');
+            }, function() {
+                //鼠标离开时移除divOver样式
+                $(this).removeClass('div-hover');
+            });
+        }, 100);
     }
 }]);

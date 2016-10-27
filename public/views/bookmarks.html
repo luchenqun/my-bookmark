@@ -1,22 +1,37 @@
-<div class="ui segment">
-    <div class="ui grid">
-        <div class="row" ng-repeat="ss in test">
+<div class="ui segment" ng-if="showStyle === 'navigate'">
+    <div class="ui internally grid">
+        <div class="row" ng-repeat="tag in bookmarks">
             <div class="one wide column">
-                ssssss
+                <span style="color:#0aa770;">{{ tag.name }}</span>
             </div>
-            <div class="fifteen wide column">
-                <div class="ui cards">
-                    <div class="card" ng-repeat="ss in test">
-                        <div class="content">
-                            <div class="header">Elliot Fu</div>
-                            <div class="meta">Friend</div>
-                        </div>
+            <div class="fourteen wide column">
+                <div class="ui grid container">
+                    <div class="two wide column js-navigate-bookmark" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
+                        <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
+                        <span>{{ bookmark.title}}</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="ui segment" ng-if="false">
+    <div class="ui raised" ng-repeat="tag in bookmarks">
+        <!-- <a class="ui orange ribbon label" style="margin-bottom:20px">{{ tag.name }}</a> <span></span> -->
+        <div class="ui grid container">
+            <div class="two wide column">
+                <i class="bookmark icon"></i><span>{{ tag.name }}</span>
+            </div>
+
+            <div class="two wide column js-navigate-bookmark" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
+                <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
+                <span>{{ bookmark.title}}</span>
+            </div>
+        </div>
+        <div class="ui divider"></div>
+    </div>
+</div>
+
 <div class="ui small menu js-search-detail" ng-if="showSearch">
     <div class="ui dropdown item">
         <div class="text">搜索范围</div>
@@ -112,17 +127,4 @@
             </th>
         </tr>
     </tfoot>
-</table>
-ght chevron icon"></i>
-</a>
-</div>
-</th>
-</tr>
-</tfoot>
-</table>
-/a>
-</div>
-</th>
-</tr>
-</tfoot>
 </table>

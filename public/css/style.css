@@ -1,8 +1,25 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+.div-hover {
+    background:#F5F5F5;
+    cursor:pointer;
+}
+
+.img-fixed-size{
+    width:16px;
+    height:16px;
+}
+
+.js-navigate-bookmark{
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    overflow: hidden;
+    color:#212121;
+}
+.js-navigate-bookmark a{
+    color:#212121;
 }

@@ -1,21 +1,21 @@
 var api = require('express').Router();
 var mysql = require('mysql');
-// var client = mysql.createConnection({
-//     host: '172.24.13.5',
-//     user: 'root',
-//     password: 'root123',
-//     database: 'mybookmarks',
-//     multipleStatements: true,
-//     port: 3306
-// });
 var client = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'lcq',
-    password: '123456',
+    host: '172.24.13.5',
+    user: 'root',
+    password: 'root123',
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306
 });
+// var client = mysql.createConnection({
+//     host: '127.0.0.1',
+//     user: 'lcq',
+//     password: '123456',
+//     database: 'mybookmarks',
+//     multipleStatements: true,
+//     port: 3306
+// });
 client.connect();
 
 api.get('/bookmarks', function(req, res) {

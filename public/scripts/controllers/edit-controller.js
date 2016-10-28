@@ -1,11 +1,19 @@
-app.controller('editCtr', ['$scope', '$state', 'bookmarkService', 'pubSubService', function($scope, $state, bookmarkService, pubSubService) {
+app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, bookmarkService, pubSubService) {
     console.log("Hello , I enter editCtr...");
     init();
     semanticInit();
 
+    $scope.$watch('url', function(newValue, oldValue, scope) {
+        $scope.urlError = $scope.url == '';
+    });
+
+    $scope.$watch('title', function(newValue, oldValue, scope) {
+        $scope.titleError = $scope.title == '';
+    });
+
     $scope.addTags = function() {
         console.log('Hello , you have click add tag btn......');
-        $scope.newTags = $scope.newTags.replace("，", ",");
+        $scope.newTags = $scope.newTags.replace(/，/g, ",").replace(/,+/g, ","); // 先将中文逗号替换成英文逗号，然后将多个英文逗号换成一个英文逗号
         var tags = $scope.newTags.split(",");
         var params = [];
         tags.forEach(function(tag) {
@@ -15,10 +23,10 @@ app.controller('editCtr', ['$scope', '$state', 'bookmarkService', 'pubSubService
             for (var i = 0; i < $scope.tags.length; i++) {
                 if ($scope.tags[i].name === tag) {
                     find = true;
-                    $('.ui.fluid.search.dropdown').dropdown('set selected', $scope.tags[i].id);
+                    $('.ui.fluid.search.dropdown').dropdown('set selected', $scope.tags[i].id); // 在标签上已有的直接加入标签
                 }
             };
-            if (!find) {
+            if (!find && tag !== '') {
                 params.push(tag);
             }
         });
@@ -33,6 +41,9 @@ app.controller('editCtr', ['$scope', '$state', 'bookmarkService', 'pubSubService
         console.log('Hello , you have click ok btn......');
         var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
         console.log($scope.url, $scope.title, $scope.description, $scope.public, selectedTags);
+        $scope.urlError = $scope.url == '';
+        $scope.titleError = $scope.title == '';
+        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > 3);
 
         bookmarkService.addBookmark({
             a: 'Hello i love this world'
@@ -76,6 +87,12 @@ app.controller('editCtr', ['$scope', '$state', 'bookmarkService', 'pubSubService
             $('.ui.dropdown').dropdown({
                 forceSelection: false,
                 maxSelections: 3,
+                onChange: function(value, text, $choice) {
+                    var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
+                    $timeout(function() {
+                        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > 3);
+                    });
+                }
             });
         }, 1000);
     }
@@ -86,6 +103,11 @@ app.controller('editCtr', ['$scope', '$state', 'bookmarkService', 'pubSubService
         $scope.description = '';
         $scope.newTags = '';
         $scope.tags = []; // tag = {id:xxx, name:'yyy'}
+
+        $scope.urlError = false;
+        $scope.titleError = false;
+        $scope.tagsError = false;
+
         $scope.public = '1';
     }
 }]);

@@ -34,6 +34,7 @@ CREATE TABLE `tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
   `user_id` int(11) NOT NULL,               -- 用户id
   `name` varchar(32) NOT NULL,              -- 标签
+  `last_use` datetime DEFAULT now(),        -- 最后使用标签的时间
   PRIMARY KEY (`id`),
   KEY `userIdIdx` (`user_id`)
 );

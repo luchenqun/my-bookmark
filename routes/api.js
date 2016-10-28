@@ -1,21 +1,21 @@
 var api = require('express').Router();
 var mysql = require('mysql');
-var client = mysql.createConnection({
-    host: '172.24.13.5',
-    user: 'root',
-    password: 'root123',
-    database: 'mybookmarks',
-    multipleStatements: true,
-    port: 3306
-});
 // var client = mysql.createConnection({
-//     host: '127.0.0.1',
-//     user: 'lcq',
-//     password: '123456',
+//     host: '172.24.13.5',
+//     user: 'root',
+//     password: 'root123',
 //     database: 'mybookmarks',
 //     multipleStatements: true,
 //     port: 3306
 // });
+var client = mysql.createConnection({
+    host: '127.0.0.1',
+    user: 'lcq',
+    password: '123456',
+    database: 'mybookmarks',
+    multipleStatements: true,
+    port: 3306
+});
 client.connect();
 
 api.get('/bookmarks', function(req, res) {
@@ -106,7 +106,7 @@ api.get('/bookmarks', function(req, res) {
 api.get('/tags', function(req, res) {
     console.log('hello tags', JSON.stringify(req.query));
     var user_id = req.query.user_id;
-    var sql = "SELECT id, name FROM `tags` WHERE `user_id` = '" + user_id + "'"
+    var sql = "SELECT id, name FROM `tags` WHERE `user_id` = '" + user_id + "' ORDER BY last_use DESC"
     client.query(sql, function(error, result, fields) {
         if (error) {
             res.json({
@@ -120,16 +120,127 @@ api.get('/tags', function(req, res) {
 
 api.post('/addBookmark', function(req, res) {
     console.log('hello addBookmark', JSON.stringify(req.query), JSON.stringify(req.body));
-    res.json({
-        a: 'i love this world, too!'
+    var params = req.body.params;
+    var user_id = '1';
+    var tags = params.tags;
+    var sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + params.title + "', '" + params.description + "', '" + params.url + "', '" + params.public + "', '1')";
+    console.log(sql);
+    client.query(sql, function(err, result) {
+        if (err) throw err;
+        var insertId = result.insertId;
+
+        sql = "INSERT INTO `tags_bookmarks` (`tag_id`, `bookmark_id`) VALUES";
+        for (var i = 0; i < tags.length; i++) {
+            if (i >= 1) {
+                sql += ','
+            }
+            sql += "('" + tags[i] + "', '" + insertId + "')";
+        }
+        client.query(sql, function(error, result, fields) {
+            if (error) {
+                res.json({
+                    error: 'error tags'
+                });
+            } else {
+                sql = "UPDATE tags SET last_use = NOW() WHERE user_id = '" + user_id + "' AND id in (";
+                for (var i = 0; i < tags.length; i++) {
+                    if (i >= 1) {
+                        sql += ','
+                    }
+                    sql += "'" + tags[i] + "'";
+                }
+                sql += ')'
+                console.log(sql);
+                client.query(sql, function(error, result1, fields) {
+                    if (error) {
+                        res.json({
+                            error: 'error tags'
+                        });
+                    } else {
+                        res.json({
+                            hello: 'success'
+                        });
+                    }
+                })
+
+            }
+        })
+
+        console.log(result.insertId);
     });
+
+    // res.json({
+    //     a: 'i love this world, too!'
+    // });
 });
 
 api.post('/addTags', function(req, res) {
     console.log('hello addTags', JSON.stringify(req.query), JSON.stringify(req.body));
-    res.json({
-        a: 'i love this world, too!'
-    });
+    var params = req.body.params;
+    var user_id = '1';
+    var addTagNames = [];
+    var sql = "SELECT * FROM `tags` WHERE `user_id` = '" + user_id + "' AND `name` in (";
+    for (var i = 0; i < params.length; i++) {
+        if (i >= 1) {
+            sql += ','
+        }
+        sql += "'" + params[i] + "'";
+    };
+    sql += ")";
+    console.log(sql);
+    client.query(sql, function(error, result1, fields) {
+        if (error) {
+            res.json({
+                error: 'error tags'
+            });
+        } else {
+            params.forEach(function(name) {
+                var find = false;
+                result1.forEach(function(tag) {
+                    if (tag.name == name) {
+                        find = true;
+                    }
+                })
+                if (!find) {
+                    addTagNames.push(name);
+                }
+            })
+
+            sql = "INSERT INTO `tags` (`user_id`, `name`) VALUES";
+            for (var i = 0; i < addTagNames.length; i++) {
+                if (i >= 1) {
+                    sql += ','
+                }
+                sql += "('" + user_id + "', '" + addTagNames[i] + "')";
+            }
+            if (addTagNames.length == 0) {
+                sql = "SELECT id, name FROM `tags` WHERE `user_id` = '" + user_id + "'";
+            }
+            console.log(sql);
+            client.query(sql, function(error, result, fields) {
+                if (error) {
+                    res.json({
+                        error: 'error tags'
+                    });
+                } else {
+                    if (addTagNames.length == 0) {
+                        res.json(result);
+                    } else {
+                        sql = "SELECT id, name FROM `tags` WHERE `user_id` = '" + user_id + "' ORDER BY last_use DESC"
+                        client.query(sql, function(error, result, fields) {
+                            if (error) {
+                                res.json({
+                                    error: 'error tags'
+                                });
+                            } else {
+                                res.json(result);
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    })
 });
 // client.end();
 

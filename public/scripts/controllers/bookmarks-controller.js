@@ -24,6 +24,11 @@ app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', '$window', 
         getBookmarks(params);
     });
 
+    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
+        console.log('subscribe EditCtr.inserBookmarsSuccess', params);
+        getBookmarks(params);
+    });
+
     function getBookmarks(params) {
         bookmarkService.getBookmarks(params).then(
             function(data) {

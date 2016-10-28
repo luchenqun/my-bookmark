@@ -1,41 +1,63 @@
 app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, bookmarkService, pubSubService) {
+    var maxSelections = 3;
     console.log("Hello , I enter editCtr...");
     init();
     semanticInit();
 
     $scope.$watch('url', function(newValue, oldValue, scope) {
-        $scope.urlError = $scope.url == '';
+        console.log('url is changed', $('.ui.modal.js-add-bookmark').modal('is active'));
+        $timeout(function() {
+            $scope.urlError = $scope.url == '' && $('.ui.modal.js-add-bookmark').modal('is active');
+        });
     });
 
     $scope.$watch('title', function(newValue, oldValue, scope) {
-        $scope.titleError = $scope.title == '';
+        $timeout(function() {
+            $scope.titleError = $scope.title == '' && $('.ui.modal.js-add-bookmark').modal('is active');
+        });
     });
 
     $scope.addTags = function() {
         console.log('Hello , you have click add tag btn......');
-        $scope.newTags = $scope.newTags.replace(/，/g, ",").replace(/,+/g, ","); // 先将中文逗号替换成英文逗号，然后将多个英文逗号换成一个英文逗号
+
+        // 先将中文逗号替换成英文逗号，然后将多个英文逗号换成一个英文逗号
+        $scope.newTags = $scope.newTags.replace(/，/g, ",").replace(/,+/g, ",");
         var tags = $scope.newTags.split(",");
         var params = [];
         tags.forEach(function(tag) {
             tag = tag.replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格，多个空格转为一个空格;
-
-            var find = false;
-            for (var i = 0; i < $scope.tags.length; i++) {
-                if ($scope.tags[i].name === tag) {
-                    find = true;
-                    $('.ui.fluid.search.dropdown').dropdown('set selected', $scope.tags[i].id); // 在标签上已有的直接加入标签
-                }
-            };
-            if (!find && tag !== '') {
-                params.push(tag);
-            }
+            params.push(tag);
         });
 
         console.log(params);
-
+        bookmarkService.addTags(params).then(
+            function(data) {
+                $scope.tags = data;
+                console.log(JSON.stringify(data));
+                $timeout(function() {
+                    var count = 0;
+                    params.forEach(function(tagName) {
+                        data.forEach(function(tag) {
+                            if (tagName == tag.name) {
+                                console.log(tag.id);
+                                if (count < maxSelections) {
+                                    $('.ui.fluid.search.dropdown').dropdown('set selected', tag.id);
+                                }
+                                count++;
+                            }
+                        });
+                    });
+                });
+            },
+            function(errorMsg) {}
+        );
     }
     $scope.cancel = function() {
         console.log('Hello , you have click cancel btn......');
+        $('.ui.modal.js-add-bookmark').modal('hide');
+        $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
+
+        init();
     }
     $scope.ok = function() {
         console.log('Hello , you have click ok btn......');
@@ -43,13 +65,26 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         console.log($scope.url, $scope.title, $scope.description, $scope.public, selectedTags);
         $scope.urlError = $scope.url == '';
         $scope.titleError = $scope.title == '';
-        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > 3);
+        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections);
+        var params = {
+            url: $scope.url,
+            title: $scope.title,
+            public: '1',
+            tags: selectedTags,
+            description: $scope.description
+        }
 
-        bookmarkService.addBookmark({
-            a: 'Hello i love this world'
-        }).then(
+        bookmarkService.addBookmark(params).then(
             function(data) {
                 console.log(data);
+                $('.ui.modal.js-add-bookmark').modal('hide');
+                $state.go('bookmarks', {
+                    foo: 'i love you',
+                    bar: 'hello world'
+                });
+                pubSubService.publish('EditCtr.inserBookmarsSuccess', {
+                    show: 'navigate'
+                });
             },
             function(errorMsg) {
                 console.log(errorMsg);
@@ -59,7 +94,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
 
     pubSubService.subscribe('MenuCtr.showAddBookmarkMoadl', $scope, function(event, params) {
         console.log('subscribe MenuCtr.MenuCtr.showAddBookmarkMoadl', params);
-        $('.ui.modal.js-add-bookmark').modal('show');
+        $('.ui.modal.js-add-bookmark').modal({
+            closable: false,
+        }).modal('show');
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
         $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         init();
@@ -86,11 +123,11 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         setTimeout(() => {
             $('.ui.dropdown').dropdown({
                 forceSelection: false,
-                maxSelections: 3,
+                maxSelections: maxSelections,
                 onChange: function(value, text, $choice) {
                     var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
                     $timeout(function() {
-                        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > 3);
+                        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections) && ($('.ui.modal.js-add-bookmark').modal('is active'));
                     });
                 }
             });

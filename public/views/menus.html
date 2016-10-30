@@ -1,6 +1,6 @@
 <div class="js-menu" ng-controller="menuCtr">
     <div class="ui menu js-login-in" ng-if="login">
-        <a class="item" ng-class="{active:$index==selectLoginIndex}"  ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus">
+        <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus">
             <div>{{ menu.title }}</div>
             <div class="ui floating dropdown icon js-bookmark-dropdown" ng-if="$index==0">
                 <i class="dropdown icon"></i>
@@ -44,9 +44,6 @@
                 </div>
                 <div class="results"></div>
             </div>
-            <!-- <div class="item">
-                <div class="ui button" ng-click="searchDetail()" ui-sref="bookmarks">详情搜索</div>
-            </div> -->
             <div class="item">
                 <div class="ui button" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks">添加书签</div>
             </div>
@@ -57,10 +54,5 @@
     </div>
     <div class="ui small menu js-not-login-in" ng-if="!login">
         <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
-        <div class="right menu">
-            <div class="item">
-                <div class="ui button">登陆</div>
-            </div>
-        </div>
     </div>
 </div>

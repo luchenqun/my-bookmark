@@ -18,6 +18,13 @@ var client = mysql.createConnection({
 });
 client.connect();
 
+api.get('/autoLogin', function(req, res) {
+    console.log('autoLogin......');
+    res.json({
+        data: "autoLogin reply",
+    });
+});
+
 api.get('/bookmarks', function(req, res) {
     console.log('hello bookmarks', JSON.stringify(req.query));
     if (req.query.show === 'navigate') {

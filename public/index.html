@@ -1,45 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="bookmark">
-    <meta name="author" content="luchenqun">
-    <title>我的书签</title>
-    <link href="/css/externe/semantic.min.css " rel="stylesheet" />
-    <link href="/css/externe/calendar.min.css" rel="stylesheet" />
-    <link href="/css/style.css " rel="stylesheet" />
-
-    <base href="/">
-</head>
-
-<body ng-app="bookmarkApp">
-    <div class="ui container ">
-        <!-- directive：菜单 -->
-        <menus></menus>
-        <div class="ui container" style="width:100%;height:20px"></div>
-        <div class="ui container">
-            <div ui-view></div>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="bookmark">
+        <meta name="author" content="luchenqun">
+        <title>我的书签</title>
+        <link href="/css/externe/semantic.min.css " rel="stylesheet"/>
+        <link href="/css/externe/calendar.min.css" rel="stylesheet"/>
+        <link href="/css/style.css " rel="stylesheet"/>
+        <base href="/">
+    </head>
+    <body ng-app="bookmarkApp">
+        <div class="ui container ">
+            <!-- directive：菜单 -->
+            <menus></menus>
+            <div class="ui container" style="width:100%;height:20px"></div>
+            <div class="ui container">
+                <div ui-view></div>
+            </div>
+            <div class="foot"></div>
+            <!-- directive：书签编辑 -->
+            <edit></edit>
         </div>
-        <div class="foot"></div>
-        <!-- directive：书签编辑 -->
-        <edit></edit>
-    </div>
-    <script src="/scripts/externe/jquery-3.1.1.min.js"></script>
-    <script src="/scripts/externe/angular.min.js"></script>
-    <script src="/scripts/externe/angular-ui-router.min.js"></script>
-    <script src="/scripts/app-angular.js"></script>
-    <script src="/scripts/services/bookmark-service.js"></script>
-    <script src="/scripts/services/pub-sub-service.js"></script>
-    <script src="/scripts/directives/edit-directive.js"></script>
-    <script src="/scripts/directives/menus-directive.js"></script>
-    <script src="/scripts/controllers/bookmarks-controller.js"></script>
-    <script src="/scripts/controllers/tags-controller.js"></script>
-    <script src="/scripts/controllers/menus-controller.js"></script>
-    <script src="/scripts/controllers/edit-controller.js"></script>
-    <script src="/scripts/externe/semantic.min.js"></script>
-    <script src="/scripts/externe/calendar.min.js"></script>
-</body>
-
+        <script src="/scripts/externe/jquery-3.1.1.min.js"></script>
+        <script src="/scripts/externe/angular.min.js"></script>
+        <script src="/scripts/externe/angular-ui-router.min.js"></script>
+        <script src="/scripts/app-angular.js"></script>
+        <script src="/scripts/services/bookmark-service.js"></script>
+        <script src="/scripts/services/pub-sub-service.js"></script>
+        <script src="/scripts/directives/edit-directive.js"></script>
+        <script src="/scripts/directives/menus-directive.js"></script>
+        <script src="/scripts/controllers/bookmarks-controller.js"></script>
+        <script src="/scripts/controllers/home-controller.js"></script>
+        <script src="/scripts/controllers/tags-controller.js"></script>
+        <script src="/scripts/controllers/menus-controller.js"></script>
+        <script src="/scripts/controllers/edit-controller.js"></script>
+        <script src="/scripts/externe/semantic.min.js"></script>
+        <script src="/scripts/externe/calendar.min.js"></script>
+    </body>
 </html>

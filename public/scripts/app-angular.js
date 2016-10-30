@@ -13,7 +13,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 bar: null
             },
             controller: 'bookmarksCtr'
-
         })
         .state('addBookmark', {
             url: '/addBookmark',
@@ -32,16 +31,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: '/settings',
             templateUrl: '/views/settings.html',
         })
-        .state('register', {
-            url: '/register',
-            templateUrl: '/views/register.html'
-        })
-        .state('intro', {
-            url: '/intro',
-            templateUrl: '/views/intro.html'
+        .state('login', {
+            url: '/login',
+            templateUrl: '/views/login.html'
         })
         .state('/', {
             url: '/',
-            templateUrl: '/views/intro.html'
+            templateUrl: '/views/home.html',
+            controller: 'homeCtr'
         });
 });

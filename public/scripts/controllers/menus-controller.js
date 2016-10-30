@@ -1,5 +1,5 @@
 app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope, $state, pubSubService) {
-    $scope.login = true; /**< 是否登陆 */
+    $scope.login = false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.keyword = ''; /**< 搜索关键字 */
@@ -8,14 +8,14 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
     /**
      * @todo http://stackoverflow.com/questions/31449948/ui-router-state-go-not-working
      */
-    if ($scope.login) {
-        setTimeout(() => {
-            $state.go('bookmarks', {
-                foo: 'i love you',
-                bar: 'hello world'
-            })
-        }, 0);
-    }
+    // if ($scope.login) {
+    //     setTimeout(() => {
+    //         $state.go('bookmarks', {
+    //             foo: 'i love you',
+    //             bar: 'hello world'
+    //         })
+    //     }, 0);
+    // }
 
     // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.loginMenus = [{
@@ -37,11 +37,11 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
 
     // 未登陆显示的菜单数据
     $scope.notLoginMenus = [{
-        uiSref: 'intro',
-        title: '说明'
+        uiSref: '/',
+        title: '首页'
     }, {
-        uiSref: 'register',
-        title: '注册'
+        uiSref: 'login',
+        title: '登陆'
     }];
 
     /**

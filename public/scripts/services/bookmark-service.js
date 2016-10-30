@@ -1,12 +1,26 @@
 app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
     // service interface
     var service = {
+        autoLogin: function(params) {
+            var def = $q.defer();
+            $http.get('/api/autoLogin/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    def.reject('Failed to get todos');
+                });
+            return def.promise;
+        },
         /**
          * @func
          * @desc 根据显示页数的索引，获取书签的数据
          * @param {object} params - 参数
          */
-        getBookmarks: function getBookmarks(params) {
+        getBookmarks: function(params) {
             var def = $q.defer();
 
             $http.get('/api/bookmarks/', {

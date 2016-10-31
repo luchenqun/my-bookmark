@@ -1,5 +1,5 @@
-app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope, $state, pubSubService) {
-    $scope.login = false; /**< 是否登陆 */
+app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 'bookmarkService', function($scope, $stateParams, $state, pubSubService, bookmarkService) {
+    $scope.login = $stateParams.login && false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.keyword = ''; /**< 搜索关键字 */
@@ -16,6 +16,11 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
     //         })
     //     }, 0);
     // }
+
+    pubSubService.subscribe('loginCtr.login', $scope, function(event, params) {
+        $scope.login = params.login;
+    });
+
 
     // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.loginMenus = [{
@@ -69,6 +74,24 @@ app.controller('menuCtr', ['$scope', '$state', 'pubSubService', function($scope,
         pubSubService.publish('MenuCtr.showAddBookmarkMoadl', {
             'action': 'add'
         });
+    }
+    $scope.logout = function() {
+        var params = {
+            userName: 'luchenqun'
+        };
+        bookmarkService.logout(params).then(
+            function(data) {
+                console.log('logout..........', data)
+                $scope.login = false;
+                $state.go('login', {
+                    foo: 'i love you',
+                    bar: 'hello world'
+                })
+            },
+            function(errorMsg) {
+                console.log(errorMsg);
+            }
+        );
     }
 
     function semanticInit() {

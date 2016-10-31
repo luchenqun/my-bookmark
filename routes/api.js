@@ -18,11 +18,56 @@ var client = mysql.createConnection({
 });
 client.connect();
 
-api.get('/autoLogin', function(req, res) {
-    console.log('autoLogin......');
-    res.json({
-        data: "autoLogin reply",
+api.post('/logout', function(req, res) {
+    var params = req.body.params;
+    console.log('logout......', params);
+    var userName = params.userName;
+    req.session.destroy(function(err) {
+
     });
+    res.json({
+        data: "logout success",
+    });
+
+});
+
+api.post('/login', function(req, res) {
+    var params = req.body.params;
+    console.log('login......', params);
+    var userName = params.userName;
+    var pwd = params.pwd;
+    var logined = Math.random() > 0.5;
+    if (logined) {
+        res.cookie('isLogin', userName, {
+            maxAge: 60000
+        });
+        req.session.userName = userName;
+        console.log(req.session.userName);
+    } else {
+
+    }
+    res.json({
+        logined: logined,
+    });
+});
+
+api.get('/autoLogin', function(req, res) {
+    console.log('autoLogin......', req.body.params);
+    // if (req.cookies.isLogin) {
+    //     console.log('cookies:' + req.cookies.isLogin);
+    //     req.session.userName = req.cookies.isLogin;
+    // }
+
+    if (req.session.userName) {
+        console.log('session:' + req.session.userName);
+        res.json({
+            data: "you have auto login",
+        });
+    } else {
+        res.json({
+            data: "Please Login",
+        });
+    }
 });
 
 api.get('/bookmarks', function(req, res) {

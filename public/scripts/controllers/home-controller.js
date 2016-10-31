@@ -1,7 +1,8 @@
 app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $window, bookmarkService, pubSubService) {
     console.log('Hello homeCtr......');
     var params = {
-        a: 1111
+        userName: 'luchenqun',
+        pwd: '123456',
     };
     bookmarkService.autoLogin(params).then(
         function(data) {

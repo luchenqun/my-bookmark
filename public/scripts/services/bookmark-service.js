@@ -1,6 +1,34 @@
 app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
     // service interface
     var service = {
+        login: function(params) {
+            var def = $q.defer();
+            $http.post('/api/login/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    def.reject('Failed to get todos');
+                });
+            return def.promise;
+        },
+        logout: function(params) {
+            var def = $q.defer();
+            $http.post('/api/logout/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    def.reject('Failed to get todos');
+                });
+            return def.promise;
+        },
         autoLogin: function(params) {
             var def = $q.defer();
             $http.get('/api/autoLogin/', {

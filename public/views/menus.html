@@ -48,11 +48,11 @@
                 <div class="ui button" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks">添加书签</div>
             </div>
             <div class="item">
-                <div class="ui button">退出</div>
+                <div class="ui button" ng-click="logout()">退出</div>
             </div>
         </div>
     </div>
     <div class="ui small menu js-not-login-in" ng-if="!login">
-        <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
+        <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ui-sref-opts="{reload: true}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
     </div>
 </div>

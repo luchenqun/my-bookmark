@@ -10,7 +10,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: '/views/bookmarks.html',
             params: {
                 foo: null,
-                bar: null
+                bar: null,
+                showStyle: 'table',
             },
             controller: 'bookmarksCtr'
         })
@@ -33,7 +34,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
         })
         .state('login', {
             url: '/login',
-            templateUrl: '/views/login.html'
+            templateUrl: '/views/login.html',
+            params: {
+                foo: null,
+                bar: null,
+                showStyle: 'table',
+            },
+            controller: 'loginCtr'
         })
         .state('/', {
             url: '/',

@@ -23,10 +23,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
-app.use(cookieParser('Wilson'));
+app.use(cookieParser());
+
 app.use(session({
-    secret: 'wilson'
+    resave: false, //添加这行
+    saveUninitialized: true, //添加这行
+    secret: 'ILoveYiJia', // 建议使用 128 个字符的随机字符串
+    cookie: {
+        maxAge: 60 * 1000
+    }
 }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);

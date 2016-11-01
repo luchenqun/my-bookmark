@@ -1,3 +1,28 @@
-<p>
-    这是登陆界面
-</p>
+<form class="ui form segment" ng-class={error:showErr}>
+    <div class="ui error message">
+        <div class="header">错误提示</div>
+        <p>
+            {{ errInfo }}</p>
+    </div>
+    <div class="required field">
+        <label>用户名</label>
+        <div class="ui icon input">
+            <input type="text" ng-model="userName">
+            <i class="user icon"></i>
+        </div>
+    </div>
+    <div class="required field">
+        <label>密码</label>
+        <div class="ui icon input">
+            <input type="password" ng-model="pwd">
+            <i class="lock icon"></i>
+        </div>
+    </div>
+    <div class="field">
+        <div class="ui checkbox js-auto-login">
+            <input type="checkbox" name="auto-login" checked="true">
+            <label>30天内自动登陆</label>
+        </div>
+    </div>
+    <div class="ui submit button" ng-click="login()">登陆</div>
+</form>

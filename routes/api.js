@@ -1,77 +1,87 @@
 var api = require('express').Router();
 var mysql = require('mysql');
-// var client = mysql.createConnection({
-//     host: '172.24.13.5',
-//     user: 'root',
-//     password: 'root123',
-//     database: 'mybookmarks',
-//     multipleStatements: true,
-//     port: 3306
-// });
+var crypto = require('crypto');
 var client = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'lcq',
-    password: '123456',
+    host: '172.24.13.5',
+    user: 'root',
+    password: 'root123',
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306
 });
+// var client = mysql.createConnection({
+//     host: '127.0.0.1',
+//     user: 'lcq',
+//     password: '123456',
+//     database: 'mybookmarks',
+//     multipleStatements: true,
+//     port: 3306
+// });
 client.connect();
 
 api.post('/logout', function(req, res) {
     var params = req.body.params;
     console.log('logout......', params);
-    var userName = params.userName;
-    req.session.destroy(function(err) {
-
-    });
+    req.session.destroy();
     res.json({
         data: "logout success",
     });
-
 });
 
 api.post('/login', function(req, res) {
     var params = req.body.params;
-    console.log('login......', params);
-    var userName = params.userName;
-    var pwd = params.pwd;
-    var logined = Math.random() > 0.5;
-    if (logined) {
-        res.cookie('isLogin', userName, {
-            maxAge: 60000
-        });
-        req.session.userName = userName;
-        console.log(req.session.userName);
-    } else {
+    var username = params.username;
+    var password = md5(params.password);
+    console.log('login......', params, password);
 
-    }
-    res.json({
-        logined: logined,
-    });
+    var sql = "SELECT * FROM `users` WHERE `username` = '"+ username +"'";
+    client.query(sql, function(error, result, fields) {
+        var id = '';
+        var logined = false;
+        console.log(password, result[0].password)
+        if (!error && result.length === 1 && password === result[0].password) {
+            req.session.username = username;
+            logined = true;
+            id = result[0].id;
+        }
+        res.json({
+            logined: logined,
+            userId:id
+        });
+    })
 });
 
 api.get('/autoLogin', function(req, res) {
-    console.log('autoLogin......', req.body.params);
-    // if (req.cookies.isLogin) {
-    //     console.log('cookies:' + req.cookies.isLogin);
-    //     req.session.userName = req.cookies.isLogin;
-    // }
-
-    if (req.session.userName) {
-        console.log('session:' + req.session.userName);
-        res.json({
-            data: "you have auto login",
-        });
+    if (req.session.username) {
+        console.log('session:' + req.session.username);
+        var sql = "SELECT * FROM `users` WHERE `username` = '"+ req.session.username +"'";
+        client.query(sql, function(error, result, fields) {
+            var id = '';
+            var logined = false;
+            if (!error && result.length === 1) {
+                req.session.username = result[0].username;
+                req.session.id = result[0].id;
+                logined = true;
+                id = result[0].id;
+            }
+            res.json({
+                logined: logined,
+                userId:id,
+            });
+        })
     } else {
         res.json({
-            data: "Please Login",
+            logined: false,
+            userId:'',
         });
     }
 });
 
 api.get('/bookmarks', function(req, res) {
     console.log('hello bookmarks', JSON.stringify(req.query));
+    if (!req.session.username) {
+        res.send(401);
+    }
     if (req.query.show === 'navigate') {
         var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id ORDER BY t.id ASC, b.click_count DESC";
         client.query(sql, function(error, result, fields) {
@@ -295,5 +305,12 @@ api.post('/addTags', function(req, res) {
     })
 });
 // client.end();
+
+function md5(str) {
+  return crypto
+    .createHash('md5')
+    .update(str)
+    .digest('hex');
+};
 
 module.exports = api;

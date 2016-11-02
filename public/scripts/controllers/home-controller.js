@@ -1,12 +1,18 @@
-app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $window, bookmarkService, pubSubService) {
+app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService) {
     console.log('Hello homeCtr......');
-    var params = {
-        userName: 'luchenqun',
-        pwd: '123456',
-    };
-    bookmarkService.autoLogin(params).then(
+    bookmarkService.autoLogin().then(
         function(data) {
             console.log(data);
+            if (data.logined) {
+                pubSubService.publish('loginCtr.login', {
+                    'login': data.logined,
+                });
+                $state.go('bookmarks', {
+                    showStyle: 'navigate',
+                })
+            } else {
+                console.log('login failed......................')
+            }
         },
         function(errorMsg) {
             console.log(errorMsg);

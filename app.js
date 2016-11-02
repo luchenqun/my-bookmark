@@ -30,7 +30,7 @@ app.use(session({
     saveUninitialized: true, //添加这行
     secret: 'ILoveYiJia', // 建议使用 128 个字符的随机字符串
     cookie: {
-        maxAge: 60 * 1000
+        maxAge: 3600 * 24 * 30
     }
 }));
 

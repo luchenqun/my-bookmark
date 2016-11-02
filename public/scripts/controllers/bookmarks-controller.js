@@ -1,19 +1,19 @@
-app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $window, bookmarkService, pubSubService) {
+app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, bookmarkService, pubSubService) {
     console.log("Hello bookmarksCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 书签数据
+    $scope.hoverItem = true;
     $scope.showStyle = 'navigate'; // 显示风格'navigate', 'card', 'table'
     semanticInit();
 
     var params = {
         show: $scope.showStyle,
     }
-    getBookmarks(params);
+
     $scope.jumpToUrl = function(url) {
-        console.log(url);
         $window.open(url, '_blank');
     }
-
+    getBookmarks(params);
     pubSubService.subscribe('MenuCtr.bookmarks', $scope, function(event, params) {
         console.log('subscribe MenuCtr.bookmarks', params);
         getBookmarks(params);
@@ -33,9 +33,16 @@ app.controller('bookmarksCtr', ['$scope', '$stateParams', '$filter', '$window', 
         bookmarkService.getBookmarks(params).then(
             function(data) {
                 $scope.bookmarks = data;
+                pubSubService.publish('loginCtr.login', {
+                    'login': true,
+                });
             },
-            function(errorMsg) {
-                console.log(errorMsg);
+            function(data) {
+                console.log(data);
+                $state.go('/');
+                pubSubService.publish('loginCtr.login', {
+                    'login': false,
+                });
             }
         );
     }

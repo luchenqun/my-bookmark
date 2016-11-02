@@ -20,10 +20,11 @@
         <!-- <a class="ui orange ribbon label" style="margin-bottom:20px">{{ tag.name }}</a> <span></span> -->
         <div class="ui grid container">
             <div class="two wide column">
-                <i class="bookmark icon"></i><span>{{ tag.name }}</span>
+                <i class="bookmark icon"></i><span>{{ tag.name }} </span>
+                <span>{{ hoverItem }}</span>
             </div>
 
-            <div class="two wide column js-navigate-bookmark" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
+            <div class="two wide column js-navigate-bookmark" ng-class="{div-hover:hoverItem}" ng-mouseover="hoverItem=true" ng-mouseleave="hoverItem=false" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
                 <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
                 <span>{{ bookmark.title}}</span>
             </div>

@@ -1,11 +1,10 @@
 app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, bookmarkService, pubSubService) {
     var maxSelections = 3;
-    console.log("Hello , I enter editCtr...");
+    console.log("Hello , editCtr...");
     init();
     semanticInit();
 
     $scope.$watch('url', function(newValue, oldValue, scope) {
-        console.log('url is changed', $('.ui.modal.js-add-bookmark').modal('is active'));
         $timeout(function() {
             $scope.urlError = $scope.url == '' && $('.ui.modal.js-add-bookmark').modal('is active');
         });

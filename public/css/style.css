@@ -20,6 +20,12 @@ body {
     overflow: hidden;
     color:#212121;
 }
+.wrap{
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    overflow: hidden;
+}
 .js-navigate-bookmark a{
     color:#212121;
 }

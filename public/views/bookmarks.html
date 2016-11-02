@@ -16,6 +16,9 @@
     </div>
 </div>
 <div class="ui segment" ng-if="false">
+    <button ng-mouseleave="count = count + 1" ng-init="count=0">
+  Increment (when mouse leaves)
+</button> count: {{count}}
     <div class="ui raised" ng-repeat="tag in bookmarks">
         <!-- <a class="ui orange ribbon label" style="margin-bottom:20px">{{ tag.name }}</a> <span></span> -->
         <div class="ui grid container">

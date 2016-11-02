@@ -2,9 +2,9 @@ var api = require('express').Router();
 var mysql = require('mysql');
 var crypto = require('crypto');
 var client = mysql.createConnection({
-    host: '172.24.13.5',
-    user: 'root',
-    password: 'root123',
+    host: '104.238.161.131',
+    user: 'lcq',
+    password: 'fendoubuxi596320',
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306
@@ -32,21 +32,21 @@ api.post('/login', function(req, res) {
     var params = req.body.params;
     var username = params.username;
     var password = md5(params.password);
-    console.log('login......', params, password);
 
-    var sql = "SELECT * FROM `users` WHERE `username` = '"+ username +"'";
+    var sql = "SELECT * FROM `users` WHERE `username` = '" + username + "'";
     client.query(sql, function(error, result, fields) {
         var id = '';
         var logined = false;
-        console.log(password, result[0].password)
-        if (!error && result.length === 1 && password === result[0].password) {
+        var pass = !error && result.length === 1 && password === result[0].password
+        console.log(password, result[0].password, pass)
+        if (pass) {
             req.session.username = username;
             logined = true;
             id = result[0].id;
         }
         res.json({
             logined: logined,
-            userId:id
+            userId: id
         });
     })
 });
@@ -54,7 +54,7 @@ api.post('/login', function(req, res) {
 api.get('/autoLogin', function(req, res) {
     if (req.session.username) {
         console.log('session:' + req.session.username);
-        var sql = "SELECT * FROM `users` WHERE `username` = '"+ req.session.username +"'";
+        var sql = "SELECT * FROM `users` WHERE `username` = '" + req.session.username + "'";
         client.query(sql, function(error, result, fields) {
             var id = '';
             var logined = false;
@@ -66,13 +66,13 @@ api.get('/autoLogin', function(req, res) {
             }
             res.json({
                 logined: logined,
-                userId:id,
+                userId: id,
             });
         })
     } else {
         res.json({
             logined: false,
-            userId:'',
+            userId: '',
         });
     }
 });
@@ -307,10 +307,10 @@ api.post('/addTags', function(req, res) {
 // client.end();
 
 function md5(str) {
-  return crypto
-    .createHash('md5')
-    .update(str)
-    .digest('hex');
+    return crypto
+        .createHash('md5')
+        .update(str)
+        .digest('hex');
 };
 
 module.exports = api;

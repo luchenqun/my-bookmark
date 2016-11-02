@@ -2,7 +2,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     console.log("Hello bookmarksCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 书签数据
-    $scope.hoverItem = true;
+    $scope.hoverItem = false;
     $scope.showStyle = 'navigate'; // 显示风格'navigate', 'card', 'table'
     semanticInit();
 
@@ -75,13 +75,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     }
                 },
                 startCalendar: $('.ui.calendar.js-date-begin')
-            });
-
-            $('.js-navigate-bookmark').hover(function() {
-                $(this).addClass('div-hover');
-            }, function() {
-                //鼠标离开时移除divOver样式
-                $(this).removeClass('div-hover');
             });
         }, 100);
     }

@@ -4,9 +4,9 @@
             <div class="one wide column">
                 <span style="color:#0aa770;">{{ tag.name }}</span>
             </div>
-            <div class="fourteen wide column">
+            <div class="fifteen wide column">
                 <div class="ui grid container">
-                    <div class="two wide column js-navigate-bookmark" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
+                    <div class="two wide column js-navigate-bookmark" ng-class="{divHover:hoverItem}" ng-mouseover="hoverItem=true" ng-mouseleave="hoverItem=false" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
                         <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
                         <span>{{ bookmark.title}}</span>
                     </div>
@@ -16,18 +16,16 @@
     </div>
 </div>
 <div class="ui segment" ng-if="false">
-    <button ng-mouseleave="count = count + 1" ng-init="count=0">
-  Increment (when mouse leaves)
-</button> count: {{count}}
     <div class="ui raised" ng-repeat="tag in bookmarks">
         <!-- <a class="ui orange ribbon label" style="margin-bottom:20px">{{ tag.name }}</a> <span></span> -->
         <div class="ui grid container">
             <div class="two wide column">
-                <i class="bookmark icon"></i><span>{{ tag.name }} </span>
+                <i class="bookmark icon"></i>
+                <span>{{ tag.name }}
+                </span>
                 <span>{{ hoverItem }}</span>
             </div>
-
-            <div class="two wide column js-navigate-bookmark" ng-class="{div-hover:hoverItem}" ng-mouseover="hoverItem=true" ng-mouseleave="hoverItem=false" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
+            <div class="two wide column js-navigate-bookmark" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
                 <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
                 <span>{{ bookmark.title}}</span>
             </div>
@@ -35,7 +33,6 @@
         <div class="ui divider"></div>
     </div>
 </div>
-
 <div class="ui small menu js-search-detail" ng-if="showSearch">
     <div class="ui dropdown item">
         <div class="text">搜索范围</div>

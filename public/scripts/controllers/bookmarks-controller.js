@@ -10,8 +10,11 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         show: $scope.showStyle,
     }
 
-    $scope.jumpToUrl = function(url) {
+    $scope.jumpToUrl = function(url, id) {
         $window.open(url, '_blank');
+        bookmarkService.clickBookmark({
+            id: id
+        });
     }
     getBookmarks(params);
     pubSubService.subscribe('MenuCtr.bookmarks', $scope, function(event, params) {

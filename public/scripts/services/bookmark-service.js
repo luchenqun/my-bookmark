@@ -15,6 +15,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        clickBookmark: function(params) {
+            var def = $q.defer();
+            $http.post('/api/clickBookmark/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });
+            return def.promise;
+        },
         logout: function(params) {
             var def = $q.defer();
             $http.post('/api/logout/', {
@@ -128,9 +141,9 @@ app.factory('AuthenticationService', function() {
     return auth;
 });
 
-app.factory('TokenInterceptor', function ($q, $window, $location, AuthenticationService) {
+app.factory('TokenInterceptor', function($q, $window, $location, AuthenticationService) {
     return {
-        request: function (config) {
+        request: function(config) {
             config.headers = config.headers || {};
             if ($window.sessionStorage.token) {
                 config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
@@ -143,7 +156,7 @@ app.factory('TokenInterceptor', function ($q, $window, $location, Authentication
         },
 
         /* Set Authentication.isAuthenticated to true if 200 received */
-        response: function (response) {
+        response: function(response) {
             if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthenticationService.isAuthenticated) {
                 AuthenticationService.isAuthenticated = true;
             }

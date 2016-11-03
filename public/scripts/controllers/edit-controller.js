@@ -25,10 +25,12 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         var params = [];
         tags.forEach(function(tag) {
             tag = tag.replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格，多个空格转为一个空格;
-            params.push(tag);
+            // 过滤是""的情况
+            if (tag) {
+                params.push(tag);
+            }
         });
 
-        console.log(params);
         bookmarkService.addTags(params).then(
             function(data) {
                 $scope.tags = data;

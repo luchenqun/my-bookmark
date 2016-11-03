@@ -1,18 +1,10 @@
 var api = require('express').Router();
 var mysql = require('mysql');
 var crypto = require('crypto');
-// var client = mysql.createConnection({
-//     host: '172.24.13.5',
-//     user: 'root',
-//     password: 'root123',
-//     database: 'mybookmarks',
-//     multipleStatements: true,
-//     port: 3306
-// });
 var client = mysql.createConnection({
     host: '127.0.0.1',
     user: 'lcq',
-    password: '123456',
+    password: 'fendoubuxi596320',
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306
@@ -26,6 +18,18 @@ api.post('/logout', function(req, res) {
     res.json({
         data: "logout success",
     });
+});
+
+api.post('/clickBookmark', function(req, res) {
+    var params = req.body.params;
+    var id = params.id;
+    var sql = "UPDATE `bookmarks` SET `click_count`=`click_count`+1, `last_click`=now() WHERE (`id`='" + id + "')";
+    console.log(sql);
+    client.query(sql, function(error, result, fields) {
+        res.json({
+            id: id,
+        });
+    })
 });
 
 api.post('/login', function(req, res) {
@@ -89,6 +93,7 @@ api.get('/bookmarks', function(req, res) {
             var tag = {
                 id: result && result[0] && result[0].tag_id,
                 name: result && result[0] && result[0].tag_name,
+                click: 0,
                 bookmarks: []
             };
             result.forEach(function(bookmark) {
@@ -96,17 +101,23 @@ api.get('/bookmarks', function(req, res) {
                     data.push({
                         id: tag.id,
                         name: tag.name,
+                        click: tag.click,
                         bookmarks: tag.bookmarks
                     });
                     tag.id = bookmark.tag_id;
                     tag.name = bookmark.tag_name;
+                    tag.click = 0;
                     tag.bookmarks = [];
                 }
+                tag.click += bookmark.click_count;
                 tag.bookmarks.push(bookmark);
             });
             if (result && result.length > 0) {
                 data.push(tag);
             }
+            data.sort(function(a, b) {
+                return a.click < b.click;
+            })
             res.json(data);
         })
     } else {

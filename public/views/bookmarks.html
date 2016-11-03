@@ -2,7 +2,7 @@
     <div class="ui internally grid">
         <div class="row" ng-repeat="tag in bookmarks">
             <div class="wrap" style="width:80px">
-                <span style="color:#0aa770;">&nbsp;&nbsp;&nbsp;&nbsp;{{ tag.name }}</span>
+                <span style="color:#0aa770;" title="{{ tag.name }}">&nbsp;&nbsp;&nbsp;&nbsp;{{ tag.name }}</span>
             </div>
             <div class="fourteen wide column">
                 <div class="ui grid container">
@@ -14,8 +14,10 @@
                         ng-repeat="bookmark in tag.bookmarks"
                         ng-click="jumpToUrl(bookmark.url, bookmark.id)"
                         title="{{ bookmark.title }}">
+                        <!-- <i class="remove circle icon"></i> -->
                         <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
                         <span>{{ bookmark.title}}</span>
+                        <!-- <i class="write icon"></i> -->
                     </div>
                 </div>
             </div>

@@ -4,10 +4,23 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
     init();
     semanticInit();
 
-    $scope.$watch('url', function(newValue, oldValue, scope) {
+    $scope.$watch('url', function(newUrl, oldUrl, scope) {
         $timeout(function() {
             $scope.urlError = $scope.url == '' && $('.ui.modal.js-add-bookmark').modal('is active');
         });
+        $scope.title = "";
+        if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(newUrl)) {
+            var params = {
+                url: newUrl,
+            }
+            bookmarkService.getTitle(params).then(
+                function(data) {
+                    console.log(JSON.stringify(data));
+                    $scope.title = data.title;
+                },
+                function(errorMsg) {}
+            );
+        }
     });
 
     $scope.$watch('title', function(newValue, oldValue, scope) {

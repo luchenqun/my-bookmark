@@ -1,6 +1,11 @@
 var api = require('express').Router();
 var mysql = require('mysql');
 var crypto = require('crypto');
+var http = require('http');
+var https = require('https');
+var cheerio = require('cheerio');
+var request = require('request')
+var iconv = require('iconv-lite')
 var client = mysql.createConnection({
     host: '127.0.0.1',
     user: 'lcq',
@@ -10,6 +15,60 @@ var client = mysql.createConnection({
     port: 3306
 });
 client.connect();
+
+api.post('/getTitle', function(req, response) {
+    var params = req.body.params;
+    var url = params.url;
+
+    var options = {
+        url: url,
+        encoding: null,
+        //代理服务器
+        //proxy: 'http://xxx.xxx.xxx.xxx:8888',
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36'
+        }
+    }
+    request(options, function(err, res, body) {
+        var charset = "utf-8";
+        var arr = body.toString().match(/<meta([^>]*?)>/g);
+        if (arr) {
+            arr.forEach(function(val) {
+                var match = val.match(/charset\s*=\s*(.+)\"/);
+                if (match && match[1]) {
+                    if (match[1].substr(0, 1) == '"') match[1] = match[1].substr(1);
+                    charset = match[1].trim();
+                    return false;
+                }
+            })
+        }
+        var html = iconv.decode(body, charset);
+        var $ = cheerio.load(html, {
+            decodeEntities: false
+        })
+        var title = $("title").text();
+        console.log(title);
+        response.json({
+            title: title || '',
+        });
+    })
+
+    // var httpGet = url.indexOf("https") >= 0 ? https : http;
+    // httpGet.get(url, function(res) {
+    //     var html = '';
+    //     res.on('data', function(data) {
+    //         html += data;
+    //     });
+    //     res.on('end', function() {
+    //         var $ = cheerio.load(html);
+    //         var title = $("title").text();
+    //         console.log(title, response.headers['content-type']);
+    //         response.json({
+    //             title: title || '',
+    //         });
+    //     });
+    // });
+})
 
 api.post('/logout', function(req, res) {
     var params = req.body.params;

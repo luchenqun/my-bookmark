@@ -4,8 +4,9 @@ var crypto = require('crypto');
 var http = require('http');
 var https = require('https');
 var cheerio = require('cheerio');
-var request = require('request')
-var iconv = require('iconv-lite')
+var request = require('request');
+var iconv = require('iconv-lite');
+var db = require('./database/db.js');
 var client = mysql.createConnection({
     host: '127.0.0.1',
     user: 'lcq',
@@ -17,6 +18,13 @@ var client = mysql.createConnection({
 client.connect();
 
 api.post('/getTitle', function(req, response) {
+    // request
+    //     .get('https://www.baidu.com/')
+    //     .on('response', function(response) {
+    //         console.log(response.statusCode) // 200
+    //         console.log(response.headers) // 'image/png'
+    //     })
+
     var params = req.body.params;
     var url = params.url;
 
@@ -30,23 +38,27 @@ api.post('/getTitle', function(req, response) {
         }
     }
     request(options, function(err, res, body) {
-        var charset = "utf-8";
-        var arr = body.toString().match(/<meta([^>]*?)>/g);
-        if (arr) {
-            arr.forEach(function(val) {
-                var match = val.match(/charset\s*=\s*(.+)\"/);
-                if (match && match[1]) {
-                    if (match[1].substr(0, 1) == '"') match[1] = match[1].substr(1);
-                    charset = match[1].trim();
-                    return false;
-                }
-            })
+        var title = '';
+        if (!err && response.statusCode == 200) {
+            var charset = "utf-8";
+            var arr = body.toString().match(/<meta([^>]*?)>/g);
+            if (arr) {
+                arr.forEach(function(val) {
+                    var match = val.match(/charset\s*=\s*(.+)\"/);
+                    if (match && match[1]) {
+                        if (match[1].substr(0, 1) == '"') match[1] = match[1].substr(1);
+                        charset = match[1].trim();
+                        return false;
+                    }
+                })
+            }
+            var html = iconv.decode(body, charset);
+            var $ = cheerio.load(html, {
+                decodeEntities: false
+            });
+            title = $("title").text();
         }
-        var html = iconv.decode(body, charset);
-        var $ = cheerio.load(html, {
-            decodeEntities: false
-        })
-        var title = $("title").text();
+
         console.log(title);
         response.json({
             title: title || '',

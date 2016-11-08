@@ -1,12 +1,13 @@
 var mysql = require('mysql');
 var client = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'lcq',
-    password: 'fendoubuxi596320',
+    host: '127.0.0.1' || '172.24.13.5',
+    user: 'lcq' || 'root',
+    password: 'fendoubuxi596320' || 'root123',
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306
 });
+
 client.connect();
 
 var db = {
@@ -60,6 +61,19 @@ db.updateLastUseTags = function(user_id, tags) {
                 reject(err);
             } else {
                 resolve();
+            }
+        });
+    });
+}
+
+db.clickBookmark = function(id){
+    var sql = "UPDATE `bookmarks` SET `click_count`=`click_count`+1, `last_click`=now() WHERE (`id`='" + id + "')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(id);
             }
         });
     });

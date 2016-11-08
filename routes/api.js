@@ -6,11 +6,11 @@ var https = require('https');
 var cheerio = require('cheerio');
 var request = require('request');
 var iconv = require('iconv-lite');
-var db = require('./database/db.js');
+var db = require('../database/db.js');
 var client = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'lcq',
-    password: 'fendoubuxi596320',
+    host: '127.0.0.1' || '172.24.13.5',
+    user: 'lcq' || 'root',
+    password: 'fendoubuxi596320' || 'root123',
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306
@@ -18,13 +18,6 @@ var client = mysql.createConnection({
 client.connect();
 
 api.post('/getTitle', function(req, response) {
-    // request
-    //     .get('https://www.baidu.com/')
-    //     .on('response', function(response) {
-    //         console.log(response.statusCode) // 200
-    //         console.log(response.headers) // 'image/png'
-    //     })
-
     var params = req.body.params;
     var url = params.url;
 
@@ -64,22 +57,6 @@ api.post('/getTitle', function(req, response) {
             title: title || '',
         });
     })
-
-    // var httpGet = url.indexOf("https") >= 0 ? https : http;
-    // httpGet.get(url, function(res) {
-    //     var html = '';
-    //     res.on('data', function(data) {
-    //         html += data;
-    //     });
-    //     res.on('end', function() {
-    //         var $ = cheerio.load(html);
-    //         var title = $("title").text();
-    //         console.log(title, response.headers['content-type']);
-    //         response.json({
-    //             title: title || '',
-    //         });
-    //     });
-    // });
 })
 
 api.post('/logout', function(req, res) {
@@ -267,55 +244,11 @@ api.post('/addBookmark', function(req, res) {
     var params = req.body.params;
     var user_id = '1';
     var tags = params.tags;
-    var sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + params.title + "', '" + params.description + "', '" + params.url + "', '" + params.public + "', '1')";
-    console.log(sql);
-    client.query(sql, function(err, result) {
-        if (err) throw err;
-        var insertId = result.insertId;
-
-        sql = "INSERT INTO `tags_bookmarks` (`tag_id`, `bookmark_id`) VALUES";
-        for (var i = 0; i < tags.length; i++) {
-            if (i >= 1) {
-                sql += ','
-            }
-            sql += "('" + tags[i] + "', '" + insertId + "')";
-        }
-        client.query(sql, function(error, result, fields) {
-            if (error) {
-                res.json({
-                    error: 'error tags'
-                });
-            } else {
-                sql = "UPDATE tags SET last_use = NOW() WHERE user_id = '" + user_id + "' AND id in (";
-                for (var i = 0; i < tags.length; i++) {
-                    if (i >= 1) {
-                        sql += ','
-                    }
-                    sql += "'" + tags[i] + "'";
-                }
-                sql += ')'
-                console.log(sql);
-                client.query(sql, function(error, result1, fields) {
-                    if (error) {
-                        res.json({
-                            error: 'error tags'
-                        });
-                    } else {
-                        res.json({
-                            hello: 'success'
-                        });
-                    }
-                })
-
-            }
-        })
-
-        console.log(result.insertId);
-    });
-
-    // res.json({
-    //     a: 'i love this world, too!'
-    // });
+    db.insertBookmark(user_id, params) // 插入书签
+        .then((bookmark_id) => db.insertTagsBookmarks(tags, bookmark_id)) // 插入分类
+        .then(() => db.updateLastUseTags(user_id, tags)) // 更新最新使用的分类
+        .then(() => res.json({})) // 运气不错
+        .catch(() => console.log('fail')); // ops!
 });
 
 api.post('/addTags', function(req, res) {

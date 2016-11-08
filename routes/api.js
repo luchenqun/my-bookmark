@@ -69,38 +69,28 @@ api.post('/logout', function(req, res) {
 });
 
 api.post('/clickBookmark', function(req, res) {
-    var params = req.body.params;
-    var id = params.id;
-    var sql = "UPDATE `bookmarks` SET `click_count`=`click_count`+1, `last_click`=now() WHERE (`id`='" + id + "')";
-    console.log(sql);
-    client.query(sql, function(error, result, fields) {
-        res.json({
-            id: id,
-        });
-    })
+    db.clickBookmark(req.body.params.id)
+        .then((affectedRows) => res.json({}))
+        .catch((err) => console.log('clickBookmark error', err));
 });
 
 api.post('/login', function(req, res) {
     var params = req.body.params;
     var username = params.username;
     var password = md5(params.password);
-
-    var sql = "SELECT * FROM `users` WHERE `username` = '" + username + "'";
-    client.query(sql, function(error, result, fields) {
-        var id = '';
-        var logined = false;
-        var pass = !error && result.length === 1 && password === result[0].password
-        console.log(password, result[0].password, pass)
-        if (pass) {
-            req.session.username = username;
-            logined = true;
-            id = result[0].id;
-        }
-        res.json({
-            logined: logined,
-            userId: id
-        });
-    })
+    db.checkLogin(username, password)
+        .then((ret) => {
+            if (ret.logined) {
+                req.session.username = ret.user.username;
+                req.session.userId = ret.user.id;
+                db.updateUserLastLogin(ret.user.id);
+            }
+            res.json(ret);
+        })
+        .then((affectedRows) => {
+            console.log('updateUserLastLogin affectedRows ', affectedRows)
+        })
+        .catch((err) => console.log('login error', err));
 });
 
 api.get('/autoLogin', function(req, res) {

@@ -66,14 +66,51 @@ db.updateLastUseTags = function(user_id, tags) {
     });
 }
 
-db.clickBookmark = function(id){
+db.clickBookmark = function(id) {
     var sql = "UPDATE `bookmarks` SET `click_count`=`click_count`+1, `last_click`=now() WHERE (`id`='" + id + "')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
-                resolve(id);
+                resolve(result.affectedRows);
+            }
+        });
+    });
+};
+
+db.checkLogin = function(username, password) {
+    console.log('checkLogin');
+    var sql = "SELECT * FROM `users` WHERE `username` = '" + username + "'";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                var ret = {
+                    logined: false,
+                    user: {},
+                }
+                if (password === result[0].password) {
+                    ret.logined = true;
+                    ret.user = result[0];
+                }
+
+                resolve(ret);
+            }
+        });
+    });
+};
+
+db.updateUserLastLogin = function(id) {
+    console.log('updateUserLastLogin');
+    var sql = "UPDATE `users` SET `last_login`=now() WHERE (`id`='" + id + "')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
             }
         });
     });

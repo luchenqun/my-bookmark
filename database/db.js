@@ -10,11 +10,22 @@ var client = mysql.createConnection({
 
 client.connect();
 
+// select 最多返回一行的话，返回对象，否则返回数组
+// insert 返回关键字
+// update delete 返回影响的行数
 var db = {
 
-}
+    }
+    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
+    // client.query(sql, (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log(result);
+    //     }
+    // });
 
-db.insertBookmark = function(user_id, bookmark) {
+db.addBookmark = function(user_id, bookmark) {
     var sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
@@ -27,7 +38,7 @@ db.insertBookmark = function(user_id, bookmark) {
     });
 };
 
-db.insertTagsBookmarks = function(tags, bookmard_id) {
+db.addTagsBookmarks = function(tags, bookmard_id) {
     sql = "INSERT INTO `tags_bookmarks` (`tag_id`, `bookmark_id`) VALUES";
     for (var i = 0; i < tags.length; i++) {
         if (i >= 1) {
@@ -40,27 +51,20 @@ db.insertTagsBookmarks = function(tags, bookmard_id) {
             if (err) {
                 reject(err);
             } else {
-                resolve();
+                resolve(result.affectedRows);
             }
         });
     });
 }
 
 db.updateLastUseTags = function(user_id, tags) {
-    sql = "UPDATE tags SET last_use = NOW() WHERE user_id = '" + user_id + "' AND id in (";
-    for (var i = 0; i < tags.length; i++) {
-        if (i >= 1) {
-            sql += ','
-        }
-        sql += "'" + tags[i] + "'";
-    }
-    sql += ')'
+    sql = "UPDATE tags SET last_use = NOW() WHERE user_id = '" + user_id + "' AND id in (" + tags.toString() + ")";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
-                resolve();
+                resolve(result.affectedRows);
             }
         });
     });
@@ -79,29 +83,6 @@ db.clickBookmark = function(id) {
     });
 };
 
-db.checkLogin = function(username, password) {
-    console.log('checkLogin');
-    var sql = "SELECT * FROM `users` WHERE `username` = '" + username + "'";
-    return new Promise(function(resolve, reject) {
-        client.query(sql, (err, result) => {
-            if (err) {
-                reject(err);
-            } else {
-                var ret = {
-                    logined: false,
-                    user: {},
-                }
-                if (password === result[0].password) {
-                    ret.logined = true;
-                    ret.user = result[0];
-                }
-
-                resolve(ret);
-            }
-        });
-    });
-};
-
 db.updateUserLastLogin = function(id) {
     console.log('updateUserLastLogin');
     var sql = "UPDATE `users` SET `last_login`=now() WHERE (`id`='" + id + "')";
@@ -111,6 +92,114 @@ db.updateUserLastLogin = function(id) {
                 reject(err);
             } else {
                 resolve(result.affectedRows);
+            }
+        });
+    });
+};
+
+db.getUser = function(username) {
+    console.log('getUser');
+    var sql = "SELECT * FROM `users` WHERE `username` = '" + username + "'";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result[0]);
+            }
+        });
+    });
+};
+
+db.getTags = function(user_id) {
+    console.log('getTags');
+    var sql = "SELECT * FROM `tags` WHERE `user_id` = '" + user_id + "' ORDER BY last_use DESC";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
+db.getTagsByNames = function(user_id, tags_name) {
+    console.log('getTagsByNames');
+    var sql = "SELECT * FROM `tags` WHERE `user_id` = '" + user_id + "' AND `name` in (" + tags_name.toString() + ")";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
+db.addTags = function(user_id, tags_name) {
+    console.log('addTags', tags_name);
+    var sql = "INSERT INTO `tags` (`user_id`, `name`) VALUES";
+    tags_name.forEach((name, i) => {
+        if (i >= 1) {
+            sql += ','
+        }
+        sql += "('" + user_id + "', '" + name + "')";
+    });
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+};
+
+db.getBookmarksNavigate = function(user_id) {
+    console.log('getBookmarksNavigate');
+    var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id WHERE t.user_id='" + user_id + "' ORDER BY t.id ASC, b.click_count DESC";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
+db.getBookmarksTable = function(user_id) {
+    var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE user_id='" + user_id + "' ORDER BY click_count DESC, created_at DESC LIMIT 0, 50";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+
+}
+
+db.getBookmarksCard = function(user_id) {
+    return db.getBookmarksTable(user_id);
+}
+
+db.getTagsBookmarks = function(bookmark_ids) {
+    console.log('getTagsBookmarks');
+    var sql = "SELECT * FROM `tags_bookmarks` WHERE bookmark_id in(" + bookmark_ids.toString() + ")"
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
             }
         });
     });

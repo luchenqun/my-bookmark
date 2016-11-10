@@ -1,17 +1,24 @@
 <div class="ui segment" ng-if="showStyle === 'navigate'">
     <div class="ui container" ng-repeat="tag in bookmarks">
         <div class="ui grid">
-            <div class="centered row">
-                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;">
+            <div class=" row">
+                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;">
                     <span title="{{ tag.name }}">{{ tag.name }}</span>
                 </div>
                 <div class="fourteen wide column">
                     <div class="ui grid container">
-                        <div class="two wide column js-navigate-bookmark" ng-class="{divHover:hoverItem}" ng-mouseover="hoverItem=true" ng-mouseleave="hoverItem=false" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}">
-                            <!-- <i class="remove circle icon"></i> -->
-                            <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
+                        <div
+                            class="two wide column js-navigate-bookmark"
+                            ng-class="{divHover:hoverItem}"
+                            ng-mouseover="hoverItem=true"
+                            ng-mouseleave="hoverItem=false"
+                            ng-repeat="bookmark in tag.bookmarks"
+                            ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+                            title="{{ bookmark.title }}">
+                            <i class="remove circle icon" ng-if="edit"></i>
+                            <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px" ng-if="!edit">
                             <span>{{ bookmark.title}}</span>
-                            <!-- <i class="write icon"></i> -->
+                            <i class="write icon" ng-if="edit"></i>
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.showSearch = false; // 书签数据
     $scope.hoverItem = false;
     $scope.showStyle = 'navigate'; // 显示风格'navigate', 'card', 'table'
-    $scope.b = [];
+    $scope.edit = false;
     semanticInit();
 
     var params = {

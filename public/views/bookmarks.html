@@ -1,20 +1,23 @@
 <div class="ui segment" ng-if="showStyle === 'navigate'">
-    <div class="ui internally grid">
-        <div class="centered row" ng-repeat="tag in bookmarks">
-            <div class="wrap" style="width:88px;color:#0aa770;text-align:left;">
-                <span title="{{ tag.name }}">{{ tag.name }}</span>
-            </div>
-            <div class="fourteen wide column">
-                <div class="ui grid container">
-                    <div class="two wide column js-navigate-bookmark" ng-class="{divHover:hoverItem}" ng-mouseover="hoverItem=true" ng-mouseleave="hoverItem=false" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}">
-                        <!-- <i class="remove circle icon"></i> -->
-                        <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
-                        <span>{{ bookmark.title}}</span>
-                        <!-- <i class="write icon"></i> -->
+    <div class="ui container" ng-repeat="tag in bookmarks">
+        <div class="ui grid">
+            <div class="centered row">
+                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;">
+                    <span title="{{ tag.name }}">{{ tag.name }}</span>
+                </div>
+                <div class="fourteen wide column">
+                    <div class="ui grid container">
+                        <div class="two wide column js-navigate-bookmark" ng-class="{divHover:hoverItem}" ng-mouseover="hoverItem=true" ng-mouseleave="hoverItem=false" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}">
+                            <!-- <i class="remove circle icon"></i> -->
+                            <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
+                            <span>{{ bookmark.title}}</span>
+                            <!-- <i class="write icon"></i> -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="ui divider"></div>
     </div>
 </div>
 <div class="ui segment" ng-if="false">

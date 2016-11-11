@@ -88,6 +88,20 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        getBookmark: function(params) {
+            var def = $q.defer();
+
+            $http.get('/api/bookmark/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data, status) {
+                    console.log('Error: ' + data, status);
+                });
+            return def.promise;
+        },
         addBookmark: function(params) {
             var def = $q.defer();
             $http.post('/api/addBookmark/', {
@@ -102,10 +116,36 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
-        delBookmark: function() {
-
+        updateBookmark: function(params) {
+            console.log('service updateBookmark')
+            var def = $q.defer();
+            $http.post('/api/updateBookmark/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    def.reject('Failed to get todos');
+                });
+            return def.promise;
         },
-        editBookmark: function() {
+        delBookmark: function(params) {
+            var def = $q.defer();
+            $http.delete('/api/delBookmark/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    def.reject('delBookmark fail');
+                });
+            return def.promise;
+        },
+        editBookmark: function(params) {
 
         },
         /**

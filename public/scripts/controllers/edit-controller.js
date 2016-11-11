@@ -8,18 +8,20 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         $timeout(function() {
             $scope.urlError = $scope.url == '' && $('.ui.modal.js-add-bookmark').modal('is active');
         });
-        $scope.title = "";
-        if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(newUrl)) {
-            var params = {
-                url: newUrl,
+        if ($scope.add) {
+            $scope.title = "";
+            if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(newUrl)) {
+                var params = {
+                    url: newUrl,
+                }
+                bookmarkService.getTitle(params).then(
+                    function(data) {
+                        console.log(JSON.stringify(data));
+                        $scope.title = data.title;
+                    },
+                    function(errorMsg) {}
+                );
             }
-            bookmarkService.getTitle(params).then(
-                function(data) {
-                    console.log(JSON.stringify(data));
-                    $scope.title = data.title;
-                },
-                function(errorMsg) {}
-            );
         }
     });
 
@@ -81,33 +83,53 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         $scope.titleError = $scope.title == '';
         $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections);
         var params = {
+            id: $scope.id,
             url: $scope.url,
             title: $scope.title,
             public: '1',
             tags: selectedTags,
             description: $scope.description
         }
-
-        bookmarkService.addBookmark(params).then(
-            function(data) {
-                console.log(data);
-                $('.ui.modal.js-add-bookmark').modal('hide');
-                $state.go('bookmarks', {
-                    foo: 'i love you',
-                    bar: 'hello world'
-                });
-                pubSubService.publish('EditCtr.inserBookmarsSuccess', {
-                    show: 'navigate'
-                });
-            },
-            function(errorMsg) {
-                console.log(errorMsg);
-            }
-        );
+        if ($scope.add) {
+            bookmarkService.addBookmark(params).then(
+                function(data) {
+                    console.log(data);
+                    $('.ui.modal.js-add-bookmark').modal('hide');
+                    $state.go('bookmarks', {
+                        foo: 'i love you',
+                        bar: 'hello world'
+                    });
+                    pubSubService.publish('EditCtr.inserBookmarsSuccess', {
+                        show: 'navigate'
+                    });
+                },
+                function(errorMsg) {
+                    console.log(errorMsg);
+                }
+            );
+        } else {
+            console.log('updateBookmark...........', params)
+            bookmarkService.updateBookmark(params).then(
+                function(data) {
+                    console.log(data);
+                    $('.ui.modal.js-add-bookmark').modal('hide');
+                    $state.go('bookmarks', {
+                        foo: 'i love you',
+                        bar: 'hello world'
+                    });
+                    pubSubService.publish('EditCtr.inserBookmarsSuccess', {
+                        show: 'navigate'
+                    });
+                },
+                function(errorMsg) {
+                    console.log(errorMsg);
+                }
+            );
+        }
     }
 
     pubSubService.subscribe('MenuCtr.showAddBookmarkMoadl', $scope, function(event, params) {
-        console.log('subscribe MenuCtr.MenuCtr.showAddBookmarkMoadl', params);
+        console.log('subscribe MenuCtr.showAddBookmarkMoadl', params);
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
         }).modal('show');
@@ -118,6 +140,42 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
             user_id: 1
         };
         getTags(params);
+    });
+
+    pubSubService.subscribe('bookmarksCtr.editBookmark', $scope, function(event, params) {
+        console.log('subscribe bookmarksCtr.editBookmark', params);
+        $('.ui.modal.js-add-bookmark').modal({
+            closable: false,
+        }).modal('show');
+        $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
+        $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
+        bookmarkService.getBookmark(params).then(
+            function(data) {
+                var bookmark = data.bookmark;
+                $scope.add = false;
+
+                $scope.id = (bookmark && bookmark.id) || '';
+                $scope.url = (bookmark && bookmark.url) || '';
+                $scope.title = (bookmark && bookmark.title) || '';
+                $scope.description = (bookmark && bookmark.description) || '';
+                // $scope.newTags = bookmark && bookmark.url && '';
+                $scope.tags = data.tags;
+
+                $timeout(function() {
+                    data.bookmarkTags.forEach((tagId) => {
+                        $('.ui.fluid.search.dropdown').dropdown('set selected', tagId);
+                    });
+                });
+
+                $scope.public = '1';
+
+                console.log(data);
+                $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
+            },
+            function(errorMsg) {
+                console.log(errorMsg);
+            }
+        );
     });
 
     function getTags(params) {
@@ -149,6 +207,8 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
     }
 
     function init() {
+        $scope.add = true;
+        $scope.id = '';
         $scope.url = '';
         $scope.title = '';
         $scope.description = '';

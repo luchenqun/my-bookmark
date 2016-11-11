@@ -2,10 +2,40 @@ body {
     padding: 50px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+.bookmark{
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    overflow: hidden;
+    color:#212121;
+    border:1px solid transparent;
+}
 
-.divHover {
+.bookmarkNormalHover {
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    overflow: hidden;
+    color:#212121;
+
     background:#F5F5F5;
     cursor:pointer;
+    border:1px solid transparent;
+}
+
+.bookmarkOperaterHover {
+    cursor:pointer;
+}
+
+.bookmarkEditHover {
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    overflow: hidden;
+    color:#212121;
+
+    cursor:move;
+    border:1px dashed #3388FF;
 }
 
 .img-fixed-size{
@@ -13,13 +43,7 @@ body {
     height:16px;
 }
 
-.js-navigate-bookmark{
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    -o-text-overflow:ellipsis;
-    overflow: hidden;
-    color:#212121;
-}
+
 .wrap{
     white-space:nowrap;
     text-overflow:ellipsis;

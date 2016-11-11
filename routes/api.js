@@ -8,46 +8,6 @@ var request = require('request');
 var iconv = require('iconv-lite');
 var db = require('../database/db.js');
 
-api.post('/getTitle', function(req, response) {
-    var params = req.body.params;
-    var url = params.url;
-
-    var options = {
-        url: url,
-        encoding: null,
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36'
-        }
-    }
-    request(options, function(err, res, body) {
-        var title = '';
-        if (!err && response.statusCode == 200) {
-            var charset = "utf-8";
-            var arr = body.toString().match(/<meta([^>]*?)>/g);
-            if (arr) {
-                arr.forEach(function(val) {
-                    var match = val.match(/charset\s*=\s*(.+)\"/);
-                    if (match && match[1]) {
-                        if (match[1].substr(0, 1) == '"') match[1] = match[1].substr(1);
-                        charset = match[1].trim();
-                        return false;
-                    }
-                })
-            }
-            var html = iconv.decode(body, charset);
-            var $ = cheerio.load(html, {
-                decodeEntities: false
-            });
-            title = $("title").text();
-        }
-
-        console.log(title);
-        response.json({
-            title: title || '',
-        });
-    })
-})
-
 api.post('/logout', function(req, res) {
     var params = req.body.params;
     console.log('logout......', params);
@@ -110,6 +70,55 @@ api.get('/autoLogin', function(req, res) {
     }
 });
 
+api.delete('/delBookmark', function(req, res) {
+    var bookmarkId = req.query.id;
+    db.delBookmarkTags(bookmarkId)
+        .then(() => db.delBookmark(bookmarkId))
+        .then((affectedRows) => res.json({
+            result: affectedRows
+        }))
+        .catch((err) => console.log('delBookmark err', err));
+})
+
+api.post('/updateBookmark', function(req, res) {
+    var bookmark = req.body.params;
+    console.log('hello updateBookmark', JSON.stringify(bookmark));
+    var bookmark = req.body.params;
+    var user_id = '1';
+    var tags = bookmark.tags;
+    db.updateBookmark(bookmark) // 更新标签信息
+        .then((affectedRows) => db.delBookmarkTags(bookmark.id)) // 将之前所有的书签分类信息删掉
+        .then((affectedRows) => db.addTagsBookmarks(tags, bookmark.id)) // 将新的分类关联起来
+        .then(() => db.updateLastUseTags(user_id, tags)) // 更新最近使用的分类(这个有待考虑)
+        .then(() => res.json({})) // 运气不错
+        .catch((err) => console.log('updateBookmark err', err)); // oops!
+})
+
+api.get('/bookmark', function(req, res) {
+    var bookmarkId = req.query.bookmarkId;
+    var userId = '1';
+    var ret = {
+        bookmark: {},
+        bookmarkTags: [],
+        tags: [],
+    };
+
+    db.getBookmark(bookmarkId)
+        .then((bookmark) => {
+            ret.bookmark = bookmark;
+            return db.getBookmarkTags(bookmarkId);
+        })
+        .then((bookmarkTags) => {
+            ret.bookmarkTags = bookmarkTags;
+            return db.getTags(userId);
+        })
+        .then((tags) => {
+            ret.tags = tags;
+            res.json(ret);
+        })
+        .catch((err) => console.log('bookmark err', err));
+})
+
 api.get('/bookmarks', function(req, res) {
     console.log('hello bookmarks', JSON.stringify(req.query), req.session.username);
     if (!req.session.username) {
@@ -145,9 +154,8 @@ api.get('/bookmarks', function(req, res) {
                 if (result && result.length > 0) {
                     data.push(tag);
                 }
-                data.sort(function(a, b) {
-                    return a.click < b.click;
-                })
+                data.sort((a, b) => a.click < b.click)
+                    // console.log(JSON.stringify(data));
                 res.json(data);
             })
             .catch((err) => console.log('bookmarks navigate err', err));
@@ -198,11 +206,11 @@ api.get('/tags', function(req, res) {
 });
 
 api.post('/addBookmark', function(req, res) {
-    console.log('hello addBookmark', JSON.stringify(req.query), JSON.stringify(req.body));
+    console.log('hello addBookmark', JSON.stringify(req.body));
     var bookmark = req.body.params;
     var user_id = '1';
     var tags = bookmark.tags;
-    db.addBookmark(user_id, params) // 插入书签
+    db.addBookmark(user_id, bookmark) // 插入书签
         .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
         .then(() => db.updateLastUseTags(user_id, tags)) // 更新最新使用的分类
         .then(() => res.json({})) // 运气不错
@@ -233,6 +241,46 @@ api.post('/addTags', function(req, res) {
         .then((tags) => res.json(tags))
         .catch((err) => console.log('addTags err', err));
 });
+
+api.post('/getTitle', function(req, response) {
+    var params = req.body.params;
+    var url = params.url;
+
+    var options = {
+        url: url,
+        encoding: null,
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36'
+        }
+    }
+    request(options, function(err, res, body) {
+        var title = '';
+        if (!err && response.statusCode == 200) {
+            var charset = "utf-8";
+            var arr = body.toString().match(/<meta([^>]*?)>/g);
+            if (arr) {
+                arr.forEach(function(val) {
+                    var match = val.match(/charset\s*=\s*(.+)\"/);
+                    if (match && match[1]) {
+                        if (match[1].substr(0, 1) == '"') match[1] = match[1].substr(1);
+                        charset = match[1].trim();
+                        return false;
+                    }
+                })
+            }
+            var html = iconv.decode(body, charset);
+            var $ = cheerio.load(html, {
+                decodeEntities: false
+            });
+            title = $("title").text();
+        }
+
+        console.log(title);
+        response.json({
+            title: title || '',
+        });
+    })
+})
 
 function md5(str) {
     return crypto

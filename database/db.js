@@ -38,6 +38,72 @@ db.addBookmark = function(user_id, bookmark) {
     });
 };
 
+db.delBookmark = function(id){
+    var sql = "DELETE FROM `bookmarks` WHERE (`id`='"+ id +"')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
+db.updateBookmark = function(bookmark){
+    var sql = "UPDATE `bookmarks` SET `title`='"+ bookmark.title +"', `description`='"+ bookmark.description+"', `url`='"+ bookmark.url +"', `public`='"+ bookmark.public +"' WHERE (`id`='"+ bookmark.id +"')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
+db.getBookmark = function(id){
+    var sql ="SELECT * FROM `bookmarks` WHERE `id` = '"+ id +"'";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result[0]);
+            }
+        });
+    });
+}
+
+db.getBookmarkTags = function(bookmard_id){
+    var sql ="SELECT tag_id FROM `tags_bookmarks` WHERE `bookmark_id` = '"+ bookmard_id +"'";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                var tags = result.map((item) => item.tag_id);
+                resolve(tags);
+            }
+        });
+    });
+}
+
+db.delBookmarkTags = function(bookmard_id) {
+    var sql = "DELETE FROM `tags_bookmarks` WHERE (`bookmark_id`='"+ bookmard_id +"')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
 db.addTagsBookmarks = function(tags, bookmard_id) {
     sql = "INSERT INTO `tags_bookmarks` (`tag_id`, `bookmark_id`) VALUES";
     for (var i = 0; i < tags.length; i++) {

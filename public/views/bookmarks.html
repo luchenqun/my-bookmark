@@ -1,5 +1,5 @@
 <div class="ui segment" ng-if="showStyle === 'navigate'">
-    <div class="ui container" ng-repeat="tag in bookmarks">
+    <div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
         <div class="ui grid">
             <div class=" row">
                 <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;">
@@ -9,37 +9,21 @@
                     <div class="ui grid container">
                         <div
                             class="two wide column js-navigate-bookmark"
-                            ng-class="{divHover:hoverItem}"
-                            ng-mouseover="hoverItem=true"
-                            ng-mouseleave="hoverItem=false"
+                            ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmarkEditHover:bookmarkEditHover, bookmark:(!bookmarkNormalHover && !bookmarkEditHover)}"
+                            ng-mouseover="edit ? (bookmarkEditHover=true) : (bookmarkNormalHover=true)"
+                            ng-mouseleave="edit ? (bookmarkEditHover=false) : (bookmarkNormalHover=false)"
                             ng-repeat="bookmark in tag.bookmarks"
                             ng-click="jumpToUrl(bookmark.url, bookmark.id)"
-                            title="{{ bookmark.title }}">
-                            <i class="remove circle icon" ng-if="edit"></i>
-                            <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px" ng-if="!edit">
+                            title="{{ bookmark.title }}"
+                            id="{{bookmark.id}}">
+                            <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark.id)">
+                            <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px;float:right;" src="./images/{{ bookmarkEditHover ? 'edit-bookmark-hover' : 'edit-bookmark'}}.png" ng-if="edit" ng-click="editBookmark(bookmark.id)">
+                            <img class="ui ui middle aligned tiny image" src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}" style="width:16px;height:16px" ng-if="!edit">
                             <span>{{ bookmark.title}}</span>
-                            <i class="write icon" ng-if="edit"></i>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="ui divider"></div>
-    </div>
-</div>
-<div class="ui segment" ng-if="false">
-    <div class="ui raised" ng-repeat="tag in bookmarks">
-        <!-- <a class="ui orange ribbon label" style="margin-bottom:20px">{{ tag.name }}</a> <span></span> -->
-        <div class="ui grid container">
-            <div class="two wide column">
-                <i class="bookmark icon"></i>
-                <span>{{ tag.name }}
-                </span>
-                <span>{{ hoverItem }}</span>
-            </div>
-            <div class="two wide column js-navigate-bookmark" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url)">
-                <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{ bookmark.url }}" style="width:16px;height:16px">
-                <span>{{ bookmark.title}}</span>
+                <div ng-if="tagIndex === 0" style="width:32px;height:32px;padding-right:10px;" ng-click="toggleMode()" title="{{edit ? '退出编辑模式' : '点我进入编辑模式'}}"><img class="ui ui middle aligned tiny image" src="./images/{{ edit ? 'back' : 'edit'}}.png"></div>
             </div>
         </div>
         <div class="ui divider"></div>

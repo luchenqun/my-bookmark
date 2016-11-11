@@ -2,7 +2,8 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     console.log("Hello bookmarksCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 书签数据
-    $scope.hoverItem = false;
+    $scope.bookmarkNormalHover = false;
+    $scope.bookmarkEditHover = false;
     $scope.showStyle = 'navigate'; // 显示风格'navigate', 'card', 'table'
     $scope.edit = false;
     semanticInit();
@@ -12,11 +13,38 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     $scope.jumpToUrl = function(url, id) {
-        $window.open(url, '_blank');
-        bookmarkService.clickBookmark({
-            id: id
+        if(!$scope.edit){
+            $window.open(url, '_blank');
+            bookmarkService.clickBookmark({
+                id: id
+            });
+        }
+    }
+    $scope.toggleMode = function(){
+        console.log('toggleMode..........');
+        $scope.edit = !$scope.edit
+    };
+    $scope.delBookmark = function(bookmarkId){
+        var params = {
+            id:bookmarkId
+        }
+        bookmarkService.delBookmark(params).then(
+            function(data) {
+                console.log(data);
+                $("#"+bookmarkId).remove();
+            },
+            function(data) {
+                console.log(data);
+            }
+        );
+
+    }
+    $scope.editBookmark = function(bookmarkId){
+        pubSubService.publish('bookmarksCtr.editBookmark', {
+            'bookmarkId': bookmarkId
         });
     }
+
     getBookmarks(params);
     pubSubService.subscribe('MenuCtr.bookmarks', $scope, function(event, params) {
         console.log('subscribe MenuCtr.bookmarks', params);

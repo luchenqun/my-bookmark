@@ -2,63 +2,61 @@ body {
     padding: 50px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-.bookmark{
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    -o-text-overflow:ellipsis;
+.bookmark {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
     overflow: hidden;
-    color:#212121;
-    border:1px solid transparent;
+    color: #212121;
+    border: 1px solid transparent;
 }
-
 .bookmarkNormalHover {
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    -o-text-overflow:ellipsis;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
     overflow: hidden;
-    color:#212121;
-
-    background:#F5F5F5;
-    cursor:pointer;
-    border:1px solid transparent;
+    color: #212121;
+    background: #F5F5F5;
+    cursor: pointer;
+    border: 1px solid transparent;
 }
-
 .bookmarkOperaterHover {
-    cursor:pointer;
+    cursor: pointer;
 }
-
 .bookmarkEditHover {
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    -o-text-overflow:ellipsis;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
     overflow: hidden;
-    color:#212121;
-
-    cursor:move;
-    border:1px dashed #3388FF;
+    color: #212121;
+    cursor: move;
+    border: 1px dashed #3388FF;
 }
-
-.img-fixed-size{
-    width:16px;
-    height:16px;
+.img-fixed-size {
+    width: 16px;
+    height: 16px;
 }
-
-
-.wrap{
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    -o-text-overflow:ellipsis;
+td {
+    text-overflow: ellipsis;
+    white-space: nowrap;
     overflow: hidden;
 }
-.js-navigate-bookmark a{
-    color:#212121;
+table {
+    table-layout: fixed;
 }
-
+.wrap {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    overflow: hidden;
+}
+.js-navigate-bookmark a {
+    color: #212121;
+}
 .ui.menu .selected.item {
     background: rgba(1, 1, 1, 0.05);
 }
-
-img.operator{
-    width:16px;
-    height:16px
+img.operator {
+    width: 16px;
+    height: 16px
 }

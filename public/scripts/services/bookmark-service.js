@@ -10,8 +10,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('Failed to get getTitle');
+                    def.reject('getTitle error');
                 });
             return def.promise;
         },
@@ -24,8 +23,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('Failed to get todos');
+                    def.reject('login error');
                 });
             return def.promise;
         },
@@ -38,7 +36,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
+                    def.reject('clickBookmark error');
                 });
             return def.promise;
         },
@@ -51,8 +49,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('Failed to get todos');
+                    def.reject('logout error');
                 });
             return def.promise;
         },
@@ -63,8 +60,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('Failed to get todos');
+                    def.reject('autoLogin error');
                 });
             return def.promise;
         },
@@ -83,8 +79,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    console.log('Error: ' + data, status);
-                    def.reject('Failed to get todos');
+                    def.reject('getBookmarks error');
                 });
             return def.promise;
         },
@@ -98,7 +93,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    console.log('Error: ' + data, status);
+                    def.reject('getBookmark error');
                 });
             return def.promise;
         },
@@ -111,13 +106,11 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('Failed to get todos');
+                    def.reject('addBookmark error');
                 });
             return def.promise;
         },
         updateBookmark: function(params) {
-            console.log('service updateBookmark')
             var def = $q.defer();
             $http.post('/api/updateBookmark/', {
                     params: params
@@ -126,8 +119,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('Failed to get todos');
+                    def.reject('updateBookmark error');
                 });
             return def.promise;
         },
@@ -140,13 +132,9 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('delBookmark fail');
+                    def.reject('delBookmark error');
                 });
             return def.promise;
-        },
-        editBookmark: function(params) {
-
         },
         /**
          * @func
@@ -162,8 +150,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('Failed to get todos');
+                    def.reject('getTags error');
                 });
             return def.promise;
         },
@@ -176,8 +163,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    console.log('Error: ' + data);
-                    def.reject('Failed to get todos');
+                    def.reject('addTags error');
                 });
             return def.promise;
         },
@@ -186,47 +172,27 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
     return service;
 }]);
 
-app.factory('AuthenticationService', function() {
-    var auth = {
-        isAuthenticated: false,
-        isAdmin: false
-    }
-
-    return auth;
-});
-
-app.factory('TokenInterceptor', function($q, $window, $location, AuthenticationService) {
-    return {
+app.factory('httpInterceptor', ['$q', '$injector', function($q, $injector) {
+    var defered = $q.defer();
+    var httpInterceptor = {
         request: function(config) {
-            config.headers = config.headers || {};
-            if ($window.sessionStorage.token) {
-                config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
-            }
             return config;
         },
-
-        requestError: function(rejection) {
-            return $q.reject(rejection);
+        requestError: function(err) {
+            return $q.reject(err);
         },
-
-        /* Set Authentication.isAuthenticated to true if 200 received */
-        response: function(response) {
-            if (response != null && response.status == 200 && $window.sessionStorage.token && !AuthenticationService.isAuthenticated) {
-                AuthenticationService.isAuthenticated = true;
-            }
-            return response || $q.when(response);
+        response: function(res) {
+            return $q.resolve(res);
         },
-
-        /* Revoke client authentication if 401 is received */
-        responseError: function(rejection) {
-            if (rejection != null && rejection.status === 401 && ($window.sessionStorage.token || AuthenticationService.isAuthenticated)) {
-                delete $window.sessionStorage.token;
-                AuthenticationService.isAuthenticated = false;
-                // $location.path("/admin/login");
-                console.log('responseError')
+        responseError: function(err) {
+            if (401 === err.status) {
+                toastr["error"]("警告", "您需要先登录才能使用该功能");
+                $injector.get('$state').go('login', {})
+            } else {
+                toastr["error"]("警告", JSON.stringify(err));
             }
-
-            return $q.reject(rejection);
+            return $q.reject(err);
         }
-    };
-});
+    }
+    return httpInterceptor;
+}]);

@@ -1,35 +1,4 @@
-<div class="ui segment" ng-if="showStyle === 'navigate'">
-    <div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
-        <div class="ui grid">
-            <div class=" row">
-                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;">
-                    <span title="{{ tag.name }}">{{ tag.name }}</span>
-                </div>
-                <div class="fourteen wide column">
-                    <div class="ui grid container">
-                        <div
-                            class="two wide column js-navigate-bookmark"
-                            ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmarkEditHover:bookmarkEditHover, bookmark:(!bookmarkNormalHover && !bookmarkEditHover)}"
-                            ng-mouseover="edit ? (bookmarkEditHover=true) : (bookmarkNormalHover=true)"
-                            ng-mouseleave="edit ? (bookmarkEditHover=false) : (bookmarkNormalHover=false)"
-                            ng-repeat="bookmark in tag.bookmarks"
-                            ng-click="jumpToUrl(bookmark.url, bookmark.id)"
-                            title="{{ bookmark.title }}"
-                            id="{{bookmark.id}}">
-                            <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark.id)">
-                            <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px;float:right;" src="./images/{{ bookmarkEditHover ? 'edit-bookmark-hover' : 'edit-bookmark'}}.png" ng-if="edit" ng-click="editBookmark(bookmark.id)">
-                            <img class="ui ui middle aligned tiny image" src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}" style="width:16px;height:16px" ng-if="!edit">
-                            <span>{{ bookmark.title}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div ng-if="tagIndex === 0" style="width:32px;height:32px;padding-right:10px;" ng-click="toggleMode()" title="{{edit ? '退出编辑模式' : '点我进入编辑模式'}}"><img class="ui ui middle aligned tiny image" src="./images/{{ edit ? 'back' : 'edit'}}.png"></div>
-            </div>
-        </div>
-        <div class="ui divider"></div>
-    </div>
-</div>
-<div class="ui small menu js-search-detail" ng-if="showSearch">
+<div class="ui small menu js-search-detail" ng-show="showSearch" ng-repeat="justSureRendered in [1]" on-finish-render-filters>
     <div class="ui dropdown item">
         <div class="text">搜索范围</div>
         <i class="dropdown icon"></i>
@@ -75,6 +44,51 @@
         <div class="ui button">搜索</div>
     </div>
 </div>
+<div class="ui segment" ng-if="showStyle === 'navigate'">
+    <div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
+        <div class="ui grid">
+            <div class=" row">
+                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;">
+                    <span title="{{ tag.name }}">{{ tag.name }}</span>
+                </div>
+                <div class="fourteen wide column" ng-if="tag.bookmarks.length">
+                    <div class="ui grid container">
+                        <div
+                            class="two wide column js-navigate-bookmark"
+                            ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmarkEditHover:bookmarkEditHover, bookmark:(!bookmarkNormalHover && !bookmarkEditHover)}"
+                            ng-mouseover="edit ? (bookmarkEditHover=true) : (bookmarkNormalHover=true)"
+                            ng-mouseleave="edit ? (bookmarkEditHover=false) : (bookmarkNormalHover=false)"
+                            ng-repeat="bookmark in tag.bookmarks"
+                            ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+                            title="{{ bookmark.title }}"
+                            id="{{bookmark.id}}">
+                            <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" ng-src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark.id)">
+                            <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px;float:right;" ng-src="./images/{{ bookmarkEditHover ? 'edit-bookmark-hover' : 'edit-bookmark'}}.png" ng-if="edit" ng-click="editBookmark(bookmark.id)">
+                            <img class="ui ui middle aligned tiny image" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}" style="width:16px;height:16px" ng-if="!edit">
+                            <span>{{ bookmark.title}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="tagIndex === 0" style="width:32px;height:32px;padding-right:10px;" ng-click="toggleMode()" title="{{edit ? '退出编辑模式' : '点我进入编辑模式'}}"><img class="ui ui middle aligned tiny image" ng-src="./images/{{ edit ? 'back' : 'edit'}}.png"></div>
+            </div>
+        </div>
+        <div class="ui divider"></div>
+    </div>
+    <div style="height:45px;">
+        <div class="ui right floated pagination menu">
+            <a class="icon item">
+                <i class="left chevron icon"></i>
+            </a>
+            <a class="item">1</a>
+            <a class="item">2</a>
+            <a class="item">3</a>
+            <a class="item">4</a>
+            <a class="icon item">
+                <i class="right chevron icon"></i>
+            </a>
+        </div>
+    </div>
+</div>
 <table class="ui celled table" ng-if="showStyle === 'table'">
     <thead>
         <tr>
@@ -84,18 +98,18 @@
             <th>创建日期</th>
             <th>最后点击日期</th>
             <th>分类</th>
+            <th>操作</th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="bookmark in bookmarks">
+        <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}">
             <td>
-                <img class="ui ui middle aligned tiny image" src="http://api.byi.pw/favicon/?url={{bookmark.url}}" style="width:16px;height:16px">
-                <span>
-                    <a href="{{ bookmark.url }}" target="_blank">{{ bookmark.title }}
-                    </a>
+                <img class="ui ui middle aligned tiny image" src="http://www.google.com/s2/favicons?domain={{bookmark.url}}" style="width:16px;height:16px">
+                <span ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+                    {{ bookmark.title }}
                 </span>
             </td>
-            <td>{{ bookmark.url }}</td>
+            <td ng-click="jumpToUrl(bookmark.url, bookmark.id)">{{ bookmark.url }}</td>
             <td>{{ bookmark.click_count }}</td>
             <td>{{ bookmark.created_at }}</td>
             <td>{{ bookmark.last_click }}</td>
@@ -104,11 +118,16 @@
                     {{ tag.name }}
                 </div>
             </td>
+            <td>
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark.id)">
+            </td>
         </tr>
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="6">
+            <th colspan="7">
                 <div class="ui right floated pagination menu">
                     <a class="icon item">
                         <i class="left chevron icon"></i>
@@ -125,3 +144,4 @@
         </tr>
     </tfoot>
 </table>
+<div class="ui segment" ng-if="showStyle === 'card'">正在开发中，尽请期待。。。。。。</div>

@@ -1,8 +1,7 @@
 app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, bookmarkService, pubSubService) {
+    console.log("Hello editCtr");
     var maxSelections = 3;
-    console.log("Hello , editCtr...");
     init();
-    semanticInit();
 
     $scope.$watch('url', function(newUrl, oldUrl, scope) {
         $timeout(function() {
@@ -14,13 +13,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                 var params = {
                     url: newUrl,
                 }
-                bookmarkService.getTitle(params).then(
-                    function(data) {
-                        console.log(JSON.stringify(data));
-                        $scope.title = data.title;
-                    },
-                    function(errorMsg) {}
-                );
+                bookmarkService.getTitle(params)
+                    .then((data) => $scope.title = data.title)
+                    .catch((err) => console.log('getTitle err', err))
             }
         }
     });
@@ -46,16 +41,15 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
             }
         });
 
-        bookmarkService.addTags(params).then(
-            function(data) {
+        bookmarkService.addTags(params)
+            .then((data) => {
                 $scope.tags = data;
-                console.log(JSON.stringify(data));
-                $timeout(function() {
+                $timeout(() => {
+                    // 将新增加的分类自动添加到下啦列表中
                     var count = 0;
-                    params.forEach(function(tagName) {
-                        data.forEach(function(tag) {
+                    params.forEach((tagName) => {
+                        data.forEach((tag) => {
                             if (tagName == tag.name) {
-                                console.log(tag.id);
                                 if (count < maxSelections) {
                                     $('.ui.fluid.search.dropdown').dropdown('set selected', tag.id);
                                 }
@@ -64,9 +58,8 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                         });
                     });
                 });
-            },
-            function(errorMsg) {}
-        );
+            })
+            .catch((err) => console.log('addTags err', err));
     }
     $scope.cancel = function() {
         console.log('Hello , you have click cancel btn......');
@@ -76,9 +69,8 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         init();
     }
     $scope.ok = function() {
-        console.log('Hello , you have click ok btn......');
         var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
-        console.log($scope.url, $scope.title, $scope.description, $scope.public, selectedTags);
+        console.log('Hello ok clicked', $scope.url, $scope.title, $scope.description, $scope.public, selectedTags);
         $scope.urlError = $scope.url == '';
         $scope.titleError = $scope.title == '';
         $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections);
@@ -91,40 +83,19 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
             description: $scope.description
         }
         if ($scope.add) {
-            bookmarkService.addBookmark(params).then(
-                function(data) {
-                    console.log(data);
+            bookmarkService.addBookmark(params)
+                .then((data) => {
                     $('.ui.modal.js-add-bookmark').modal('hide');
-                    $state.go('bookmarks', {
-                        foo: 'i love you',
-                        bar: 'hello world'
-                    });
-                    pubSubService.publish('EditCtr.inserBookmarsSuccess', {
-                        show: 'navigate'
-                    });
-                },
-                function(errorMsg) {
-                    console.log(errorMsg);
-                }
-            );
+                    pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
+                })
+                .catch((err) => console.log('addBookmark err', err));
         } else {
-            console.log('updateBookmark...........', params)
-            bookmarkService.updateBookmark(params).then(
-                function(data) {
-                    console.log(data);
+            bookmarkService.updateBookmark(params)
+                .then((data) => {
                     $('.ui.modal.js-add-bookmark').modal('hide');
-                    $state.go('bookmarks', {
-                        foo: 'i love you',
-                        bar: 'hello world'
-                    });
-                    pubSubService.publish('EditCtr.inserBookmarsSuccess', {
-                        show: 'navigate'
-                    });
-                },
-                function(errorMsg) {
-                    console.log(errorMsg);
-                }
-            );
+                    pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
+                })
+                .catch((err) => console.log('updateBookmark err', err));
         }
     }
 
@@ -149,17 +120,18 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         }).modal('show');
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
         $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
-        bookmarkService.getBookmark(params).then(
-            function(data) {
-                var bookmark = data.bookmark;
-                $scope.add = false;
+        $scope.add = false;
+        bookmarkService.getBookmark(params)
+            .then((data) => {
+                console.log('getBookmark ', data);
 
+                var bookmark = data.bookmark;
                 $scope.id = (bookmark && bookmark.id) || '';
                 $scope.url = (bookmark && bookmark.url) || '';
                 $scope.title = (bookmark && bookmark.title) || '';
                 $scope.description = (bookmark && bookmark.description) || '';
-                // $scope.newTags = bookmark && bookmark.url && '';
                 $scope.tags = data.tags;
+                $scope.public = (bookmark && bookmark.id) || '1';
 
                 $timeout(function() {
                     data.bookmarkTags.forEach((tagId) => {
@@ -167,44 +139,34 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                     });
                 });
 
-                $scope.public = '1';
-
-                console.log(data);
                 $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
-            },
-            function(errorMsg) {
-                console.log(errorMsg);
-            }
-        );
+            })
+            .catch((err) => console.log('updateBookmark err', err));
     });
 
     function getTags(params) {
-        bookmarkService.getTags(params).then(
-            function(data) {
+        bookmarkService.getTags(params)
+            .then((data) => {
                 $scope.tags = data;
-                semanticInit();
-                $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
-            },
-            function(errorMsg) {
-                console.log(errorMsg);
-            }
-        );
+            })
+            .catch((err) => console.log('getTags err', err));
     }
 
-    function semanticInit() {
-        setTimeout(() => {
-            $('.ui.dropdown').dropdown({
-                forceSelection: false,
-                maxSelections: maxSelections,
-                onChange: function(value, text, $choice) {
-                    var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
-                    $timeout(function() {
-                        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections) && ($('.ui.modal.js-add-bookmark').modal('is active'));
-                    });
-                }
-            });
-        }, 1000);
-    }
+    // 元素构造完成之后，开始使用jquery初始化
+    $scope.$on('elementRenderFinished', function(elementRenderFinishedEvent) {
+        console.log('edit ui dropdown elementRenderFinished')
+        $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
+        $('.ui.dropdown').dropdown({
+            forceSelection: false,
+            maxSelections: maxSelections,
+            onChange: function(value, text, $choice) {
+                var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
+                $timeout(function() {
+                    $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections) && ($('.ui.modal.js-add-bookmark').modal('is active'));
+                });
+            }
+        });
+    });
 
     function init() {
         $scope.add = true;

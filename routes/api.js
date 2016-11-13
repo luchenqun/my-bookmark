@@ -71,6 +71,10 @@ api.get('/autoLogin', function(req, res) {
 });
 
 api.delete('/delBookmark', function(req, res) {
+    if (!req.session.username) {
+        res.send(401);
+        return;
+    }
     var bookmarkId = req.query.id;
     db.delBookmarkTags(bookmarkId)
         .then(() => db.delBookmark(bookmarkId))
@@ -81,6 +85,10 @@ api.delete('/delBookmark', function(req, res) {
 })
 
 api.post('/updateBookmark', function(req, res) {
+    if (!req.session.username) {
+        res.send(401);
+        return;
+    }
     var bookmark = req.body.params;
     console.log('hello updateBookmark', JSON.stringify(bookmark));
     var bookmark = req.body.params;
@@ -95,6 +103,10 @@ api.post('/updateBookmark', function(req, res) {
 })
 
 api.get('/bookmark', function(req, res) {
+    if (!req.session.username) {
+        res.send(401);
+        return;
+    }
     var bookmarkId = req.query.bookmarkId;
     var userId = '1';
     var ret = {
@@ -123,9 +135,10 @@ api.get('/bookmarks', function(req, res) {
     console.log('hello bookmarks', JSON.stringify(req.query), req.session.username);
     if (!req.session.username) {
         res.send(401);
+        return;
     }
     var userId = '1';
-    if (req.query.show === 'navigate') {
+    if (req.query.showStyle === 'navigate') {
         db.getBookmarksNavigate(userId)
             .then((result) => {
                 var data = [];
@@ -166,10 +179,7 @@ api.get('/bookmarks', function(req, res) {
         db.getBookmarksTable(userId)
             .then((bms) => {
                 bookmarks = bms;
-                var bookmarkIds = []
-                bookmarks.forEach((bookmark) => {
-                    bookmarkIds.push(bookmark.id);
-                })
+                var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);
                 return db.getTagsBookmarks(bookmarkIds);
             })
             .then((tbs) => {
@@ -180,17 +190,17 @@ api.get('/bookmarks', function(req, res) {
                 var data = [];
                 // 获取每个书签的所有分类标签
                 bookmarks.forEach(function(bookmark) {
-                    var tags = [];
+                    var bookmarkTags = [];
                     tagsBookmarks.forEach(function(tb) {
                         if (tb.bookmark_id == bookmark.id) {
                             tags.forEach(function(tag) {
                                 if (tb.tag_id == tag.id) {
-                                    tags.push(tag)
+                                    bookmarkTags.push(tag)
                                 }
                             })
                         }
                     });
-                    bookmark.tags = tags;
+                    bookmark.tags = bookmarkTags;
                     data.push(bookmark);
                 })
                 res.json(data);
@@ -200,6 +210,10 @@ api.get('/bookmarks', function(req, res) {
 });
 
 api.get('/tags', function(req, res) {
+    if (!req.session.username) {
+        res.send(401);
+        return;
+    }
     db.getTags(req.query.user_id)
         .then((tags) => res.json(tags))
         .catch((err) => console.log('tags', err));
@@ -207,6 +221,10 @@ api.get('/tags', function(req, res) {
 
 api.post('/addBookmark', function(req, res) {
     console.log('hello addBookmark', JSON.stringify(req.body));
+    if (!req.session.username) {
+        res.send(401);
+        return;
+    }
     var bookmark = req.body.params;
     var user_id = '1';
     var tags = bookmark.tags;
@@ -219,6 +237,10 @@ api.post('/addBookmark', function(req, res) {
 
 api.post('/addTags', function(req, res) {
     console.log('hello addTags', JSON.stringify(req.query), JSON.stringify(req.body));
+    if (!req.session.username) {
+        res.send(401);
+        return;
+    }
     var tagsName = req.body.params;
     var user_id = '1';
     var addTagNames = [];

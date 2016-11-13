@@ -1,6 +1,11 @@
 app.controller('loginCtr', ['$scope', '$filter', '$state', 'bookmarkService', 'pubSubService', function($scope, $filter, $state, bookmarkService, pubSubService) {
     console.log("Hello loginCtr...");
 
+    pubSubService.publish('Common.menuActive', {
+        login: false,
+        index: 1
+    });
+
     $scope.username = "luchenqun";
     $scope.password = "fendoubuxi";
     $scope.showErr = false;
@@ -17,11 +22,11 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', 'bookmarkService', 'p
             console.log($scope.username, $scope.password, autoLogin);
             var params = {
                 username: $scope.username,
-                password:$scope.password,
-                autoLogin:autoLogin,
+                password: $scope.password,
+                autoLogin: autoLogin,
             };
-            bookmarkService.login(params).then(
-                function(data) {
+            bookmarkService.login(params)
+                .then((data) => {
                     console.log(data);
                     if (data.logined) {
                         pubSubService.publish('loginCtr.login', {
@@ -33,11 +38,8 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', 'bookmarkService', 'p
                     } else {
                         console.log('login failed......................')
                     }
-                },
-                function(errorMsg) {
-                    console.log(errorMsg);
-                }
-            );
+                })
+                .catch((err) => console.log('login err', err));
         }
     }
 }]);

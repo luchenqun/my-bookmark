@@ -1,6 +1,7 @@
 var app = angular.module('bookmarkApp', ['ui.router']);
 
-app.config(function($stateProvider, $urlRouterProvider) {
+app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+    $httpProvider.interceptors.push('httpInterceptor');
 
     $urlRouterProvider.otherwise("/");
 
@@ -11,7 +12,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
             params: {
                 foo: null,
                 bar: null,
-                showStyle: 'table',
+                showStyle: 'navigate',
             },
             controller: 'bookmarksCtr'
         })
@@ -47,8 +48,4 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: '/views/home.html',
             controller: 'homeCtr'
         });
-});
-
-app.config(function ($httpProvider) {
-    $httpProvider.interceptors.push('TokenInterceptor');
 });

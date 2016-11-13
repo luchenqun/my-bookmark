@@ -1,35 +1,35 @@
 <div class="js-menu" ng-controller="menuCtr">
-    <div class="ui menu js-login-in" ng-if="login">
-        <a class="item" ng-class="{active:$index==selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus">
+    <div class="ui large menu js-login-in" ng-if="login">
+        <a class="item" ng-class="{selected:$index===selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" on-finish-render-filters>
             <div>{{ menu.title }}</div>
-            <div class="ui floating dropdown icon js-bookmark-dropdown" ng-if="$index==0">
+            <div class="ui floating simple dropdown icon js-bookmark-dropdown" ng-if="$index==0" ng-click="$event.stopPropagation();">
                 <i class="dropdown icon"></i>
-                <div class="menu">
+                <div class="menu js-menu-option">
                     <div class="header">显示方式</div>
                     <div class="divider"></div>
-                    <div class="field item">
-                        <div class="ui radio checkbox js-radio-navigate">
-                            <input type="radio" name="fruit">
+                    <div class="field item" ng-click="updateShowStyle('navigate')">
+                        <div class="ui radio checkbox checked js-radio-navigate">
+                            <input type="radio" name="show-style" checked="">
                             <label>导航</label>
                         </div>
                     </div>
-                    <div class="field item">
+                    <div class="field item" ng-click="updateShowStyle('table')">
                         <div class="ui radio checkbox js-radio-table">
-                            <input type="radio" name="fruit">
+                            <input type="radio" name="show-style">
                             <label>表格</label>
                         </div>
                     </div>
-                    <div class="field item">
+                    <div class="field item" ng-click="updateShowStyle('card')">
                         <div class="ui radio checkbox js-radio-card">
-                            <input type="radio" name="fruit">
+                            <input type="radio" name="show-style">
                             <label>卡片</label>
                         </div>
                     </div>
                     <div class="divider"></div>
                     <div class="header">搜索选项</div>
                     <div class="item">
-                        <div class="ui checkbox" ng-click="searchDetail()">
-                            <input type="checkbox" name="fun">
+                        <div class="ui checkbox js-checkbox-search" ng-click="searchDetail()">
+                            <input type="checkbox">
                             <label>显示详细搜索</label>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
             </div>
         </div>
     </div>
-    <div class="ui small menu js-not-login-in" ng-if="!login">
-        <a class="item" ng-class="{active:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ui-sref-opts="{reload: true}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
+    <div class="ui large menu js-not-login-in" ng-if="!login">
+        <a class="item" ng-class="{selected:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ui-sref-opts="{reload: true}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus" on-finish-render-filters>{{ menu.title}}</a>
     </div>
 </div>

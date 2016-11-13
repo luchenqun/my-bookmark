@@ -1,14 +1,15 @@
 app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService) {
     console.log('Hello homeCtr......');
-    var debug = true;
+    var debug = false;
     if (debug) {
-        bookmarkService.login({
+        var params = {
             username: 'luchenqun',
-            password: 'fendoubuxi',
+            password: 'fendoubuxi1',
             autoLogin: true,
-        }).then(
-            function(data) {
-                console.log(data);
+        };
+
+        bookmarkService.login(params)
+            .then((data) => {
                 if (data.logined) {
                     pubSubService.publish('loginCtr.login', {
                         'login': data.logined,
@@ -19,14 +20,11 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
                 } else {
                     console.log('login failed......................')
                 }
-            },
-            function(errorMsg) {
-                console.log(errorMsg);
-            }
-        );
+            })
+            .catch((err) => console.log('login err', err));
     } else {
-        bookmarkService.autoLogin().then(
-            function(data) {
+        bookmarkService.autoLogin()
+            .then((data) => {
                 if (data.logined || debug) {
                     pubSubService.publish('loginCtr.login', {
                         'login': debug || data.logined,
@@ -35,12 +33,9 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
                         showStyle: 'navigate',
                     })
                 } else {
-                    console.log('login failed......................')
+                    console.log('autoLogin failed......................')
                 }
-            },
-            function(errorMsg) {
-                console.log(errorMsg);
-            }
-        );
+            })
+            .catch((err) => console.log('autoLogin err', err));
     }
 }]);

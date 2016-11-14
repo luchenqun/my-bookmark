@@ -10,15 +10,17 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             url: '/bookmarks',
             templateUrl: '/views/bookmarks.html',
             params: {
-                foo: null,
-                bar: null,
                 showStyle: 'navigate',
             },
             controller: 'bookmarksCtr'
         })
-        .state('addBookmark', {
-            url: '/addBookmark',
-            templateUrl: '/views/addBookmark.html',
+        .state('search', {
+            url: '/search',
+            templateUrl: '/views/search.html',
+            params: {
+                searchWord: null,
+            },
+            controller: 'searchCtr'
         })
         .state('tags', {
             url: '/tags',

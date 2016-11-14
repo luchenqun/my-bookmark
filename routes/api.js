@@ -209,6 +209,47 @@ api.get('/bookmarks', function(req, res) {
     }
 });
 
+api.get('/searchBookmarks', function(req, res) {
+    console.log('hello bookmarks', JSON.stringify(req.query), req.session.username);
+    if (!req.session.username) {
+        res.send(401);
+        return;
+    }
+    var bookmarks = [];
+    var tagsBookmarks = [];
+    var userId = '1';
+    db.getBookmarksTable(userId)
+        .then((bms) => {
+            bookmarks = bms;
+            var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);
+            return db.getTagsBookmarks(bookmarkIds);
+        })
+        .then((tbs) => {
+            tagsBookmarks = tbs;
+            return db.getTags(userId);
+        })
+        .then((tags) => {
+            var data = [];
+            // 获取每个书签的所有分类标签
+            bookmarks.forEach(function(bookmark) {
+                var bookmarkTags = [];
+                tagsBookmarks.forEach(function(tb) {
+                    if (tb.bookmark_id == bookmark.id) {
+                        tags.forEach(function(tag) {
+                            if (tb.tag_id == tag.id) {
+                                bookmarkTags.push(tag)
+                            }
+                        })
+                    }
+                });
+                bookmark.tags = bookmarkTags;
+                data.push(bookmark);
+            })
+            res.json(data);
+        })
+        .catch((err) => console.log('bookmarks table or card err', err))
+});
+
 api.get('/tags', function(req, res) {
     if (!req.session.username) {
         res.send(401);

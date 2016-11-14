@@ -3,8 +3,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     $scope.login = false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
-    $scope.keyword = ''; /**< 搜索关键字 */
-    $scope.showSearch = false;
+    $scope.searchWord = ''; /**< 搜索关键字 */
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
         console.log("subscribe Common.menuActive", params)
@@ -42,24 +41,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
      * @desc 点击搜索按钮搜索书签
      */
     $scope.searchBookmarks = function() {
-        console.log('searchBookmarks clicked...');
-        pubSubService.publish('MenuCtr.searchBookmarks', {
-            'keyword': $scope.keyword
-        });
-        $scope.selectLoginIndex = 0;
-    }
-
-    /**
-     * @func
-     * @desc 点击下拉列表详情搜索
-     * @warn 不要使用$('js-checkbox-search').checkbox('is checked')去取，因为dom元素还没更新的。。。
-     */
-    $scope.searchDetail = function() {
-        $scope.showSearch = !$scope.showSearch;
-        console.log('searchDetail ', $scope.showSearch)
-        pubSubService.publish('MenuCtr.searchDetail', {
-            'showSearch': $scope.showSearch,
-        });
+        updateMenuActive($scope.selectLoginIndex = 0);
     }
 
     $scope.updateShowStyle = function(showStyle) {
@@ -94,7 +76,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     // 元素构造完成之后，开始使用jquery初始化
     $scope.$on('elementRenderFinished', function(elementRenderFinishedEvent) {
         console.log('menus elementRenderFinished')
-        $scope.showSearch = $('.js-checkbox-search').checkbox('is checked');
         $('.js-bookmark-dropdown').dropdown({
             action: 'hide',
         });

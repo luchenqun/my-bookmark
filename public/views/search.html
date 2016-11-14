@@ -1,0 +1,109 @@
+<div class="ui small menu js-search-detail" ng-show="showSearch" ng-repeat="justSureRendered in [1]" on-finish-render-filters>
+    <div class="ui dropdown item">
+        <div class="text">搜索范围</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item">自己书签</div>
+            <div class="item">全站书签</div>
+        </div>
+    </div>
+    <div class="item" style="width:136px;">
+        <div class="ui calendar js-date-begin">
+            <div class="ui transparent input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="开始日期" ng-model="dateBegin">
+            </div>
+        </div>
+    </div>
+    <div class="item" style="width:136px;">
+        <div class="ui calendar js-date-end">
+            <div class="ui transparent input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="结束日期" ng-model="dateEnd">
+            </div>
+        </div>
+    </div>
+    <div class="ui dropdown item">
+        <div class="text">点击次数</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item">大于</div>
+            <div class="item">小于</div>
+        </div>
+    </div>
+    <div class="ui item transparent icon input" style="width:120px;">
+        <input class="prompt" type="text" placeholder="点击次数" ng-model="clickCount">
+    </div>
+    <div class="ui item transparent icon input" style="width:120px;">
+        <input class="prompt" type="text" placeholder="用户账号" ng-model="username">
+    </div>
+    <div class="ui item transparent icon input" style="width:160px;">
+        <input type="text" placeholder="标题，链接，分类" ng-model="searchWord">
+    </div>
+    <div class="right menu">
+        <div class="item">
+            <i class="search icon" title="搜索" ng-click="search()"></i>
+        </div>
+        <div class="item" ng-click="showSearch = !showSearch">
+            <i class="space shuttle icon" title="隐藏搜索工具"></i>
+        </div>
+    </div>
+</div>
+<table class="ui celled table">
+    <thead>
+        <tr>
+            <th>标题</th>
+            <th>链接</th>
+            <th style="width:90px;">点击次数</th>
+            <th style="width:100px;">创建日期</th>
+            <th style="width:100px;">最后点击</th>
+            <th style="width:150px;">分类</th>
+            <th style="width:105px;">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}">
+            <td>
+                <img class="ui ui middle aligned tiny image" src="http://www.google.com/s2/favicons?domain={{bookmark.url}}" style="width:16px;height:16px">
+                <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}">
+                    {{ bookmark.title }}
+                </span>
+            </td>
+            <td ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+                <span title="{{bookmark.url}}">{{ bookmark.url }}</span>
+            </td>
+            <td>{{ bookmark.click_count }}</td>
+            <td>{{ bookmark.created_at }}</td>
+            <td>{{ bookmark.last_click }}</td>
+            <td>
+                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}">
+                    {{ tag.name }}
+                </div>
+            </td>
+            <td>
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark.id)">
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="7">
+                <div class="ui right floated pagination menu">
+                    <a class="icon item">
+                        <i class="left chevron icon"></i>
+                    </a>
+                    <a class="item">1</a>
+                    <a class="item">2</a>
+                    <a class="item">3</a>
+                    <a class="item">4</a>
+                    <a class="icon item">
+                        <i class="right chevron icon"></i>
+                    </a>
+                </div>
+            </th>
+        </tr>
+    </tfoot>
+</table>
+<p>这是搜索页面</p>

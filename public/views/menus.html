@@ -25,30 +25,22 @@
                             <label>卡片</label>
                         </div>
                     </div>
-                    <div class="divider"></div>
-                    <div class="header">搜索选项</div>
-                    <div class="item">
-                        <div class="ui checkbox js-checkbox-search" ng-click="searchDetail()">
-                            <input type="checkbox">
-                            <label>显示详细搜索</label>
-                        </div>
-                    </div>
                 </div>
             </div>
         </a>
         <div class="right menu">
             <div class="ui category right search item">
                 <div class="ui transparent icon input">
-                    <input class="prompt" type="text" ng-model="keyword" placeholder="标题，链接，分类...">
-                    <i class="search link icon" ng-click="searchBookmarks()" ui-sref="bookmarks({foo: 'fooVal1', bar: 'barVal1'})"></i>
+                    <input class="prompt" type="text" ng-model="searchWord" placeholder="标题，链接，分类...">
+                    <i class="search link icon" ng-click="searchBookmarks()" ui-sref="search({searchWord:searchWord})" ui-sref-opts="{reload: true}"></i>
                 </div>
                 <div class="results"></div>
             </div>
             <div class="item">
-                <div class="ui button" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks">添加书签</div>
+                <i class="add square icon" title="添加书签" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks"></i>
             </div>
             <div class="item">
-                <div class="ui button" ng-click="logout()">退出</div>
+                <i class="sign out icon" title="退出登陆" ng-click="logout()"></i>
             </div>
         </div>
     </div>

@@ -153,8 +153,8 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
     }
 
     // 元素构造完成之后，开始使用jquery初始化
-    $scope.$on('elementRenderFinished', function(elementRenderFinishedEvent) {
-        console.log('edit ui dropdown elementRenderFinished')
+    $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
+        console.log('edit ui dropdown viewContentLoaded')
         $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
         $('.ui.dropdown').dropdown({
             forceSelection: false,

@@ -47,7 +47,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             .catch((err) => console.log('getBookmarks err', err));
     }
 
-    $scope.$on('elementRenderFinished', function(elementRenderFinishedEvent) {
+    $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
         $('.ui.dropdown').dropdown();
         $('.ui.calendar.js-date-begin').calendar({
             type: 'date',

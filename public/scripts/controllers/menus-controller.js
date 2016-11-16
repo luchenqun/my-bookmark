@@ -74,8 +74,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     }
 
     // 元素构造完成之后，开始使用jquery初始化
-    $scope.$on('elementRenderFinished', function(elementRenderFinishedEvent) {
-        console.log('menus elementRenderFinished')
+
+    $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
+        console.log('menus viewContentLoaded')
         $('.js-bookmark-dropdown').dropdown({
             action: 'hide',
         });

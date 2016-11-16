@@ -1,5 +1,80 @@
-<div class="ui small menu js-search-detail" ng-show="showSearch" ng-repeat="justSureRendered in [1]" on-finish-render-filters>
-    <div class="ui dropdown item">
+<div class="ui grid">
+    <div class="two wide column">
+        <div class="ui dropdown" js-dropdown-init>
+            <div class="text">自己书签</div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="item">自己书签</div>
+                <div class="item">全站书签</div>
+            </div>
+        </div>
+    </div>
+    <div class="two wide column">
+        <div class="ui dropdown item" js-dropdown-init>
+            <div class="text">创建时间不限</div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="item">时间不限</div>
+                <div class="item">一天内</div>
+                <div class="item">一周内</div>
+                <div class="item">一月内</div>
+                <div class="item">一年内</div>
+                <div class="divider"></div>
+                <div class="header">自定义</div>
+                <div class="ui calendar js-date-begin" js-data-begin-init>
+                    <div class="ui transparent input left icon">
+                        <i class="calendar icon"></i>
+                        <input type="text" placeholder="开始日期" ng-model="dateBegin">
+                    </div>
+                </div>
+                <div class="ui calendar js-date-end" js-data-end-init>
+                    <div class="ui transparent input left icon">
+                        <i class="calendar icon"></i>
+                        <input type="text" placeholder="结束日期" ng-model="dateEnd">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="two wide column">
+        <div class="ui dropdown item" js-dropdown-init>
+            <div class="text">点击次数不限</div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="item">自己书签</div>
+                <div class="item">全站书签</div>
+            </div>
+        </div>
+    </div>
+    <div class="three wide column">
+        <div class="ui dropdown item" js-dropdown-init>
+            <div class="text">点击时间不限</div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <div class="item">自己书签</div>
+                <div class="item">全站书签</div>
+            </div>
+        </div>
+    </div>
+    <div class="three wide column">
+        <div class="ui transparent icon input">
+            <input class="prompt" type="text" placeholder="用户账号" ng-model="username">
+        </div>
+    </div>
+    <div class="two wide column">
+        <div class="ui transparent input">
+            <input type="text" placeholder="标题，链接，分类" ng-model="searchWord">
+        </div>
+    </div>
+    <div class="one wide column">
+        <i class="search icon" title="搜索" ng-click="search()"></i>
+    </div>
+    <div class="one wide column">
+        <i class="space shuttle icon" title="隐藏搜索工具"></i>
+    </div>
+</div>
+<div class="ui small menu js-search-detail" ng-show="false">
+    <div class="ui dropdown item" js-dropdown-init>
         <div class="text">搜索范围</div>
         <i class="dropdown icon"></i>
         <div class="menu">
@@ -8,7 +83,7 @@
         </div>
     </div>
     <div class="item" style="width:136px;">
-        <div class="ui calendar js-date-begin">
+        <div class="ui calendar js-date-begin" js-data-begin-init>
             <div class="ui transparent input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="开始日期" ng-model="dateBegin">
@@ -16,14 +91,14 @@
         </div>
     </div>
     <div class="item" style="width:136px;">
-        <div class="ui calendar js-date-end">
+        <div class="ui calendar js-date-end" js-data-end-init>
             <div class="ui transparent input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="结束日期" ng-model="dateEnd">
             </div>
         </div>
     </div>
-    <div class="ui dropdown item">
+    <div class="ui dropdown item" js-dropdown-init>
         <div class="text">点击次数</div>
         <i class="dropdown icon"></i>
         <div class="menu">

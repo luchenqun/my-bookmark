@@ -58,6 +58,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     });
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
+        params.showStyle = $scope.showStyle;
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
         getBookmarks(params);
     });
@@ -74,7 +75,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             .catch((err) => console.log('getBookmarks err', err));
     }
 
-    $scope.$on('elementRenderFinished', function(elementRenderFinishedEvent) {
+    $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
         $('.ui.dropdown').dropdown();
         $('.ui.calendar.js-date-begin').calendar({
             type: 'date',

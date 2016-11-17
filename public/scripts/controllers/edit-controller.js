@@ -160,6 +160,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         $('.ui.dropdown').dropdown({
             forceSelection: false,
             maxSelections: maxSelections,
+            action: 'hide',
             onChange: function(value, text, $choice) {
                 var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
                 $timeout(function() {

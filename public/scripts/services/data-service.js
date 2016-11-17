@@ -1,12 +1,16 @@
 app.factory('dataService', [function() {
-    var service = {
+    const service = {
+        Enum: {
+            UserSelf: 1,
+        },
         loginParams: function() {
             return {
-                username:'',
-                password:'',
-                autoLogin:true,
+                username: '',
+                password: '',
+                autoLogin: true,
             };
         },
+
     };
 
     return service;

@@ -1,14 +1,18 @@
 app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, bookmarkService, pubSubService) {
     console.log("Hello searchCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
-    $scope.showSearch = false; // 搜索对话框
+    $scope.showSearch = false; //
+    $scope.showTags = false; //
     $scope.searchWord = ($stateParams && $stateParams.searchWord) || ''
-    $scope.dateBegin = '';
-    $scope.dateEnd = '';
+    $scope.dateCreateBegin = '';
+    $scope.dateCreateEnd = '';
+    $scope.dateClickBegin = '';
+    $scope.dateClickEnd = '';
     $scope.clickCount = '';
     $scope.username = '';
     $scope.userRange = '';
-    $scope.bookmarkCount = 0
+    $scope.bookmarkCount = 0;
+
     var searchParams = {
         searchWord: $scope.searchWord,
     }
@@ -42,6 +46,23 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         searchBookmarks(params)
         console.log('search..', $scope.searchWord, $scope.dateBegin, $scope.clickCount, $scope.username, $scope.userRange)
     }
+    $scope.updateCreateDate = function() {
+        console.log($scope.dateCreateBegin, $scope.dateCreateEnd);
+        if ($scope.dateCreateBegin && $scope.dateCreateEnd) {
+            $('.js-create-date').dropdown('hide');
+            $('.js-create-date').dropdown('clear');
+            $('.js-create-date .text').text($scope.dateCreateBegin + " 至 " + $scope.dateCreateEnd).removeClass('default');
+        }
+    }
+
+    $scope.updateClickDate = function() {
+        console.log($scope.dateClickBegin, $scope.dateClickEnd);
+        if ($scope.dateClickBegin && $scope.dateClickEnd) {
+            $('.js-click-date').dropdown('hide');
+            $('.js-click-date').dropdown('clear');
+            $('.js-click-date .text').text($scope.dateClickBegin + " 至 " + $scope.dateClickEnd).removeClass('default');
+        }
+    }
 
     function searchBookmarks(params) {
         bookmarkService.searchBookmarks(params)
@@ -55,34 +76,4 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             })
             .catch((err) => console.log('getBookmarks err', err));
     }
-
-    $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
-        $('.ui.dropdown').dropdown();
-        $('.ui.calendar.js-date-begin').calendar({
-            type: 'date',
-            formatter: {
-                date: function(date, settings) {
-                    if (!date) return '';
-                    var day = date.getDate();
-                    var month = date.getMonth() + 1;
-                    var year = date.getFullYear();
-                    return year + '/' + month + '/' + day;
-                }
-            },
-            endCalendar: $('.ui.calendar.js-date-end')
-        });
-        $('.ui.calendar.js-date-end').calendar({
-            type: 'date',
-            formatter: {
-                date: function(date, settings) {
-                    if (!date) return '';
-                    var day = date.getDate();
-                    var month = date.getMonth() + 1;
-                    var year = date.getFullYear();
-                    return year + '/' + month + '/' + day;
-                }
-            },
-            startCalendar: $('.ui.calendar.js-date-begin')
-        });
-    });
 }]);

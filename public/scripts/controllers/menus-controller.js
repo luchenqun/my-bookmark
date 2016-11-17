@@ -40,7 +40,11 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
      * @func
      * @desc 点击搜索按钮搜索书签
      */
-    $scope.searchBookmarks = function() {
+    $scope.searchBookmarks = function(searchWord) {
+        console.log(searchWord);
+        $state.go('search', {
+            searchWord: searchWord,
+        })
         updateMenuActive($scope.selectLoginIndex = 0);
     }
 

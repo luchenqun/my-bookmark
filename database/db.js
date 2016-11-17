@@ -38,8 +38,8 @@ db.addBookmark = function(user_id, bookmark) {
     });
 };
 
-db.delBookmark = function(id){
-    var sql = "DELETE FROM `bookmarks` WHERE (`id`='"+ id +"')";
+db.delBookmark = function(id) {
+    var sql = "DELETE FROM `bookmarks` WHERE (`id`='" + id + "')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -51,8 +51,8 @@ db.delBookmark = function(id){
     });
 }
 
-db.updateBookmark = function(bookmark){
-    var sql = "UPDATE `bookmarks` SET `title`='"+ bookmark.title +"', `description`='"+ bookmark.description+"', `url`='"+ bookmark.url +"', `public`='"+ bookmark.public +"' WHERE (`id`='"+ bookmark.id +"')";
+db.updateBookmark = function(bookmark) {
+    var sql = "UPDATE `bookmarks` SET `title`='" + bookmark.title + "', `description`='" + bookmark.description + "', `url`='" + bookmark.url + "', `public`='" + bookmark.public + "' WHERE (`id`='" + bookmark.id + "')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -64,8 +64,8 @@ db.updateBookmark = function(bookmark){
     });
 }
 
-db.getBookmark = function(id){
-    var sql ="SELECT * FROM `bookmarks` WHERE `id` = '"+ id +"'";
+db.getBookmark = function(id) {
+    var sql = "SELECT * FROM `bookmarks` WHERE `id` = '" + id + "'";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -77,8 +77,8 @@ db.getBookmark = function(id){
     });
 }
 
-db.getBookmarkTags = function(bookmard_id){
-    var sql ="SELECT tag_id FROM `tags_bookmarks` WHERE `bookmark_id` = '"+ bookmard_id +"'";
+db.getBookmarkTags = function(bookmard_id) {
+    var sql = "SELECT tag_id FROM `tags_bookmarks` WHERE `bookmark_id` = '" + bookmard_id + "'";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -92,7 +92,7 @@ db.getBookmarkTags = function(bookmard_id){
 }
 
 db.delBookmarkTags = function(bookmard_id) {
-    var sql = "DELETE FROM `tags_bookmarks` WHERE (`bookmark_id`='"+ bookmard_id +"')";
+    var sql = "DELETE FROM `tags_bookmarks` WHERE (`bookmark_id`='" + bookmard_id + "')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -250,7 +250,22 @@ db.getBookmarksTable = function(user_id) {
             }
         });
     });
+}
 
+db.getBookmarksSearch = function(params) {
+    var search_word = params.searchWord;
+    var user_id = '1';
+    var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE user_id='" + user_id + "' AND (`title` LIKE '%"+ search_word +"%' OR `url` LIKE '%"+ search_word +"%') ORDER BY click_count DESC, created_at DESC LIMIT 0, 50";
+    console.log(sql);
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
 }
 
 db.getBookmarksCard = function(user_id) {

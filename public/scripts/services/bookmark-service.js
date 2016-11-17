@@ -200,10 +200,10 @@ app.factory('httpInterceptor', ['$q', '$injector', function($q, $injector) {
         },
         responseError: function(err) {
             if (401 === err.status) {
-                toastr["error"]("警告", "您需要先登录才能使用该功能");
+                toastr.warning("您需要先登录才能使用该功能", "警告");
                 $injector.get('$state').go('login', {})
             } else {
-                toastr["error"]("警告", JSON.stringify(err));
+                toastr.error(JSON.stringify(err), "错误");
             }
             return $q.reject(err);
         }

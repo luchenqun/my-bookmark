@@ -215,10 +215,11 @@ api.get('/searchBookmarks', function(req, res) {
         res.send(401);
         return;
     }
+    var params = req.query;
     var bookmarks = [];
     var tagsBookmarks = [];
     var userId = '1';
-    db.getBookmarksTable(userId)
+    db.getBookmarksSearch(params)
         .then((bms) => {
             bookmarks = bms;
             var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);

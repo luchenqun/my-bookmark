@@ -1,15 +1,19 @@
 app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, bookmarkService, pubSubService) {
     console.log("Hello searchCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
-    $scope.showSearch = true; // 搜索对话框
+    $scope.showSearch = false; // 搜索对话框
     $scope.searchWord = ($stateParams && $stateParams.searchWord) || ''
     $scope.dateBegin = '';
     $scope.dateEnd = '';
     $scope.clickCount = '';
     $scope.username = '';
     $scope.userRange = '';
+    $scope.bookmarkCount = 0
+    var searchParams = {
+        searchWord: $scope.searchWord,
+    }
 
-    searchBookmarks($stateParams);
+    searchBookmarks(searchParams);
 
     $scope.delBookmark = function(bookmarkId) {
         var params = {
@@ -32,6 +36,10 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     $scope.search = function() {
+        var params = {
+            searchWord: $scope.searchWord,
+        }
+        searchBookmarks(params)
         console.log('search..', $scope.searchWord, $scope.dateBegin, $scope.clickCount, $scope.username, $scope.userRange)
     }
 
@@ -39,6 +47,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         bookmarkService.searchBookmarks(params)
             .then((data) => {
                 $scope.bookmarks = data;
+                $scope.bookmarkCount = data.length;
                 pubSubService.publish('Common.menuActive', {
                     login: true,
                     index: 0

@@ -1,5 +1,5 @@
 <div class="js-menu" ng-controller="menuCtr">
-    <div class="ui large menu js-login-in" ng-if="login">
+    <div class="ui huge menu js-login-in" ng-if="login">
         <a class="item" ng-class="{selected:$index===selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus">
             <div>{{ menu.title }}</div>
             <div class="ui floating simple dropdown icon js-bookmark-dropdown" ng-if="$index==0" ng-click="$event.stopPropagation();">
@@ -29,22 +29,22 @@
             </div>
         </a>
         <div class="right menu">
-            <div class="ui category right search item">
+            <div class="item">
                 <div class="ui transparent icon input">
-                    <input class="prompt" type="text" ng-model="searchWord" placeholder="标题，链接，分类...">
+                    <input class="prompt" type="text" ng-model="searchWord" placeholder="标题，链接..." ng-keypress="($event.which === 13)?searchBookmarks(searchWord):0">
                     <i class="search link icon" ng-click="searchBookmarks()" ui-sref="search({searchWord:searchWord})" ui-sref-opts="{reload: true}"></i>
                 </div>
                 <div class="results"></div>
             </div>
-            <div class="item">
-                <i class="add square icon" title="添加书签" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks"></i>
+            <div class="item" title="添加书签" ng-click="showAddBookmarkMoadl()" ui-sref="bookmarks">
+                <i class="add square icon"></i>
             </div>
             <div class="item">
                 <i class="sign out icon" title="退出登陆" ng-click="logout()"></i>
             </div>
         </div>
     </div>
-    <div class="ui large menu js-not-login-in" ng-if="!login">
+    <div class="ui huge menu js-not-login-in" ng-if="!login">
         <a class="item" ng-class="{selected:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ui-sref-opts="{reload: true}" ng-click="selectMenu($index, login)" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
     </div>
 </div>

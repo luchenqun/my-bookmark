@@ -1,8 +1,8 @@
-app.directive('jsDataBeginInit', function($compile) {
+app.directive('jsDataCreateBeginInit', function($compile) {
     return {
         restrict: 'A',
         link: function($scope, $element, $attrs) {
-            $('.ui.calendar.js-date-begin').calendar({
+            $('.ui.calendar.js-date-create-begin').calendar({
                 type: 'date',
                 formatter: {
                     date: function(date, settings) {
@@ -13,18 +13,18 @@ app.directive('jsDataBeginInit', function($compile) {
                         return year + '/' + month + '/' + day;
                     }
                 },
-                endCalendar: $('.ui.calendar.js-date-end')
+                endCalendar: $('.ui.calendar.js-date-create-end')
             });
         },
     };
 });
 
 
-app.directive('jsDataEndInit', function($compile) {
+app.directive('jsDataCreateEndInit', function($compile) {
     return {
         restrict: 'A',
         link: function($scope, $element, $attrs) {
-            $('.ui.calendar.js-date-end').calendar({
+            $('.ui.calendar.js-date-create-end').calendar({
                 type: 'date',
                 formatter: {
                     date: function(date, settings) {
@@ -35,7 +35,50 @@ app.directive('jsDataEndInit', function($compile) {
                         return year + '/' + month + '/' + day;
                     }
                 },
-                startCalendar: $('.ui.calendar.js-date-begin')
+                startCalendar: $('.ui.calendar.js-date-create-begin')
+            });
+        },
+    };
+});
+
+app.directive('jsDataClickBeginInit', function($compile) {
+    return {
+        restrict: 'A',
+        link: function($scope, $element, $attrs) {
+            $('.ui.calendar.js-date-click-begin').calendar({
+                type: 'date',
+                formatter: {
+                    date: function(date, settings) {
+                        if (!date) return '';
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '/' + month + '/' + day;
+                    }
+                },
+                endCalendar: $('.ui.calendar.js-date-click-end')
+            });
+        },
+    };
+});
+
+
+app.directive('jsDataClickEndInit', function($compile) {
+    return {
+        restrict: 'A',
+        link: function($scope, $element, $attrs) {
+            $('.ui.calendar.js-date-click-end').calendar({
+                type: 'date',
+                formatter: {
+                    date: function(date, settings) {
+                        if (!date) return '';
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '/' + month + '/' + day;
+                    }
+                },
+                startCalendar: $('.ui.calendar.js-date-click-begin')
             });
         },
     };

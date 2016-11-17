@@ -148,6 +148,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         bookmarkService.getTags(params)
             .then((data) => {
                 $scope.tags = data;
+                $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
             })
             .catch((err) => console.log('getTags err', err));
     }

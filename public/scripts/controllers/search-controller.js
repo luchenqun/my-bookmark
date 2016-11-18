@@ -69,7 +69,9 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
         var dateCreate = $('.js-create-date').dropdown('get value') || undefined;
         if (dateCreate) {
-            params.dateCreate = dateCreate;
+            if (dateCreate != 0) {
+                params.dateCreate = dateCreate;
+            }
         } else {
             params.dateCreateBegin = $scope.dateCreateBegin;
             params.dateCreateEnd = $scope.dateCreateEnd;
@@ -77,7 +79,9 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
         var dateClick = $('.js-click-date').dropdown('get value') || undefined;
         if (dateClick) {
-            params.dateClick = dateClick
+            if (dateClick != 0) {
+                params.dateClick = dateClick
+            }
         } else {
             params.dateClickBegin = $scope.dateClickBegin;
             params.dateClickEnd = $scope.dateClickEnd;
@@ -106,7 +110,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
     $scope.updateTagsSelect = function() {
         $('.ui.dropdown.js-search-tags .text').removeClass('default');
-        var text = $('.ui.dropdown.js-search-tags .text').text().replace('selected', '个分类已选');
+        var text = $('.ui.dropdown.js-search-tags .text').text().replace('selected', '个已选');
         $('.ui.dropdown.js-search-tags .text').text(text);
     }
 

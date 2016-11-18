@@ -16,14 +16,14 @@
             </div>
         </div>
     </div>
-    <div class="three wide column" ng-show="showSearch">
+    <div class="four wide column" ng-show="showSearch">
         <div class="ui dropdown item js-create-date" js-data-create-init>
             <div class="text">创建时间不限</div>
             <i class="dropdown icon"></i>
             <div class="menu">
                 <div class="active item" data-value='0'>创建时间不限</div>
                 <div class="item" data-value='7'>一周内</div>
-                <div class="item" data-value='30'>一月内</div>
+                <div class="item" data-value='31'>一月内</div>
                 <div class="item" data-value='365'>一年内</div>
                 <div class="divider"></div>
                 <div class="header">自定义</div>
@@ -49,14 +49,14 @@
             </div>
         </div>
     </div>
-    <div class="three wide column" ng-show="showSearch">
+    <div class="four wide column" ng-show="showSearch">
         <div class="ui dropdown item js-click-date" js-data-click-init>
             <div class="text">点击时间不限</div>
             <i class="dropdown icon"></i>
             <div class="menu">
                 <div class="active item" data-value='0'>点击时间不限</div>
                 <div class="item" data-value='7'>一周内</div>
-                <div class="item" data-value='30'>一月内</div>
+                <div class="item" data-value='31'>一月内</div>
                 <div class="item" data-value='365'>一年内</div>
                 <div class="divider"></div>
                 <div class="header">自定义</div>
@@ -82,7 +82,7 @@
             </div>
         </div>
     </div>
-    <div class="three wide column" ng-show="showSearch">
+    <div class="two wide column" ng-show="showSearch">
         <div class="ui transparent icon input" ng-show="!showTags">
             <input class="prompt" type="text" placeholder="用户账号" ng-model="username">
         </div>
@@ -96,12 +96,11 @@
             </div>
         </div>
     </div>
-    <div class="three wide column" ng-show="showSearch">
+    <div class="two wide column" ng-show="showSearch">
         <div class="ui transparent input">
             <input type="text" placeholder="标题，链接..." ng-model="searchWord">
         </div>
     </div>
-
     <div class="left floated right aligned two wide column" ng-show="showSearch">
         <div class="ui grid">
             <div class="four wide column">
@@ -112,7 +111,6 @@
                 <span ng-click="showSearch = !showSearch">收起</span>
             </div>
         </div>
-
     </div>
 </div>
 <table class="ui celled table">

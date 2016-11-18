@@ -8,6 +8,22 @@ var client = mysql.createConnection({
     port: 3306
 });
 
+Date.prototype.format = function(fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "h+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
 client.connect();
 
 // select 最多返回一行的话，返回对象，否则返回数组
@@ -256,12 +272,40 @@ db.getBookmarksSearch = function(params) {
     var search_word = params.searchWord || 'test';
     var user_id = '1';
     var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE 1=1";
+
+    if (params.dateCreate) {
+        var d = new Date();
+        d.setDate(d.getDate() - parseInt(params.dateCreate));
+        sql += " AND `created_at` > '" + d.format('yyyy-MM-dd') + "'"
+    } else if (params.dateCreateBegin && params.dateCreateEnd) {
+        sql += " AND `created_at` > '" + params.dateCreateBegin + "' AND `created_at` < '" + params.dateCreateEnd + "' "
+    }
+    if (params.dateClick) {
+        var d = new Date();
+        d.setDate(d.getDate() - parseInt(params.dateClick));
+        sql += " AND `last_click` > '" + d.format('yyyy-MM-dd') + "'"
+    } else if (params.dateClickBegin && params.dateClickEnd) {
+        sql += " AND `last_click` > '" + params.dateClickBegin + "' AND `last_click` < '" + params.dateClickEnd + "' "
+    }
+
+    if (params.searchWord) {
+        sql += " AND (`title` LIKE '%" + params.searchWord + "%' OR `url` LIKE '%" + params.searchWord + "%')"
+    }
+
     if (params.userRange == '1') {
         if (params.userId) {
-            sql += "AND user_id = '"+ params.userId +"'"
+            sql += " AND `user_id` = '" + params.userId + "'"
+        }
+
+        if (params.tags) {
+            sql += " AND `id` IN (SELECT `bookmark_id` FROM `tags_bookmarks` WHERE tag_id IN (" + params.tags + "))"
+        }
+    } else {
+        if (params.username) {
+            sql += " AND `user_id` IN (SELECT `id` FROM `users` WHERE `username` LIKE '%" + params.username + "%' )"
         }
     }
-    sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE user_id='" + user_id + "' AND (`title` LIKE '%"+ search_word +"%' OR `url` LIKE '%"+ search_word +"%') ORDER BY click_count DESC, created_at DESC LIMIT 0, 50";
+    sql += " ORDER BY click_count DESC, created_at DESC LIMIT 0, 50";
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

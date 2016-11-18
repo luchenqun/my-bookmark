@@ -18,7 +18,7 @@
                 <div class="fields">
                     <div class="eight wide field" ng-class="{error:tagsError }">
                         <select class="ui fluid search dropdown js-tags" multiple="">
-                            <option value="">选择已有分类，可以搜索已有标签，最多选择三个</option>
+                            <option value="">选择分类，输入可以搜索，最多选择三个，建议选一个</option>
                             <option value="{{ tag.id }}" ng-repeat="tag in tags">{{ tag.name }}</option>
                         </select>
                     </div>

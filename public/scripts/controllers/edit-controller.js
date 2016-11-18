@@ -148,6 +148,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         bookmarkService.getTags(params)
             .then((data) => {
                 $scope.tags = data;
+                initJsTags();
                 $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
             })
             .catch((err) => console.log('getTags err', err));
@@ -157,10 +158,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
     $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
         console.log('edit ui dropdown viewContentLoaded')
         $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
-        $('.ui.dropdown').dropdown({
+        $('.ui.dropdown.js-tags').dropdown({
             forceSelection: false,
             maxSelections: maxSelections,
-            action: 'hide',
+            action: 'combo',
             onChange: function(value, text, $choice) {
                 var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
                 $timeout(function() {
@@ -169,6 +170,23 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
             }
         });
     });
+
+    function initJsTags() {
+        setTimeout(function() {
+            $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
+            $('.ui.dropdown.js-tags').dropdown({
+                forceSelection: false,
+                maxSelections: maxSelections,
+                action: 'combo',
+                onChange: function(value, text, $choice) {
+                    var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
+                    $timeout(function() {
+                        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections) && ($('.ui.modal.js-add-bookmark').modal('is active'));
+                    });
+                }
+            });
+        }, 1000)
+    }
 
     function init() {
         $scope.add = true;

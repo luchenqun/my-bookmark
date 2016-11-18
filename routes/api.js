@@ -223,8 +223,13 @@ api.get('/searchBookmarks', function(req, res) {
     db.getBookmarksSearch(params)
         .then((bms) => {
             bookmarks = bms;
-            var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);
-            return db.getTagsBookmarks(bookmarkIds);
+            if (bookmarks.length > 0) {
+                var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);
+                return db.getTagsBookmarks(bookmarkIds);
+            } else {
+                res.json([]);
+                return Promise.reject('没有搜到到任何书签');
+            }
         })
         .then((tbs) => {
             tagsBookmarks = tbs;

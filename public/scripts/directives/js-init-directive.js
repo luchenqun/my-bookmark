@@ -1,7 +1,13 @@
 function date(date, settings) {
     if (!date) return '';
     var day = date.getDate();
+    if (day <= 9) {
+        day = '0' + day;
+    }
     var month = date.getMonth() + 1;
+    if (month <= 9) {
+        month = '0' + month;
+    }
     var year = date.getFullYear();
     return year + '-' + month + '-' + day;
 };
@@ -88,10 +94,33 @@ app.directive('jsDropdownTagsInit', function($compile) {
         restrict: 'A',
         link: function($scope, $element, $attrs) {
             $('.ui.dropdown.js-search-tags').dropdown({
-                 useLabels: false
+                useLabels: false
             });
 
             $('.ui.dropdown.js-search-tags .text').removeClass('default');
+        },
+    };
+});
+
+app.directive('jsEditTagsInit', function($compile) {
+    return {
+        restrict: 'A',
+        link: function($scope, $element, $attrs) {
+            if ($scope.$last === true) {
+                console.log('jsEditTagsInit.....................')
+                $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
+                $('.ui.dropdown.js-tags').dropdown({
+                    forceSelection: false,
+                    maxSelections: 3,
+                    action: 'combo',
+                    onChange: function(value, text, $choice) {
+                        var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
+                        $timeout(function() {
+                            $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > 3) && ($('.ui.modal.js-add-bookmark').modal('is active'));
+                        });
+                    }
+                });
+            }
         },
     };
 });

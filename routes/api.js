@@ -210,12 +210,13 @@ api.get('/bookmarks', function(req, res) {
 });
 
 api.get('/searchBookmarks', function(req, res) {
-    console.log('hello bookmarks', JSON.stringify(req.query), req.session.username);
+    console.log('hello searchBookmarks', JSON.stringify(req.query), req.session.username);
     if (!req.session.username) {
         res.send(401);
         return;
     }
     var params = req.query;
+    params.userId = req.session.userId;
     var bookmarks = [];
     var tagsBookmarks = [];
     var userId = '1';

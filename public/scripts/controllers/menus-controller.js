@@ -41,7 +41,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
      * @desc 点击搜索按钮搜索书签
      */
     $scope.searchBookmarks = function(searchWord) {
-        console.log(searchWord);
         $state.go('search', {
             searchWord: searchWord,
         })

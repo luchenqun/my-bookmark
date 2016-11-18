@@ -253,9 +253,15 @@ db.getBookmarksTable = function(user_id) {
 }
 
 db.getBookmarksSearch = function(params) {
-    var search_word = params.searchWord;
+    var search_word = params.searchWord || 'test';
     var user_id = '1';
-    var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE user_id='" + user_id + "' AND (`title` LIKE '%"+ search_word +"%' OR `url` LIKE '%"+ search_word +"%') ORDER BY click_count DESC, created_at DESC LIMIT 0, 50";
+    var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE 1=1";
+    if (params.userRange == '1') {
+        if (params.userId) {
+            sql += "AND user_id = '"+ params.userId +"'"
+        }
+    }
+    sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE user_id='" + user_id + "' AND (`title` LIKE '%"+ search_word +"%' OR `url` LIKE '%"+ search_word +"%') ORDER BY click_count DESC, created_at DESC LIMIT 0, 50";
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

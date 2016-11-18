@@ -3,7 +3,7 @@ function date(date, settings) {
     var day = date.getDate();
     var month = date.getMonth() + 1;
     var year = date.getFullYear();
-    return year + '/' + month + '/' + day;
+    return year + '-' + month + '-' + day;
 };
 
 app.directive('jsDataCreateInit', function($compile) {
@@ -67,26 +67,31 @@ app.directive('jsDataClickInit', function($compile) {
     };
 });
 
-app.directive('jsDropdownUserRangeInit', function($compile) {
+app.directive('jsDropdownUserRangeInit', function($compile, $timeout) {
     return {
         restrict: 'A',
         link: function($scope, $element, $attrs) {
             $('.ui.dropdown.js-user-range').dropdown({
                 onChange: function(value, text, $choice) {
-                    $scope.showTags = (value === '1');
-                    console.log(value, text, $choice, $scope.showTags, $scope.username);
-                    $scope.$apply();
+                    $timeout(function() {
+                        $scope.showTags = (value == '1');
+                    })
                 },
             });
+            $('.js-user-range').dropdown('set value', '1');
         },
     };
 });
 
-app.directive('jsDropdownInit', function($compile) {
+app.directive('jsDropdownTagsInit', function($compile) {
     return {
         restrict: 'A',
         link: function($scope, $element, $attrs) {
-            $('.ui.dropdown').dropdown();
+            $('.ui.dropdown.js-search-tags').dropdown({
+                 useLabels: false
+            });
+
+            $('.ui.dropdown.js-search-tags .text').removeClass('default');
         },
     };
 });

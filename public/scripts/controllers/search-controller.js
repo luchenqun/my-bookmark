@@ -12,12 +12,24 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     $scope.username = '';
     $scope.userRange = '';
     $scope.bookmarkCount = 0;
+    $scope.tags = []
+
+    bookmarkService.getTags({
+            user_id: '1',
+        })
+        .then((data) => {
+            $scope.tags = data;
+        })
+        .catch((err) => console.log('getTags err', err));
 
     var searchParams = {
         searchWord: $scope.searchWord,
     }
+    if ($scope.searchWord) {
+        searchBookmarks(searchParams);
+    } else {
 
-    searchBookmarks(searchParams);
+    }
 
     $scope.delBookmark = function(bookmarkId) {
         var params = {
@@ -40,11 +52,39 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     $scope.search = function() {
-        var params = {
-            searchWord: $scope.searchWord,
+        var params = {}
+        params.userRange = $('.js-user-range').dropdown('get value');
+        if (params.userRange == '1') {
+            var tags = $('.js-search-tags').dropdown('get value')
+            if (tags) {
+                params.tags = tags;
+            }
+        } else if ($scope.username) {
+            params.username = $scope.username
         }
+        if ($scope.searchWord) {
+            params.searchWord = $scope.searchWord;
+        }
+
+
+        var dateCreate = $('.js-create-date').dropdown('get value') || undefined;
+        if (dateCreate) {
+            params.dateCreate = dateCreate;
+        } else {
+            params.dateCreateBegin = $scope.dateCreateBegin;
+            params.dateCreateEnd = $scope.dateCreateEnd;
+        }
+
+        var dateClick = $('.js-click-date').dropdown('get value') || undefined;
+        if (dateClick) {
+            params.dateClick = dateClick
+        } else {
+            params.dateClickBegin = $scope.dateClickBegin;
+            params.dateClickEnd = $scope.dateClickEnd;
+        }
+
         searchBookmarks(params)
-        console.log('search..', $scope.searchWord, $scope.dateBegin, $scope.clickCount, $scope.username, $scope.userRange)
+        console.log('search..', params)
     }
     $scope.updateCreateDate = function() {
         console.log($scope.dateCreateBegin, $scope.dateCreateEnd);
@@ -62,6 +102,12 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             $('.js-click-date').dropdown('clear');
             $('.js-click-date .text').text($scope.dateClickBegin + " 至 " + $scope.dateClickEnd).removeClass('default');
         }
+    }
+
+    $scope.updateTagsSelect = function() {
+        $('.ui.dropdown.js-search-tags .text').removeClass('default');
+        var text = $('.ui.dropdown.js-search-tags .text').text().replace('selected', '个分类已选');
+        $('.ui.dropdown.js-search-tags .text').text(text);
     }
 
     function searchBookmarks(params) {

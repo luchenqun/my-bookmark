@@ -8,7 +8,7 @@
     </div>
     <div class="two wide column" ng-show="showSearch">
         <div class="ui dropdown js-user-range" js-dropdown-user-range-init>
-            <div class="text" data-value="1">搜索范围</div>
+            <div class="text">搜索范围</div>
             <i class="dropdown icon"></i>
             <div class="menu">
                 <div class="active item" data-value="1">自己书签</div>
@@ -21,7 +21,7 @@
             <div class="text">创建时间不限</div>
             <i class="dropdown icon"></i>
             <div class="menu">
-                <div class="active item" data-value='0'>时间不限</div>
+                <div class="active item" data-value='0'>创建时间不限</div>
                 <div class="item" data-value='7'>一周内</div>
                 <div class="item" data-value='30'>一月内</div>
                 <div class="item" data-value='365'>一年内</div>
@@ -54,7 +54,7 @@
             <div class="text">点击时间不限</div>
             <i class="dropdown icon"></i>
             <div class="menu">
-                <div class="active item" data-value='0'>时间不限</div>
+                <div class="active item" data-value='0'>点击时间不限</div>
                 <div class="item" data-value='7'>一周内</div>
                 <div class="item" data-value='30'>一月内</div>
                 <div class="item" data-value='365'>一年内</div>
@@ -86,28 +86,33 @@
         <div class="ui transparent icon input" ng-show="!showTags">
             <input class="prompt" type="text" placeholder="用户账号" ng-model="username">
         </div>
-        <select class="ui fluid search dropdown" multiple="" ng-show="showTags">
-            <option value="">State</option>
-            <option value="AL">Alabama</option>
-            <option value="AK">Alaska</option>
-            <option value="AZ">Arizona</option>
-            <option value="AR">Arkansas</option>
-            <option value="CA">California</option>
-            <option value="CO">Colorado</option>
-            <option value="CT">Connecticut</option>
-        </select>
+        <div class="ui grid container" style="padding-top: 8px;">
+            <div class="ui multiple dropdown js-search-tags" style="padding:0;" ng-show="showTags" js-dropdown-tags-init>
+                <div class="default text">分类选择</div>
+                <i class="dropdown icon"></i>
+                <div class="menu" ng-click="updateTagsSelect()">
+                    <div class="item" data-value='{{tag.id}}' ng-repeat="tag in tags">{{tag.name}}</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="two wide column" ng-show="showSearch">
+    <div class="three wide column" ng-show="showSearch">
         <div class="ui transparent input">
             <input type="text" placeholder="标题，链接..." ng-model="searchWord">
         </div>
     </div>
-    <div class="left floated right aligned one wide column" ng-show="showSearch">
-        <i class="search icon" title="搜索" ng-click="search()"></i>
-    </div>
+
     <div class="left floated right aligned two wide column" ng-show="showSearch">
-        <img class="ui ui middle aligned tiny image" ng-src="./images/hide.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch">
-        <span ng-click="showSearch = !showSearch">收起</span>
+        <div class="ui grid">
+            <div class="four wide column">
+                <i class="search icon" title="搜索" ng-click="search()"></i>
+            </div>
+            <div class="twelve wide column">
+                <img class="ui ui middle aligned tiny image" ng-src="./images/hide.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch">
+                <span ng-click="showSearch = !showSearch">收起</span>
+            </div>
+        </div>
+
     </div>
 </div>
 <table class="ui celled table">

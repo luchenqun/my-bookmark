@@ -1,6 +1,6 @@
 app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, bookmarkService, pubSubService) {
     console.log("Hello searchCtr...", $stateParams);
-    const currentPageItems = 20;
+    const perPageItems = 20;
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; //
     $scope.showTags = false; //
@@ -38,7 +38,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     var searchParams = {
         searchWord: $scope.searchWord,
         currentPage: 1,
-        currentPageItems: currentPageItems,
+        perPageItems: perPageItems,
     }
     if ($scope.searchWord) {
         searchBookmarks(searchParams);
@@ -102,7 +102,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             params.dateClickEnd = $scope.dateClickEnd;
         }
         params.currentPage = $scope.currentPage;
-        params.currentPageItems = currentPageItems;
+        params.perPageItems = perPageItems;
         searchBookmarks(params)
         console.log('search..', params)
     }
@@ -135,7 +135,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             .then((data) => {
                 $scope.bookmarks = data.bookmarks;
                 $scope.bookmarkCount = data.totalItems;
-                $scope.totalPages = Math.ceil($scope.bookmarkCount / currentPageItems);
+                $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
 
                 pubSubService.publish('Common.menuActive', {
                     login: true,

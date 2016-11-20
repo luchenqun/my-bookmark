@@ -4,8 +4,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.showSearch = false; // 搜索对话框
     $scope.bookmarkNormalHover = false;
     $scope.bookmarkEditHover = false;
-    $scope.showStyle = 'navigate'; // 显示风格'navigate', 'card', 'table'
+    $scope.showStyle = ($stateParams && $stateParams.showStyle) || 'navigate'; // 显示风格'navigate', 'card', 'table'
+    $('.js-radio-' + $scope.showStyle).checkbox('set checked');
     $scope.edit = false;
+    const perPageItems = 20;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.inputPage = '';
@@ -15,6 +17,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         if (currentPage <= $scope.totalPages && currentPage >= 1) {
             $scope.currentPage = currentPage;
             $scope.inputPage = '';
+            getBookmarks(params);
         }
     }
 
@@ -55,20 +58,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
     }
 
-    pubSubService.subscribe('MenuCtr.searchDetail', $scope, function(event, params) {
-        $scope.showSearch = (params && params.showSearch)
-    });
-    pubSubService.subscribe('MenuCtr.updateShowStyle', $scope, function(event, params) {
-        $scope.showStyle = (params && params.showStyle);
-        getBookmarks(params);
-    });
-
-
-    pubSubService.subscribe('MenuCtr.searchBookmarks', $scope, function(event, params) {
-        console.log('subscribe MenuCtr.searchBookmarks', params);
-        getBookmarks(params);
-    });
-
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
         params.showStyle = $scope.showStyle;
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
@@ -76,11 +65,18 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     });
 
     function getBookmarks(params) {
+        if (params.showStyle != 'navigate') {
+            params.currentPage = $scope.currentPage;
+            params.perPageItems = perPageItems;
+        }
         bookmarkService.getBookmarks(params)
             .then((data) => {
-                $scope.bookmarks = data;
-                $scope.totalPages = parseInt(Math.random() * 1000);
-                $scope.currentPage = (parseInt(Math.random() * 1000) % $scope.totalPages) + 1;
+                if (params.showStyle != 'navigate') {
+                    $scope.bookmarks = data.bookmarks;
+                    $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
+                } else {
+                    $scope.bookmarks = data;
+                }
                 pubSubService.publish('Common.menuActive', {
                     login: true,
                     index: 0
@@ -92,5 +88,4 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
         $('.ui.dropdown').dropdown();
     });
-
 }]);

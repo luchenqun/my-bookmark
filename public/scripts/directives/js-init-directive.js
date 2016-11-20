@@ -124,3 +124,41 @@ app.directive('jsEditTagsInit', function($compile) {
         },
     };
 });
+
+app.directive('jsMenuInit', function($compile) {
+    return {
+        restrict: 'A',
+        link: function($scope, $element, $attrs) {
+            if ($scope.$last === true) {
+                console.log('jsMenuInit......')
+                $('.js-bookmark-dropdown').dropdown({
+                    action: 'hide',
+                    on: 'hover',
+                });
+
+                $('.js-bookmark-dropdown .ui.checkbox').checkbox();
+                $('.ui.checkbox.js-radio-navigate').checkbox('check');
+                $('.ui.menu a.item').on('click', function() {
+                    $(this).addClass('selected').siblings().removeClass('selected');
+                });
+
+                $(".ui.menu a.item:first").hover(
+                    function() {
+                        $('.js-bookmark-dropdown').dropdown('show');
+                    },
+                    function() {
+                        setTimeout(() => {
+                            if ($('.js-menu-option:hover').length === 0) {
+                                $('.js-bookmark-dropdown').dropdown('hide');
+                            }
+                        }, 100)
+                    }
+                );
+
+                $('.ui.menu a.item').on('click', function() {
+                    $(this).addClass('selected').siblings().removeClass('selected');
+                });
+            }
+        },
+    };
+});

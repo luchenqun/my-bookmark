@@ -50,9 +50,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     $scope.updateShowStyle = function(showStyle) {
         console.log('updateShowStyle', showStyle)
         $('.js-radio-' + showStyle).checkbox('set checked');
-        pubSubService.publish('MenuCtr.updateShowStyle', {
-            'showStyle': showStyle,
-        });
+        $state.go('bookmarks', {
+            showStyle: showStyle,
+        })
     }
 
     $scope.showAddBookmarkMoadl = function() {
@@ -75,41 +75,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
             })
             .catch((err) => console.log('logout err', err));
     }
-
-    // 元素构造完成之后，开始使用jquery初始化
-
-    $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
-        console.log('menus viewContentLoaded')
-        $('.js-bookmark-dropdown').dropdown({
-            action: 'hide',
-        });
-        $('.ui.dropdown').dropdown({
-            on: 'hover',
-        });
-
-        $('.ui.checkbox').checkbox();
-        $('.ui.checkbox.js-radio-navigate').checkbox('check');
-        $('.ui.menu a.item').on('click', function() {
-            $(this).addClass('selected').siblings().removeClass('selected');
-        });
-
-        $(".ui.menu a.item:first").hover(
-            function() {
-                $('.js-bookmark-dropdown').dropdown('show');
-            },
-            function() {
-                setTimeout(() => {
-                    if ($('.js-menu-option:hover').length === 0) {
-                        $('.js-bookmark-dropdown').dropdown('hide');
-                    }
-                }, 100)
-            }
-        );
-
-        $('.ui.menu a.item').on('click', function() {
-            $(this).addClass('selected').siblings().removeClass('selected');
-        });
-    });
 
     function updateMenuActive(index) {
         $('.ui.menu a.item').removeClass('selected');

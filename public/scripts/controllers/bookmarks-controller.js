@@ -6,6 +6,18 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.bookmarkEditHover = false;
     $scope.showStyle = 'navigate'; // 显示风格'navigate', 'card', 'table'
     $scope.edit = false;
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.inputPage = '';
+    $scope.changeCurrentPage = function(currentPage) {
+        currentPage = parseInt(currentPage) || 0;
+        console.log(currentPage);
+        if (currentPage <= $scope.totalPages && currentPage >= 1) {
+            $scope.currentPage = currentPage;
+            $scope.inputPage = '';
+        }
+    }
+
     var params = {
         showStyle: $scope.showStyle,
     }
@@ -67,6 +79,8 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         bookmarkService.getBookmarks(params)
             .then((data) => {
                 $scope.bookmarks = data;
+                $scope.totalPages = parseInt(Math.random() * 1000);
+                $scope.currentPage = (parseInt(Math.random() * 1000) % $scope.totalPages) + 1;
                 pubSubService.publish('Common.menuActive', {
                     login: true,
                     index: 0
@@ -77,31 +91,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
     $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
         $('.ui.dropdown').dropdown();
-        $('.ui.calendar.js-date-begin').calendar({
-            type: 'date',
-            formatter: {
-                date: function(date, settings) {
-                    if (!date) return '';
-                    var day = date.getDate();
-                    var month = date.getMonth() + 1;
-                    var year = date.getFullYear();
-                    return year + '/' + month + '/' + day;
-                }
-            },
-            endCalendar: $('.ui.calendar.js-date-end')
-        });
-        $('.ui.calendar.js-date-end').calendar({
-            type: 'date',
-            formatter: {
-                date: function(date, settings) {
-                    if (!date) return '';
-                    var day = date.getDate();
-                    var month = date.getMonth() + 1;
-                    var year = date.getFullYear();
-                    return year + '/' + month + '/' + day;
-                }
-            },
-            startCalendar: $('.ui.calendar.js-date-begin')
-        });
     });
+
 }]);

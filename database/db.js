@@ -269,8 +269,6 @@ db.getBookmarksTable = function(user_id) {
 }
 
 db.getBookmarksSearch = function(params) {
-    var search_word = params.searchWord || 'test';
-    var user_id = '1';
     var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE 1=1";
 
     if (params.dateCreate) {
@@ -305,17 +303,33 @@ db.getBookmarksSearch = function(params) {
             sql += " AND `user_id` IN (SELECT `id` FROM `users` WHERE `username` LIKE '%" + params.username + "%' )"
         }
     }
-    sql += " ORDER BY click_count DESC, created_at DESC LIMIT 0, 50";
+
+    params.currentPage = params.currentPage || 1;
+    params.currentPageItems = params.currentPageItems || 20;
+    sql += " ORDER BY click_count DESC, created_at DESC";
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
-                resolve(result);
+
+                sql += " LIMIT " + (params.currentPage - 1) * params.currentPageItems + ", " + params.currentPageItems;
+                var totalItems = result.length;
+                client.query(sql, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        var searchData = {
+                            totalItems: totalItems,
+                            bookmarks: result,
+                        }
+                        resolve(searchData);
+                    }
+                });
             }
         });
-    });
+    })
 }
 
 db.getBookmarksCard = function(user_id) {

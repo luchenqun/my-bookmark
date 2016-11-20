@@ -1,5 +1,6 @@
 app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, bookmarkService, pubSubService) {
     console.log("Hello searchCtr...", $stateParams);
+    const currentPageItems = 20;
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; //
     $scope.showTags = false; //
@@ -13,6 +14,18 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     $scope.userRange = '';
     $scope.bookmarkCount = 0;
     $scope.tags = []
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.inputPage = '';
+    $scope.changeCurrentPage = function(currentPage) {
+        currentPage = parseInt(currentPage) || 0;
+        console.log(currentPage);
+        if (currentPage <= $scope.totalPages && currentPage >= 1) {
+            $scope.currentPage = currentPage;
+            $scope.inputPage = '';
+            $scope.search();
+        }
+    }
 
     bookmarkService.getTags({
             user_id: '1',
@@ -24,6 +37,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
     var searchParams = {
         searchWord: $scope.searchWord,
+        currentPage: 1,
+        currentPageItems: currentPageItems,
     }
     if ($scope.searchWord) {
         searchBookmarks(searchParams);
@@ -86,7 +101,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             params.dateClickBegin = $scope.dateClickBegin;
             params.dateClickEnd = $scope.dateClickEnd;
         }
-
+        params.currentPage = $scope.currentPage;
+        params.currentPageItems = currentPageItems;
         searchBookmarks(params)
         console.log('search..', params)
     }
@@ -117,8 +133,10 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     function searchBookmarks(params) {
         bookmarkService.searchBookmarks(params)
             .then((data) => {
-                $scope.bookmarks = data;
-                $scope.bookmarkCount = data.length;
+                $scope.bookmarks = data.bookmarks;
+                $scope.bookmarkCount = data.totalItems;
+                $scope.totalPages = Math.ceil($scope.bookmarkCount / currentPageItems);
+
                 pubSubService.publish('Common.menuActive', {
                     login: true,
                     index: 0

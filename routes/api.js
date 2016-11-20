@@ -220,9 +220,11 @@ api.get('/searchBookmarks', function(req, res) {
     var bookmarks = [];
     var tagsBookmarks = [];
     var userId = '1';
+    var totalItems = 0;
     db.getBookmarksSearch(params)
-        .then((bms) => {
-            bookmarks = bms;
+        .then((searchData) => {
+            totalItems = searchData.totalItems;
+            bookmarks = searchData.bookmarks;
             if (bookmarks.length > 0) {
                 var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);
                 return db.getTagsBookmarks(bookmarkIds);
@@ -236,6 +238,10 @@ api.get('/searchBookmarks', function(req, res) {
             return db.getTags(userId);
         })
         .then((tags) => {
+            var sendData = {
+                totalItems: totalItems,
+                bookmarks: []
+            }
             var data = [];
             // 获取每个书签的所有分类标签
             bookmarks.forEach(function(bookmark) {
@@ -252,7 +258,8 @@ api.get('/searchBookmarks', function(req, res) {
                 bookmark.tags = bookmarkTags;
                 data.push(bookmark);
             })
-            res.json(data);
+            sendData.bookmarks = data;
+            res.json(sendData);
         })
         .catch((err) => console.log('bookmarks table or card err', err))
 });

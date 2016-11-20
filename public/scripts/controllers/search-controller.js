@@ -46,6 +46,15 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
     }
 
+    $scope.jumpToUrl = function(url, id) {
+        if (!$scope.edit) {
+            $window.open(url, '_blank');
+            bookmarkService.clickBookmark({
+                id: id
+            });
+        }
+    }
+
     $scope.delBookmark = function(bookmarkId) {
         var params = {
             id: bookmarkId

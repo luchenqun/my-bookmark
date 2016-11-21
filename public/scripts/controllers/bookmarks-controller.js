@@ -85,7 +85,15 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             .catch((err) => console.log('getBookmarks err', err));
     }
 
-    $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
-        $('.ui.dropdown').dropdown();
+    // TODO: 我要将编辑按钮固定在容器的右上角 
+    $(window).resize(function() {
+        var top = $('.js-segment-navigate').offset().top;
+        var left = $('.js-segment-navigate').offset().left;
+        var width = $('.js-segment-navigate').width();
+        // console.log('js-edit position update', top+10, left+width-10)
+        $('.js-edit').offset({
+            top: top+10,
+            left: left+width-10,
+        })
     });
 }]);

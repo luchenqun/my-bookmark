@@ -55,7 +55,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     $scope.detailBookmark = function(bookmarkId) {
-
+        toastr.warning('功能暂未实现。。。', "警告");
     }
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
@@ -85,7 +85,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             .catch((err) => console.log('getBookmarks err', err));
     }
 
-    // TODO: 我要将编辑按钮固定在容器的右上角 
+    // TODO: 我要将编辑按钮固定在容器的右上角
     $(window).resize(function() {
         var top = $('.js-segment-navigate').offset().top;
         var left = $('.js-segment-navigate').offset().left;

@@ -54,6 +54,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     $scope.delBookmark = function(bookmarkId) {
+        toastr.warning('暂时不允许搜索的书签进行删除操作', "警告");
+        return;
         var params = {
             id: bookmarkId
         }
@@ -64,13 +66,15 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             });
     }
     $scope.editBookmark = function(bookmarkId) {
+        toastr.warning('暂时不允许搜索的书签进行编辑操作', "警告");
+        return;
         pubSubService.publish('bookmarksCtr.editBookmark', {
             'bookmarkId': bookmarkId
         });
     }
 
     $scope.detailBookmark = function(bookmarkId) {
-
+        toastr.warning('功能暂未实现。。。', "警告");
     }
 
     $scope.search = function() {

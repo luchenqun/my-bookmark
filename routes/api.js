@@ -32,6 +32,7 @@ api.post('/login', function(req, res) {
             if (user && user.password === password) {
                 ret.logined = true;
                 ret.user = user;
+                req.session.user = user;
                 req.session.username = ret.user.username;
                 req.session.userId = ret.user.id;
             }
@@ -49,8 +50,8 @@ api.get('/autoLogin', function(req, res) {
         logined: false,
         user: {},
     }
-    if (req.session.username) {
-        db.getUser(req.session.username)
+    if (req.session.user) {
+        db.getUser(req.session.user.username)
             .then((user) => {
                 if (user) {
                     ret.logined = true;
@@ -67,7 +68,7 @@ api.get('/autoLogin', function(req, res) {
 });
 
 api.delete('/delBookmark', function(req, res) {
-    if (!req.session.username) {
+    if (!req.session.user) {
         res.send(401);
         return;
     }
@@ -81,30 +82,30 @@ api.delete('/delBookmark', function(req, res) {
 })
 
 api.post('/updateBookmark', function(req, res) {
-    if (!req.session.username) {
+    if (!req.session.user) {
         res.send(401);
         return;
     }
     var bookmark = req.body.params;
     console.log('hello updateBookmark', JSON.stringify(bookmark));
     var bookmark = req.body.params;
-    var user_id = '1';
+    var userId = req.session.user.id;
     var tags = bookmark.tags;
     db.updateBookmark(bookmark) // 更新标签信息
         .then((affectedRows) => db.delBookmarkTags(bookmark.id)) // 将之前所有的书签分类信息删掉
         .then((affectedRows) => db.addTagsBookmarks(tags, bookmark.id)) // 将新的分类关联起来
-        .then(() => db.updateLastUseTags(user_id, tags)) // 更新最近使用的分类(这个有待考虑)
+        .then(() => db.updateLastUseTags(userId, tags)) // 更新最近使用的分类(这个有待考虑)
         .then(() => res.json({})) // 运气不错
         .catch((err) => console.log('updateBookmark err', err)); // oops!
 })
 
 api.get('/bookmark', function(req, res) {
-    if (!req.session.username) {
+    if (!req.session.user) {
         res.send(401);
         return;
     }
     var bookmarkId = req.query.bookmarkId;
-    var userId = '1';
+    var userId = req.session.user.id;
     var ret = {
         bookmark: {},
         bookmarkTags: [],
@@ -129,11 +130,11 @@ api.get('/bookmark', function(req, res) {
 
 api.get('/bookmarks', function(req, res) {
     console.log('hello bookmarks', JSON.stringify(req.query), req.session.username);
-    if (!req.session.username) {
+    if (!req.session.user) {
         res.send(401);
         return;
     }
-    var userId = req.session.userId;
+    var userId = req.session.user.id;
     var params = req.query;
     if (params.showStyle === 'navigate') {
         db.getBookmarksNavigate(userId)
@@ -178,7 +179,7 @@ api.get('/bookmarks', function(req, res) {
             totalItems: totalItems,
             bookmarks: []
         }
-        params.user_id = req.session.userId;
+        params.userId = userId;
         db.getBookmarksTable(params)
             .then((bookmarksData) => {
                 bookmarks = bookmarksData.bookmarks;
@@ -217,12 +218,12 @@ api.get('/bookmarks', function(req, res) {
 
 api.get('/searchBookmarks', function(req, res) {
     console.log('hello searchBookmarks', JSON.stringify(req.query), req.session.username);
-    if (!req.session.username) {
+    if (!req.session.user) {
         res.send(401);
         return;
     }
     var params = req.query;
-    params.userId = req.session.userId;
+    params.userId = req.session.user.id;
     var bookmarks = [];
     var tagsBookmarks = [];
     var userId = '1';
@@ -272,42 +273,42 @@ api.get('/searchBookmarks', function(req, res) {
 });
 
 api.get('/tags', function(req, res) {
-    if (!req.session.username) {
+    if (!req.session.user) {
         res.send(401);
         return;
     }
-    db.getTags(req.query.user_id)
+    db.getTags(req.session.user.id)
         .then((tags) => res.json(tags))
         .catch((err) => console.log('tags', err));
 });
 
 api.post('/addBookmark', function(req, res) {
     console.log('hello addBookmark', JSON.stringify(req.body));
-    if (!req.session.username) {
+    if (!req.session.user) {
         res.send(401);
         return;
     }
     var bookmark = req.body.params;
-    var user_id = '1';
+    var userId = req.session.user.id;
     var tags = bookmark.tags;
-    db.addBookmark(user_id, bookmark) // 插入书签
+    db.addBookmark(userId, bookmark) // 插入书签
         .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
-        .then(() => db.updateLastUseTags(user_id, tags)) // 更新最新使用的分类
+        .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
         .then(() => res.json({})) // 运气不错
         .catch((err) => console.log('addBookmark err', err)); // oops!
 });
 
 api.post('/addTags', function(req, res) {
     console.log('hello addTags', JSON.stringify(req.query), JSON.stringify(req.body));
-    if (!req.session.username) {
+    if (!req.session.user) {
         res.send(401);
         return;
     }
     var tagsName = req.body.params;
-    var user_id = '1';
+    var userId = req.session.user.id;
     var addTagNames = [];
 
-    db.getTags(user_id)
+    db.getTags(userId)
         .then((tags) => {
             // 需要插入的书签是该用户在数据库不存在的书签
             addTagNames = tagsName.filter((name) => {
@@ -320,8 +321,8 @@ api.post('/addTags', function(req, res) {
             });
             return Promise.resolve(addTagNames);
         })
-        .then((newTagNames) => db.addTags(user_id, newTagNames))
-        .then(() => db.getTags(user_id))
+        .then((newTagNames) => db.addTags(userId, newTagNames))
+        .then(() => db.getTags(userId))
         .then((tags) => res.json(tags))
         .catch((err) => console.log('addTags err', err));
 });

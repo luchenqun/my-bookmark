@@ -23,6 +23,7 @@ api.post('/login', function(req, res) {
     var params = req.body.params;
     var username = params.username;
     var password = md5(params.password);
+    console.log(password);
     db.getUser(username)
         .then((user) => {
             var ret = {

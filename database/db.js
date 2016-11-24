@@ -1,8 +1,8 @@
 var mysql = require('mysql');
 var client = mysql.createConnection({
-    host: '127.0.0.1' || '172.24.13.5',
-    user: 'lcq' || 'root',
-    password: 'fendoubuxi596320' || 'root123',
+    host: '127.0.0.1'|| '172.24.13.5',
+    user: 'lcq'|| 'root',
+    password: 'fendoubuxi596320'|| 'root123',
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306
@@ -256,7 +256,7 @@ db.getBookmarksNavigate = function(user_id) {
 };
 
 db.getBookmarksTable = function(params) {
-    var user_id = params.user_id;
+    var user_id = params.userId;
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
 
@@ -272,6 +272,7 @@ db.getBookmarksTable = function(params) {
             } else {
                 sql += " LIMIT " + (params.currentPage - 1) * params.perPageItems + ", " + params.perPageItems;
                 var totalItems = result.length;
+                console.log(totalItems, sql);
                 client.query(sql, (err, result) => {
                     if (err) {
                         reject(err);

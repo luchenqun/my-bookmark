@@ -27,9 +27,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         }
     }
 
-    bookmarkService.getTags({
-            user_id: '1',
-        })
+    bookmarkService.getTags({})
         .then((data) => {
             $scope.tags = data;
         })

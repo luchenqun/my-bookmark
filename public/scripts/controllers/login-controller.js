@@ -1,13 +1,13 @@
-app.controller('loginCtr', ['$scope', '$filter', '$state', 'bookmarkService', 'pubSubService', function($scope, $filter, $state, bookmarkService, pubSubService) {
-    console.log("Hello loginCtr...");
+app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'bookmarkService', 'pubSubService', function($scope, $filter, $state, $cookieStore, bookmarkService, pubSubService) {
+    console.log("Hello loginCtr...", $cookieStore.get("username"), $cookieStore.get("password"));
 
     pubSubService.publish('Common.menuActive', {
         login: false,
         index: 1
     });
 
-    $scope.username = "luchenqun";
-    $scope.password = "fendoubuxi";
+    $scope.username = $cookieStore.get("username") || "";
+    $scope.password = $cookieStore.get("password") || "";
     $scope.showErr = false;
     $scope.errInfo = '';
 
@@ -25,6 +25,8 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', 'bookmarkService', 'p
                 password: $scope.password,
                 autoLogin: autoLogin,
             };
+            $cookieStore.put("username", $scope.username);
+            $cookieStore.put("password", $scope.password);
             bookmarkService.login(params)
                 .then((data) => {
                     console.log(data);
@@ -37,6 +39,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', 'bookmarkService', 'p
                         })
                     } else {
                         console.log('login failed......................')
+                        toastr.error('账号或者密码错误', "错误");
                     }
                 })
                 .catch((err) => console.log('login err', err));

@@ -107,10 +107,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
         $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         init();
-        var params = {
-            user_id: 1
-        };
-        getTags(params);
+        getTags({});
     });
 
     pubSubService.subscribe('bookmarksCtr.editBookmark', $scope, function(event, params) {

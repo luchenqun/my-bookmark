@@ -299,14 +299,14 @@ db.getBookmarksSearch = function(params) {
         d.setDate(d.getDate() - parseInt(params.dateCreate));
         sql += " AND `created_at` >= '" + d.format('yyyy-MM-dd') + "'"
     } else if (params.dateCreateBegin && params.dateCreateEnd) {
-        sql += " AND `created_at` >= '" + params.dateCreateBegin + "00:00:00" + "' AND `created_at` <= '" + params.dateCreateEnd + "23:59:59" +"' "
+        sql += " AND `created_at` >= '" + params.dateCreateBegin + " 00:00:00" + "' AND `created_at` <= '" + params.dateCreateEnd + " 23:59:59" +"' "
     }
     if (params.dateClick) {
         var d = new Date();
         d.setDate(d.getDate() - parseInt(params.dateClick));
         sql += " AND `last_click` >= '" + d.format('yyyy-MM-dd') + "'"
     } else if (params.dateClickBegin && params.dateClickEnd) {
-        sql += " AND `last_click` >= '" + params.dateClickBegin + "00:00:00" + "' AND `last_click` <= '" + params.dateClickEnd + "23:59:59" + "' "
+        sql += " AND `last_click` >= '" + params.dateClickBegin + " 00:00:00" + "' AND `last_click` <= '" + params.dateClickEnd + " 23:59:59" + "' "
     }
 
     if (params.searchWord) {

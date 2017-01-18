@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var mongoStore = require('connect-mongo')(session);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -32,7 +33,10 @@ app.use(session({
     secret: 'ILoveYiJia', // 建议使用 128 个字符的随机字符串
     cookie: {
         maxAge: 2592000000,
-    }
+    },
+    store: new mongoStore({
+        url: 'mongodb://localhost/mybookmarks'
+    })
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));

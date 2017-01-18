@@ -26,6 +26,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 
 app.use(session({
+    rolling: true,
     resave: false, //添加这行
     saveUninitialized: true, //添加这行
     secret: 'ILoveYiJia', // 建议使用 128 个字符的随机字符串

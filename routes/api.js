@@ -332,7 +332,7 @@ api.post('/getTitle', function(req, response) {
     var params = req.body.params;
     var url = params.url;
     read(url, function(err, article, meta) {
-        console.log(article.title);
+        console.log(article.title || 'Get title failed');
         response.json({
             title: article.title || '',
         });

@@ -11,6 +11,13 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
     $scope.showErr = false;
     $scope.errInfo = '';
 
+    $scope.myKeyup = function(e) {
+        var keycode = window.event ? e.keyCode : e.which;
+        if (keycode == 13) {
+            $scope.login();
+        }
+    };
+
     $scope.login = function() {
         var autoLogin = $('.ui.checkbox.js-auto-login').checkbox('is checked');
         if (!$scope.username || !$scope.password) {

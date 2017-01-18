@@ -1,8 +1,8 @@
 var mysql = require('mysql');
 var client = mysql.createConnection({
-    host: '127.0.0.1'|| '172.24.13.5',
-    user: 'lcq'|| 'root',
-    password: 'fendoubuxi596320'|| 'root123',
+    host: '127.0.0.1',
+    user: 'lcq',
+    password: 'fendoubuxi596320',
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306

@@ -14,7 +14,7 @@
     <div class="required field">
         <label>密码</label>
         <div class="ui icon input">
-            <input type="password" ng-model="password">
+            <input type="password" ng-model="password" ng-keyup="myKeyup($event)">
             <i class="lock icon"></i>
         </div>
     </div>

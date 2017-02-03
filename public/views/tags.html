@@ -3,14 +3,17 @@
         <div class="ui grid">
             <div class="two wide column" ng-class="" ng-mouseover="" ng-mouseleave="" ng-repeat="tag in tags">
                 <div class="ui small label" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
-                    {{ tag.name }} ({{ tag.cnt }})
+                    {{ tag.name }}
+                    ({{ tag.cnt }})
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <table class="ui celled table" ng-if="bookmarkCount > 0">
+    <div class="ui inverted dimmer" ng-class="{active:loadBookmarks, disabled: !loadBookmarks}">
+        <div class="ui huge text loader">正在加载中...</div>
+    </div>
     <thead>
         <tr>
             <th>标题</th>
@@ -37,7 +40,7 @@
             <td>{{ bookmark.created_at }}</td>
             <td>{{ bookmark.last_click }}</td>
             <td>
-                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}">
+                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="getBookmarks(tag.id, 1)">
                     {{ tag.name }}
                 </div>
             </td>

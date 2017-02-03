@@ -58,6 +58,12 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         toastr.warning('功能暂未实现。。。', "警告");
     }
 
+    $scope.jumpToTags = function(tagId) {
+        $state.go('tags', {
+            tagId: tagId,
+        })
+    }
+
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
         params.showStyle = $scope.showStyle;
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
@@ -92,8 +98,8 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         var width = $('.js-segment-navigate').width();
         // console.log('js-edit position update', top+10, left+width-10)
         $('.js-edit').offset({
-            top: top+10,
-            left: left+width-10,
+            top: top + 10,
+            left: left + width - 10,
         })
     });
 }]);

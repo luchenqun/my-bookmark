@@ -25,6 +25,9 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('tags', {
             url: '/tags',
             templateUrl: '/views/tags.html',
+            params: {
+                tagId: null,
+            },
             controller: 'tagsCtr'
         })
         .state('advice', {
@@ -39,8 +42,6 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             url: '/login',
             templateUrl: '/views/login.html',
             params: {
-                foo: null,
-                bar: null,
                 showStyle: 'table',
             },
             controller: 'loginCtr'

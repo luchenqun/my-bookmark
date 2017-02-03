@@ -2,7 +2,7 @@
     <div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
         <div class="ui grid">
             <div class="row">
-                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;">
+                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;" ng-click="jumpToTags(tag.id)">
                     <span title="{{ tag.name }}">{{ tag.name }}</span>
                 </div>
                 <div class="fourteen wide column" ng-if="tag.bookmarks.length">
@@ -21,7 +21,7 @@
                             <img class="ui ui middle aligned tiny image" ng-src=" http://favicon.byi.pw/?url={{ bookmark.url }}" style="width:16px;height:16px" ng-if="!edit">
                             <span>{{ bookmark.title}}</span>
                         </div>
-                        <div class="two wide column js-more-bookmark" ng-class="" ng-mouseover="" ng-mouseleave="" title="查看更多" ng-if="tag.bookmarks.length >= 4">
+                        <div class="two wide column js-more-bookmark" ng-class="" ng-mouseover="" ng-mouseleave="" title="查看更多" ng-if="tag.bookmarks.length >= 4" ng-click="jumpToTags(tag.id)">
                             <img class="ui ui middle aligned tiny image" ng-src="./images/more.png" style="width:16px;height:16px">
                         </div>
                     </div>
@@ -59,7 +59,7 @@
             <td>{{ bookmark.created_at }}</td>
             <td>{{ bookmark.last_click }}</td>
             <td>
-                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}">
+                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="jumpToTags(tag.id)">
                     {{ tag.name }}
                 </div>
             </td>

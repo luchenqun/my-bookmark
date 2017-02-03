@@ -1,8 +1,9 @@
-app.controller('tagsCtr', ['$scope', '$filter', '$window', 'bookmarkService', 'pubSubService', function($scope, $filter, $window, bookmarkService, pubSubService) {
-    console.log("Hello tagsCtr...");
+app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'bookmarkService', 'pubSubService', function($scope, $filter, $window, $stateParams, bookmarkService, pubSubService) {
+    console.log("Hello tagsCtr...", $stateParams);
     getTags({});
 
     const perPageItems = 20;
+    $scope.loadBookmarks = false;
     $scope.tags = []; // 书签数据
     $scope.bookmarkClicked = false;
     $scope.bookmarks = [];
@@ -10,7 +11,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', 'bookmarkService', 'p
     $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.inputPage = '';
-    $scope.currentTagId = "";
+    $scope.currentTagId = ($stateParams && $stateParams.tagId) || '';
 
     pubSubService.subscribe('MenuCtr.tags', $scope, function(event, data) {
         console.log('subscribe MenuCtr.tags', data);
@@ -20,6 +21,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', 'bookmarkService', 'p
     $scope.getBookmarks = function(tagId, currentPage) {
         $scope.bookmarkClicked = true;
         $scope.currentTagId = tagId;
+        $scope.loadBookmarks = true;
 
         $scope.tags.forEach(function(tag) {
             tag.bookmarkClicked = false;
@@ -33,15 +35,20 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', 'bookmarkService', 'p
             currentPage: currentPage,
             perPageItems: perPageItems,
         };
+
         bookmarkService.getBookmarksByTag(params)
             .then((data) => {
                 $scope.bookmarks = data.bookmarks;
                 $scope.bookmarkCount = data.totalItems;
                 $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
 
-                $scope.inputPage = ''
+                $scope.inputPage = '';
+                $scope.loadBookmarks = false;
             })
-            .catch((err) => console.log('getTags err', err));
+            .catch((err) => {
+                console.log('getTags err', err);
+                $scope.loadBookmarks = false;
+            });
     };
 
     $scope.changeCurrentPage = function(currentPage) {

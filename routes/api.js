@@ -217,6 +217,61 @@ api.get('/bookmarks', function(req, res) {
     }
 });
 
+
+api.get('/bookmarksByTag', function(req, res) {
+    console.log('hello bookmarksByTag', JSON.stringify(req.query), req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var userId = req.session.user.id;
+    var params = req.query;
+
+    var bookmarks = [];
+    var tagsBookmarks = [];
+    var totalItems = 0;
+    var totalItems = 0;
+    var sendData = {
+        totalItems: totalItems,
+        bookmarks: []
+    }
+    db.getBookmarksByTag(params)
+        .then((bookmarksData) => {
+            bookmarks = bookmarksData.bookmarks;
+            totalItems = bookmarksData.totalItems;
+            var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);
+            return db.getTagsBookmarks(bookmarkIds);
+        })
+        .then((tbs) => {
+            tagsBookmarks = tbs;
+            return db.getTags(userId);
+        })
+        .then((tags) => {
+            var data = [];
+            // 获取每个书签的所有分类标签
+            bookmarks.forEach(function(bookmark) {
+                var bookmarkTags = [];
+                tagsBookmarks.forEach(function(tb) {
+                    if (tb.bookmark_id == bookmark.id) {
+                        tags.forEach(function(tag) {
+                            if (tb.tag_id == tag.id) {
+                                bookmarkTags.push(tag)
+                            }
+                        })
+                    }
+                });
+                bookmark.tags = bookmarkTags;
+                data.push(bookmark);
+            })
+            sendData.totalItems = totalItems;
+            sendData.bookmarks = data;
+            
+            res.json(sendData);
+        })
+        .catch((err) => console.log('bookmarks table or card err', err))
+
+});
+
 api.get('/searchBookmarks', function(req, res) {
     console.log('hello searchBookmarks', JSON.stringify(req.query), req.session.username);
     if (!req.session.user) {

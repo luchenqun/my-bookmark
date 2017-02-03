@@ -195,7 +195,7 @@ db.getUser = function(username) {
 
 db.getTags = function(user_id) {
     console.log('getTags');
-    var sql = "SELECT * FROM `tags` WHERE `user_id` = '" + user_id + "' ORDER BY last_use DESC";
+    var sql = "SELECT t.*, tb.cnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id WHERE t.user_id = '" + user_id + "' ORDER BY last_use DESC";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -264,6 +264,37 @@ db.getBookmarksTable = function(params) {
     if (user_id) {
         sql += " AND `user_id` = '" + user_id + "'"
     }
+
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                sql += " LIMIT " + (params.currentPage - 1) * params.perPageItems + ", " + params.perPageItems;
+                var totalItems = result.length;
+                console.log(totalItems, sql);
+                client.query(sql, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        var bookmarksData = {
+                            totalItems: totalItems,
+                            bookmarks: result,
+                        }
+                        resolve(bookmarksData);
+                    }
+                });
+            }
+        });
+    })
+}
+
+db.getBookmarksByTag = function(params) {
+    var tag_id = params.tagId;
+    params.currentPage = params.currentPage || 1;
+    params.perPageItems = params.perPageItems || 20;
+    
+    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '"+ tag_id +"' AND tags_bookmarks.bookmark_id = bookmarks.id";
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

@@ -265,7 +265,7 @@ api.get('/bookmarksByTag', function(req, res) {
             })
             sendData.totalItems = totalItems;
             sendData.bookmarks = data;
-            
+
             res.json(sendData);
         })
         .catch((err) => console.log('bookmarks table or card err', err))

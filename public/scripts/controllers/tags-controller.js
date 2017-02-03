@@ -18,9 +18,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', 'bookmarkService', 'p
     });
 
     $scope.getBookmarks = function(tagId, currentPage) {
-        console.log('tags getBookmarks', tagId);
         $scope.bookmarkClicked = true;
-        $scope.currentTagId =  tagId;
+        $scope.currentTagId = tagId;
 
         $scope.tags.forEach(function(tag) {
             tag.bookmarkClicked = false;
@@ -91,5 +90,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', 'bookmarkService', 'p
         bookmarkService.getTags(params)
             .then((data) => $scope.tags = data)
             .catch((err) => console.log('getTags err', err));
+
+        pubSubService.publish('Common.menuActive', {
+            login: true,
+            index: 1
+        });
     }
 }]);

@@ -3,7 +3,7 @@
         <div class="ui grid">
             <div class="two wide column" ng-class="" ng-mouseover="" ng-mouseleave="" ng-repeat="tag in tags">
                 <div class="ui small label" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
-                    {{ tag.name }} x {{ tag.cnt }}
+                    {{ tag.name }} ({{ tag.cnt }})
                 </div>
             </div>
         </div>

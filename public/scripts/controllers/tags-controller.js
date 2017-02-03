@@ -2,7 +2,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', 'bookmarkService', 'p
     console.log("Hello tagsCtr...");
     getTags({});
 
-    const perPageItems = 10;
+    const perPageItems = 20;
     $scope.tags = []; // 书签数据
     $scope.bookmarkClicked = false;
     $scope.bookmarks = [];
@@ -88,7 +88,17 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', 'bookmarkService', 'p
 
     function getTags(params) {
         bookmarkService.getTags(params)
-            .then((data) => $scope.tags = data)
+            .then((data) => {
+                $scope.tags = data
+                if (!$scope.currentTagId && $scope.tags.length > 0) {
+                    $scope.currentTagId = $scope.tags[0].id;
+                    $scope.tags[0].bookmarkClicked = true;
+                }
+
+                if ($scope.currentTagId) {
+                    $scope.getBookmarks($scope.currentTagId, 1);
+                }
+            })
             .catch((err) => console.log('getTags err', err));
 
         pubSubService.publish('Common.menuActive', {

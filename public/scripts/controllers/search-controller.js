@@ -50,6 +50,12 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             bookmarkService.clickBookmark({
                 id: id
             });
+            $scope.bookmarks.forEach(function(bookmark) {
+                if (bookmark.id == id) {
+                    bookmark.click_count += 1;
+                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
+                }
+            })
         }
     }
 
@@ -74,6 +80,10 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     $scope.detailBookmark = function(bookmarkId) {
+        toastr.warning('功能暂未实现。。。', "警告");
+    }
+
+    $scope.copyBookmark = function(bookmarkUrl) {
         toastr.warning('功能暂未实现。。。', "警告");
     }
 

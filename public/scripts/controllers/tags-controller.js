@@ -66,6 +66,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
             bookmarkService.clickBookmark({
                 id: id
             });
+            $scope.bookmarks.forEach(function(bookmark) {
+                if (bookmark.id == id) {
+                    bookmark.click_count += 1;
+                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
+                }
+            })
         }
     }
 
@@ -93,10 +99,15 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
         toastr.warning('功能暂未实现。。。', "警告");
     }
 
+    $scope.copyBookmark = function(bookmarkUrl) {
+        toastr.warning('功能暂未实现。。。', "警告");
+    }
+
     function getTags(params) {
         bookmarkService.getTags(params)
             .then((data) => {
                 $scope.tags = data
+
                 if (!$scope.currentTagId && $scope.tags.length > 0) {
                     $scope.currentTagId = $scope.tags[0].id;
                     $scope.tags[0].bookmarkClicked = true;
@@ -104,6 +115,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
 
                 if ($scope.currentTagId) {
                     $scope.getBookmarks($scope.currentTagId, 1);
+                } else {
+                    toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
                 }
             })
             .catch((err) => console.log('getTags err', err));

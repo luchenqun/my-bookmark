@@ -7,7 +7,7 @@
     <div class="required field">
         <label>用户名</label>
         <div class="ui icon input">
-            <input type="text" ng-model="username">
+            <input type="text" ng-model="username" ng-keyup="myKeyup($event)">
             <i class="user icon"></i>
         </div>
     </div>
@@ -24,5 +24,40 @@
             <label>30天内自动登陆</label>
         </div>
     </div>
-    <div class="ui submit button" ng-click="login()">登陆</div>
+    <div class="field">
+        <div class="ui submit button" ng-click="login()">登陆</div>
+        <span>
+            <div style="margin-top:20px;float:right;">没有账号？<a herf="#" ng-click="showRegister()">注册一个！</a>
+            </div>
+        </span>
+    </div>
 </form>
+<div class="ui modal js-register">
+    <div class="header">
+        账号注册
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="required field">
+                <label>邮箱</label>
+                <input type="text" placeholder="" ng-model="emailRegister">
+            </div>
+            <div class="required field">
+                <label>用户名</label>
+                <input type="text" placeholder="只允许大小写字母数字，至少3位" ng-model="usernameRegister">
+            </div>
+            <div class="required field">
+                <label>密码</label>
+                <input type="password" placeholder="" ng-model="passwordRegister1">
+            </div>
+            <div class="required field">
+                <label>确认密码</label>
+                <input type="password" placeholder="" ng-model="passwordRegister2">
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">取消</div>
+        <div class="ui green button" ng-click="register()">注册</div>
+    </div>
+</div>

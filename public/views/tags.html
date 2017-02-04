@@ -4,7 +4,7 @@
             <div class="two wide column" ng-class="" ng-mouseover="" ng-mouseleave="" ng-repeat="tag in tags">
                 <div class="ui small label" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
                     {{ tag.name }}
-                    ({{ tag.cnt }})
+                    ({{ tag.cnt || 0 }})
                 </div>
             </div>
         </div>
@@ -45,9 +45,10 @@
                 </div>
             </td>
             <td>
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 5px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark.id)">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark.id)">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/copy.png" ng-click="copyBookmark(bookmark.url)" title="复制链接">
             </td>
         </tr>
     </tbody>

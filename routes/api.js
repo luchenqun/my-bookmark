@@ -46,6 +46,27 @@ api.post('/login', function(req, res) {
         .catch((err) => console.log('login error', err));
 });
 
+api.post('/register', function(req, res) {
+    var params = req.body.params;
+    params.password = md5(params.password); // 进行密码加密
+
+    db.register(params)
+        .then((affectedRows) => {
+            res.json({
+                retCode: 0,
+                msg: params.username + " 注册成功 ",
+            })
+            console.log('register affectedRows ', affectedRows)
+        })
+        .catch((err) => {
+            console.log('login error', err);
+            res.json({
+                retCode: 1,
+                msg: params.username + " 注册失败: " + JSON.stringify(err),
+            })
+        });
+});
+
 api.get('/autoLogin', function(req, res) {
     var ret = {
         logined: false,
@@ -161,7 +182,9 @@ api.get('/bookmarks', function(req, res) {
                         tag.bookmarks = [];
                     }
                     tag.click += bookmark.click_count;
-                    tag.bookmarks.push(bookmark);
+                    if (bookmark.id) {
+                        tag.bookmarks.push(bookmark);
+                    }
                 });
                 if (result && result.length > 0) {
                     data.push(tag);

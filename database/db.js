@@ -179,6 +179,20 @@ db.updateUserLastLogin = function(id) {
     });
 };
 
+db.register = function(user) {
+    console.log('register');
+    var sql = "INSERT INTO `users` (`username`, `password`, `email`) VALUES ('" + user.username + "', '" + user.password + "', '" + user.email + "')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+};
+
 db.getUser = function(username) {
     console.log('getUser');
     var sql = "SELECT * FROM `users` WHERE `username` = '" + username + "'";
@@ -293,8 +307,8 @@ db.getBookmarksByTag = function(params) {
     var tag_id = params.tagId;
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
-    
-    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '"+ tag_id +"' AND tags_bookmarks.bookmark_id = bookmarks.id";
+
+    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id";
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
@@ -330,7 +344,7 @@ db.getBookmarksSearch = function(params) {
         d.setDate(d.getDate() - parseInt(params.dateCreate));
         sql += " AND `created_at` >= '" + d.format('yyyy-MM-dd') + "'"
     } else if (params.dateCreateBegin && params.dateCreateEnd) {
-        sql += " AND `created_at` >= '" + params.dateCreateBegin + " 00:00:00" + "' AND `created_at` <= '" + params.dateCreateEnd + " 23:59:59" +"' "
+        sql += " AND `created_at` >= '" + params.dateCreateBegin + " 00:00:00" + "' AND `created_at` <= '" + params.dateCreateEnd + " 23:59:59" + "' "
     }
     if (params.dateClick) {
         var d = new Date();
@@ -391,8 +405,9 @@ db.getBookmarksCard = function(user_id) {
 }
 
 db.getTagsBookmarks = function(bookmark_ids) {
-    console.log('getTagsBookmarks');
-    var sql = "SELECT * FROM `tags_bookmarks` WHERE bookmark_id in(" + bookmark_ids.toString() + ")"
+    var sql = "SELECT * FROM `tags_bookmarks` WHERE bookmark_id in(" + (bookmark_ids.toString() || ("-1")) + ")"; // 如果是空的，那查一个不存在的就行了。
+    console.log('getTagsBookmarks', sql);
+
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

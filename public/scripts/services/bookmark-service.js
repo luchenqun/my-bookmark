@@ -27,6 +27,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        register: function(params) {
+            var def = $q.defer();
+            $http.post('/api/register/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('register error');
+                });
+            return def.promise;
+        },
         clickBookmark: function(params) {
             var def = $q.defer();
             $http.post('/api/clickBookmark/', {

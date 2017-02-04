@@ -32,6 +32,15 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             bookmarkService.clickBookmark({
                 id: id
             });
+
+            if (params.showStyle != 'navigate') {
+                $scope.bookmarks.forEach(function(bookmark) {
+                    if (bookmark.id == id) {
+                        bookmark.click_count += 1;
+                        bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
+                    }
+                })
+            }
         }
     }
     $scope.toggleMode = function() {
@@ -58,7 +67,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         toastr.warning('功能暂未实现。。。', "警告");
     }
     $scope.copyBookmark = function(bookmarkUrl) {
-        toastr.warning(bookmarkUrl, "警告");
+        toastr.warning('功能暂未实现。。。', "警告");
     }
 
 
@@ -84,8 +93,14 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 if (params.showStyle != 'navigate') {
                     $scope.bookmarks = data.bookmarks;
                     $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
+                    if (data.totalItems == 0) {
+                        toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
+                    }
                 } else {
                     $scope.bookmarks = data;
+                    if ($scope.bookmarks.length == 0) {
+                        toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
+                    }
                 }
                 pubSubService.publish('Common.menuActive', {
                     login: true,
@@ -96,7 +111,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     // TODO: 我要将编辑按钮固定在容器的右上角
-    $(window).resize(function() {
+    $(window).resize(updateEditPos);
+    setTimeout(updateEditPos, 100);
+
+    function updateEditPos() {
         var top = $('.js-segment-navigate').offset().top;
         var left = $('.js-segment-navigate').offset().left;
         var width = $('.js-segment-navigate').width();
@@ -105,5 +123,5 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             top: top + 10,
             left: left + width - 10,
         })
-    });
+    }
 }]);

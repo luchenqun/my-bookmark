@@ -11,6 +11,12 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
     $scope.showErr = false;
     $scope.errInfo = '';
 
+    $scope.emailRegister = "";
+    $scope.usernameRegister = "";
+    $scope.passwordRegister1 = "";
+    $scope.passwordRegister2 = "";
+
+
     $scope.myKeyup = function(e) {
         var keycode = window.event ? e.keyCode : e.which;
         if (keycode == 13) {
@@ -22,7 +28,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
         var autoLogin = $('.ui.checkbox.js-auto-login').checkbox('is checked');
         if (!$scope.username || !$scope.password) {
             $scope.showErr = true;
-            $scope.errInfo = '用户明或者密码不能为空！';
+            $scope.errInfo = '用户名或者密码不能为空！';
         } else {
             $scope.showErr = false;
             $scope.errInfo = '';
@@ -51,5 +57,56 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
                 })
                 .catch((err) => console.log('login err', err));
         }
+    }
+
+    $scope.showRegister = function() {
+        $('.ui.modal.js-register').modal({
+            closable: false,
+        }).modal('show');
+
+        $scope.emailRegister = "";
+        $scope.usernameRegister = "";
+        $scope.passwordRegister1 = "";
+        $scope.passwordRegister2 = "";
+
+    }
+
+    $scope.register = function() {
+        if (!$scope.emailRegister || !$scope.usernameRegister || !$scope.passwordRegister1 || !$scope.passwordRegister2) {
+            toastr.error('有必填项为空', "错误");
+            return;
+        }
+        if ($scope.passwordRegister1 !== $scope.passwordRegister2) {
+            toastr.error('两次输入账号密码不一致', "错误");
+            return;
+        }
+        if (!/([0-9a-zA-Z]){3,12}/.test($scope.usernameRegister)) {
+            toastr.error('账号只能是数字字母，且长度必须为3到12位', "错误");
+            return;
+        }
+        if (!/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test($scope.emailRegister)) {
+            toastr.error('邮箱格式输入有误', "错误");
+            return;
+        }
+
+        var user = {
+            username: $scope.usernameRegister,
+            email: $scope.emailRegister,
+            password: $scope.passwordRegister1,
+        };
+
+        bookmarkService.register(user)
+            .then((data) => {
+                if (data.retCode == 0) {
+                    toastr.success('注册成功', "提示");
+                    $('.ui.modal.js-register').modal('hide');
+                } else {
+                    toastr.error('注册失败，您的账号或者邮箱可能已经存在了。错误信息：' + data.msg, "错误");
+                }
+            })
+            .catch((err) => {
+                console.log('register err', err);
+                toastr.error('注册失败：' + JSON.stringify(err), "错误");
+            });
     }
 }]);

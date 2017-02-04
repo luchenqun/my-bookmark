@@ -31,15 +31,15 @@ client.connect();
 // update delete 返回影响的行数
 var db = {
 
-    }
-    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
-    // client.query(sql, (err, result) => {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         console.log(result);
-    //     }
-    // });
+}
+// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
+// client.query(sql, (err, result) => {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log(result);
+//     }
+// });
 
 db.addBookmark = function(user_id, bookmark) {
     var sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
@@ -290,7 +290,7 @@ db.getBookmarksTable = function(params) {
 
     var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE 1=1";
     if (user_id) {
-        sql += " AND `user_id` = '" + user_id + "'"
+        sql += " AND `user_id` = '" + user_id + "' ORDER BY click_count DESC"
     }
 
     return new Promise(function(resolve, reject) {
@@ -322,7 +322,7 @@ db.getBookmarksByTag = function(params) {
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
 
-    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id";
+    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id ORDER BY bookmarks.click_count DESC";
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

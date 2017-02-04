@@ -219,16 +219,17 @@ api.get('/bookmarks', function(req, res) {
                         tag.click = 0;
                         tag.bookmarks = [];
                     }
-                    tag.click += bookmark.click_count;
+
                     if (bookmark.id && tag.bookmarks.length < 31) {
+                        tag.click += bookmark.click_count;
                         tag.bookmarks.push(bookmark);
                     }
                 });
                 if (result && result.length > 0) {
                     data.push(tag);
                 }
-                data.sort((a, b) => a.click < b.click)
-                    // console.log(JSON.stringify(data));
+                data.sort((a, b) => b.click - a.click);
+                // console.log(JSON.stringify(data));
                 res.json(data);
             })
             .catch((err) => console.log('bookmarks navigate err', err));

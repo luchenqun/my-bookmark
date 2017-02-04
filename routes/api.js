@@ -67,6 +67,44 @@ api.post('/register', function(req, res) {
         });
 });
 
+api.post('/resetPassword', function(req, res) {
+    console.log("resetPassword");
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var params = req.body.params;
+    var passwordOrigin = md5(params.passwordOrgin); // 进行密码加密
+    var passwordNew = md5(params.passwordNew); // 进行密码加密
+
+    db.getUser(req.session.user.username)
+        .then((user) => {
+            if (user && user.password === passwordOrigin) {
+                return db.resetPassword(req.session.userId, passwordNew)
+            } else {
+                return Promise.resolve(0)
+            }
+        })
+        .then((affectedRows) => {
+            res.json({
+                retCode: (affectedRows == 1 ? 0 : 1),
+                msg: req.session.username + " 更新密码失败，可能原密码不正确！",
+            })
+
+            if (affectedRows) {
+                req.session.destroy();
+            }
+        })
+        .catch((err) => {
+            console.log('resetPassword error', err);
+            res.json({
+                retCode: 2,
+                msg: req.session.username + " 更新密码失败: " + JSON.stringify(err),
+            })
+        });
+});
+
 api.get('/autoLogin', function(req, res) {
     var ret = {
         logined: false,
@@ -182,7 +220,7 @@ api.get('/bookmarks', function(req, res) {
                         tag.bookmarks = [];
                     }
                     tag.click += bookmark.click_count;
-                    if (bookmark.id) {
+                    if (bookmark.id && tag.bookmarks.length < 31) {
                         tag.bookmarks.push(bookmark);
                     }
                 });

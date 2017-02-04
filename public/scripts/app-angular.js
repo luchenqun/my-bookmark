@@ -37,6 +37,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('settings', {
             url: '/settings',
             templateUrl: '/views/settings.html',
+            controller: 'settingsCtr'
         })
         .state('login', {
             url: '/login',

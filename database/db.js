@@ -179,6 +179,20 @@ db.updateUserLastLogin = function(id) {
     });
 };
 
+db.resetPassword = function(userId, password) {
+    console.log('updateUserLastLogin');
+    var sql = "UPDATE `users` SET `password` = '" + password + "' WHERE(`id` = '" + userId + "')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
 db.register = function(user) {
     console.log('register');
     var sql = "INSERT INTO `users` (`username`, `password`, `email`) VALUES ('" + user.username + "', '" + user.password + "', '" + user.email + "')";

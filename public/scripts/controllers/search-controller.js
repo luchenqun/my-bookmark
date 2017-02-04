@@ -41,7 +41,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     if ($scope.searchWord) {
         searchBookmarks(searchParams);
     } else {
-
+        $state.go('/', {})
     }
 
     $scope.jumpToUrl = function(url, id) {

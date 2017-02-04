@@ -1,1 +1,37 @@
-<p> 账号设置页面 </p>
+<div class="ui segment">
+    <div class="ui grid">
+        <div class="four wide stretched column">
+            <div class="ui secondary vertical pointing menu">
+                <a class="item" ng-class="{active:form[0]}" ng-click="changeForm(0)">重置密码
+                </a>
+                <a class="item" ng-class="{active:form[1]}" ng-click="changeForm(1)">书签显示设置
+                </a>
+                <a class="item" ng-class="{active:form[2]}" ng-click="changeForm(2)">菜单设置
+                </a>
+            </div>
+        </div>
+        <div class="twelve wide stretched column">
+            <form class="ui form" ng-show="form[0]">
+                <div class="required field">
+                    <label>原密码</label>
+                    <input type="password" placeholder="" ng-model="passwordOrgin">
+                </div>
+                <div class="required field">
+                    <label>新密码</label>
+                    <input type="password" placeholder="" ng-model="passwordNew1">
+                </div>
+                <div class="required field">
+                    <label>确认密码</label>
+                    <input type="password" placeholder="" ng-model="passwordNew2">
+                </div>
+                <button class="ui button" type="submit" ng-click="resetPassword()">重置密码</button>
+            </form>
+            <form class="ui form" ng-show="form[1]">
+                书签显示设置
+            </form>
+            <form class="ui form" ng-show="form[2]">
+                菜单设置
+            </form>
+        </div>
+    </div>
+</div>

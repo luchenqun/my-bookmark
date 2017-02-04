@@ -57,6 +57,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.detailBookmark = function(bookmarkId) {
         toastr.warning('功能暂未实现。。。', "警告");
     }
+    $scope.copyBookmark = function(bookmarkUrl) {
+        toastr.warning(bookmarkUrl, "警告");
+    }
+
 
     $scope.jumpToTags = function(tagId) {
         $state.go('tags', {

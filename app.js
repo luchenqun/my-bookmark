@@ -28,11 +28,11 @@ app.use(cookieParser());
 
 app.use(session({
     rolling: true,
-    resave: false, //添加这行
-    saveUninitialized: true, //添加这行
+    resave: false, //
+    saveUninitialized: true, //
     secret: 'ILoveYiJia', // 建议使用 128 个字符的随机字符串
     cookie: {
-        maxAge: 1000 * 60,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 一个月
     },
     store: new mongoStore({
         url: 'mongodb://localhost/mybookmarks'

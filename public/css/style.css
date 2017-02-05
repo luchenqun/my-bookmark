@@ -1,4 +1,8 @@
 body {
+	background-image: url('../images/bg.png');
+	background-repeat: repeat;
+	background-position: top left;
+	background-attachment: scroll;
     padding: 50px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }

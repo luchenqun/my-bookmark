@@ -98,7 +98,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     }
                 } else {
                     $scope.bookmarks = data;
-                    data.forEach((item) => console.log(item.name, item.click));
                     if ($scope.bookmarks.length == 0) {
                         toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
                     }

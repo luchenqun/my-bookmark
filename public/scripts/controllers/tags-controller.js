@@ -21,6 +21,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
     $scope.getBookmarks = function(tagId, currentPage) {
         $scope.bookmarkClicked = true;
         $scope.currentTagId = tagId;
+        $scope.currentPage = currentPage;
         $scope.loadBookmarks = true;
 
         $scope.tags.forEach(function(tag) {
@@ -76,8 +77,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
     }
 
     $scope.delBookmark = function(bookmarkId) {
-        toastr.warning('功能暂未实现。。。', "警告");
-        return;
         var params = {
             id: bookmarkId
         }

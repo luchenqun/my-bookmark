@@ -41,6 +41,11 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
             }
         });
 
+        if (tags.length + $scope.tags.length >= 30) {
+            toastr.error('标签个数总数不能超过30个！', "提示");
+            return;
+        }
+
         bookmarkService.addTags(params)
             .then((data) => {
                 $scope.tags = data;

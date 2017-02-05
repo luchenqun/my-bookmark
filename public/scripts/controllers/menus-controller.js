@@ -33,6 +33,13 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
         title: '登陆'
     }];
 
+    $scope.myKeyup = function(e) {
+        var keycode = window.event ? e.keyCode : e.which;
+        if (keycode == 13) {
+            $scope.searchBookmarks($scope.searchWord);
+        }
+    };
+
     /**
      * @func
      * @desc 点击搜索按钮搜索书签

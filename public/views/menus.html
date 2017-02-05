@@ -32,7 +32,7 @@
             <div class="item">
                 <div class="ui transparent icon input">
                     <input class="prompt" type="text" ng-model="searchWord" placeholder="标题，链接..." ng-keypress="($event.which === 13)?searchBookmarks(searchWord):0">
-                    <i class="search link icon" ng-click="searchBookmarks()" ui-sref="search({searchWord:searchWord})" ui-sref-opts="{reload: true}"></i>
+                    <i class="search link icon" ng-click="searchBookmarks()" ui-sref="search({searchWord:searchWord})" ui-sref-opts="{reload: true}" ng-keyup="myKeyup($event)"></i>
                 </div>
                 <div class="results"></div>
             </div>

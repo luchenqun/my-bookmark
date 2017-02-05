@@ -87,8 +87,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
             });
     }
     $scope.editBookmark = function(bookmarkId) {
-        toastr.warning('功能暂未实现。。。', "警告");
-        return;
         pubSubService.publish('bookmarksCtr.editBookmark', {
             'bookmarkId': bookmarkId
         });

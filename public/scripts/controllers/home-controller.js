@@ -12,7 +12,13 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
                 })
             } else {
                 console.log('autoLogin failed......................')
+                pubSubService.publish('Common.menuActive', {
+                    login: false,
+                    index: 0
+                });
             }
         })
-        .catch((err) => console.log('autoLogin err', err));
+        .catch((err) => {
+            console.log('autoLogin err', err)
+        });
 }]);

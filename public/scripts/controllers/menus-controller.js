@@ -81,6 +81,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     }
 
     function updateMenuActive(index) {
+        console.log('index = ' + index)
         $('.ui.menu a.item').removeClass('selected');
         $('.ui.menu a.item:eq(' + index + ')').addClass('selected');
     }

@@ -83,7 +83,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
             id: $scope.id,
             url: $scope.url,
             title: $scope.title,
-            public: '1',
+            public: $('.ui.checkbox.js-public').checkbox('is checked') ? '1' : '0',
             tags: selectedTags,
             description: $scope.description
         }
@@ -111,6 +111,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         }).modal('show');
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
         $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
+        $('.ui.checkbox.js-public').checkbox('set checked');
         init();
         getTags({});
     });
@@ -134,6 +135,8 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                 $scope.description = (bookmark && bookmark.description) || '';
                 $scope.tags = data.tags;
                 $scope.public = (bookmark && bookmark.id) || '1';
+                $('.ui.checkbox.js-public').checkbox((bookmark && bookmark.public && bookmark.public == '1') ? 'set checked' : 'set unchecked')
+
 
                 $timeout(function() {
                     data.bookmarkTags.forEach((tagId) => {

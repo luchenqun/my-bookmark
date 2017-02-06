@@ -1,8 +1,8 @@
 var mysql = require('mysql');
 var client = mysql.createConnection({
     host: '127.0.0.1',
-    user: 'lcq',
-    password: 'fendoubuxi596320',
+    user: 'test',   // mysql的账号
+    password: '123456', // mysql 的密码
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306

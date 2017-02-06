@@ -1,6 +1,6 @@
 <div class="js-menu" ng-controller="menuCtr">
     <div class="ui huge menu js-login-in" ng-if="login">
-        <a class="item" ng-class="{selected:$index===selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" jsMenuInit>
+        <a class="item" ng-class="{selected:$index===selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" js-menu-init>
             <div>{{ menu.title }}</div>
             <div class="ui floating simple dropdown icon js-bookmark-dropdown" ng-if="$index==0" ng-click="$event.stopPropagation();">
                 <i class="dropdown icon"></i>

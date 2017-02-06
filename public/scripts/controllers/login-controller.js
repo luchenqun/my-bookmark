@@ -78,6 +78,8 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
         }
         if ($scope.passwordRegister1 !== $scope.passwordRegister2) {
             toastr.error('两次输入账号密码不一致', "错误");
+            $scope.passwordRegister1 = "";
+            $scope.passwordRegister2 = "";
             return;
         }
         if (!/([0-9a-zA-Z]){3,12}/.test($scope.usernameRegister)) {
@@ -100,6 +102,8 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
                 if (data.retCode == 0) {
                     toastr.success('注册成功', "提示");
                     $('.ui.modal.js-register').modal('hide');
+                    $scope.username = $scope.usernameRegister;
+                    $scope.password = "";
                 } else {
                     toastr.error('注册失败，您的账号或者邮箱可能已经存在了。错误信息：' + data.msg, "错误");
                 }

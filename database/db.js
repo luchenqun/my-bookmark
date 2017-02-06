@@ -31,15 +31,15 @@ client.connect();
 // update delete 返回影响的行数
 var db = {
 
-}
-// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
-// client.query(sql, (err, result) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log(result);
-//     }
-// });
+    }
+    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
+    // client.query(sql, (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log(result);
+    //     }
+    // });
 
 db.addBookmark = function(user_id, bookmark) {
     var sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
@@ -202,10 +202,53 @@ db.register = function(user) {
                 reject(err);
             } else {
                 resolve(result.affectedRows);
+                db.insertDefaultBookmarks(result.insertId);
             }
         });
     });
 };
+
+db.insertDefaultBookmarks = function(userId) {
+    var tags_name = ["常用", "未分类"];
+
+    db.addTags(userId, tags_name)
+        .then((insertId) => {
+            var bookmarks = [{
+                title: "谷歌",
+                description: "要翻墙的搜索网站",
+                url: "https://www.google.com.hk/",
+                public: "1"
+            }, {
+                title: "百度",
+                description: "A:百度一下你会死啊？B:会！",
+                url: "https://www.baidu.com/",
+                public: "1"
+            }, {
+                title: "微博",
+                description: "随时随地发现新鲜事",
+                url: "http://weibo.com/",
+                public: "1"
+            }, {
+                title: "天猫",
+                description: "上天猫，就够了！",
+                url: "https://www.tmall.com/",
+                public: "1"
+            }, {
+                title: "优酷",
+                description: "视频网站",
+                url: "http://www.youku.com/",
+                public: "1"
+            }];
+
+            var tags = [insertId];
+            bookmarks.forEach((bookmark) => {
+                db.addBookmark(userId, bookmark)
+                    .then((insertId) => db.addTagsBookmarks(tags, insertId))
+                    .catch((err) => console.log('insertDefaultBookmarks err2', err)); // oops!
+            })
+        })
+        .catch((err) => console.log('insertDefaultBookmarks err1', err)); // oops!
+}
 
 db.getUser = function(username) {
     console.log('getUser');
@@ -263,7 +306,7 @@ db.addTags = function(user_id, tags_name) {
             if (err) {
                 reject(err);
             } else {
-                resolve(result.affectedRows);
+                resolve(result.insertId);
             }
         });
     });

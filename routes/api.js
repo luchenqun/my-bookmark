@@ -153,7 +153,7 @@ api.post('/updateBookmark', function(req, res) {
     var tags = bookmark.tags;
     db.updateBookmark(bookmark) // 更新标签信息
         .then((affectedRows) => db.delBookmarkTags(bookmark.id)) // 将之前所有的书签分类信息删掉
-        .then((affectedRows) => db.addTagsBookmarks(tags, bookmark.id)) // 将新的分类关联起来
+        .then((insertId) => db.addTagsBookmarks(tags, bookmark.id)) // 将新的分类关联起来
         .then(() => db.updateLastUseTags(userId, tags)) // 更新最近使用的分类(这个有待考虑)
         .then(() => res.json({})) // 运气不错
         .catch((err) => console.log('updateBookmark err', err)); // oops!

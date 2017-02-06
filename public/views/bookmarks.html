@@ -2,8 +2,8 @@
     <div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
         <div class="ui grid">
             <div class="row">
-                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;" ng-click="jumpToTags(tag.id)">
-                    <span title="{{ tag.name }}">{{ tag.name }}</span>
+                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;">
+                    <span title="{{ tag.name }}" ng-click="jumpToTags(tag.id)">{{ tag.name }}</span>
                 </div>
                 <div class="fourteen wide column" ng-if="tag.bookmarks.length">
                     <div class="ui grid container">

@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    <div class="ui huge menu js-not-login-in" ng-show="!login">
+    <div class="ui huge menu js-not-login-in" ng-if="!login">
         <a class="item" ng-class="{selected:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
     </div>
 </div>

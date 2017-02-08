@@ -459,7 +459,7 @@ db.getBookmarksSearch = function(params) {
 
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
-    sql += " ORDER BY click_count DESC, created_at DESC";
+    sql += " GROUP BY url ORDER BY click_count DESC, created_at DESC";
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

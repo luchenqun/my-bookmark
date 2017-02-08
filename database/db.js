@@ -152,8 +152,8 @@ db.updateLastUseTags = function(user_id, tags) {
     });
 }
 
-db.clickBookmark = function(id) {
-    var sql = "UPDATE `bookmarks` SET `click_count`=`click_count`+1, `last_click`=now() WHERE (`id`='" + id + "')";
+db.clickBookmark = function(id, user_id) {
+    var sql = "UPDATE `bookmarks` SET `click_count`=`click_count`+1, `last_click`=now() WHERE (`id`='" + id + "') AND (`user_id`='" + user_id + "')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

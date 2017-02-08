@@ -46,7 +46,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
     $scope.jumpToUrl = function(url, id) {
         if (!$scope.edit) {
-            $window.open(url, '_blank');
+            $window.open(url);
             bookmarkService.clickBookmark({
                 id: id
             });

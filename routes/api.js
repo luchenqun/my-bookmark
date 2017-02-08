@@ -14,7 +14,7 @@ api.post('/logout', function(req, res) {
 });
 
 api.post('/clickBookmark', function(req, res) {
-    db.clickBookmark(req.body.params.id)
+    db.clickBookmark(req.body.params.id, req.session.userId)
         .then((affectedRows) => res.json({}))
         .catch((err) => console.log('clickBookmark error', err));
 });

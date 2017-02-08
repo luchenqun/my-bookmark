@@ -82,7 +82,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
             $scope.passwordRegister2 = "";
             return;
         }
-        if (!/([0-9a-zA-Z]){3,12}/.test($scope.usernameRegister)) {
+        if (!/^[A-Za-z0-9]{3,12}$/.test($scope.usernameRegister)) {
             toastr.error('账号只能是数字字母，且长度必须为3到12位', "错误");
             return;
         }

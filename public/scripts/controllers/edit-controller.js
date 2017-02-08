@@ -87,6 +87,11 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
             tags: selectedTags,
             description: $scope.description
         }
+        if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test($scope.url)) {
+            toastr.error('检撤到您的书签链接非法，是否忘记加http或者https了？建议直接从打开浏览器地址栏复制出来直接粘贴到输入框。', "错误");
+            return;
+        }
+
         if ($scope.add) {
             bookmarkService.addBookmark(params)
                 .then((data) => {

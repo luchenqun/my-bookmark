@@ -46,3 +46,16 @@ CREATE TABLE `tags_bookmarks` (
   `bookmark_id` int(11) NOT NULL,           -- 书签id
   PRIMARY KEY (`tag_id`, `bookmark_id`)
 );
+
+-- 建议留言
+drop table if exists advices;
+CREATE TABLE `advices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
+  `user_id` int(11) NOT NULL,               -- 用户id
+  `comment` text NOT NULL,                  -- 评论
+  `category` tinyint(4) DEFAULT '1',        -- 分类
+  `created_at` datetime DEFAULT now(),      -- 创建时间
+  `state` tinyint(4) DEFAULT '0',           -- 处理结果
+  PRIMARY KEY (`id`),
+  KEY `userIdIdx` (`user_id`)
+);

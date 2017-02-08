@@ -400,6 +400,44 @@ api.get('/tags', function(req, res) {
         .catch((err) => console.log('tags', err));
 });
 
+api.get('/advices', function(req, res) {
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var params = req.query;
+    db.getAdvices(params)
+        .then((advices) => res.json(advices))
+        .catch((err) => console.log('tags', err));
+});
+
+api.post('/addAdvice', function(req, res) {
+    console.log('hello addAdvice', JSON.stringify(req.body));
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var params = req.body.params;
+    params.user_id = req.session.user.id;
+
+    db.addAdvice(params)
+        .then((affectedRows) => {
+            res.json({
+                retCode: 0,
+                msg: "留言成功 ",
+            })
+            console.log('addAdvice affectedRows ', affectedRows)
+        })
+        .catch((err) => {
+            console.log('addAdvice error', err);
+            res.json({
+                retCode: 1,
+                msg: "留言失败: " + JSON.stringify(err),
+            })
+        });
+});
+
 api.post('/addBookmark', function(req, res) {
     console.log('hello addBookmark', JSON.stringify(req.body));
     if (!req.session.user) {

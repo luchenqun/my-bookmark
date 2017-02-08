@@ -33,6 +33,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('advice', {
             url: '/advice',
             templateUrl: '/views/advice.html',
+            controller: 'adviceCtr'
         })
         .state('settings', {
             url: '/settings',

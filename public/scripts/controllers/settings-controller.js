@@ -45,6 +45,6 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
 
     pubSubService.publish('Common.menuActive', {
         login: true,
-        index: 2
+        index: 3
     });
 }]);

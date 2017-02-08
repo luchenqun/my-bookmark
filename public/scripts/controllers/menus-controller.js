@@ -20,6 +20,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
         uiSref: 'tags',
         title: '书签分类'
     }, {
+        uiSref: 'advice',
+        title: '留言'
+    }, {
         uiSref: 'settings',
         title: '设置'
     }];

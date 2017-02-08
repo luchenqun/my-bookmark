@@ -221,6 +221,32 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        getAdvices: function getAdvices(params) {
+            var def = $q.defer();
+            $http.get('/api/advices/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('getAdvices error');
+                });
+            return def.promise;
+        },
+        addAdvice: function(params) {
+            var def = $q.defer();
+            $http.post('/api/addAdvice/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('addAdvice error');
+                });
+            return def.promise;
+        },
     };
 
     return service;

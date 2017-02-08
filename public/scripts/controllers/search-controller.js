@@ -158,10 +158,11 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
                 $scope.bookmarkCount = data.totalItems;
                 $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
 
-                pubSubService.publish('Common.menuActive', {
-                    login: true,
-                    index: 0
-                });
+                // 有点问题，暂时留在这里
+                // pubSubService.publish('Common.menuActive', {
+                //     login: true,
+                //     index: 0
+                // });
             })
             .catch((err) => console.log('getBookmarks err', err));
     }

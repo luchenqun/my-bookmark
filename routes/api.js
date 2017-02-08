@@ -118,6 +118,7 @@ api.get('/autoLogin', function(req, res) {
                     ret.user = user;
                 }
                 res.json(ret);
+                return ret.logined ? db.updateUserLastLogin(ret.user.id) : Promise.resolve(0);
             })
             .catch((err) => {
                 res.json(ret);

@@ -157,7 +157,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
                 $scope.bookmarks = data.bookmarks;
                 $scope.bookmarkCount = data.totalItems;
                 $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
-
+                toastr.success('搜索书签成功，共为您找到相关书签约 ' + $scope.bookmarkCount + ' 个', "提示");
                 // 有点问题，暂时留在这里
                 // pubSubService.publish('Common.menuActive', {
                 //     login: true,

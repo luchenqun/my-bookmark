@@ -6,7 +6,7 @@
                 </a>
                 <a class="item" ng-class="{active:form[1]}" ng-click="changeForm(1)">书签显示设置
                 </a>
-                <a class="item" ng-class="{active:form[2]}" ng-click="changeForm(2)">菜单设置
+                <a class="item" ng-class="{active:form[2]}" ng-click="changeForm(2)">上传书签
                 </a>
             </div>
         </div>
@@ -30,7 +30,7 @@
                 书签显示设置
             </form>
             <form class="ui form" ng-show="form[2]">
-                菜单设置
+                <div id="fileuploader">Upload</div>
             </form>
         </div>
     </div>

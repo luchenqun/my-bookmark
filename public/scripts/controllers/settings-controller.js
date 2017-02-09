@@ -43,6 +43,19 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         }
     }
 
+    setTimeout(function() {
+        $("#fileuploader").uploadFile({
+            url: "fileupload",
+            multiple: true,
+            dragDrop: true,
+            fileName: "myfile",
+            onSuccess: function(files, response, xhr, pd) {
+                console.log(JSON.stringify(response[0]));
+            },
+        });
+    }, 1000);
+
+
     pubSubService.publish('Common.menuActive', {
         login: true,
         index: 3

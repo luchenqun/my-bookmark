@@ -465,6 +465,7 @@ api.post('/addAdvice', function(req, res) {
         });
 });
 
+// 发现使用node启动没问题，forever启动有问题。
 api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
     console.log('hello uploadBookmarkFile');
     if (!req.session.user) {
@@ -473,6 +474,7 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
     }
 
     var file = req.file;
+    res.json(file);
     parseHtml(file.path, function(data){
         console.log(data);
         var bookmarks = data.bookmarks;
@@ -543,7 +545,6 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
             })
             .catch((err) => console.log('uploadBookmarkFile err', err));
     })
-    res.json(file);
 });
 
 api.post('/addBookmark', function(req, res) {

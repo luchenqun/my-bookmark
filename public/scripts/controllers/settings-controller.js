@@ -50,9 +50,15 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
             dragDrop: true,
             fileName: "bookmark",
             acceptFiles: "text/html",
-            maxFileSize: 10 * 1024 * 1024,  // 最大10M
+            maxFileSize: 10 * 1024 * 1024, // 最大10M
             onSuccess: function(files, response, xhr, pd) {
-                console.log(JSON.stringify(response[0]));
+                toastr.success('文件上传成功，3秒钟后自动跳转到书签页面', "错误");
+                setTimeout(function() {
+                    pubSubService.publish('Common.menuActive', {
+                        login: true,
+                        index: 0
+                    });
+                }, 3000);
             },
         });
     }, 1000);

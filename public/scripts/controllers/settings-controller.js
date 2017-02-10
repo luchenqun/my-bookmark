@@ -1,6 +1,6 @@
 app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService) {
     console.log('Hello settingsCtr......');
-    $scope.form = [false, false, true];
+    $scope.form = [true, false, false];
     $scope.passwordOrgin = "";
     $scope.passwordNew1 = "";
     $scope.passwordNew2 = "";
@@ -52,16 +52,21 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
             acceptFiles: "text/html",
             maxFileSize: 10 * 1024 * 1024, // 最大10M
             onSuccess: function(files, response, xhr, pd) {
-                toastr.success('文件上传成功，3秒钟后自动跳转到书签页面', "错误");
+                toastr.success('文件上传成功，3秒钟自动跳转到书签页面', "提示");
                 setTimeout(function() {
                     pubSubService.publish('Common.menuActive', {
                         login: true,
                         index: 0
                     });
+                    $state.go('bookmarks', {
+                        showStyle: 'navigate',
+                    })
                 }, 3000);
+
             },
         });
-    }, 1000);
+        $(".ui.pointing.menu .item").removeClass("selected");
+    }, 500);
 
 
     pubSubService.publish('Common.menuActive', {

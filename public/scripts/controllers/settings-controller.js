@@ -1,9 +1,11 @@
 app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService) {
-    console.log('Hello settingsCtr......');
-    $scope.form = [true, false, false];
+    console.log('Hello settingsCtr......', $stateParams);
+    $scope.form = [false, false, false];
     $scope.passwordOrgin = "";
     $scope.passwordNew1 = "";
     $scope.passwordNew2 = "";
+
+    $scope.form[($stateParams && $stateParams.formIndex) || 0] = true;
 
     $scope.changeForm = function(index) {
         $scope.form = $scope.form.map(() => false);

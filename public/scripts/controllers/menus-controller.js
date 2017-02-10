@@ -75,16 +75,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
             .then((data) => {
                 console.log('logout..........', data)
                 $scope.login = false;
-                $state.go('login', {
-                    foo: 'i love you',
-                    bar: 'hello world'
-                })
+                $state.go('login', {})
             })
             .catch((err) => console.log('logout err', err));
     }
 
     function updateMenuActive(index) {
-        console.log('index = ' + index)
         $('.ui.menu a.item').removeClass('selected');
         $('.ui.menu a.item:eq(' + index + ')').addClass('selected');
     }

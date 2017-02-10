@@ -1,10 +1,10 @@
-<div class="ui info message js-msg" ng-if="showStyle === 'navigate' && bookmarks.length <= 2">
+<div class="ui hidden info message js-msg" ng-if="showStyle === 'navigate'">
     <i class="close icon" ng-click="closeMsg()"></i>
     <div class="content">
         <div class="header">系统检测到您好像还没添加过书签哦！
         </div>
         <ul class="list">
-            <li>您可以将您的IE浏览器或者谷歌浏览器上面的书签导入！<a style="cursor:pointer;" ng-click="addBookmarkbyFile()">现在就去</a>
+            <li>您可以将您的IE浏览器或者谷歌浏览器上面的书签导入系统！<a style="cursor:pointer;" ng-click="addBookmarkbyFile()">现在就去</a>
             </li>
             <li>您也可以点击菜单栏上面的<i class="add square icon"></i>图标进行添加</li>
         </ul>

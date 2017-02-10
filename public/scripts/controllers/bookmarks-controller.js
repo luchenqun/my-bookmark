@@ -80,13 +80,13 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
     $scope.addBookmarkbyFile = function() {
         console.log("addBookmarkbyFile");
+        $state.go('settings', {
+            formIndex: 2,
+        });
         pubSubService.publish('Common.menuActive', {
             login: true,
             index: 3
         });
-        $state.go('settings', {
-
-        })
     }
 
     $scope.closeMsg = function() {
@@ -114,6 +114,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     }
                 } else {
                     $scope.bookmarks = data;
+                    if ($scope.bookmarks.length <= 2) {
+                        $(".js-msg").removeClass("hidden");
+                    }
                     if ($scope.bookmarks.length == 0) {
                         toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
                     }

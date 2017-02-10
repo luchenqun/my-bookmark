@@ -1,6 +1,6 @@
 app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService) {
     console.log('Hello settingsCtr......');
-    $scope.form = [true, false];
+    $scope.form = [false, false, true];
     $scope.passwordOrgin = "";
     $scope.passwordNew1 = "";
     $scope.passwordNew2 = "";

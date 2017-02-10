@@ -19,7 +19,6 @@
     "mysql": "^2.11.1",
     "node-readability": "^2.2.0",
     "serve-favicon": "~2.3.0",
-    "supervisor": "^0.11.0",
-    "uploadify": "^1.0.7"
+    "supervisor": "^0.11.0"
   }
 }

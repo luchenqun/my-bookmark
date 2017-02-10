@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 var client = mysql.createConnection({
     host: '127.0.0.1',
-    user: 'test',   // mysql的账号
+    user: 'test', // mysql的账号
     password: '123456', // mysql 的密码
     database: 'mybookmarks',
     multipleStatements: true,
@@ -42,15 +42,27 @@ var db = {
     // });
 
 db.addBookmark = function(user_id, bookmark) {
-    var sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
+    var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
+    var selectSql = "SELECT * FROM `bookmarks` WHERE `user_id` = '" + user_id + "' AND `url` = '" + bookmark.url + "'"
     return new Promise(function(resolve, reject) {
-        client.query(sql, (err, result) => {
+        client.query(selectSql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
-                resolve(result.insertId);
+                if (result.length >= 1) {
+                    resolve(result[0].id);
+                } else {
+                    client.query(insertSql, (err, result) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result.insertId);
+                        }
+                    });
+                }
             }
         });
+
     });
 };
 
@@ -294,7 +306,7 @@ db.getAdvices = function(params) {
 
 db.addAdvice = function(params) {
     console.log('addAdvice');
-    var sql = "INSERT INTO `advices` (`user_id`, `comment`, `category`) VALUES ('"+ params.user_id +"', '"+ params.comment +"', '"+ params.category +"')";
+    var sql = "INSERT INTO `advices` (`user_id`, `comment`, `category`) VALUES ('" + params.user_id + "', '" + params.comment + "', '" + params.category + "')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -330,13 +342,17 @@ db.addTags = function(user_id, tags_name) {
         sql += "('" + user_id + "', '" + name + "')";
     });
     return new Promise(function(resolve, reject) {
-        client.query(sql, (err, result) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(result.insertId);
-            }
-        });
+        if (tags_name.length == 0) {
+            reject("tags_name is empty");
+        } else {
+            client.query(sql, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result.insertId);
+                }
+            });
+        }
     });
 };
 

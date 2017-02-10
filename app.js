@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
-var mount_uploadify = require('uploadify');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -43,16 +42,6 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-mount_uploadify(app, {
-    path: '/fileupload',
-    fileKey: 'myfile',
-    multer: {
-        dest: 'uploads/'
-    },
-    callback: function(req) {
-        return req.files
-    }
-});
 app.use('/api', api);
 app.use('/users', users);
 

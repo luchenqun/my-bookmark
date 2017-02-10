@@ -3,6 +3,36 @@ var mysql = require('mysql');
 var crypto = require('crypto');
 var read = require('node-readability');
 var db = require('../database/db.js');
+var multer = require('multer');
+
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './uploads')
+    },
+    filename: function(req, file, cb) {
+        var now = new Date().format('yyyyMMddhhmmss')
+        if (req.session.user) {
+            cb(null, req.session.username + '-' + now + '.html')
+        } else {
+            cb(null, "UnknowUser" + '-' + now + '.html')
+        }
+    }
+})
+
+var upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 2014, // 最大值接受10M
+    },
+    fileFilter: function(req, file, cb) {
+        console.log("fileFilter file = ", file)
+        if (file.mimetype == "text/html'") {
+            return cb(null, true);
+        } else {
+            return cb(null, false);
+        }
+    },
+})
 
 api.post('/logout', function(req, res) {
     var params = req.body.params;
@@ -439,6 +469,104 @@ api.post('/addAdvice', function(req, res) {
         });
 });
 
+api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
+    console.log('hello uploadBookmarkFile');
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var file = req.file;
+    var bookmarks = [{
+        "url": "https://www.163.com/",
+        "name": "Bookmarks",
+        "add_date": "1432116178",
+        "tags": []
+    }, {
+        "url": "https://github.com/aponxi/npm-bookmark-parser",
+        "name": "aponxi/npm-bookmark-parser: Node plugin to parse Chrome bookmarks into usable JSON format, via javascript.",
+        "add_date": "1486615941",
+        "tags": ["测试栏目2", "测试栏目1"]
+    }, {
+        "url": "http://stackoverflow.com/questions/26673837/parsing-bookmark-html-in-node-js",
+        "name": "parsing bookmark.html in node.js - Stack Overflow",
+        "add_date": "1486614926",
+        "tags": ["测试栏目1"]
+    }, {
+        "url": "http://stackoverflow.com/",
+        "name": "dddddddddddddd",
+        "add_date": "1486614926",
+        "tags": ["测试栏目3"]
+    }];
+
+    var tagsName = ['测试栏目1', '测试栏目2', '测试栏目3'];
+    var userId = req.session.user.id;
+    var addTagNames = [];
+
+    db.getTags(userId)
+        // 先插入分类
+        .then((tags) => {
+            // 需要插入的书签是该用户在数据库不存在的书签
+            addTagNames = tagsName.filter((name) => {
+                for (var i = 0; i < tags.length; i++) {
+                    if (tags[i].name.toLowerCase() === name.toLowerCase()) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+            return Promise.resolve(addTagNames);
+        })
+        .then((newTagNames) => {
+            if (newTagNames.length > 0) {
+                return db.addTags(userId, newTagNames)
+            } else {
+                return Promise.resolve();
+            }
+        })
+        .then(() => db.getTags(userId))
+        .then((allTags) => {
+            bookmarks.forEach((item, index) => {
+                var count = 0;
+
+                var bookmark = {};
+                bookmark.title = item.name;
+                bookmark.description = "";
+                bookmark.url = item.url;
+                bookmark.public = '1';
+                if (item.tags.length == 0) {
+                    item.tags.push("未分类")
+                }
+
+                var tags = [];
+                item.tags.forEach((tag) => {
+                        allTags.forEach((at) => {
+                            if (at.name == tag) {
+                                tags.push(at.id);
+                            }
+                        })
+                    })
+                    // 插入书签
+                db.addBookmark(userId, bookmark) // 插入书签
+                    .then((bookmark_id) => {
+                        db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
+                        return bookmark_id;
+                    }) // 将之前所有的书签分类信息删掉
+                    .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
+                    .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
+                    .then(() => {
+                        count++
+                    }) // 运气不错
+                    .catch((err) => console.log('uploadBookmarkFile addBookmark err', err)); // oops!
+                if ((index + 1) == bookmarks.length) {
+                    // 通知前台
+                }
+            })
+        })
+        .catch((err) => console.log('uploadBookmarkFile err', err));
+    res.json(file);
+});
+
 api.post('/addBookmark', function(req, res) {
     console.log('hello addBookmark', JSON.stringify(req.body));
     if (!req.session.user) {
@@ -449,6 +577,10 @@ api.post('/addBookmark', function(req, res) {
     var userId = req.session.user.id;
     var tags = bookmark.tags;
     db.addBookmark(userId, bookmark) // 插入书签
+        .then((bookmark_id) => {
+            db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
+            return bookmark_id;
+        }) // 将之前所有的书签分类信息删掉
         .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
         .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
         .then(() => res.json({})) // 运气不错

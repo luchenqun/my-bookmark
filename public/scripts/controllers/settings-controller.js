@@ -45,10 +45,12 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
 
     setTimeout(function() {
         $("#fileuploader").uploadFile({
-            url: "fileupload",
-            multiple: true,
+            url: "/api/uploadBookmarkFile",
+            multiple: false,
             dragDrop: true,
-            fileName: "myfile",
+            fileName: "bookmark",
+            acceptFiles: "text/html",
+            maxFileSize: 10 * 1024 * 1024,  // 最大10M
             onSuccess: function(files, response, xhr, pd) {
                 console.log(JSON.stringify(response[0]));
             },

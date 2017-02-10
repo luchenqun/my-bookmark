@@ -51,6 +51,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
             fileName: "bookmark",
             acceptFiles: "text/html",
             maxFileSize: 10 * 1024 * 1024, // 最大10M
+            dragdropWidth: "100%",
             onSuccess: function(files, response, xhr, pd) {
                 toastr.success('文件上传成功，3秒钟自动跳转到书签页面', "提示");
                 setTimeout(function() {

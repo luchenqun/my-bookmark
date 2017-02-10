@@ -11,6 +11,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.inputPage = '';
+
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
         console.log(currentPage);
@@ -77,6 +78,21 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         })
     }
 
+    $scope.addBookmarkbyFile = function() {
+        console.log("addBookmarkbyFile");
+        pubSubService.publish('Common.menuActive', {
+            login: true,
+            index: 3
+        });
+        $state.go('settings', {
+
+        })
+    }
+
+    $scope.closeMsg = function() {
+        $(".js-msg").remove();
+    }
+
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
         params.showStyle = $scope.showStyle;
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
@@ -115,7 +131,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     setTimeout(updateEditPos, 100);
 
     function updateEditPos() {
-        if($scope.showStyl == 'navigate'){
+        if ($scope.showStyl == 'navigate') {
             var top = $('.js-segment-navigate').offset().top;
             var left = $('.js-segment-navigate').offset().left;
             var width = $('.js-segment-navigate').width();
@@ -123,7 +139,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             $('.js-edit').offset({
                 top: top + 10,
                 left: left + width - 10,
-            })        
+            })
         }
 
     }

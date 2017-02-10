@@ -464,11 +464,7 @@ api.post('/addAdvice', function(req, res) {
             })
         });
 });
-var jsdom = require("jsdom");
-var fs = require("fs");
-parseHtml('./uploads/luchenqun-20170210161830.html', function(data) {
-    // console.log(data);
-})
+
 api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
     console.log('hello uploadBookmarkFile');
     if (!req.session.user) {

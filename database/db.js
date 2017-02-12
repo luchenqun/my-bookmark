@@ -31,15 +31,15 @@ client.connect();
 // update delete 返回影响的行数
 var db = {
 
-    }
-    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
-    // client.query(sql, (err, result) => {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         console.log(result);
-    //     }
-    // });
+}
+// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
+// client.query(sql, (err, result) => {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log(result);
+//     }
+// });
 
 db.addBookmark = function(user_id, bookmark) {
     var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
@@ -289,6 +289,21 @@ db.getTags = function(user_id) {
         });
     });
 };
+
+db.getTagsByIds = function(tagIds) {
+    var sql = "SELECT * FROM `tags` WHERE id in(" + (tagIds.toString() || ("-1")) + ") GROUP BY id"; // 如果是空的，那查一个不存在的就行了。
+    console.log('db getTagsByIds = ', sql);
+
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
 
 db.getAdvices = function(params) {
     console.log('getAdvices');

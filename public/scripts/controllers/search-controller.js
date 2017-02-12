@@ -37,6 +37,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         searchWord: $scope.searchWord,
         currentPage: 1,
         perPageItems: perPageItems,
+        userRange: '1', // 默认搜索自己的书签
     }
     if ($scope.searchWord) {
         searchBookmarks(searchParams);
@@ -101,7 +102,6 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         if ($scope.searchWord) {
             params.searchWord = $scope.searchWord;
         }
-
 
         var dateCreate = $('.js-create-date').dropdown('get value') || undefined;
         if (dateCreate) {

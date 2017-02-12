@@ -390,8 +390,14 @@ api.get('/searchBookmarks', function(req, res) {
             }
         })
         .then((tbs) => {
-            tagsBookmarks = tbs;
-            return db.getTags(userId);
+            if (tbs.length > 0) {
+                var tagIds = tbs.map((tb) => tb.tag_id);
+                tagsBookmarks = tbs;
+                return db.getTagsByIds(tagIds);
+            } else {
+                res.json(sendData);
+                return Promise.reject('没有搜到到任何书签');
+            }
         })
         .then((tags) => {
             var data = [];
@@ -475,7 +481,7 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
     var file = req.file;
     res.json(file);
-    parseHtml(file.path, function(data){
+    parseHtml(file.path, function(data) {
         console.log(data);
         var bookmarks = data.bookmarks;
         var tagsName = data.tags;
@@ -520,13 +526,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                     var tags = [];
                     item.tags.forEach((tag) => {
-                            allTags.forEach((at) => {
-                                if (at.name == tag) {
-                                    tags.push(at.id);
-                                }
-                            })
+                        allTags.forEach((at) => {
+                            if (at.name == tag) {
+                                tags.push(at.id);
+                            }
                         })
-                        // 插入书签
+                    })
+                    // 插入书签
                     db.addBookmark(userId, bookmark) // 插入书签
                         .then((bookmark_id) => {
                             db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类

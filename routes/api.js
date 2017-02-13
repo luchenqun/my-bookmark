@@ -482,7 +482,6 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
     var file = req.file;
     res.json(file);
     parseHtml(file.path, function(data) {
-        console.log(data);
         var bookmarks = data.bookmarks;
         var tagsName = data.tags;
 

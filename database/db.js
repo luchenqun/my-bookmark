@@ -1,12 +1,35 @@
 var mysql = require('mysql');
-var client = mysql.createConnection({
+var dbConfig = {
     host: '127.0.0.1',
     user: 'test', // mysql的账号
     password: '123456', // mysql 的密码
     database: 'mybookmarks',
     multipleStatements: true,
     port: 3306
-});
+};
+var client = {}
+
+function handleDisconnect() {
+    client = mysql.createConnection(dbConfig);
+
+    client.connect(function(err) { // The server is either down
+        if (err) { // or restarting (takes a while sometimes).
+            console.log('error when connecting to db:', err);
+            setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+        } // to avoid a hot loop, and to allow our node script to
+    }); // process asynchronous requests in the meantime.
+    // If you're also serving http, display a 503 error.
+    client.on('error', function(err) {
+        console.log('db error', err);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+            handleDisconnect(); // lost due to either server restart, or a
+        } else { // connnection idle timeout (the wait_timeout
+            throw err; // server variable configures this)
+        }
+    });
+}
+
+handleDisconnect();
 
 Date.prototype.format = function(fmt) { //author: meizz
     var o = {
@@ -24,22 +47,20 @@ Date.prototype.format = function(fmt) { //author: meizz
     return fmt;
 }
 
-client.connect();
-
 // select 最多返回一行的话，返回对象，否则返回数组
 // insert 返回关键字
 // update delete 返回影响的行数
 var db = {
 
-}
-// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
-// client.query(sql, (err, result) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log(result);
-//     }
-// });
+    }
+    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
+    // client.query(sql, (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log(result);
+    //     }
+    // });
 
 db.addBookmark = function(user_id, bookmark) {
     var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";

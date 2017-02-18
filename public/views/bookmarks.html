@@ -30,7 +30,7 @@
                             id="{{bookmark.id}}">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" ng-src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark.id)">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px;float:right;" ng-src="./images/{{ bookmarkEditHover ? 'edit-bookmark-hover' : 'edit-bookmark'}}.png" ng-if="edit" ng-click="editBookmark(bookmark.id)">
-                            <img class="ui ui middle aligned tiny image" ng-src=" http://favicon.byi.pw/?url={{ bookmark.url }}" style="width:16px;height:16px" ng-if="!edit">
+                            <img class="ui ui middle aligned tiny image" ng-src=" http://www.google.com/s2/favicons?domain={{ bookmark.url }}" style="width:16px;height:16px" ng-if="!edit">
                             <span>{{ bookmark.title}}</span>
                         </div>
                         <div class="two wide column js-more-bookmark" ng-class="" ng-mouseover="" ng-mouseleave="" title="查看更多" ng-if="tag.bookmarks.length >= 31" ng-click="jumpToTags(tag.id)">
@@ -59,7 +59,7 @@
     <tbody>
         <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}">
             <td>
-                <img class="ui ui middle aligned tiny image" src=" http://favicon.byi.pw/?url={{bookmark.url}}" style="width:16px;height:16px">
+                <img class="ui ui middle aligned tiny image" src=" http://www.google.com/s2/favicons?domain={{bookmark.url}}" style="width:16px;height:16px">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}">
                     {{ bookmark.title }}
                 </span>

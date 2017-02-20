@@ -4,7 +4,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.showSearch = false; // 搜索对话框
     $scope.bookmarkNormalHover = false;
     $scope.bookmarkEditHover = false;
-    $scope.showStyle = 'card' //($stateParams && $stateParams.showStyle) || 'card'; // 显示风格'navigate', 'card', 'table'
+    $scope.showStyle = ($stateParams && $stateParams.showStyle) || 'navigate'; // 显示风格'navigate', 'card', 'table'
     $('.js-radio-' + $scope.showStyle).checkbox('set checked');
     $scope.edit = false;
     const perPageItems = 20;

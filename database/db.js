@@ -52,15 +52,15 @@ Date.prototype.format = function(fmt) { //author: meizz
 // update delete 返回影响的行数
 var db = {
 
-    }
-    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
-    // client.query(sql, (err, result) => {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         console.log(result);
-    //     }
-    // });
+}
+// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
+// client.query(sql, (err, result) => {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log(result);
+//     }
+// });
 
 db.addBookmark = function(user_id, bookmark) {
     var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
@@ -413,9 +413,14 @@ db.getBookmarksTable = function(params) {
 
     var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE 1=1";
     if (user_id) {
-        sql += " AND `user_id` = '" + user_id + "' ORDER BY click_count DESC"
+        sql += " AND `user_id` = '" + user_id + "'";
+        if (params.showStyle == 'card') {
+            sql += " ORDER BY created_at DESC";
+        } else {
+            sql += " ORDER BY click_count DESC";
+        }
     }
-
+    console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

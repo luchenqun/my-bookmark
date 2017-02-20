@@ -5,6 +5,15 @@ var read = require('node-readability');
 var db = require('../database/db.js');
 var parseHtml = require('../common/parse_html.js');
 var multer = require('multer');
+var webshot = require('webshot');
+var fs = require('fs');
+
+var webshotOptions = {
+    shotSize: {
+        width: 320,
+        height: 320
+    },
+};
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -285,6 +294,7 @@ api.get('/bookmarks', function(req, res) {
                 var data = [];
                 // 获取每个书签的所有分类标签
                 bookmarks.forEach(function(bookmark) {
+                    getWebshot(bookmark.id, bookmark.url);
                     var bookmarkTags = [];
                     tagsBookmarks.forEach(function(tb) {
                         if (tb.bookmark_id == bookmark.id) {
@@ -566,7 +576,10 @@ api.post('/addBookmark', function(req, res) {
             db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
             return bookmark_id;
         }) // 将之前所有的书签分类信息删掉
-        .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
+        .then((bookmark_id) => {
+            getWebshot(bookmark_id, bookmark.url);
+            return db.addTagsBookmarks(tags, bookmark_id)
+        }) // 插入分类
         .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
         .then(() => res.json({})) // 运气不错
         .catch((err) => console.log('addBookmark err', err)); // oops!
@@ -619,5 +632,18 @@ function md5(str) {
         .update(str)
         .digest('hex');
 };
+
+function getWebshot(id, url) {
+    var finePath = './public/images/shot/' + id + '.png'
+    fs.exists(finePath, function(exists) {
+        if (!exists) {
+            webshot(url, finePath, webshotOptions, function(err) {
+                if (err) {
+                    console.log(id + " webshot fail", err);
+                }
+            });
+        }
+    });
+}
 
 module.exports = api;

@@ -4,7 +4,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.showSearch = false; // 搜索对话框
     $scope.bookmarkNormalHover = false;
     $scope.bookmarkEditHover = false;
-    $scope.showStyle = ($stateParams && $stateParams.showStyle) || 'navigate'; // 显示风格'navigate', 'card', 'table'
+    $scope.showStyle = 'card' //($stateParams && $stateParams.showStyle) || 'card'; // 显示风格'navigate', 'card', 'table'
     $('.js-radio-' + $scope.showStyle).checkbox('set checked');
     $scope.edit = false;
     const perPageItems = 20;
@@ -102,7 +102,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     function getBookmarks(params) {
         if (params.showStyle != 'navigate') {
             params.currentPage = $scope.currentPage;
-            params.perPageItems = perPageItems;
+            params.perPageItems = params.showStyle == 'table' ? perPageItems : perPageItems * 3;
         }
         bookmarkService.getBookmarks(params)
             .then((data) => {

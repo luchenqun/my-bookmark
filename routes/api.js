@@ -294,7 +294,6 @@ api.get('/bookmarks', function(req, res) {
                 var data = [];
                 // 获取每个书签的所有分类标签
                 bookmarks.forEach(function(bookmark) {
-                    getWebshot(bookmark.id, bookmark.url);
                     var bookmarkTags = [];
                     tagsBookmarks.forEach(function(tb) {
                         if (tb.bookmark_id == bookmark.id) {
@@ -633,15 +632,19 @@ function md5(str) {
         .digest('hex');
 };
 
+var cnt = 1;
+
 function getWebshot(id, url) {
     var finePath = './public/images/shot/' + id + '.png'
     fs.exists(finePath, function(exists) {
         if (!exists) {
-            webshot(url, finePath, webshotOptions, function(err) {
-                if (err) {
-                    console.log(id + " webshot fail", err);
-                }
-            });
+            setTimeout(function() {
+                webshot(url, finePath, webshotOptions, function(err) {
+                    if (err) {
+                        console.log(id + " webshot fail", err);
+                    }
+                });
+            }, 10000 * cnt++);
         }
     });
 }

@@ -76,5 +76,6 @@ app.use(function(err, req, res, next) {
     });
 });
 
+api.getSnapByTimer();
 
 module.exports = app;

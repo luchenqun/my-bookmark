@@ -13,6 +13,7 @@ var webshotOptions = {
         width: 320,
         height: 320
     },
+    timeout: 50000,
 };
 
 var storage = multer.diskStorage({
@@ -522,36 +523,38 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
             .then((allTags) => {
                 bookmarks.forEach((item, index) => {
                     var count = 0;
+                    if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(item.url)) {
+                        var bookmark = {};
+                        bookmark.title = item.name;
+                        bookmark.description = "";
+                        bookmark.url = item.url;
+                        bookmark.public = '1';
+                        if (item.tags.length == 0) {
+                            item.tags.push("未分类")
+                        }
 
-                    var bookmark = {};
-                    bookmark.title = item.name;
-                    bookmark.description = "";
-                    bookmark.url = item.url;
-                    bookmark.public = '1';
-                    if (item.tags.length == 0) {
-                        item.tags.push("未分类")
+                        var tags = [];
+                        item.tags.forEach((tag) => {
+                                allTags.forEach((at) => {
+                                    if (at.name == tag) {
+                                        tags.push(at.id);
+                                    }
+                                })
+                            })
+                            // 插入书签
+                        db.addBookmark(userId, bookmark) // 插入书签
+                            .then((bookmark_id) => {
+                                db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
+                                return bookmark_id;
+                            }) // 将之前所有的书签分类信息删掉
+                            .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
+                            .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
+                            .then(() => {
+                                count++
+                            }) // 运气不错
+                            .catch((err) => console.log('uploadBookmarkFile addBookmark err', err)); // oops!
                     }
 
-                    var tags = [];
-                    item.tags.forEach((tag) => {
-                        allTags.forEach((at) => {
-                            if (at.name == tag) {
-                                tags.push(at.id);
-                            }
-                        })
-                    })
-                    // 插入书签
-                    db.addBookmark(userId, bookmark) // 插入书签
-                        .then((bookmark_id) => {
-                            db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
-                            return bookmark_id;
-                        }) // 将之前所有的书签分类信息删掉
-                        .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
-                        .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
-                        .then(() => {
-                            count++
-                        }) // 运气不错
-                        .catch((err) => console.log('uploadBookmarkFile addBookmark err', err)); // oops!
                     if ((index + 1) == bookmarks.length) {
                         // 通知前台
                     }
@@ -575,10 +578,7 @@ api.post('/addBookmark', function(req, res) {
             db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
             return bookmark_id;
         }) // 将之前所有的书签分类信息删掉
-        .then((bookmark_id) => {
-            getWebshot(bookmark_id, bookmark.url);
-            return db.addTagsBookmarks(tags, bookmark_id)
-        }) // 插入分类
+        .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
         .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
         .then(() => res.json({})) // 运气不错
         .catch((err) => console.log('addBookmark err', err)); // oops!
@@ -625,28 +625,47 @@ api.post('/getTitle', function(req, response) {
     });
 })
 
-function md5(str) {
-    return crypto
-        .createHash('md5')
-        .update(str)
-        .digest('hex');
-};
-
-var cnt = 1;
-
-function getWebshot(id, url) {
-    var finePath = './public/images/shot/' + id + '.png'
-    fs.exists(finePath, function(exists) {
-        if (!exists) {
-            setTimeout(function() {
-                webshot(url, finePath, webshotOptions, function(err) {
-                    if (err) {
-                        console.log(id + " webshot fail", err);
-                    }
-                });
-            }, 10000 * cnt++);
-        }
-    });
+api.getSnapByTimer = function() {
+    console.log('getSnapByTimer...........');
+    setInterval(function() {
+        var today = new Date().getDate();
+        db.getBookmarkWaitSnap(today)
+            .then((bookmarks) => {
+                if (bookmarks.length == 1) {
+                    var id = bookmarks[0].id;
+                    var snap_state = bookmarks[0].snap_state;
+                    var url = bookmarks[0].url;
+                    var finePath = './public/images/snap/' + id + '.png'
+                    fs.exists(finePath, function(exists) {
+                        if (exists) {
+                            db.updateBookmarkSnapState(id, -1);
+                        } else {
+                            if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
+                                db.updateBookmarkSnapState(id, today + 31);
+                                return;
+                            }
+                            webshot(url, finePath, webshotOptions, function(err) {
+                                var newSnapState = -1;
+                                if (err) {
+                                    console.log("boomarkid = " + id + ", webshot over", err)
+                                    if (snap_state == 0 || snap_state == 1) {
+                                        newSnapState = snap_state + 1;
+                                    } else if (snap_state == 2) {
+                                        newSnapState = today + 31;
+                                    }
+                                }
+                                db.updateBookmarkSnapState(id, newSnapState);
+                            });
+                        }
+                    });
+                }
+            })
+            .catch((err) => console.log('getBookmarkWaitSnap err', err));
+    }, 60000);
 }
+
+function md5(str) {
+    return crypto.createHash('md5').update(str).digest('hex');
+};
 
 module.exports = api;

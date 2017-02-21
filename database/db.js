@@ -52,15 +52,15 @@ Date.prototype.format = function(fmt) { //author: meizz
 // update delete 返回影响的行数
 var db = {
 
-}
-// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun'";
-// client.query(sql, (err, result) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log(result);
-//     }
-// });
+    }
+    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun1'";
+    // client.query(sql, (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log(result);
+    //     }
+    // });
 
 db.addBookmark = function(user_id, bookmark) {
     var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
@@ -556,6 +556,34 @@ db.getTagsBookmarks = function(bookmark_ids) {
                 reject(err);
             } else {
                 resolve(result);
+            }
+        });
+    });
+}
+
+db.getBookmarkWaitSnap = function(today) {
+    var todayNotSnap = today + 31;
+    var sql = "SELECT id, url, snap_state FROM `bookmarks` WHERE `snap_state`>=0 AND `snap_state` <= 64  AND snap_state != " + todayNotSnap + " ORDER BY last_click DESC LIMIT 0, 1";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+db.updateBookmarkSnapState = function(id, snapState) {
+    console.log("updateBookmarkSnapState id = " + id + ", snapState = " + snapState);
+    var sql = "UPDATE `bookmarks` SET `snap_state`='"+ snapState +"' WHERE (`id`='"+ id +"')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
             }
         });
     });

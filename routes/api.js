@@ -8,14 +8,6 @@ var multer = require('multer');
 var webshot = require('webshot');
 var fs = require('fs');
 
-var webshotOptions = {
-    shotSize: {
-        width: 320,
-        height: 320
-    },
-    timeout: 50000,
-};
-
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'uploads/')
@@ -535,13 +527,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                                allTags.forEach((at) => {
-                                    if (at.name == tag) {
-                                        tags.push(at.id);
-                                    }
-                                })
+                            allTags.forEach((at) => {
+                                if (at.name == tag) {
+                                    tags.push(at.id);
+                                }
                             })
-                            // 插入书签
+                        })
+                        // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -627,6 +619,7 @@ api.post('/getTitle', function(req, response) {
 
 api.getSnapByTimer = function() {
     console.log('getSnapByTimer...........');
+    var timeout = 5000
     setInterval(function() {
         var today = new Date().getDate();
         db.getBookmarkWaitSnap(today)
@@ -644,6 +637,13 @@ api.getSnapByTimer = function() {
                                 db.updateBookmarkSnapState(id, today + 31);
                                 return;
                             }
+                            var webshotOptions = {
+                                shotSize: {
+                                    width: 320,
+                                    height: 160
+                                },
+                                timeout: timeout,
+                            };
                             webshot(url, finePath, webshotOptions, function(err) {
                                 var newSnapState = -1;
                                 if (err) {
@@ -661,7 +661,7 @@ api.getSnapByTimer = function() {
                 }
             })
             .catch((err) => console.log('getBookmarkWaitSnap err', err));
-    }, 60000);
+    }, timeout + 1000);
 }
 
 function md5(str) {

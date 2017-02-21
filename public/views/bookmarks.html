@@ -92,18 +92,30 @@
     </tfoot>
 </table>
 <div class="ui segment" ng-if="showStyle === 'card'">
-    <div class="ui five stackable cards">
-        <div class="card link raised" ng-repeat="bookmark in bookmarks">
-            <div class="image">
+    <div class="ui five link stackable cards" infinite-scroll='loadCardData()' infinite-scroll-disabled='loadBusy' infinite-scroll-distance='1'>
+        <div class="card" ng-repeat="bookmark in bookmarks">
+            <div class="image" href="{{ bookmark.url }}" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
                 <img ng-src="./images/snap/{{bookmark.id}}.png" err-src="./images/snap/default.png"/>
             </div>
-            <div class="content" href="{{ bookmark.url }}">
+            <div class="content" ng-click="jumpToTags(tag.id)">
                 <div class="description bookmarkTitle">
                     {{bookmark.title}}
                 </div>
-                <div class="meta">
-                    <span class="date">{{ bookmark.created_at }}</span>
+            </div>
+            <div class="extra content tags">
+                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="jumpToTags(tag.id)">
+                    {{ tag.name }}
                 </div>
+            </div>
+            <div class="extra content" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+                <span class="left floated like">
+                    <i class="add to calendar icon"></i>
+                    {{ bookmark.created_at }}
+                </span>
+                <span class="right floated like">
+                    <i class="pointing up icon"></i>
+                    {{ bookmark.click_count }}
+                </span>
             </div>
         </div>
     </div>

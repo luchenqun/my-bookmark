@@ -4,14 +4,15 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.showSearch = false; // 搜索对话框
     $scope.bookmarkNormalHover = false;
     $scope.bookmarkEditHover = false;
-    $scope.showStyle = ($stateParams && $stateParams.showStyle) || 'navigate'; // 显示风格'navigate', 'card', 'table'
+    $scope.showStyle = 'card';
+    ($stateParams && $stateParams.showStyle) || 'navigate'; // 显示风格'navigate', 'card', 'table'
     $('.js-radio-' + $scope.showStyle).checkbox('set checked');
     $scope.edit = false;
     const perPageItems = 20;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.inputPage = '';
-
+    $scope.loadBusy = false;
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
         console.log(currentPage);
@@ -93,6 +94,13 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         $(".js-msg").remove();
     }
 
+    $scope.loadCardData = function() {
+        console.log('loadCardData.........')
+        $scope.currentPage += 1;
+        $scope.changeCurrentPage($scope.currentPage);
+        $scope.loadBusy = true;
+    }
+
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
         params.showStyle = $scope.showStyle;
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
@@ -113,7 +121,14 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                         toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
                     }
                 } else {
-                    $scope.bookmarks = data;
+                    if (params.showStyle == 'card') {
+                        console.log('loadCardData end.........')
+                        $scope.bookmarks = $scope.bookmarks.concat(data);
+                        $scope.loadBusy = false;
+                    } else {
+                        $scope.bookmarks = data;
+                    }
+
                     if ($scope.bookmarks.length <= 2) {
                         $(".js-msg").removeClass("hidden");
                     }

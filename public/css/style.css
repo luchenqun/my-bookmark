@@ -30,6 +30,7 @@ code {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     height: 40px;
+    line-height: 20px;
 }
 .bookmarkNormalHover {
     white-space: nowrap;
@@ -43,6 +44,9 @@ code {
 }
 .bookmarkOperaterHover {
     cursor: pointer;
+}
+.tags {
+    cursor: default;
 }
 .bookmarkEditHover {
     white-space: nowrap;

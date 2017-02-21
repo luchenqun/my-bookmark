@@ -1,4 +1,4 @@
-var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies']);
+var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies', 'infinite-scroll']);
 
 app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
     $httpProvider.interceptors.push('httpInterceptor');

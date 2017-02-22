@@ -33,7 +33,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
         title: '首页'
     }, {
         uiSref: 'login',
-        title: '登录'
+        title: '登录|注册'
     }];
 
     $scope.myKeyup = function(e) {

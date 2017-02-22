@@ -1,4 +1,6 @@
-<div class="ui grid" style="height:45px">
+<div class="ui huge text centered inline loader" ng-class="{active:loading, disabled: !loading}">
+    加载中，请稍候...</div>
+<div class="ui grid" style="height:45px" ng-show="!loading">
     <div class="fourteen wide column" ng-show="!showSearch">
         共为您找到相关书签约{{bookmarkCount}}个
     </div>
@@ -113,7 +115,7 @@
         </div>
     </div>
 </div>
-<table class="ui celled table">
+<table class="ui celled table" ng-show="!loading">
     <thead>
         <tr>
             <th>标题</th>

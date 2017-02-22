@@ -17,6 +17,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.inputPage = '';
+    $scope.loading = false;
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
         console.log(currentPage);
@@ -152,18 +153,23 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     function searchBookmarks(params) {
+        $scope.loading = true;
         bookmarkService.searchBookmarks(params)
             .then((data) => {
                 $scope.bookmarks = data.bookmarks;
                 $scope.bookmarkCount = data.totalItems;
                 $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
-                toastr.success('搜索书签成功，共为您找到相关书签约 ' + $scope.bookmarkCount + ' 个', "提示");
+                $scope.loading = false;
+
                 // 有点问题，暂时留在这里
                 // pubSubService.publish('Common.menuActive', {
                 //     login: true,
                 //     index: 0
                 // });
             })
-            .catch((err) => console.log('getBookmarks err', err));
+            .catch((err) => {
+                console.log('getBookmarks err', err);
+                $scope.loading = false;
+            });
     }
 }]);

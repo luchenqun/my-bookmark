@@ -45,6 +45,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
 
                 $scope.inputPage = '';
                 $scope.loadBookmarks = false;
+
+                pubSubService.publish('Common.menuActive', {
+                    login: true,
+                    index: 1
+                });
             })
             .catch((err) => {
                 console.log('getTags err', err);

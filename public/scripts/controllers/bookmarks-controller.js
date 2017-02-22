@@ -14,11 +14,14 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.loadBusy = false;
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
-        console.log(currentPage);
+        console.log('currentPage = ', currentPage);
         if (currentPage <= $scope.totalPages && currentPage >= 1) {
+            $scope.loadBusy = true;
             $scope.currentPage = currentPage;
             $scope.inputPage = '';
             getBookmarks(params);
+        } else {
+            $scope.currentPage = $scope.totalPages
         }
     }
 
@@ -71,7 +74,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         toastr.warning('功能暂未实现。。。', "警告");
     }
 
-
     $scope.jumpToTags = function(tagId) {
         $state.go('tags', {
             tagId: tagId,
@@ -95,9 +97,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
     $scope.loadCardData = function() {
         console.log('loadCardData.........')
-        $scope.currentPage += 1;
-        $scope.changeCurrentPage($scope.currentPage);
-        $scope.loadBusy = true;
+        if (!$scope.loadBusy) {
+            $scope.changeCurrentPage($scope.currentPage += 1)
+        }
     }
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
@@ -109,25 +111,26 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     function getBookmarks(params) {
         if (params.showStyle != 'navigate') {
             params.currentPage = $scope.currentPage;
-            params.perPageItems = params.showStyle == 'table' ? perPageItems : perPageItems * 3;
+            params.perPageItems = perPageItems;
         }
         bookmarkService.getBookmarks(params)
             .then((data) => {
                 if (params.showStyle != 'navigate') {
-                    $scope.bookmarks = data.bookmarks;
                     $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
                     if (data.totalItems == 0) {
                         toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
                     }
-                } else {
                     if (params.showStyle == 'card') {
-                        console.log('loadCardData end.........')
-                        $scope.bookmarks = $scope.bookmarks.concat(data);
+                        data.bookmarks.forEach(bookmark => {
+                            $scope.bookmarks.push(bookmark);
+                        })
                         $scope.loadBusy = false;
+                        console.log('loadCardData end.........', $scope.loadBusy);
                     } else {
-                        $scope.bookmarks = data;
+                        $scope.bookmarks = data.bookmarks;
                     }
-
+                } else {
+                    $scope.bookmarks = data;
                     if ($scope.bookmarks.length <= 2) {
                         $(".js-msg").removeClass("hidden");
                     }

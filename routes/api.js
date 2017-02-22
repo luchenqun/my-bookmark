@@ -251,10 +251,6 @@ api.get('/bookmarks', function(req, res) {
                     }
                     tag.click += bookmark.click_count;
                     tag.bookmarks.push(bookmark);
-                    // if (bookmark.id && tag.bookmarks.length < 31) {
-                    //     tag.click += bookmark.click_count;
-                    //     tag.bookmarks.push(bookmark);
-                    // }
                 });
                 if (result && result.length > 0) {
                     data.push(tag);

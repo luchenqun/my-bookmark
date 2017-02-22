@@ -125,7 +125,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                             $scope.bookmarks.push(bookmark);
                         })
                         $scope.loadBusy = false;
-                        console.log('loadCardData end.........', $scope.loadBusy);
                     } else {
                         $scope.bookmarks = data.bookmarks;
                     }

@@ -84,8 +84,8 @@
         </tr>
     </tfoot>
 </table>
+
 <div class="ui segment" ng-if="showStyle === 'card'">
-    <div class="ui large text loader" ng-class="{active:loadBusy, disabled:!loadBusy}"> 正在加载中...</div>
     <div class="ui five link stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
         <div class="card" ng-repeat="bookmark in bookmarks">
             <div class="image" href="{{ bookmark.url }}" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
@@ -113,4 +113,5 @@
             </div>
         </div>
     </div>
+    <div class="ui massive text centered inline loader" ng-class="{active:loadBusy, disabled:!loadBusy}"> 正在加载中...</div>
 </div>

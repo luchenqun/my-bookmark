@@ -527,13 +527,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                            allTags.forEach((at) => {
-                                if (at.name == tag) {
-                                    tags.push(at.id);
-                                }
+                                allTags.forEach((at) => {
+                                    if (at.name == tag) {
+                                        tags.push(at.id);
+                                    }
+                                })
                             })
-                        })
-                        // 插入书签
+                            // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -616,6 +616,23 @@ api.post('/getTitle', function(req, response) {
         article.close();
     });
 })
+
+api.checkSnapState = function() {
+    db.getBookmarks()
+        .then((bookmarks) => {
+            bookmarks.forEach(bookmark => {
+                var id = bookmark.id;
+                var snap_state = bookmark.snap_state;
+                var finePath = './public/images/snap/' + id + '.png'
+                fs.exists(finePath, function(exists) {
+                    if (!exists && snap_state == -1) {
+                        db.updateBookmarkSnapState(id, 0);
+                    }
+                });
+            })
+        })
+        .catch((err) => console.log('getBookmarks err', err));
+}
 
 api.getSnapByTimer = function() {
     console.log('getSnapByTimer...........');

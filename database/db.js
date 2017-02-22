@@ -561,6 +561,21 @@ db.getTagsBookmarks = function(bookmark_ids) {
     });
 }
 
+db.getBookmarks = function() {
+    var sql = "SELECT id, snap_state FROM `bookmarks`"; // 如果是空的，那查一个不存在的就行了。
+    console.log('getBookmarks', sql);
+
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
 db.getBookmarkWaitSnap = function(today) {
     var todayNotSnap = today + 31;
     var sql = "SELECT id, url, snap_state FROM `bookmarks` WHERE `snap_state`>=0 AND `snap_state` <= 64  AND snap_state != " + todayNotSnap + " ORDER BY created_at DESC LIMIT 0, 1";

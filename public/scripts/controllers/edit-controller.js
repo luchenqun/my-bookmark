@@ -97,15 +97,28 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                 .then((data) => {
                     $('.ui.modal.js-add-bookmark').modal('hide');
                     pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
+                    console.log('addBookmark success', JSON.stringify(data));
+                    if (data.title) {
+                        toastr.success('[ ' + data.title + ' ] 添加成功', "提示");
+                    } else {
+                        toastr.error('[ ' + params.title + ' ] 添加失败', "提示");
+                    }
                 })
-                .catch((err) => console.log('addBookmark err', err));
+                .catch((err) => {
+                    console.log('addBookmark err', err);
+                    toastr.error('[ ' + params.title + ' ] 添加失败' + JSON.stringify(err), "提示");
+                });
         } else {
             bookmarkService.updateBookmark(params)
                 .then((data) => {
                     $('.ui.modal.js-add-bookmark').modal('hide');
                     pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
+                    toastr.success('[ ' + params.title + ' ] 更新成功', "提示");
                 })
-                .catch((err) => console.log('updateBookmark err', err));
+                .catch((err) => {
+                    console.log('updateBookmark err', err);
+                    toastr.error('[ ' + params.title + ' ] 更新失败' + JSON.stringify(err), "提示");
+                });
         }
     }
 

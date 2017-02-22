@@ -226,7 +226,8 @@ api.get('/bookmarks', function(req, res) {
     var userId = req.session.user.id;
     var params = req.query;
     if (params.showStyle === 'navigate') {
-        db.getBookmarksNavigate(userId)
+        db.getTags(userId)
+            .then((tags) => db.getBookmarksNavigate(tags))
             .then((result) => {
                 var data = [];
                 var tag = {
@@ -248,11 +249,12 @@ api.get('/bookmarks', function(req, res) {
                         tag.click = 0;
                         tag.bookmarks = [];
                     }
-
-                    if (bookmark.id && tag.bookmarks.length < 31) {
-                        tag.click += bookmark.click_count;
-                        tag.bookmarks.push(bookmark);
-                    }
+                    tag.click += bookmark.click_count;
+                    tag.bookmarks.push(bookmark);
+                    // if (bookmark.id && tag.bookmarks.length < 31) {
+                    //     tag.click += bookmark.click_count;
+                    //     tag.bookmarks.push(bookmark);
+                    // }
                 });
                 if (result && result.length > 0) {
                     data.push(tag);
@@ -527,13 +529,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                                allTags.forEach((at) => {
-                                    if (at.name == tag) {
-                                        tags.push(at.id);
-                                    }
-                                })
+                            allTags.forEach((at) => {
+                                if (at.name == tag) {
+                                    tags.push(at.id);
+                                }
                             })
-                            // 插入书签
+                        })
+                        // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -565,14 +567,25 @@ api.post('/addBookmark', function(req, res) {
     var bookmark = req.body.params;
     var userId = req.session.user.id;
     var tags = bookmark.tags;
+    var bookmarkId = -1;
+    var ret = {};
     db.addBookmark(userId, bookmark) // 插入书签
         .then((bookmark_id) => {
             db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
+            bookmarkId = bookmark_id;
             return bookmark_id;
         }) // 将之前所有的书签分类信息删掉
         .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
         .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
-        .then(() => res.json({})) // 运气不错
+        .then(() => db.getBookmark(bookmarkId)) // 获取书签信息，返回去
+        .then((bookmark) => {
+            ret = bookmark;
+            return db.getBookmarkTags(bookmarkId);
+        })
+        .then((bookmarkTags) => {
+            ret.tags = bookmarkTags;
+            res.json(ret)
+        })
         .catch((err) => console.log('addBookmark err', err)); // oops!
 });
 

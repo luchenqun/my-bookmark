@@ -52,15 +52,15 @@ Date.prototype.format = function(fmt) { //author: meizz
 // update delete 返回影响的行数
 var db = {
 
-    }
-    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun1'";
-    // client.query(sql, (err, result) => {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         console.log(result);
-    //     }
-    // });
+}
+// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun1'";
+// client.query(sql, (err, result) => {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log(result);
+//     }
+// });
 
 db.addBookmark = function(user_id, bookmark) {
     var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
@@ -83,7 +83,6 @@ db.addBookmark = function(user_id, bookmark) {
                 }
             }
         });
-
     });
 };
 
@@ -300,6 +299,7 @@ db.getUser = function(username) {
 db.getTags = function(user_id) {
     console.log('getTags');
     var sql = "SELECT t.*, tb.cnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id WHERE t.user_id = '" + user_id + "' ORDER BY last_use DESC";
+
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -392,9 +392,19 @@ db.addTags = function(user_id, tags_name) {
     });
 };
 
-db.getBookmarksNavigate = function(user_id) {
-    console.log('getBookmarksNavigate');
-    var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id WHERE t.user_id='" + user_id + "' ORDER BY t.id ASC, b.click_count DESC";
+db.getBookmarksNavigate = function(tags) {
+    // console.log('getBookmarksNavigate');
+    // var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id WHERE t.user_id='" + user_id + "' ORDER BY t.id ASC, b.click_count DESC";
+    var sql = "";
+    tags.forEach((tag, index) => {
+        var t = 't' + tag.id;
+        if (index >= 1) {
+            sql += " UNION "
+        }
+        sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
+    })
+    console.log(sql);
+
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -592,7 +602,7 @@ db.getBookmarkWaitSnap = function(today) {
 
 db.updateBookmarkSnapState = function(id, snapState) {
     console.log("updateBookmarkSnapState id = " + id + ", snapState = " + snapState);
-    var sql = "UPDATE `bookmarks` SET `snap_state`='"+ snapState +"' WHERE (`id`='"+ id +"')";
+    var sql = "UPDATE `bookmarks` SET `snap_state`='" + snapState + "' WHERE (`id`='" + id + "')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

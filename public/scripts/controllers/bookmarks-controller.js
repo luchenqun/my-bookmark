@@ -69,6 +69,8 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
     $scope.detailBookmark = function(bookmark) {
         if ($scope.showStyle == 'navigate') {
+            bookmark.last_click = bookmark.last_click.substring(0, 10);
+            bookmark.created_at = bookmark.created_at.substring(0, 10);
             bookmark.tags = [{
                 id: bookmark.tag_id,
                 name: bookmark.tag_name

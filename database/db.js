@@ -421,7 +421,13 @@ db.getBookmarksTable = function(params) {
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
 
-    var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE 1=1";
+    var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, ";
+    if (params.showStyle == 'card') {
+        sql += "'%Y-%m-%d %H:%i:%s'";
+    } else {
+        sql += "'%Y-%m-%d'";
+    }
+    sql += ") as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE 1=1";
     if (user_id) {
         sql += " AND `user_id` = '" + user_id + "'";
         if (params.showStyle == 'card') {

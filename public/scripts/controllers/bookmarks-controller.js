@@ -75,6 +75,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 id: bookmark.tag_id,
                 name: bookmark.tag_name
             }];
+        } else if ($scope.showStyle == 'card') {
+            bookmark.last_click = bookmark.last_click.substring(0, 10);
+            bookmark.created_at = bookmark.created_at.substring(0, 10);
         }
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
         bookmarkService.clickBookmark({

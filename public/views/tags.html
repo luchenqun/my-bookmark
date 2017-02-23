@@ -10,7 +10,8 @@
         </div>
     </div>
 </div>
-<div class="ui huge text centered inline loader" ng-class="{active:loadBookmarks, disabled: !loadBookmarks}"> 正在加载中...</div>
+<div class="ui huge text centered inline loader" ng-class="{active:loadBookmarks, disabled: !loadBookmarks}">
+    正在加载中...</div>
 <table class="ui celled table" ng-if="bookmarkCount > 0" style="margin-top:-14px;" ng-show="!loadBookmarks">
     <thead>
         <tr>
@@ -43,10 +44,10 @@
                 </div>
             </td>
             <td>
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/copy.png" ng-click="copyBookmark(bookmark.url)" title="复制链接">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)" title="删除书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/copy.png" ng-click="copyBookmark(bookmark.url)" title="复制书签">
             </td>
         </tr>
     </tbody>

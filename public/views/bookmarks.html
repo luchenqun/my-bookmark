@@ -19,8 +19,15 @@
                 </div>
                 <div class="fourteen wide column" ng-if="tag.bookmarks.length">
                     <div class="ui grid container">
-                        <div class="four wide column js-navigate-bookmark" ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmarkEditHover:bookmarkEditHover, bookmark:(!bookmarkNormalHover && !bookmarkEditHover)}" ng-mouseover="edit ? (bookmarkEditHover=true) : (bookmarkNormalHover=true)"
-                            ng-mouseleave="edit ? (bookmarkEditHover=false) : (bookmarkNormalHover=false)" ng-repeat="bookmark in tag.bookmarks" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}" id="{{bookmark.id}}">
+                        <div
+                            class="four wide column js-navigate-bookmark"
+                            ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmarkEditHover:bookmarkEditHover, bookmark:(!bookmarkNormalHover && !bookmarkEditHover)}"
+                            ng-mouseover="edit ? (bookmarkEditHover=true) : (bookmarkNormalHover=true)"
+                            ng-mouseleave="edit ? (bookmarkEditHover=false) : (bookmarkNormalHover=false)"
+                            ng-repeat="bookmark in tag.bookmarks"
+                            ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+                            title="{{ bookmark.title }}"
+                            id="{{bookmark.id}}">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" ng-src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark.id)">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px;float:right;" ng-src="./images/{{ bookmarkEditHover ? 'edit-bookmark-hover' : 'edit-bookmark'}}.png" ng-if="edit" ng-click="editBookmark(bookmark.id)">
                             <img class="ui ui middle aligned tiny image" ng-src=" http://favicon.byi.pw/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:default;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" ng-if="!edit">
@@ -66,10 +73,10 @@
                 </div>
             </td>
             <td>
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)" title="删除">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="详情">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/copy.png" ng-click="copyBookmark(bookmark.url)" title="复制链接">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)" title="删除书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/copy.png" ng-click="copyBookmark(bookmark.url)" title="复制书签">
             </td>
         </tr>
     </tbody>
@@ -85,7 +92,7 @@
     <div class="ui five link stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
         <div class="card" ng-repeat="bookmark in bookmarks">
             <div class="image" href="{{ bookmark.url }}" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
-                <img ng-src="./images/snap/{{bookmark.id}}.png" err-src="./images/snap/default.png" />
+                <img ng-src="./images/snap/{{bookmark.id}}.png" err-src="./images/snap/default.png"/>
             </div>
             <div class="content" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
                 <div class="description bookmarkTitle">
@@ -100,16 +107,15 @@
             <div class="extra content" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
                 <span class="left floated like">
                     <i class="add to calendar icon"></i>
-                    {{ bookmark.created_at }}
+                    {{ bookmark.created_at.substr(5) }}
                 </span>
-                <span class="left floated like">
+                <!-- <span class="left floated like">
                     <i class="pointing up icon"></i>
                     {{ bookmark.click_count }}
-                </span>
+                </span> -->
                 <span class="right floated">
                     <img class="ui mini spaced image" style="cursor:default;width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark);$event.stopPropagation()" title="详情">
                 </span>
-
             </div>
         </div>
     </div>

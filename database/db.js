@@ -63,7 +63,7 @@ var db = {
 // });
 
 db.addBookmark = function(user_id, bookmark) {
-    var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', '" + bookmark.description + "', '" + bookmark.url + "', '" + bookmark.public + "', '1')";
+    var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', " + client.escape(bookmark.description) + ", '" + bookmark.url + "', '" + bookmark.public + "', '1')";
     var selectSql = "SELECT * FROM `bookmarks` WHERE `user_id` = '" + user_id + "' AND `url` = '" + bookmark.url + "'"
     return new Promise(function(resolve, reject) {
         client.query(selectSql, (err, result) => {
@@ -100,7 +100,8 @@ db.delBookmark = function(id) {
 }
 
 db.updateBookmark = function(bookmark) {
-    var sql = "UPDATE `bookmarks` SET `title`='" + bookmark.title + "', `description`='" + bookmark.description + "', `url`='" + bookmark.url + "', `public`='" + bookmark.public + "' WHERE (`id`='" + bookmark.id + "')";
+    var sql = "UPDATE `bookmarks` SET `title`='" + bookmark.title + "', `description`=" + client.escape(bookmark.description) + ", `url`='" + bookmark.url + "', `public`='" + bookmark.public + "' WHERE (`id`='" + bookmark.id + "')";
+    console.log("sql updateBookmark = " + sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

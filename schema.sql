@@ -18,7 +18,7 @@ CREATE TABLE `bookmarks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
   `user_id` int(11) DEFAULT NULL,           -- 用户id
   `title` varchar(255) DEFAULT NULL,        -- 标题
-  `description` varchar(255) DEFAULT NULL,  -- 描述
+  `description` varchar(4096) DEFAULT NULL, -- 描述
   `url` text,                               -- 链接
   `public` tinyint(4) DEFAULT '1',          -- 是否公开 1 公开，0 不公开
   `click_count` smallint DEFAULT 1,         -- 总共点击次数

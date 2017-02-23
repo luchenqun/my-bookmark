@@ -67,8 +67,17 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         });
     }
 
-    $scope.detailBookmark = function(bookmarkId) {
-        toastr.warning('功能暂未实现。。。', "警告");
+    $scope.detailBookmark = function(bookmark) {
+        if ($scope.showStyle == 'navigate') {
+            bookmark.tags = [{
+                id: bookmark.tag_id,
+                name: bookmark.tag_name
+            }];
+        }
+        pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
+        bookmarkService.clickBookmark({
+            id: bookmark.id
+        });
     }
     $scope.copyBookmark = function(bookmarkUrl) {
         toastr.warning('功能暂未实现。。。', "警告");

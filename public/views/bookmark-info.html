@@ -1,0 +1,60 @@
+<div class="ui long modal js-bookmark-info" ng-controller="bookmarkInfoCtr">
+    <i class="close icon"></i>
+    <div class="header">
+        {{bookmark.title}}
+    </div>
+    <div class="content">
+        <div class="ui grid">
+            <div class="six wide column">
+                <img class="bordered" ng-src="./images/snap/{{bookmark.id}}.png" err-src="./images/snap/default.png"/>
+            </div>
+            <div class="one wide column"></div>
+            <div class="nine wide column">
+                <div class="ui  vertically divided grid">
+                    <div class="one column row">
+                        <div class="column">
+                            <i class="internet explorer icon"></i>网页地址：{{bookmark.url}}
+                        </div>
+                    </div>
+                    <div class="two column row">
+                        <div class="column">
+                            <i class="add to calendar icon"></i>创建日期：{{bookmark.created_at}}
+                        </div>
+                        <div class="column">
+                            <i class="calendar icon"></i>最后使用：{{bookmark.last_click}}
+                        </div>
+                    </div>
+                    <div class="two column row">
+                        <div class="column">
+                            <i class="hand pointer icon"></i>点击次数：{{bookmark.click_count}}
+                        </div>
+                        <div class="column">
+                            <i class="tags icon"></i>书签分类：
+                            <div class="ui label" ng-repeat="tag in bookmark.tags">
+                                {{ tag.name }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="content" style="padding:0 0 0 20px">
+        <div class="description">
+            <div class="ui header"> 描述信息 </div>
+            <p>{{ bookmark.description }}</p>
+        </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="content" style="padding:0 0 0 20px">
+        <div class="description">
+            <div class="ui header"> 内容摘抄 </div>
+            <p ng-bind-html="content"></p>
+            <img class="ui centered medium image" src="/images/loading.gif" ng-show="loading">
+        </div>
+    </div>
+    <div class="actions">
+        <button class="positive ui right button">确定</button>
+    </div>
+</div>

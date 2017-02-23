@@ -81,8 +81,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         });
     }
 
-    $scope.detailBookmark = function(bookmarkId) {
-        toastr.warning('功能暂未实现。。。', "警告");
+    $scope.detailBookmark = function(bookmark) {
+        pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
     }
 
     $scope.copyBookmark = function(bookmarkUrl) {

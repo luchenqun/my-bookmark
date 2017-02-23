@@ -13,7 +13,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                 var params = {
                     url: newUrl,
                 }
-                bookmarkService.getTitle(params)
+                bookmarkService.getArticle(params)
                     .then((data) => $scope.title = data.title)
                     .catch((err) => console.log('getTitle err', err))
             }

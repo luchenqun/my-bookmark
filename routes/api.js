@@ -614,14 +614,22 @@ api.post('/addTags', function(req, res) {
         .catch((err) => console.log('addTags err', err));
 });
 
-api.post('/getTitle', function(req, response) {
+api.post('/getArticle', function(req, response) {
     var params = req.body.params;
     var url = params.url;
+    var requestId = params.requestId || 0;
     read(url, function(err, article, meta) {
         console.log(article.title || 'Get title failed');
-        response.json({
-            title: article.title || '',
-        });
+        if (requestId == 0) {
+            response.json({
+                title: article.title || '',
+            });
+        } else if(requestId == 1) {
+            response.json({
+                content: article.content,
+            });
+        }
+
         article.close();
     });
 })

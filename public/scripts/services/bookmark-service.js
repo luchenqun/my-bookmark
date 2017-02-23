@@ -1,16 +1,16 @@
 app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
     // service interface
     var service = {
-        getTitle: function(params) {
+        getArticle: function(params) {
             var def = $q.defer();
-            $http.post('/api/getTitle/', {
+            $http.post('/api/getArticle/', {
                     params: params
                 })
                 .success(function(data) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('getTitle error');
+                    def.reject('getArticle error');
                 });
             return def.promise;
         },

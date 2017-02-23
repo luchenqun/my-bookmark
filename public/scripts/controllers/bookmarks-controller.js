@@ -116,10 +116,14 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         }
     }
 
-    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, params) {
+    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
         params.showStyle = $scope.showStyle;
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
         getBookmarks(params);
+        if ($scope.showStyle == 'card') {
+            $scope.currentPage = 1;
+            $scope.bookmarks = [];
+        }
     });
 
     function getBookmarks(params) {

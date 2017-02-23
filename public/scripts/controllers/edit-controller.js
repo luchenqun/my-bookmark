@@ -75,7 +75,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
     }
     $scope.ok = function() {
         var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
-        console.log('Hello ok clicked', $scope.url, $scope.title, $scope.description, $scope.public, selectedTags);
+        // console.log('Hello ok clicked', $scope.url, $scope.title, $scope.description, $scope.public, selectedTags);
         $scope.urlError = $scope.url == '';
         $scope.titleError = $scope.title == '';
         $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections);
@@ -97,7 +97,6 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                 .then((data) => {
                     $('.ui.modal.js-add-bookmark').modal('hide');
                     pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
-                    console.log('addBookmark success', JSON.stringify(data));
                     if (data.title) {
                         toastr.success('[ ' + data.title + ' ] 添加成功', "提示");
                     } else {

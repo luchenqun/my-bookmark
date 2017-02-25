@@ -24,7 +24,7 @@ CREATE TABLE `bookmarks` (
   `click_count` smallint DEFAULT 1,         -- 总共点击次数
   `created_at` datetime DEFAULT now(),      -- 创建时间
   `last_click` datetime DEFAULT now(),      -- 最后一次点击时间
-  `snap_state` tinyint(8) DEFAULT '0',      -- -1：获取成功。0，1，2：获取快照次数。当前天+31：今天不再获取该网页快照
+  `snap_state` tinyint(8) DEFAULT 0,        -- -1：获取成功。0，1，2：获取快照次数。当前天+31：今天不再获取该网页快照
   PRIMARY KEY (`id`),
   KEY `userIdIdx` (`user_id`)
 );
@@ -36,6 +36,7 @@ CREATE TABLE `tags` (
   `user_id` int(11) NOT NULL,               -- 用户id
   `name` varchar(32) NOT NULL,              -- 标签
   `last_use` datetime DEFAULT now(),        -- 最后使用标签的时间
+  `sort` tinyint(8) DEFAULT 0,             -- 书签排序
   PRIMARY KEY (`id`),
   KEY `userIdIdx` (`user_id`)
 );

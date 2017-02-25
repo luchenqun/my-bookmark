@@ -1,5 +1,5 @@
-<div class="ui segment">
-    <div class="ui container">
+<div class="ui segment js-tags">
+    <div class="ui container" ng-show="!edit">
         <div class="ui grid">
             <div class="two wide column" ng-class="" ng-mouseover="" ng-mouseleave="" ng-repeat="tag in tags">
                 <div class="ui small label" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
@@ -9,15 +9,43 @@
             </div>
         </div>
     </div>
+    <div class="ui container" ng-show="edit">
+        <p>操作说明：拖拽分类即可进行排序</p>
+        <div class="ui six stackable cards">
+            <div class="card" ng-repeat="tag in tags">
+                <div class="content">
+                    <div class="header" ng-if="!tag.edit">{{ tag.name }}</div>
+                    <div class="ui large fluid transparent input" style="height:19px;" ng-if="tag.edit">
+                        <input type="text" ng-model="tag.name" style="font-size:18px;" id="tag{{tag.id}}">
+                        <i class="checkmark icon" style="cursor:pointer;" ng-click="updateTag(tag)" title="更新分类"></i>
+                        <i class="mail forward icon" style="cursor:pointer;" ng-click="backTag(tag)" title="放弃更新"></i>
+                    </div>
+                </div>
+                <div class="content" style="cursor: move">
+                    <div class="description">
+                        <p>书签：{{ tag.cnt }}个</p>
+                        <p>{{ tag.last_use }}</p>
+                    </div>
+                </div>
+                <div class="extra content">
+                    <img class="ui mini spaced image right floated" style="width:16px;height:16px;margin:0 5px" ng-src="./images/delete.png" ng-click="delTag(tag)" title="删除分类">
+                    <label for="tag{{tag.id}}" ng-show="!tag.edit">
+                        <img class="ui mini spaced image right floated" style="width:16px;height:16px;margin:0 5px" ng-src="./images/edit-bookmark.png" ng-click="editTag(tag)" title="编辑分类">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width:22px;height:22px;" class="js-edit" ng-click="toggleMode()" title="{{edit ? '退出编辑模式' : '点我进入编辑模式'}}"><img class="ui ui middle aligned tiny image" ng-src="./images/{{ edit ? 'back' : 'edit'}}.png"></div>
 </div>
 <div class="ui huge text centered inline loader" ng-class="{active:loadBookmarks, disabled: !loadBookmarks}">
     正在加载中...</div>
-<table class="ui celled table" ng-if="bookmarkCount > 0" style="margin-top:-14px;" ng-show="!loadBookmarks">
+<table class="ui celled table" ng-if="bookmarkCount > 0" style="margin-top:-14px;" ng-show="!loadBookmarks && !edit">
     <thead>
         <tr>
             <th>标题</th>
             <th>链接</th>
-            <th style="width:90px;">点击次数</th>
+            <th style=" width:90px;">点击次数</th>
             <th style="width:100px;">创建日期</th>
             <th style="width:100px;">最后点击</th>
             <th style="width:150px;">分类</th>

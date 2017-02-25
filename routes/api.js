@@ -614,18 +614,61 @@ api.post('/addTags', function(req, res) {
         .catch((err) => console.log('addTags err', err));
 });
 
-api.post('/getArticle', function(req, response) {
+api.post('/updateTag', function(req, res) {
+    console.log('hello updateTag', JSON.stringify(req.query), JSON.stringify(req.body));
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var tag = req.body.params;
+    var userId = req.session.user.id;
+
+    db.getTags(userId)
+        .then((tags) => {
+            for (var i = 0; i < tags.length; i++) {
+                if (tags[i].id != tag.id && tags[i].name == tag.name) {
+                    return Promise.resolve(-1);
+                }
+            }
+            return db.updateTag(tag);
+        })
+        .then((affectedRows) => {
+            var msg = "";
+            if (affectedRows == -1) {
+                msg += " 您已经有这个分类了，不允许更新";
+            } else if (affectedRows == 0) {
+                msg += " 更新失败";
+            } else if (affectedRows == 1) {
+                msg = " 更新成功";
+            } else {
+                msg += " 更新失败";
+            }
+            res.json({
+                retCode: (affectedRows == 1) ? 0 : 1,
+                msg: msg,
+            })
+        })
+        .catch((err) => {
+            console.log('addTags err', err);
+            res.json({
+                retCode: 1,
+                msg: tag.name + " 更新失败: " + JSON.stringify(err),
+            })
+        });
+});
+
+api.post('/getArticle', function(req, res) {
     var params = req.body.params;
     var url = params.url;
     var requestId = params.requestId || 0;
     read(url, function(err, article, meta) {
         console.log(article.title || 'Get title failed');
         if (requestId == 0) {
-            response.json({
+            res.json({
                 title: article.title || '',
             });
-        } else if(requestId == 1) {
-            response.json({
+        } else if (requestId == 1) {
+            res.json({
                 content: article.content,
             });
         }

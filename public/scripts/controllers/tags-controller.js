@@ -1,4 +1,4 @@
-app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'bookmarkService', 'pubSubService', function($scope, $filter, $window, $stateParams, bookmarkService, pubSubService) {
+app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $filter, $window, $stateParams, $timeout, bookmarkService, pubSubService) {
     console.log("Hello tagsCtr...", $stateParams);
     getTags({});
 
@@ -12,6 +12,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
     $scope.currentPage = 1;
     $scope.inputPage = '';
     $scope.currentTagId = ($stateParams && $stateParams.tagId) || '';
+    $scope.edit = true;
 
     pubSubService.subscribe('MenuCtr.tags', $scope, function(event, data) {
         console.log('subscribe MenuCtr.tags', data);
@@ -108,10 +109,65 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
         toastr.warning('功能暂未实现。。。', "警告");
     }
 
+    $scope.toggleMode = function() {
+        $scope.edit = !$scope.edit;
+        if (!$scope.edit) {
+            getTags({});
+        }
+        setTimeout(updateEditPos, 100);
+    }
+
+    $scope.editTag = function(tag) {
+        if (tag.name == "未分类") {
+            toastr.warning('这个是系统默认分类，暂时不允许更新！', "警告");
+            return;
+        }
+        tag.oldName = tag.name;
+        tag.edit = true;
+    }
+    $scope.updateTag = function(tag) {
+        tag.edit = false;
+        var params = {
+            id: tag.id,
+            name: tag.name,
+        }
+
+        bookmarkService.updateTag(params)
+            .then((data) => {
+                if (data.retCode == 0) {
+                    toastr.success(tag.name + ' 更新成功！', "提示");
+                } else {
+                    toastr.error(tag.name + ' 更新失败！错误提示：' + data.msg, "提示");
+                    $scope.backTag(tag);
+                }
+            })
+            .catch((err) => {
+                toastr.error(tag.name + ' 更新失败！错误提示：' + err, "提示");
+                $scope.backTag(tag);
+            });
+    }
+
+    $scope.delTag = function(tag) {
+        if (tag.name == "未分类") {
+            toastr.warning('这个是系统默认分类，暂时不允许删除！', "警告");
+            return;
+        }
+    }
+
+    $scope.backTag = function(tag) {
+        tag.edit = false;
+        tag.name = tag.oldName;
+    }
+
     function getTags(params) {
         bookmarkService.getTags(params)
             .then((data) => {
-                $scope.tags = data
+                $scope.tags = []
+                data.forEach((tag) => {
+                    tag.edit = false;
+                    tag.oldName = tag.name;
+                    $scope.tags.push(tag);
+                })
 
                 if (!$scope.currentTagId && $scope.tags.length > 0) {
                     $scope.currentTagId = $scope.tags[0].id;
@@ -131,4 +187,20 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', 'book
             index: 1
         });
     }
+
+    // TODO: 我要将编辑按钮固定在容器的右上角
+    $(window).resize(updateEditPos);
+    setTimeout(updateEditPos, 100);
+
+    function updateEditPos() {
+        var top = $('.js-tags').offset().top;
+        var left = $('.js-tags').offset().left;
+        var width = $('.js-tags').width();
+        // console.log('js-edit position update', top+10, left+width-10)
+        $('.js-edit').offset({
+            top: top + 10,
+            left: left + width - 10,
+        })
+    }
+
 }]);

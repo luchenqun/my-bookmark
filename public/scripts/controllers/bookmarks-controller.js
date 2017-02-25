@@ -180,6 +180,5 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 left: left + width - 10,
             })
         }
-
     }
 }]);

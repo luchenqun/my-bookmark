@@ -191,6 +191,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     // TODO: 我要将编辑按钮固定在容器的右上角
     $(window).resize(updateEditPos);
     setTimeout(updateEditPos, 100);
+    setTimeout(updateEditPos, 1000);
+    setTimeout(updateEditPos, 10000);
 
     function updateEditPos() {
         var top = $('.js-tags').offset().top;

@@ -12,7 +12,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.currentPage = 1;
     $scope.inputPage = '';
     $scope.currentTagId = ($stateParams && $stateParams.tagId) || '';
-    $scope.edit = true;
+    $scope.edit = false;
 
     pubSubService.subscribe('MenuCtr.tags', $scope, function(event, data) {
         console.log('subscribe MenuCtr.tags', data);

@@ -126,6 +126,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         tag.edit = true;
     }
     $scope.updateTag = function(tag) {
+        if (tag.name == tag.oldName) {
+            toastr.warning('您没有编辑分类', "警告");
+            return;
+        }
         tag.edit = false;
         var params = {
             id: tag.id,
@@ -191,6 +195,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     // TODO: 我要将编辑按钮固定在容器的右上角
     $(window).resize(updateEditPos);
     setTimeout(updateEditPos, 100);
+    setTimeout(updateEditPos, 500);
     setTimeout(updateEditPos, 1000);
     setTimeout(updateEditPos, 10000);
 

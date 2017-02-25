@@ -299,7 +299,7 @@ db.getUser = function(username) {
 
 db.getTags = function(user_id) {
     console.log('getTags');
-    var sql = "SELECT t.id, t.user_id, t.name, DATE_FORMAT(t.last_use, '%Y-%m-%d %H:%i:%s') as last_use, t.sort, tb.cnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id WHERE t.user_id = '" + user_id + "' ORDER BY t.last_use DESC";
+    var sql = "SELECT t.id, t.user_id, t.name, DATE_FORMAT(t.last_use, '%Y-%m-%d %H:%i:%s') as last_use, t.sort, tb.cnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id WHERE t.user_id = '" + user_id + "' ORDER BY t.sort, t.last_use DESC";
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

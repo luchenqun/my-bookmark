@@ -194,7 +194,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 var l = $('.js-segment-navigate').offset().left;
                 var w = $('.js-segment-navigate').width();
                 // console.log('js-edit position update', top+10, left+width-10)
-                $('.js-edit').offset({
+                $('.js-bookmark-edit').offset({
                     top: t + 10,
                     left: l + w - 10,
                 })

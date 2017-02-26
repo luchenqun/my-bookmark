@@ -520,9 +520,9 @@ db.getBookmarksTable = function(params) {
     if (user_id) {
         sql += " AND `user_id` = '" + user_id + "'";
         if (params.showStyle == 'card') {
-            sql += " ORDER BY bookmarks.created_at DESC";
+            sql += " ORDER BY bookmarks.created_at DESC, bookmarks.click_count DESC";
         } else {
-            sql += " ORDER BY click_count DESC";
+            sql += " ORDER BY bookmarks.click_count DESC, bookmarks.created_at DESC";
         }
     }
     console.log(sql);
@@ -555,7 +555,7 @@ db.getBookmarksByTag = function(params) {
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
 
-    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id ORDER BY bookmarks.click_count DESC";
+    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id ORDER BY bookmarks.click_count  DESC, bookmarks.created_at DESC";
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

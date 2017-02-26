@@ -153,6 +153,58 @@ db.delBookmarkTags = function(bookmard_id) {
     });
 }
 
+db.getBookmarkIdsByTagId = function(tagId) {
+    var sql = "SELECT bookmark_id FROM `tags_bookmarks` WHERE `tag_id` = '" + tagId + "'";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+db.delTag = function(tagId) {
+    var sql = "DELETE FROM `tags` WHERE (`id`='" + tagId + "')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
+db.delTagBookmarks = function(tagId) {
+    var sql = "DELETE FROM `tags_bookmarks` WHERE (`tag_id`='" + tagId + "')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
+db.delBookmarks = function(bookmarkIds) {
+    var sql = "DELETE FROM `bookmarks` WHERE id IN (" + (bookmarkIds.toString() || ("-1")) + ")";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
 db.addTagsBookmarks = function(tags, bookmard_id) {
     sql = "INSERT INTO `tags_bookmarks` (`tag_id`, `bookmark_id`) VALUES";
     for (var i = 0; i < tags.length; i++) {
@@ -312,9 +364,30 @@ db.getTags = function(user_id) {
     });
 };
 
-db.updateTag = function(tag) {
-    console.log('updateTag');
+db.updateTagName = function(tag) {
+    console.log('updateTagName');
     var sql = "UPDATE `tags` SET `name`='" + tag.name + "' WHERE (`id`='" + tag.id + "')";
+    console.log(sql);
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+};
+
+db.updateTagsIndex = function(tagsIndex) {
+    console.log('updateTagsIndex');
+    var sql = "UPDATE tags SET sort =  CASE id ";
+    tagsIndex.forEach((tagIndex) => {
+        sql += "WHEN " + tagIndex.id + " THEN " + tagIndex.index + " ";
+    })
+    var tagsId = tagsIndex.map((item) => item.id);
+    sql += "END WHERE id IN (" + tagsId.toString() + ")";
+
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
@@ -417,7 +490,7 @@ db.getBookmarksNavigate = function(tags) {
         if (index >= 1) {
             sql += " UNION "
         }
-        sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
+        sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
     })
     console.log(sql);
 

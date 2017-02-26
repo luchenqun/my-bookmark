@@ -221,16 +221,42 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
-        updateTag: function(params) {
+        updateTagName: function(params) {
             var def = $q.defer();
-            $http.post('/api/updateTag/', {
+            $http.post('/api/updateTagName/', {
                     params: params
                 })
                 .success(function(data) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('updateTag error');
+                    def.reject('updateTagName error');
+                });
+            return def.promise;
+        },
+        updateTagsIndex: function(params) {
+            var def = $q.defer();
+            $http.post('/api/updateTagsIndex/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('updateTagsIndex error');
+                });
+            return def.promise;
+        },
+        delTag: function(params) {
+            var def = $q.defer();
+            $http.post('/api/delTag/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('delTag error');
                 });
             return def.promise;
         },

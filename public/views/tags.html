@@ -9,10 +9,10 @@
             </div>
         </div>
     </div>
-    <div class="ui container" ng-show="edit">
+    <div class="ui container" ng-show="edit" ng-mousedown="storeTagIndex()" ng-mouseup="updateTagIndex()">
         <p>操作说明：拖拽分类即可进行排序(正在开发中...)</p>
-        <div class="ui six stackable cards">
-            <div class="card" ng-repeat="tag in tags">
+        <div class="ui six stackable cards" sv-root sv-part="tags">
+            <div class="card" ng-repeat="tag in tags" sv-element>
                 <div class="content">
                     <div class="header" ng-if="!tag.edit">{{ tag.name }}</div>
                     <div class="ui large fluid transparent input" style="height:19px;" ng-if="tag.edit">
@@ -21,9 +21,9 @@
                         <i class="mail forward icon" style="cursor:pointer;" ng-click="backTag(tag)" title="放弃更新"></i>
                     </div>
                 </div>
-                <div class="content" style="cursor: move">
+                <div class="content" style="cursor: move" sv-handle>
                     <div class="description">
-                        <p>书签：{{ tag.cnt }}个</p>
+                        <p>书签：{{ tag.cnt || 0 }}个</p>
                         <p>{{ tag.last_use }}</p>
                     </div>
                 </div>

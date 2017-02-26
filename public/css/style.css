@@ -54,7 +54,7 @@ code {
     -o-text-overflow: ellipsis;
     overflow: hidden;
     color: #212121;
-    cursor: move;
+    cursor: default;
     border: 1px dashed #3388FF;
 }
 .img-fixed-size {

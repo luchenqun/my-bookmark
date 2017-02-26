@@ -233,6 +233,7 @@ api.get('/bookmarks', function(req, res) {
                 var tag = {
                     id: result && result[0] && result[0].tag_id,
                     name: result && result[0] && result[0].tag_name,
+                    sort: result && result[0] && result[0].sort,
                     click: 0,
                     bookmarks: []
                 };
@@ -241,11 +242,13 @@ api.get('/bookmarks', function(req, res) {
                         data.push({
                             id: tag.id,
                             name: tag.name,
+                            sort: tag.sort,
                             click: tag.click,
                             bookmarks: tag.bookmarks
                         });
                         tag.id = bookmark.tag_id;
                         tag.name = bookmark.tag_name;
+                        tag.sort = bookmark.sort;
                         tag.click = 0;
                         tag.bookmarks = [];
                     }
@@ -255,8 +258,18 @@ api.get('/bookmarks', function(req, res) {
                 if (result && result.length > 0) {
                     data.push(tag);
                 }
-                data.sort((a, b) => b.click - a.click);
-                // console.log(JSON.stringify(data));
+                data.sort((a, b) => {
+                    if (a.sort == b.sort) return b.click - a.click;
+                    return a.sort - b.sort;
+                });
+                var temp = data.map(item => {
+                    return {
+                        name: item.name,
+                        sort: item.sort,
+                        click: item.click,
+                    }
+                })
+                console.log(JSON.stringify(temp));
                 res.json(data);
             })
             .catch((err) => console.log('bookmarks navigate err', err));
@@ -614,8 +627,8 @@ api.post('/addTags', function(req, res) {
         .catch((err) => console.log('addTags err', err));
 });
 
-api.post('/updateTag', function(req, res) {
-    console.log('hello updateTag', JSON.stringify(req.query), JSON.stringify(req.body));
+api.post('/updateTagName', function(req, res) {
+    console.log('hello updateTagName', JSON.stringify(req.query), JSON.stringify(req.body));
     if (!req.session.user) {
         res.send(401);
         return;
@@ -630,7 +643,7 @@ api.post('/updateTag', function(req, res) {
                     return Promise.resolve(-1);
                 }
             }
-            return db.updateTag(tag);
+            return db.updateTagName(tag);
         })
         .then((affectedRows) => {
             var msg = "";
@@ -653,6 +666,71 @@ api.post('/updateTag', function(req, res) {
             res.json({
                 retCode: 1,
                 msg: tag.name + " 更新失败: " + JSON.stringify(err),
+            })
+        });
+});
+
+api.post('/updateTagsIndex', function(req, res) {
+    console.log('hello updateTagsIndex', JSON.stringify(req.query), JSON.stringify(req.body));
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var tagsIndex = req.body.params;
+
+    db.updateTagsIndex(tagsIndex)
+        .then((affectedRows) => {
+            var msg = "";
+            if (affectedRows == tagsIndex.length) {
+                msg = " 排序更新成功";
+            } else {
+                msg += " 排序更新失败";
+            }
+            res.json({
+                retCode: (affectedRows == tagsIndex.length) ? 0 : 1,
+                msg: msg,
+            })
+        })
+        .catch((err) => {
+            console.log('updateTagsIndex err', err);
+            res.json({
+                retCode: 1,
+                msg: "排序更新失败: " + JSON.stringify(err),
+            })
+        });
+});
+
+api.post('/delTag', function(req, res) {
+    console.log('hello delTag', JSON.stringify(req.query), JSON.stringify(req.body));
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var tag = req.body.params;
+    var needDelTag = tag.del || false;
+    var bookmarksId = []
+    db.getBookmarkIdsByTagId(tag.id)
+        .then((_bookmarksId) => {
+            bookmarksId = _bookmarksId.map((item) => item.bookmark_id);
+            return db.delTagBookmarks(tag.id); // 先删掉分类跟书签的映射
+        })
+        .then((affectedRows) => db.delBookmarks(bookmarksId)) // 再删掉该分类下面的书签
+        .then((affectedRows) => {
+            if (needDelTag) {
+                return db.delTag(tag.id);
+            }
+            return Promise.resolve(1);
+        }) // 再删掉分类
+        .then((affectedRows) => {
+            res.json({
+                retCode: affectedRows == 1 ? 0 : 1,
+            })
+        }) // 再删掉该分类下面的书签
+        .catch((err) => {
+            console.log('delTag err', err);
+            res.json({
+                retCode: 1,
+                msg: "删除分类失败: " + JSON.stringify(err),
             })
         });
 });

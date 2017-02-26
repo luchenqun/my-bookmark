@@ -190,13 +190,13 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     function updateEditPos() {
         setTimeout(function() {
             if ($scope.showStyl == 'navigate') {
-                var top = $('.js-segment-navigate').offset().top;
-                var left = $('.js-segment-navigate').offset().left;
-                var width = $('.js-segment-navigate').width();
+                var t = $('.js-segment-navigate').offset().top;
+                var l = $('.js-segment-navigate').offset().left;
+                var w = $('.js-segment-navigate').width();
                 // console.log('js-edit position update', top+10, left+width-10)
                 $('.js-edit').offset({
-                    top: top + 10,
-                    left: left + width - 10,
+                    top: t + 10,
+                    left: l + w - 10,
                 })
             }
         }, 100)

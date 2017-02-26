@@ -291,14 +291,16 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     setTimeout(updateEditPos, 10000);
 
     function updateEditPos() {
-        var top = $('.js-tags').offset().top;
-        var left = $('.js-tags').offset().left;
-        var width = $('.js-tags').width();
-        // console.log('js-edit position update', top+10, left+width-10)
-        $('.js-edit').offset({
-            top: top + 10,
-            left: left + width - 10,
-        })
+        setTimeout(function() {
+            var top = $('.js-tags').offset().top;
+            var left = $('.js-tags').offset().left;
+            var width = $('.js-tags').width();
+            // console.log('js-edit position update', top+10, left+width-10)
+            $('.js-edit').offset({
+                top: top + 10,
+                left: left + width - 10,
+            })
+        }, 100)
     }
 
 }]);

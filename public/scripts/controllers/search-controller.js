@@ -1,6 +1,7 @@
-app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, bookmarkService, pubSubService) {
+app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService) {
     console.log("Hello searchCtr...", $stateParams);
     const perPageItems = 20;
+    var dialog = null;
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; //
     $scope.showTags = false; //
@@ -18,6 +19,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     $scope.currentPage = 1;
     $scope.inputPage = '';
     $scope.loading = false;
+    $scope.waitDelBookmark = {};
+
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
         console.log(currentPage);
@@ -61,21 +64,31 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         }
     }
 
-    $scope.delBookmark = function(bookmarkId) {
-        toastr.warning('暂时不允许搜索的书签进行删除操作', "警告");
-        return;
+    $scope.delBookmark = function(bookmark) {
+        $scope.waitDelBookmark = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
+        dialog = ngDialog.open({
+            template: './views/dialog-del-bookmark.html',
+            className: 'ngdialog-theme-default',
+            scope: $scope
+        });
+    }
+
+    $scope.confirmDelBookmark = function(bookmarkId) {
         var params = {
             id: bookmarkId
         }
+        ngDialog.close(dialog);
         bookmarkService.delBookmark(params)
-            .then((data) => $("#" + bookmarkId).remove())
+            .then((data) => {
+                $("#" + bookmarkId).remove();
+                toastr.success($scope.waitDelBookmark.title + ' 书签删除成功！', "提示");
+            })
             .catch((err) => {
-                console.log('delBookmark err ', err)
+                toastr.error($scope.waitDelBookmark.title + ' 书签删除失败！错误提示：' + JSON.stringify(err), "提示");
             });
     }
+
     $scope.editBookmark = function(bookmarkId) {
-        toastr.warning('暂时不允许搜索的书签进行编辑操作', "警告");
-        return;
         pubSubService.publish('bookmarksCtr.editBookmark', {
             'bookmarkId': bookmarkId
         });

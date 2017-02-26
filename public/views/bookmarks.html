@@ -28,7 +28,7 @@
                             ng-click="jumpToUrl(bookmark.url, bookmark.id)"
                             title="{{ bookmark.title }}"
                             id="{{bookmark.id}}">
-                            <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" ng-src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark.id)">
+                            <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" ng-src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark)">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px;float:right;" ng-src="./images/{{ bookmarkEditHover ? 'edit-bookmark-hover' : 'edit-bookmark'}}.png" ng-if="edit" ng-click="editBookmark(bookmark.id)">
                             <img class="ui ui middle aligned tiny image" ng-src=" http://favicon.byi.pw/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:default;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" ng-if="!edit">
                             <span>{{ bookmark.title}}</span>
@@ -73,7 +73,7 @@
                 </div>
             </td>
             <td>
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark.id)" title="删除书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/copy.png" ng-click="copyBookmark(bookmark.url)" title="复制书签">

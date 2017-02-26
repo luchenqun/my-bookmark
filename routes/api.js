@@ -384,7 +384,7 @@ api.get('/searchBookmarks', function(req, res) {
     params.userId = req.session.user.id;
     var bookmarks = [];
     var tagsBookmarks = [];
-    var userId = '1';
+    var userId = req.session.user.id;
     var totalItems = 0;
     var sendData = {
         totalItems: totalItems,
@@ -395,7 +395,13 @@ api.get('/searchBookmarks', function(req, res) {
             totalItems = searchData.totalItems;
             bookmarks = searchData.bookmarks;
             if (bookmarks.length > 0) {
-                var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);
+                var bookmarkIds = bookmarks.map((bookmark) => {
+                    bookmark.own = bookmark.user_id == userId ? true : false;
+                    if (!bookmark.own) {
+                        bookmark.description = "其他用户的描述信息不允许查看";
+                    }
+                    return bookmark.id;
+                });
                 return db.getTagsBookmarks(bookmarkIds);
             } else {
                 res.json(sendData);
@@ -431,6 +437,7 @@ api.get('/searchBookmarks', function(req, res) {
             })
             sendData.totalItems = totalItems;
             sendData.bookmarks = data;
+            console.log(JSON.stringify(sendData))
             res.json(sendData);
         })
         .catch((err) => console.log('bookmarks table or card err', err))

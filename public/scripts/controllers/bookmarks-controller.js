@@ -1,4 +1,4 @@
-app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, bookmarkService, pubSubService) {
+app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService) {
     console.log("Hello bookmarksCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 搜索对话框
@@ -8,10 +8,13 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $('.js-radio-' + $scope.showStyle).checkbox('set checked');
     $scope.edit = false;
     const perPageItems = 20;
+    var dialog = null;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.inputPage = '';
     $scope.loadBusy = false;
+    $scope.waitDelBookmark = {};
+
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
         console.log('currentPage = ', currentPage);
@@ -51,16 +54,31 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         $scope.edit = !$scope.edit
     };
 
-    $scope.delBookmark = function(bookmarkId) {
+    $scope.delBookmark = function(bookmark) {
+        console.log('delBookmark..........')
+        $scope.waitDelBookmark = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
+        dialog = ngDialog.open({
+            template: './views/dialog-del-bookmark.html',
+            className: 'ngdialog-theme-default',
+            scope: $scope
+        });
+    }
+
+    $scope.confirmDelBookmark = function(bookmarkId) {
         var params = {
             id: bookmarkId
         }
+        ngDialog.close(dialog);
         bookmarkService.delBookmark(params)
-            .then((data) => $("#" + bookmarkId).remove())
+            .then((data) => {
+                $("#" + bookmarkId).remove();
+                toastr.success($scope.waitDelBookmark.title + ' 书签删除成功！', "提示");
+            })
             .catch((err) => {
-                console.log('delBookmark err ', err)
+                toastr.error($scope.waitDelBookmark.title + ' 书签删除失败！错误提示：' + JSON.stringify(err), "提示");
             });
     }
+
     $scope.editBookmark = function(bookmarkId) {
         pubSubService.publish('bookmarksCtr.editBookmark', {
             'bookmarkId': bookmarkId

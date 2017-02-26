@@ -16,6 +16,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.currentTagId = ($stateParams && $stateParams.tagId) || '';
     $scope.edit = false;
     $scope.waitDelTag = {};
+    $scope.waitDelBookmark = {};
 
     pubSubService.subscribe('MenuCtr.tags', $scope, function(event, data) {
         console.log('subscribe MenuCtr.tags', data);
@@ -85,16 +86,30 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     }
 
-    $scope.delBookmark = function(bookmarkId) {
+    $scope.delBookmark = function(bookmark) {
+        $scope.waitDelBookmark = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
+        dialog = ngDialog.open({
+            template: './views/dialog-del-bookmark.html',
+            className: 'ngdialog-theme-default',
+            scope: $scope
+        });
+    }
+
+    $scope.confirmDelBookmark = function(bookmarkId) {
         var params = {
             id: bookmarkId
         }
+        ngDialog.close(dialog);
         bookmarkService.delBookmark(params)
-            .then((data) => $("#" + bookmarkId).remove())
+            .then((data) => {
+                $("#" + bookmarkId).remove();
+                toastr.success($scope.waitDelBookmark.title + ' 书签删除成功！', "提示");
+            })
             .catch((err) => {
-                console.log('delBookmark err ', err)
+                toastr.error($scope.waitDelBookmark.title + ' 书签删除失败！错误提示：' + JSON.stringify(err), "提示");
             });
     }
+
     $scope.editBookmark = function(bookmarkId) {
         pubSubService.publish('bookmarksCtr.editBookmark', {
             'bookmarkId': bookmarkId

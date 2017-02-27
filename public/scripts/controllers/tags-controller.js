@@ -320,16 +320,18 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     updateEditPos();
 
     function updateEditPos() {
-        for (var i = 1; i <= 100; i+=10) {
+        for (var i = 1; i <= 100; i += 10) {
             setTimeout(function() {
-                var t = $('.js-tags').offset().top;
-                var l = $('.js-tags').offset().left;
-                var w = $('.js-tags').width();
-                // console.log('js-edit position update', top+10, left+width-10)
-                $('.js-edit').offset({
-                    top: t + 10,
-                    left: l + w - 10,
-                })
+                var offset = $('.js-tags').offset();
+                if (offset) {
+                    var t = offset.top;
+                    var l = offset.left;
+                    var w = $('.js-tags').width();
+                    $('.js-edit').offset({
+                        top: t + 10,
+                        left: l + w - 10,
+                    })
+                }
             }, 100 * i)
         }
     }

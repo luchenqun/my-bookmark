@@ -188,14 +188,16 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         if ($scope.showStyle == 'navigate') {
             for (var i = 1; i <= 100; i += 10) {
                 setTimeout(function() {
-                    var t = $('.js-segment-navigate').offset().top;
-                    var l = $('.js-segment-navigate').offset().left;
-                    var w = $('.js-segment-navigate').width();
-                    // console.log('js-edit position update', top+10, left+width-10)
-                    $('.js-bookmark-edit').offset({
-                        top: t + 10,
-                        left: l + w - 10,
-                    })
+                    var offset = $('.js-segment-navigate').offset();
+                    if (offset) {
+                        var t = offset.top;
+                        var l = offset.left;
+                        var w = $('.js-segment-navigate').width();
+                        $('.js-bookmark-edit').offset({
+                            top: t + 10,
+                            left: l + w - 10,
+                        })
+                    }
                 }, 100 * i)
             }
         }

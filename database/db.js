@@ -477,7 +477,7 @@ db.addTags = function(user_id, tags_name) {
         if (i >= 1) {
             sql += ','
         }
-        sql += "('"+ user_id +"', '"+ name +"', '88')"; // sort默认一个比较大的值，默认在后面
+        sql += "('" + user_id + "', '" + name + "', '88')"; // sort默认一个比较大的值，默认在后面
     });
     return new Promise(function(resolve, reject) {
         if (tags_name.length == 0) {

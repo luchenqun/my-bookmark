@@ -36,15 +36,18 @@
             </div>
             <div class="card" ng-click="showAddTag()">
                 <div class="image">
-                  <img src="./images/add-tag.png">
+                    <img src="./images/add-tag.png">
                 </div>
             </div>
         </div>
     </div>
-    <div style="width:22px;height:22px;" class="js-edit" ng-click="toggleMode()" title="{{edit ? '退出编辑模式' : '点我进入编辑模式'}}"><img class="ui ui middle aligned tiny image" ng-src="./images/{{ edit ? 'back' : 'edit'}}.png"></div>
+    <div style="width:22px;height:22px;" class="js-edit" ng-click="toggleMode()" title="{{edit ? '退出编辑模式' : '点我进入编辑模式'}}">
+        <img class="ui ui middle aligned tiny image" ng-src="./images/{{ edit ? 'back' : 'edit'}}.png" ng-show="!loadTags">
+    </div>
 </div>
 <div class="ui huge text centered inline loader" ng-class="{active:loadBookmarks, disabled: !loadBookmarks}">
-    正在加载中...</div>
+    正在加载中...
+</div>
 <table class="ui celled table" ng-if="bookmarkCount > 0" style="margin-top:-14px;" ng-show="!loadBookmarks && !edit">
     <thead>
         <tr>
@@ -61,7 +64,7 @@
         <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}">
             <td>
                 <img class="ui ui middle aligned tiny image" src=" http://favicon.byi.pw/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
-                <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}"  style="cursor:pointer;">
+                <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
                     {{ bookmark.title }}
                 </span>
             </td>

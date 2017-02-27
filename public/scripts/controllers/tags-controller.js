@@ -5,6 +5,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     const perPageItems = 20;
     var dialog = null;
     $scope.loadBookmarks = false;
+    $scope.loadTags = false;
     $scope.tags = []; // 书签数据
     $scope.tagsIndex = []; // 书签索引
     $scope.bookmarkClicked = false;
@@ -283,6 +284,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     function getTags(params) {
+        $scope.loadTags = true;
         bookmarkService.getTags(params)
             .then((data) => {
                 $scope.tags = []
@@ -306,8 +308,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 } else {
                     toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
                 }
+                $scope.loadTags = false;
             })
-            .catch((err) => console.log('getTags err', err));
+            .catch((err) => {
+                console.log('getTags err', err);
+                $scope.loadTags = false;
+            });
 
         pubSubService.publish('Common.menuActive', {
             login: true,

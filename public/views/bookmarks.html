@@ -103,18 +103,18 @@
                     {{ tag.name }}
                 </div>
             </div>
-            <div class="extra content" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+            <div class="extra content bookmarkInfo" ng-click="detailBookmark(bookmark);$event.stopPropagation()" title="点击进入书签详情页面">
                 <span class="left floated like">
                     <i class="add to calendar icon"></i>
-                    {{ bookmark.created_at.substr(5) }}
+                    {{ bookmark.created_at }}
                 </span>
                 <!-- <span class="left floated like">
                     <i class="pointing up icon"></i>
                     {{ bookmark.click_count }}
                 </span> -->
-                <span class="right floated">
+                <!-- <span class="right floated">
                     <img class="ui mini spaced image" style="cursor:default;width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark);$event.stopPropagation()" title="详情">
-                </span>
+                </span> -->
             </div>
         </div>
     </div>

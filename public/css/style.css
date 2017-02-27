@@ -57,6 +57,9 @@ code {
     cursor: default;
     border: 1px dashed #3388FF;
 }
+.bookmarkInfo {
+    cursor: url('../images/detail.ico'),auto;
+}
 .img-fixed-size {
     width: 16px;
     height: 16px;

@@ -722,6 +722,7 @@ api.post('/delTag', function(req, res) {
             return db.delTagBookmarks(tag.id); // 先删掉分类跟书签的映射
         })
         .then((affectedRows) => db.delBookmarks(bookmarksId)) // 再删掉该分类下面的书签
+        .then((affectedRows) => db.delTagsBookmarks(bookmarksId)) // 再删掉该书签关联的其他分类
         .then((affectedRows) => {
             if (needDelTag) {
                 return db.delTag(tag.id);

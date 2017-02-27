@@ -205,6 +205,19 @@ db.delBookmarks = function(bookmarkIds) {
     });
 }
 
+db.delTagsBookmarks = function(bookmarkIds) {
+    var sql = "DELETE FROM `tags_bookmarks` WHERE bookmark_id IN (" + (bookmarkIds.toString() || ("-1")) + ")";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
 db.addTagsBookmarks = function(tags, bookmard_id) {
     sql = "INSERT INTO `tags_bookmarks` (`tag_id`, `bookmark_id`) VALUES";
     for (var i = 0; i < tags.length; i++) {

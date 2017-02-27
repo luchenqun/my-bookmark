@@ -15,6 +15,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.inputPage = '';
     $scope.currentTagId = ($stateParams && $stateParams.tagId) || '';
     $scope.edit = false;
+    $scope.newTag = '';
     $scope.waitDelTag = {};
     $scope.waitDelBookmark = {};
 
@@ -200,6 +201,40 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 toastr.error('分类删除失败！错误提示：' + JSON.stringify(err), "提示");
                 getTags({});
             });
+    }
+
+    $scope.showAddTag = function() {
+        if ($scope.tags.length < 30) {
+            console.log('showAddTag..........')
+            $scope.newTag = "";
+            dialog = ngDialog.open({
+                template: './views/dialog-add-tag.html',
+                className: 'ngdialog-theme-default',
+                scope: $scope
+            });
+        } else {
+            toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
+        }
+    }
+
+    $scope.addTag = function(tag) {
+        ngDialog.close(dialog);
+        console.log(tag);
+        tag = tag.replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格，多个空格转为一个空格;
+        if (tag) {
+            var tags = [];
+            tags.push(tag);
+            bookmarkService.addTags(tags)
+                .then((data) => {
+                    toastr.success('插入分类成功！将自动更新分类信息', "提示");
+                    getTags({});
+                })
+                .catch((err) => {
+                    toastr.warning('插入分类失败：' + JSON.stringify(err), "提示");
+                });
+        } else {
+            toastr.warning('您可能没有输入分类或者输入的分类有误', "提示");
+        }
     }
 
     $scope.backTag = function(tag) {

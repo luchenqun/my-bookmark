@@ -42,7 +42,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         });
 
         if (tags.length + $scope.tags.length >= 30) {
-            toastr.error('标签个数总数不能超过30个！', "提示");
+            toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
             return;
         }
 

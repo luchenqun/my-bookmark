@@ -545,13 +545,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                            allTags.forEach((at) => {
-                                if (at.name == tag) {
-                                    tags.push(at.id);
-                                }
+                                allTags.forEach((at) => {
+                                    if (at.name == tag) {
+                                        tags.push(at.id);
+                                    }
+                                })
                             })
-                        })
-                        // 插入书签
+                            // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -747,18 +747,23 @@ api.post('/getArticle', function(req, res) {
     var url = params.url;
     var requestId = params.requestId || 0;
     read(url, function(err, article, meta) {
-        console.log(article.title || 'Get title failed');
-        if (requestId == 0) {
+        if (err) {
             res.json({
-                title: article.title || '',
+                title: '',
+                content: false,
             });
-        } else if (requestId == 1) {
-            res.json({
-                content: article.content,
-            });
+        } else {
+            if (requestId == 0) {
+                res.json({
+                    title: article.title || '',
+                });
+            } else if (requestId == 1) {
+                res.json({
+                    content: article.content,
+                });
+            }
+            article.close();
         }
-
-        article.close();
     });
 })
 

@@ -459,12 +459,12 @@ db.getTagsByNames = function(user_id, tags_name) {
 
 db.addTags = function(user_id, tags_name) {
     console.log('addTags', tags_name);
-    var sql = "INSERT INTO `tags` (`user_id`, `name`) VALUES";
+    var sql = "INSERT INTO `tags` (`user_id`, `name`, `sort`) VALUES";
     tags_name.forEach((name, i) => {
         if (i >= 1) {
             sql += ','
         }
-        sql += "('" + user_id + "', '" + name + "')";
+        sql += "('"+ user_id +"', '"+ name +"', '88')"; // sort默认一个比较大的值，默认在后面
     });
     return new Promise(function(resolve, reject) {
         if (tags_name.length == 0) {

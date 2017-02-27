@@ -309,10 +309,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
                 }
                 $scope.loadTags = false;
+                updateEditPos();
             })
             .catch((err) => {
                 console.log('getTags err', err);
                 $scope.loadTags = false;
+                updateEditPos();
             });
 
         pubSubService.publish('Common.menuActive', {

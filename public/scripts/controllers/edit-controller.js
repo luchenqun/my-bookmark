@@ -176,23 +176,6 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
             .catch((err) => console.log('getTags err', err));
     }
 
-    // 元素构造完成之后，开始使用jquery初始化
-    $scope.$on('viewContentLoaded', function(elementRenderFinishedEvent) {
-        console.log('edit ui dropdown viewContentLoaded')
-        $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
-        $('.ui.dropdown.js-tags').dropdown({
-            forceSelection: false,
-            maxSelections: maxSelections,
-            action: 'combo',
-            onChange: function(value, text, $choice) {
-                var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
-                $timeout(function() {
-                    $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections) && ($('.ui.modal.js-add-bookmark').modal('is active'));
-                });
-            }
-        });
-    });
-
     function initJsTags() {
         setTimeout(function() {
             $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');

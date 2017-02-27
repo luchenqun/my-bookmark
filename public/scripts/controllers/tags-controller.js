@@ -320,7 +320,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     updateEditPos();
 
     function updateEditPos() {
-        for (var i = 1; i <= 10; i++) {
+        for (var i = 1; i <= 100; i+=10) {
             setTimeout(function() {
                 var t = $('.js-tags').offset().top;
                 var l = $('.js-tags').offset().left;

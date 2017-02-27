@@ -185,9 +185,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     updateEditPos();
 
     function updateEditPos() {
-        for(var i=1; i<=10; i++){
-            setTimeout(function() {
-                if ($scope.showStyl == 'navigate') {
+        if ($scope.showStyle == 'navigate') {
+            for (var i = 1; i <= 100; i += 10) {
+                setTimeout(function() {
                     var t = $('.js-segment-navigate').offset().top;
                     var l = $('.js-segment-navigate').offset().left;
                     var w = $('.js-segment-navigate').width();
@@ -196,8 +196,8 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                         top: t + 10,
                         left: l + w - 10,
                     })
-                }
-            }, 100 * i)
+                }, 100 * i)
+            }
         }
     }
 }]);

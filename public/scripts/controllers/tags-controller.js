@@ -216,10 +216,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     $scope.addTag = function(tag) {
-        ngDialog.close(dialog);
         console.log(tag);
         tag = tag.replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格，多个空格转为一个空格;
         if (tag) {
+            ngDialog.close(dialog);
+
             var tags = [];
             tags.push(tag);
             bookmarkService.addTags(tags)

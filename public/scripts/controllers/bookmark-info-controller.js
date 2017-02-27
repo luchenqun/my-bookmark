@@ -1,4 +1,4 @@
-app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, $sce, bookmarkService, pubSubService) {
+app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$window', '$filter', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, $sce, $window, $filter, bookmarkService, pubSubService) {
     console.log("Hello bookmarkInfoCtr");
     $scope.bookmark = {}
     $scope.content = '';
@@ -6,7 +6,9 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', 'book
 
     pubSubService.subscribe('TagCtr.showBookmarkInfo', $scope, function(event, bookmark) {
         console.log('subscribe TagCtr.showBookmarkInfo', bookmark);
-        $('.ui.modal.js-bookmark-info').modal('show');
+        $('.ui.modal.js-bookmark-info').modal({
+            closable: false,
+        }).modal('show');
         $scope.bookmark = bookmark;
         $scope.content = '';
         var params = {
@@ -17,7 +19,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', 'book
         bookmarkService.getArticle(params)
             .then((data) => {
                 $scope.content = data.content ? $sce.trustAsHtml(data.content) : $sce.trustAsHtml('<p>数据获取失败，可能是服务器不允许获取，或者是https网站！</p>');
-                setTimeout(function(){
+                setTimeout(function() {
                     $('.ui.modal.js-bookmark-info').modal("refresh");
                 }, 100);
                 $scope.loading = false;
@@ -27,4 +29,15 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', 'book
                 $scope.loading = false;
             })
     });
+
+    $scope.jumpToUrl = function(url, id) {
+        $window.open(url, '_blank');
+        if ($scope.bookmark.own) {
+            bookmarkService.clickBookmark({
+                id: id
+            });
+            $scope.bookmark.click_count += 1;
+            $scope.bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
+        }
+    }
 }]);

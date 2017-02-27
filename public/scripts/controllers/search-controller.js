@@ -98,10 +98,6 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
     }
 
-    $scope.copyBookmark = function(bookmarkUrl) {
-        toastr.warning('功能暂未实现。。。', "警告");
-    }
-
     $scope.search = function() {
         var params = {}
         params.userRange = $('.js-user-range').dropdown('get value');

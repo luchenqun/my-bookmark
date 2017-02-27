@@ -87,7 +87,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
     $scope.detailBookmark = function(b) {
         var bookmark = $.extend(true, {}, b); // 利用jQuery执行深度拷贝
-        console.log(JSON.stringify(bookmark), ' ddddd ', JSON.stringify(b));
+        bookmark.own = true;
         if ($scope.showStyle == 'navigate') {
             bookmark.last_click = bookmark.last_click.substring(0, 10);
             bookmark.created_at = bookmark.created_at.substring(0, 10);
@@ -103,9 +103,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         bookmarkService.clickBookmark({
             id: bookmark.id
         });
-    }
-    $scope.copyBookmark = function(bookmarkUrl) {
-        toastr.warning('功能暂未实现。。。', "警告");
     }
 
     $scope.jumpToTags = function(tagId) {

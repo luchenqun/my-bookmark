@@ -13,7 +13,7 @@
                 <div class="ui  vertically divided grid">
                     <div class="one column row">
                         <div class="column">
-                            <i class="internet explorer icon"></i>网页地址：{{bookmark.url}}
+                            <i class="internet explorer icon" ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="cursor:pointer;"></i><span ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="cursor:pointer;">网页地址</span>：{{bookmark.url}}
                         </div>
                     </div>
                     <div class="two column row">
@@ -59,6 +59,7 @@
         </div>
     </div>
     <div class="actions">
-        <button class="positive ui right button">确定</button>
+        <div class="ui right button" ng-click="jumpToUrl(bookmark.url, bookmark.id)">跳转到原页面</div>
+        <button class="positive ui right button">关闭页面</button>
     </div>
 </div>

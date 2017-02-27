@@ -118,14 +118,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     $scope.detailBookmark = function(bookmark) {
+        bookmark.own = true;
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
         bookmarkService.clickBookmark({
             id: bookmark.id
         });
-    }
-
-    $scope.copyBookmark = function(bookmarkUrl) {
-        toastr.warning('功能暂未实现。。。', "警告");
     }
 
     $scope.toggleMode = function() {

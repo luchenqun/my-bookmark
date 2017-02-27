@@ -317,22 +317,21 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     // TODO: 我要将编辑按钮固定在容器的右上角
     $(window).resize(updateEditPos);
-    setTimeout(updateEditPos, 100);
-    setTimeout(updateEditPos, 500);
-    setTimeout(updateEditPos, 1000);
-    setTimeout(updateEditPos, 10000);
+    updateEditPos();
 
     function updateEditPos() {
-        setTimeout(function() {
-            var t = $('.js-tags').offset().top;
-            var l = $('.js-tags').offset().left;
-            var w = $('.js-tags').width();
-            // console.log('js-edit position update', top+10, left+width-10)
-            $('.js-edit').offset({
-                top: t + 10,
-                left: l + w - 10,
-            })
-        }, 100)
+        for (var i = 1; i <= 10; i++) {
+            setTimeout(function() {
+                var t = $('.js-tags').offset().top;
+                var l = $('.js-tags').offset().left;
+                var w = $('.js-tags').width();
+                // console.log('js-edit position update', top+10, left+width-10)
+                $('.js-edit').offset({
+                    top: t + 10,
+                    left: l + w - 10,
+                })
+            }, 100 * i)
+        }
     }
 
 }]);

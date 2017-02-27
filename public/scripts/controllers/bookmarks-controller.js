@@ -182,20 +182,22 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
     // TODO: 我要将编辑按钮固定在容器的右上角
     $(window).resize(updateEditPos);
-    setTimeout(updateEditPos, 100);
+    updateEditPos();
 
     function updateEditPos() {
-        setTimeout(function() {
-            if ($scope.showStyl == 'navigate') {
-                var t = $('.js-segment-navigate').offset().top;
-                var l = $('.js-segment-navigate').offset().left;
-                var w = $('.js-segment-navigate').width();
-                // console.log('js-edit position update', top+10, left+width-10)
-                $('.js-bookmark-edit').offset({
-                    top: t + 10,
-                    left: l + w - 10,
-                })
-            }
-        }, 100)
+        for(var i=1; i<=10; i++){
+            setTimeout(function() {
+                if ($scope.showStyl == 'navigate') {
+                    var t = $('.js-segment-navigate').offset().top;
+                    var l = $('.js-segment-navigate').offset().left;
+                    var w = $('.js-segment-navigate').width();
+                    // console.log('js-edit position update', top+10, left+width-10)
+                    $('.js-bookmark-edit').offset({
+                        top: t + 10,
+                        left: l + w - 10,
+                    })
+                }
+            }, 100 * i)
+        }
     }
 }]);

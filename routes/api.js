@@ -797,7 +797,7 @@ api.getSnapFaviconByTimer = function() {
                 if (bookmarks.length == 1) {
                     var id = bookmarks[0].id;
                     var snapState = bookmarks[0].snap_state;
-                    var faviconState = bookmarks[0].snap_state;
+                    var faviconState = bookmarks[0].favicon_state;
                     var url = bookmarks[0].url;
                     var filePath = './public/images/snap/' + id + '.png';
                     var faviconPath = './public/images/favicon/' + id + '.ico';

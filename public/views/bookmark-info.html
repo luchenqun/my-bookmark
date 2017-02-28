@@ -13,7 +13,7 @@
                 <div class="ui  vertically divided grid">
                     <div class="one column row">
                         <div class="column">
-                            <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)"     favicon-err="http://g.soz.im/{{bookmark.url}}/cdn.ico" title="点击跳转到原页面">
+                            <img class="ui ui middle aligned tiny image" ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)"     favicon-err="./images/favicon/{{bookmark.id}}.ico" title="点击跳转到原页面">
                             <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="cursor:pointer;"  title="点击跳转到原页面">网页地址</span>：{{bookmark.url}}
                         </div>
                     </div>

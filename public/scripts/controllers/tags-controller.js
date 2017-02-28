@@ -305,7 +305,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 }
 
                 if ($scope.currentTagId) {
-                    $scope.getBookmarks($scope.currentTagId, 1);
+                    $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
                 } else {
                     toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
                 }

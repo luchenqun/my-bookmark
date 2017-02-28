@@ -98,7 +98,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
     }
 
-    $scope.search = function() {
+    $scope.search = function(page) {
         var params = {}
         params.userRange = $('.js-user-range').dropdown('get value');
         if (params.userRange == '1') {
@@ -132,10 +132,12 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             params.dateClickBegin = $scope.dateClickBegin;
             params.dateClickEnd = $scope.dateClickEnd;
         }
-        params.currentPage = $scope.currentPage;
+        params.currentPage = page ? page : $scope.currentPage;
         params.perPageItems = perPageItems;
+
+        $scope.currentPage = params.currentPage;
         searchBookmarks(params)
-        console.log('search..', params)
+        console.log('search..', page, 'params = ', params)
     }
     $scope.updateCreateDate = function() {
         console.log($scope.dateCreateBegin, $scope.dateCreateEnd);

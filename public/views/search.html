@@ -86,7 +86,7 @@
     </div>
     <div class="two wide column" ng-show="showSearch">
         <div class="ui transparent icon input" ng-show="!showTags">
-            <input class="prompt" type="text" placeholder="用户账号" ng-model="username" ng-keypress="($event.which === 13)?search():0">
+            <input class="prompt" type="text" placeholder="用户账号" ng-model="username" ng-keypress="($event.which === 13)?search(1):0">
         </div>
         <div class="ui grid container" style="padding-top: 8px;">
             <div class="ui multiple dropdown js-search-tags" style="padding:0;" ng-show="showTags" js-dropdown-tags-init>
@@ -100,13 +100,13 @@
     </div>
     <div class="two wide column" ng-show="showSearch">
         <div class="ui transparent input">
-            <input type="text" placeholder="标题，链接..." ng-model="searchWord" ng-keypress="($event.which === 13)?search():0">
+            <input type="text" placeholder="标题，链接..." ng-model="searchWord" ng-keypress="($event.which === 13)?search(1):0">
         </div>
     </div>
     <div class=" left floated right aligned two wide column" ng-show=" showSearch">
         <div class="ui grid">
             <div class="four wide column">
-                <i class="search icon" title="搜索" ng-click="search()"></i>
+                <i class="search icon" title="搜索" ng-click="currentPage=1;search()"></i>
             </div>
             <div class="twelve wide column">
                 <img class="ui ui middle aligned tiny image" ng-src="./images/hide.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch">

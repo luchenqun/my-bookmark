@@ -39,3 +39,4 @@ jspm_packages
 # Upload File
 uploads
 /public/images/snap/
+/public/images/favicon/

@@ -63,7 +63,7 @@
     <tbody>
         <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}">
             <td>
-                <img class="ui ui middle aligned tiny image" src=" http://favicon.byi.pw/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+                <img class="ui ui middle aligned tiny image" src=" ./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://g.soz.im/{{bookmark.url}}">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
                     {{ bookmark.title }}
                 </span>

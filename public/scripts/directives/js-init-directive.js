@@ -174,3 +174,15 @@ app.directive('errSrc', function() {
         }
     }
 });
+
+app.directive('faviconErr', function() {
+    return {
+        link: function(scope, element, attrs) {
+            element.bind('error', function() {
+                if (attrs.src != attrs.faviconErr) {
+                    attrs.$set('src', attrs.faviconErr);
+                }
+            });
+        }
+    }
+});

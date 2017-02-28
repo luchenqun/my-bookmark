@@ -30,7 +30,7 @@
                             id="{{bookmark.id}}">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" ng-src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark)">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px;float:right;" ng-src="./images/{{ bookmarkEditHover ? 'edit-bookmark-hover' : 'edit-bookmark'}}.png" ng-if="edit" ng-click="editBookmark(bookmark.id)">
-                            <img class="ui ui middle aligned tiny image" ng-src=" http://favicon.byi.pw/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:default;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" ng-if="!edit">
+                            <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:default;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" ng-if="!edit" favicon-err="http://g.soz.im/{{bookmark.url}}">
                             <span>{{ bookmark.title}}</span>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
     <tbody>
         <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}">
             <td>
-                <img class="ui ui middle aligned tiny image" src="http://favicon.byi.pw/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+                <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://g.soz.im/{{bookmark.url}}">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
                     {{ bookmark.title }}
                 </span>

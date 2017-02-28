@@ -4,38 +4,11 @@ var crypto = require('crypto');
 var read = require('node-readability');
 var db = require('../database/db.js');
 var parseHtml = require('../common/parse_html.js');
+var download = require('../common/download.js');
 var multer = require('multer');
 var webshot = require('webshot');
 var fs = require('fs');
 var favicon = require('favicon');
-
-var download = function(url, dest, cb) {
-    var file = fs.createWriteStream(dest);
-    var sendReq = request.get(url);
-
-    var error = null;
-    sendReq.on('response', function(response) {
-        if (response.statusCode !== 200) {
-            error = 'Response status was ' + response.statusCode;
-        }
-    });
-
-    sendReq.on('error', function(err) {
-        fs.unlink(dest);
-        error = err
-    });
-
-    sendReq.pipe(file);
-
-    file.on('finish', function() {
-        file.close(cb(error));
-    });
-
-    file.on('error', function(err) {
-        fs.unlink(dest);
-        error = err.message;
-    });
-};
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -574,13 +547,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                            allTags.forEach((at) => {
-                                if (at.name == tag) {
-                                    tags.push(at.id);
-                                }
+                                allTags.forEach((at) => {
+                                    if (at.name == tag) {
+                                        tags.push(at.id);
+                                    }
+                                })
                             })
-                        })
-                        // 插入书签
+                            // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -797,7 +770,7 @@ api.post('/getArticle', function(req, res) {
     });
 })
 
-api.checkSnapState = function() {
+api.checkSnapFaviconState = function() {
     db.getBookmarks()
         .then((bookmarks) => {
             bookmarks.forEach(bookmark => {
@@ -814,8 +787,8 @@ api.checkSnapState = function() {
         .catch((err) => console.log('getBookmarks err', err));
 }
 
-api.getSnapByTimer = function() {
-    console.log('getSnapByTimer...........');
+api.getSnapFaviconByTimer = function() {
+    console.log('getSnapFaviconByTimer...........');
     var timeout = 5000
     setInterval(function() {
         var today = new Date().getDate();
@@ -823,13 +796,18 @@ api.getSnapByTimer = function() {
             .then((bookmarks) => {
                 if (bookmarks.length == 1) {
                     var id = bookmarks[0].id;
-                    var snap_state = bookmarks[0].snap_state;
+                    var snapState = bookmarks[0].snap_state;
+                    var faviconState = bookmarks[0].snap_state;
                     var url = bookmarks[0].url;
                     var filePath = './public/images/snap/' + id + '.png';
+                    var faviconPath = './public/images/favicon/' + id + '.ico';
 
+                    // 获取截图
                     fs.exists(filePath, function(exists) {
                         if (exists) {
-                            db.updateBookmarkSnapState(id, -1);
+                            if (snapState != -1) {
+                                db.updateBookmarkSnapState(id, -1);
+                            }
                         } else {
                             if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
                                 db.updateBookmarkSnapState(id, today + 31);
@@ -846,13 +824,45 @@ api.getSnapByTimer = function() {
                                 var newSnapState = -1;
                                 if (err) {
                                     console.log("boomarkid = " + id + ", webshot over", err)
-                                    if (snap_state == 0 || snap_state == 1) {
-                                        newSnapState = snap_state + 1;
-                                    } else if (snap_state == 2) {
+                                    if (snapState == 0 || snapState == 1) {
+                                        newSnapState = snapState + 1;
+                                    } else if (snapState == 2) {
                                         newSnapState = today + 31;
                                     }
                                 }
                                 db.updateBookmarkSnapState(id, newSnapState);
+                            });
+                        }
+                    });
+
+                    // 获取favicon
+                    fs.exists(faviconPath, function(exists) {
+                        if (exists) {
+                            if (faviconState != -1) {
+                                db.updateBookmarkFaviconState(id, -1);
+                            }
+                        } else {
+                            if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
+                                db.updateBookmarkFaviconState(id, today + 31);
+                                return;
+                            }
+                            favicon(url, function(err, faviconUrl) {
+                                if (faviconUrl) {
+                                    download(faviconUrl, faviconPath, function(err) {
+                                        var newFaviconState = -1;
+                                        if (err) {
+                                            console.log("boomarkid = " + id + ", download over", err)
+                                            if (faviconState == 0 || faviconState == 1) {
+                                                newFaviconState = faviconState + 1;
+                                            } else if (faviconState == 2) {
+                                                newFaviconState = today + 31;
+                                            }
+                                        }
+                                        db.updateBookmarkFaviconState(id, newFaviconState);
+                                    });
+                                } else {
+                                    db.updateBookmarkFaviconState(id, today + 31);
+                                }
                             });
                         }
                     });

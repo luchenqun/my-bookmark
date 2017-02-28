@@ -696,7 +696,7 @@ db.getBookmarks = function() {
 
 db.getBookmarkWaitSnap = function(today) {
     var todayNotSnap = today + 31;
-    var sql = "SELECT id, url, snap_state FROM `bookmarks` WHERE `snap_state`>=0 AND `snap_state` <= 64  AND snap_state != " + todayNotSnap + " ORDER BY created_at DESC LIMIT 0, 1";
+    var sql = "SELECT id, url, snap_state, favicon_state FROM `bookmarks` WHERE (`snap_state`>=0 AND `snap_state` <= 64 AND snap_state != " + todayNotSnap + ") OR (`favicon_state`>=0 AND `favicon_state` <= 64 AND favicon_state != " + todayNotSnap + ") ORDER BY created_at DESC LIMIT 0, 1";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -711,6 +711,20 @@ db.getBookmarkWaitSnap = function(today) {
 db.updateBookmarkSnapState = function(id, snapState) {
     console.log("updateBookmarkSnapState id = " + id + ", snapState = " + snapState);
     var sql = "UPDATE `bookmarks` SET `snap_state`='" + snapState + "' WHERE (`id`='" + id + "')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
+db.updateBookmarkFaviconState = function(id, faviconState) {
+    console.log("updateBookmarkFaviconState id = " + id + ", faviconState = " + faviconState);
+    var sql = "UPDATE `bookmarks` SET `favicon_state`='" + faviconState + "' WHERE (`id`='" + id + "')";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

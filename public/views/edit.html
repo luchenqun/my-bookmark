@@ -24,7 +24,7 @@
                     </div>
                     <div class="eight wide field">
                         <div class="ui action input">
-                            <input type="text" placeholder="多个分类请用中文或英文逗号 , 隔开" ng-model="newTags">
+                            <input type="text" placeholder="多个分类请用中文或英文逗号 , 隔开" ng-model="newTags" ng-keypress="($event.which === 13)?addTags():0">
                             <button class="ui button" ng-click="addTags()">添加新分类</button>
                         </div>
                     </div>

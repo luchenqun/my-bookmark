@@ -23,7 +23,7 @@
         <i class="angle double right icon"></i>
     </a>
     <div class="ui transparent input item" style="width:100px;">
-        <input type="text" placeholder="跳转至..." ng-model="inputPage">
+        <input type="text" placeholder="跳转至..." ng-model="inputPage" ng-keypress="($event.which === 13)?changeCurrentPage(inputPage):0">
         <i class="arrow right icon" ng-click="changeCurrentPage(inputPage)"></i>
     </div>
 </div>

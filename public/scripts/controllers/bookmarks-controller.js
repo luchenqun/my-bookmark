@@ -134,12 +134,16 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
-        params.showStyle = $scope.showStyle;
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
-        getBookmarks(params);
-        if ($scope.showStyle == 'card') {
-            $scope.currentPage = 1;
-            $scope.bookmarks = [];
+
+        var menusScope = $('div[ng-controller="menuCtr"]').scope();
+        if (menusScope.login && menusScope.selectLoginIndex == 0) {
+            params.showStyle = $scope.showStyle;
+            if ($scope.showStyle == 'card') {
+                $scope.currentPage = 1;
+                $scope.bookmarks = [];
+            }
+            getBookmarks(params);
         }
     });
 

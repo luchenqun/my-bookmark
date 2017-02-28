@@ -188,10 +188,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         bookmarkService.delTag(params)
             .then((data) => {
                 if (data.retCode == 0) {
-                    toastr.success('分类删除成功！将自动更新分类信息', "提示");
+                    toastr.success('[ ' + tagName + ' ]分类删除成功！将自动更新分类信息', "提示");
                     getTags({});
                 } else {
-                    toastr.error('分类删除失败！', "提示");
+                    toastr.error('[ ' + tagName + ' ]分类删除失败！', "提示");
                     getTags({});
                 }
             })
@@ -225,11 +225,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             tags.push(tag);
             bookmarkService.addTags(tags)
                 .then((data) => {
-                    toastr.success('插入分类成功！将自动更新分类信息', "提示");
+                    toastr.success('[ ' + tag + ' ]插入分类成功！将自动更新分类信息', "提示");
                     getTags({});
                 })
                 .catch((err) => {
-                    toastr.warning('插入分类失败：' + JSON.stringify(err), "提示");
+                    toastr.warning('[ ' + tag + ' ]插入分类失败：' + JSON.stringify(err), "提示");
                 });
         } else {
             toastr.warning('您可能没有输入分类或者输入的分类有误', "提示");
@@ -323,6 +323,24 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             index: 1
         });
     }
+
+    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
+        console.log('subscribe EditCtr.inserBookmarsSuccess', data);
+
+        var menusScope = $('div[ng-controller="menuCtr"]').scope();
+        if (menusScope.login && menusScope.selectLoginIndex == 1) {
+            getTags({});
+        }
+    });
+
+    pubSubService.subscribe('EditCtr.addTagsSuccess', $scope, function(event, data) {
+        console.log('subscribe EditCtr.addTagsSuccess', data);
+
+        var menusScope = $('div[ng-controller="menuCtr"]').scope();
+        if (menusScope.login && menusScope.selectLoginIndex == 1) {
+            getTags({});
+        }
+    });
 
     // TODO: 我要将编辑按钮固定在容器的右上角
     $(window).resize(updateEditPos);

@@ -49,6 +49,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         bookmarkService.addTags(params)
             .then((data) => {
                 $scope.tags = data;
+                pubSubService.publish('EditCtr.addTagsSuccess', data);
+                $scope.newTags = '';
+                toastr.success('[ ' + params.toString() + ' ]分类添加成功！', "提示");
                 $timeout(() => {
                     // 将新增加的分类自动添加到下啦列表中
                     var count = 0;
@@ -169,6 +172,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
     function getTags(params) {
         bookmarkService.getTags(params)
             .then((data) => {
+                data.sort((a, b) => {
+                    if (a.last_use > b.last_use) return -1;
+                    return 1;
+                })
                 $scope.tags = data;
                 initJsTags();
                 $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');

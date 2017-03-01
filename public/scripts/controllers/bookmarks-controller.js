@@ -180,7 +180,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     login: true,
                     index: 0
                 });
-                transition();
+                // transition();
             })
             .catch((err) => console.log('getBookmarks err', err));
     }

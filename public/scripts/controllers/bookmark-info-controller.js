@@ -8,7 +8,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
         console.log('subscribe TagCtr.showBookmarkInfo', bookmark);
         $('.ui.modal.js-bookmark-info').modal({
             closable: false,
-        }).modal('show');
+        }).modal('setting', 'transition', transition()).modal('show');
         $scope.bookmark = bookmark;
         $scope.content = '';
         var params = {
@@ -39,5 +39,13 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
             $scope.bookmark.click_count += 1;
             $scope.bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
         }
+    }
+
+    function transition() {
+        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
+            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
+            'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+        ];
+        return data[parseInt(Math.random() * 1000) % data.length];
     }
 }]);

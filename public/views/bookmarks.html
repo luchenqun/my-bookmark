@@ -30,7 +30,13 @@
                             id="{{bookmark.id}}">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px" ng-src="./images/{{ bookmarkEditHover ? 'delete-hover' : 'delete'}}.png" ng-if="edit" ng-click="delBookmark(bookmark)">
                             <img class="ui ui middle aligned tiny image bookmarkOperaterHover" style="width:16px;height:16px;float:right;" ng-src="./images/{{ bookmarkEditHover ? 'edit-bookmark-hover' : 'edit-bookmark'}}.png" ng-if="edit" ng-click="editBookmark(bookmark.id)">
-                            <img class="ui ui middle aligned tiny image" ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico" style="width:16px;height:16px;cursor:default;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" ng-if="!edit" favicon-err="./images/favicon/{{bookmark.id}}.ico">
+                            <img
+                                class="ui ui middle aligned tiny image"
+                                ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico"
+                                style="width:16px;height:16px;cursor:default;"
+                                ng-click="detailBookmark(bookmark);$event.stopPropagation()"
+                                ng-if="!edit"
+                                favicon-err="./images/favicon/{{bookmark.id}}.ico">
                             <span>{{ bookmark.title}}</span>
                         </div>
                     </div>
@@ -41,7 +47,7 @@
         <div class="ui divider"></div>
     </div>
 </div>
-<table class="ui celled table" ng-if="showStyle === 'table'">
+<table class="ui celled table js-table-bookmarks" ng-if="showStyle === 'table'">
     <thead>
         <tr>
             <th>标题</th>
@@ -87,7 +93,7 @@
         </tr>
     </tfoot>
 </table>
-<div class="ui segment" ng-if="showStyle === 'card'">
+<div class="ui segment js-segment-card" ng-if="showStyle === 'card'">
     <div class="ui five link stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
         <div class="card" ng-repeat="bookmark in bookmarks">
             <div class="image" href="{{ bookmark.url }}" ng-click="jumpToUrl(bookmark.url, bookmark.id)">

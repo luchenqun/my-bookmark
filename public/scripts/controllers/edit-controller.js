@@ -7,7 +7,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         $timeout(function() {
             $scope.urlError = $scope.url == '' && $('.ui.modal.js-add-bookmark').modal('is active');
         });
-        if ($scope.add) {
+        if ($scope.autoGettitle) {
             $scope.title = "";
             if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(newUrl)) {
                 var params = {
@@ -149,6 +149,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                 console.log('getBookmark ', data);
 
                 var bookmark = data.bookmark;
+                $scope.autoGettitle = false;
                 $scope.id = (bookmark && bookmark.id) || '';
                 $scope.url = (bookmark && bookmark.url) || '';
                 $scope.title = (bookmark && bookmark.title) || '';
@@ -167,6 +168,22 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                 $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
             })
             .catch((err) => console.log('updateBookmark err', err));
+    });
+
+    pubSubService.subscribe('TagCtr.storeBookmark', $scope, function(event, bookmark) {
+        console.log('TagCtr.storeBookmark', bookmark);
+        $('.ui.modal.js-add-bookmark').modal({
+            closable: false,
+        }).modal('show');
+        $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
+        $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
+        $('.ui.checkbox.js-public').checkbox('set checked');
+        init();
+        getTags({});
+        $scope.autoGettitle = false;
+        $scope.url = bookmark.url;
+        $scope.title = bookmark.title;
+        $scope.newTags = bookmark.tags.map((item) => item.name).toString();
     });
 
     function getTags(params) {
@@ -202,6 +219,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
 
     function init() {
         $scope.add = true;
+        $scope.autoGettitle = true;
         $scope.id = '';
         $scope.url = '';
         $scope.title = '';

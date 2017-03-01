@@ -505,7 +505,7 @@ db.getBookmarksNavigate = function(tags) {
         }
         sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
     })
-    console.log(sql);
+    // console.log('getBookmarksNavigate ', sql);
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

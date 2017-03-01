@@ -153,6 +153,9 @@
                 <span ng-show="bookmark.own">
                     <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
                 </span>
+                <span ng-show="!bookmark.own">
+                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签">
+                </span>
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
             </td>
         </tr>

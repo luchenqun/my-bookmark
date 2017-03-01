@@ -103,6 +103,11 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
     }
 
+    $scope.storeBookmark = function(bookmark) {
+        var b = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
+        pubSubService.publish('TagCtr.storeBookmark', b);
+    }
+
     $scope.search = function(page) {
         var params = {}
         params.userRange = $('.js-user-range').dropdown('get value');

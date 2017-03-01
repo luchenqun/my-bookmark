@@ -44,6 +44,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
         $state.go('search', {
             searchWord: searchWord,
         })
+        $scope.login = true;
         updateMenuActive($scope.selectLoginIndex = 0);
     }
 

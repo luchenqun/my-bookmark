@@ -36,6 +36,11 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             $scope.tags = data;
         })
         .catch((err) => console.log('getTags err', err));
+    // 默认登陆
+    pubSubService.publish('Common.menuActive', {
+        login: true,
+        index: 0
+    });
 
     var searchParams = {
         searchWord: $scope.searchWord,
@@ -46,7 +51,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     if ($scope.searchWord) {
         searchBookmarks(searchParams);
     } else {
-        $state.go('/', {})
+        toastr.warning("请先登录然后再输入关键字进行查询", "提示");
     }
 
     $scope.jumpToUrl = function(url, id) {
@@ -171,12 +176,6 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
                 $scope.bookmarkCount = data.totalItems;
                 $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
                 $scope.loading = false;
-
-                // 有点问题，暂时留在这里
-                // pubSubService.publish('Common.menuActive', {
-                //     login: true,
-                //     index: 0
-                // });
             })
             .catch((err) => {
                 console.log('getBookmarks err', err);

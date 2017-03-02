@@ -43,7 +43,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             currentPage: currentPage,
             perPageItems: perPageItems,
         };
-
+        $('.js-tags-table').transition('hide');
         bookmarkService.getBookmarksByTag(params)
             .then((data) => {
                 $scope.bookmarks = data.bookmarks;

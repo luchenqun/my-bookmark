@@ -1,6 +1,6 @@
 app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService) {
     console.log('Hello settingsCtr......', $stateParams);
-    $scope.form = [false, false, false];
+    $scope.form = [false, false, false, false];
     $scope.passwordOrgin = "";
     $scope.passwordNew1 = "";
     $scope.passwordNew2 = "";
@@ -77,7 +77,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         index: 3
     });
     transition();
-    
+
     function transition() {
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
             'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',

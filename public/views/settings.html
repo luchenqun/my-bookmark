@@ -4,9 +4,11 @@
             <div class="ui secondary vertical pointing menu">
                 <a class="item" ng-class="{active:form[0]}" ng-click="changeForm(0)">重置密码
                 </a>
-                <a class="item" ng-class="{active:form[1]}" ng-click="changeForm(1)">书签显示设置
+                <a class="item" ng-class="{active:form[1]}" ng-click="changeForm(1)">我的信息
                 </a>
                 <a class="item" ng-class="{active:form[2]}" ng-click="changeForm(2)">上传书签
+                </a>
+                <a class="item" ng-class="{active:form[3]}" ng-click="changeForm(3)">网站说明
                 </a>
             </div>
         </div>
@@ -27,7 +29,7 @@
                 <button class="ui button" type="submit" ng-click="resetPassword()">重置密码</button>
             </form>
             <form class="ui form" ng-show="form[1]">
-                书签显示设置(正在开发中...)
+                正在开发中...
             </form>
             <form class="ui form" ng-show="form[2]">
                 <div id="fileuploader" style="min-width:100px">点我上传</div>
@@ -39,8 +41,36 @@
                 </p>
                 <p>4、导入的文件不能超过10M</p>
                 <p>5、最好不要重复导入。</p>
-            </p>
-        </form>
+                </p>
+            </form>
+            <div class="ui container" ng-show="form[3]">
+                <h2 class="ui dividing header">为什么要做个网络书签</h2>
+                <p>每个浏览器上面都会有个书签可以供你收藏你以后可能还要用到的网址。但是这个书签有以下几个缺点我没法忍受（由于浏览器我只用Google Chrome，下面的观点我都是基于该浏览器）：</p>
+                <p>1、各个浏览器之间无法同步。</p>
+                <p>2、容易丢失。因为这个东西是不强制注册账号的，你只要一重装电脑忘记备份了，你的书签就没有了。还有一个，如果你使用Chrome浏览器，由于Google被ZF封杀，你要是不翻墙，书签是没法同步的。</p>
+                <p>3、搜索不方便，只能搜索关键字，无法按照特定条件，比如搜索特定的加入时间，特定的类型搜索。</p>
+                <p>4、查阅不方便。一旦一个分类目录你收藏的过多，尼玛你在那个目录下面找起来想死的心都有。</p>
+                <p>5、无法查看别人收藏的书签。</p>
+                <p>6、在别人的电脑上无法查看我收藏的书签。</p>
+                <p>7、如果公用一台电脑，那么收藏夹里面会收藏其他人的网址。</p>
+                <p>PS：注册在登录界面的右下角。</p>
+                <h2 class="ui dividing header">主要功能(有好的功能，可以在留言里面进行留言)</h2>
+                <p>1、需要注册账号用户。(初步完成)</p>
+                <p>2、网站展示有三种展示方式：导航，列表，卡片。其中导航以分类展示，分类顺序可以在书签分类下面拖动编辑。按照点击的次数从高到低在每个分类里面提取16个书签，再按照最近添加的书签提取前面的16个书签，然后合并起来。列表以表格展示，显示书签详细类容，按照点击次数优先显示，点击次数相同，则按添加顺序优先。卡片以卡片方式显示，按照最近添加优先显示。(完成)</p>
+                <p>3、在书签分类里面，可以更新分类，删除分类，新增分类，对分类显示进行排序。(完成)</p>
+                <p>4、可以按照指定添加时间段，指定分类目录，指定网址关键字等进行查询。(完成)</p>
+                <p>5、添加书签的时候，会自动获取title，供用户编辑。(完成)</p>
+                <p>6、可以导入Chrome的书签导出文件，暂时做在设置里面。(完成)</p>
+                <p>7、书签可以作为公有或者私有，公有可供所有人搜索。(暂时可以通过用户名进行搜索，待优化)</p>
+                <p>8、可以将搜索到其他用户的书签转存为自己的书签。(已完成)</p>
+                <p>9、可以将书签导出来，然后导入到浏览器。(未完成)</p>
+                <h2 class="ui dividing header">联系方式</h2>
+                <p>微信跟扣扣：530485521，记得备注加：书签。</p>
+                <h2 class="ui dividing header">开发备忘(非开发人员请无视)</h2>
+                <p>1、该代码我托管在Github上<a href="https://github.com/luchenqun/my-bookmark" target="_blank">my-bookmark</a>。git地址：git@github.com:luchenqun/my-bookmark.git。我不做Web开发，这玩意儿主要是我自己用Chrome浏览器收藏网址不好用而写的。如果你需要源码，你尽可随意使用此项目无需通知我。</p>
+                <p>2、使用到的东西有：NodeJS(做后台) + Express(做Web框架) + AngularJS(有了这个就不要用jQuery了) + Semantic UI(有了这个，界面不会太丑) + MySql(做后台数据库) + MongoDb(做session)。对了，用到的sql表，在schema.sql里面。</p>
+                <p>PS：暂时还没有README.md文件，等整理完公司的一个项目，会添加！</p>
+            </div>
+        </div>
     </div>
-</div>
 </div>

@@ -16,14 +16,6 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
     $scope.passwordRegister1 = "";
     $scope.passwordRegister2 = "";
 
-
-    $scope.myKeyup = function(e) {
-        var keycode = window.event ? e.keyCode : e.which;
-        if (keycode == 13) {
-            $scope.login();
-        }
-    };
-
     $scope.login = function() {
         var autoLogin = $('.ui.checkbox.js-auto-login').checkbox('is checked');
         if (!$scope.username || !$scope.password) {
@@ -62,7 +54,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
     $scope.showRegister = function() {
         $('.ui.modal.js-register').modal({
             closable: false,
-        }).modal('show');
+        }).modal('setting', 'transition', transition()).modal('show');
 
         $scope.emailRegister = "";
         $scope.usernameRegister = "";
@@ -112,5 +104,20 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
                 console.log('register err', err);
                 toastr.error('注册失败：' + JSON.stringify(err), "错误");
             });
+    }
+
+    var className = 'js-form-login';
+    $('.' + className).transition('hide');
+    $('.' + className).transition({
+        animation: transition(),
+        duration: 500,
+    });
+
+    function transition() {
+        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
+            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
+            'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+        ];
+        return data[parseInt(Math.random() * 1000) % data.length];
     }
 }]);

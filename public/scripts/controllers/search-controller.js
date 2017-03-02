@@ -199,10 +199,27 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
                 $scope.bookmarkCount = data.totalItems;
                 $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
                 $scope.loading = false;
+                transition();
             })
             .catch((err) => {
                 console.log('getBookmarks err', err);
                 $scope.loading = false;
             });
     }
+
+    function transition() {
+        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
+            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
+            'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+        ];
+        var t = data[parseInt(Math.random() * 1000) % data.length];
+
+        var className = 'js-table-search';
+        $('.' + className).transition('hide');
+        $('.' + className).transition({
+            animation: t,
+            duration: 500,
+        });
+    }
+
 }]);

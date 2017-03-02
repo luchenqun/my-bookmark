@@ -15,7 +15,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.currentPage = 1;
     $scope.inputPage = '';
     $scope.currentTagId = ($stateParams && $stateParams.tagId) || '';
-    $scope.edit = false;
+    $scope.editMode = false;
     $scope.newTag = '';
     $scope.waitDelTag = {};
     $scope.waitDelBookmark = {};
@@ -57,6 +57,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     login: true,
                     index: 1
                 });
+                transition();
             })
             .catch((err) => {
                 console.log('getTags err', err);
@@ -74,7 +75,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     $scope.jumpToUrl = function(url, id) {
-        if (!$scope.edit) {
+        if (!$scope.editMode) {
             $window.open(url, '_blank');
             bookmarkService.clickBookmark({
                 id: id
@@ -127,7 +128,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     $scope.copy = function(id, url) {
-        var clipboard = new Clipboard('#tagurl'+id, {
+        var clipboard = new Clipboard('#tagurl' + id, {
             text: function() {
                 return url;
             }
@@ -145,11 +146,13 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     $scope.toggleMode = function() {
-        $scope.edit = !$scope.edit;
-        if (!$scope.edit) {
+        $scope.editMode = !$scope.editMode;
+        if (!$scope.editMode) {
             getTags({});
+        } else {
+            $('.js-tags-table').transition('hide');
         }
-        setTimeout(updateEditPos, 100);
+        updateEditPos();
     }
 
     $scope.editTag = function(tag) {
@@ -323,7 +326,9 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 }
 
                 if ($scope.currentTagId) {
-                    $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
+                    if (!$scope.editMode) {
+                        $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
+                    }
                 } else {
                     toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
                 }
@@ -381,4 +386,18 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     }
 
+    function transition() {
+        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
+            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
+            'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+        ];
+        var t = data[parseInt(Math.random() * 1000) % data.length];
+
+        var className = 'js-tags-table';
+        $('.' + className).transition('hide');
+        $('.' + className).transition({
+            animation: t,
+            duration: 500,
+        });
+    }
 }]);

@@ -106,7 +106,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     $scope.copy = function(id, url) {
-        var clipboard = new Clipboard('#url'+id, {
+        var clipboard = new Clipboard('#url' + id, {
             text: function() {
                 return url;
             }
@@ -141,7 +141,13 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     $scope.closeMsg = function() {
-        $(".js-msg").remove();
+        $('.js-msg').transition({
+            animation: animation(),
+            duration: '500ms',
+            onComplete: function() {
+                $(".js-msg").remove();
+            }
+        });
     }
 
     $scope.loadCardData = function() {
@@ -198,6 +204,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     login: true,
                     index: 0
                 });
+
                 transition();
             })
             .catch((err) => console.log('getBookmarks err', err));
@@ -205,6 +212,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
 
     function transition() {
+        if ($scope.showStyle == 'card' && $scope.currentPage > 1) {
+            return;
+        }
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
             'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
             'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
@@ -223,6 +233,18 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             duration: 500,
         });
     }
+
+    function animation() {
+
+        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
+            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
+            'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+        ];
+        var t = data[parseInt(Math.random() * 1000) % data.length];
+
+        return t;
+    }
+
     // TODO: 我要将编辑按钮固定在容器的右上角
     $(window).resize(updateEditPos);
     updateEditPos();

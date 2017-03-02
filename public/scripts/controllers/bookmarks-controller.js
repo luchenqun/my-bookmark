@@ -105,6 +105,24 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         });
     }
 
+    $scope.copy = function(id, url) {
+        var clipboard = new Clipboard('#url'+id, {
+            text: function() {
+                return url;
+            }
+        });
+
+        clipboard.on('success', function(e) {
+            toastr.success(url + '<br/>已复制到您的剪切板', "提示");
+            clipboard.destroy();
+        });
+
+        clipboard.on('error', function(e) {
+            toastr.error(url + '<br/>复制失败', "提示");
+            clipboard.destroy();
+        });
+    }
+
     $scope.jumpToTags = function(tagId) {
         $state.go('tags', {
             tagId: tagId,
@@ -180,32 +198,30 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     login: true,
                     index: 0
                 });
-                // transition();
+                transition();
             })
             .catch((err) => console.log('getBookmarks err', err));
     }
 
 
     function transition() {
-        setTimeout(function() {
-            var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-                'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
-                'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-            ];
-            var t = data[parseInt(Math.random() * 1000) % data.length];
+        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
+            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
+            'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+        ];
+        var t = data[parseInt(Math.random() * 1000) % data.length];
 
-            var className = 'js-segment-navigate';
-            if ($scope.showStyle == 'card') {
-                className = 'js-segment-card'
-            } else if ($scope.showStyle == 'table') {
-                className = 'js-table-bookmarks'
-            }
-            $('.' + className).transition('hide');
-            $('.' + className).transition({
-                animation: t,
-                duration: 500,
-            });
-        }, 10)
+        var className = 'js-segment-navigate';
+        if ($scope.showStyle == 'card') {
+            className = 'js-segment-card'
+        } else if ($scope.showStyle == 'table') {
+            className = 'js-table-bookmarks'
+        }
+        $('.' + className).transition('hide');
+        $('.' + className).transition({
+            animation: t,
+            duration: 500,
+        });
     }
     // TODO: 我要将编辑按钮固定在容器的右上角
     $(window).resize(updateEditPos);

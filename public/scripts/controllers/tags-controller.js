@@ -126,6 +126,24 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         });
     }
 
+    $scope.copy = function(id, url) {
+        var clipboard = new Clipboard('#tagurl'+id, {
+            text: function() {
+                return url;
+            }
+        });
+
+        clipboard.on('success', function(e) {
+            toastr.success(url + '<br/>已复制到您的剪切板', "提示");
+            clipboard.destroy();
+        });
+
+        clipboard.on('error', function(e) {
+            toastr.error(url + '<br/>复制失败', "提示");
+            clipboard.destroy();
+        });
+    }
+
     $scope.toggleMode = function() {
         $scope.edit = !$scope.edit;
         if (!$scope.edit) {

@@ -41,6 +41,24 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
         }
     }
 
+    $scope.copy = function(id, url) {
+        var clipboard = new Clipboard('#detailurl'+id, {
+            text: function() {
+                return url;
+            }
+        });
+
+        clipboard.on('success', function(e) {
+            toastr.success(url + '<br/>已复制到您的剪切板', "提示");
+            clipboard.destroy();
+        });
+
+        clipboard.on('error', function(e) {
+            toastr.error(url + '<br/>复制失败', "提示");
+            clipboard.destroy();
+        });
+    }
+
     function transition() {
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
             'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',

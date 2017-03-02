@@ -68,7 +68,7 @@
                 </span>
             </td>
             <td>
-                <span title="{{bookmark.url}}">{{ bookmark.url }}</span>
+                <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.id, bookmark.url)" id="url{{bookmark.id}}" style="cursor:default;">{{ bookmark.url }}</span>
             </td>
             <td>{{ bookmark.click_count }}</td>
             <td>{{ bookmark.created_at }}</td>

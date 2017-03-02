@@ -679,6 +679,20 @@ db.getTagsBookmarks = function(bookmark_ids) {
     });
 }
 
+db.getActiveUsers = function() {
+    var sql = " (SELECT username, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at, DATE_FORMAT(last_login, '%Y-%m-%d %H:%i:%s') as last_login, email FROM users ORDER BY last_login DESC LIMIT 0, 5) UNION (SELECT username, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at, DATE_FORMAT(last_login, '%Y-%m-%d %H:%i:%s') as last_login, email FROM users ORDER BY created_at DESC LIMIT 0, 5)";
+    console.log('getActiveUsers', sql);
+
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
 db.getBookmarks = function() {
     var sql = "SELECT id, snap_state FROM `bookmarks`"; // 如果是空的，那查一个不存在的就行了。
     console.log('getBookmarks', sql);

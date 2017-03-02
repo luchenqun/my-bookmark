@@ -85,7 +85,13 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         ngDialog.close(dialog);
         bookmarkService.delBookmark(params)
             .then((data) => {
-                $("#" + bookmarkId).remove();
+                $("#" + bookmarkId).transition({
+                    animation: animation(),
+                    duration: 500,
+                    onComplete: function() {
+                        $("#" + bookmarkId).remove();
+                    }
+                });
                 toastr.success($scope.waitDelBookmark.title + ' 书签删除成功！', "提示");
             })
             .catch((err) => {
@@ -109,7 +115,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     $scope.copy = function(id, url) {
-        var clipboard = new Clipboard('#searchurl'+id, {
+        var clipboard = new Clipboard('#searchurl' + id, {
             text: function() {
                 return url;
             }
@@ -208,17 +214,21 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             });
     }
 
-    function transition() {
+    function animation() {
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
             'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
             'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
         ];
         var t = data[parseInt(Math.random() * 1000) % data.length];
 
+        return t;
+    }
+
+    function transition() {
         var className = 'js-table-search';
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: t,
+            animation: animation(),
             duration: 500,
         });
     }

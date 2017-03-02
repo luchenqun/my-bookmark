@@ -101,7 +101,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                     $('.ui.modal.js-add-bookmark').modal('hide');
                     pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
                     if (data.title) {
-                        toastr.success('[ ' + data.title + ' ] 添加成功', "提示");
+                        toastr.success('[ ' + data.title + ' ] 添加成功，将自动重新更新书签！', "提示");
                     } else {
                         toastr.error('[ ' + params.title + ' ] 添加失败', "提示");
                     }
@@ -115,7 +115,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
                 .then((data) => {
                     $('.ui.modal.js-add-bookmark').modal('hide');
                     pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
-                    toastr.success('[ ' + params.title + ' ] 更新成功', "提示");
+                    toastr.success('[ ' + params.title + ' ] 更新成功，将自动重新更新书签！', "提示");
                 })
                 .catch((err) => {
                     console.log('updateBookmark err', err);

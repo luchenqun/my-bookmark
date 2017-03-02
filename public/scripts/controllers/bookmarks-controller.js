@@ -71,7 +71,13 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         ngDialog.close(dialog);
         bookmarkService.delBookmark(params)
             .then((data) => {
-                $("#" + bookmarkId).remove();
+                $("#" + bookmarkId).transition({
+                    animation: animation(),
+                    duration: 500,
+                    onComplete: function() {
+                        $("#" + bookmarkId).remove();
+                    }
+                });
                 toastr.success($scope.waitDelBookmark.title + ' 书签删除成功！', "提示");
             })
             .catch((err) => {

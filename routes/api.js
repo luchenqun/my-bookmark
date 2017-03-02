@@ -76,6 +76,29 @@ api.post('/login', function(req, res) {
         .catch((err) => console.log('login error', err));
 });
 
+api.get('/userInfo', function(req, res) {
+    console.log("userInfo");
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var user = {};
+    db.getUser(req.session.username)
+        .then((_user) => {
+            user = _user
+            if (req.session.username == 'lcq' && req.session.userId == 1) {
+                return db.getActiveUsers();
+            } else {
+                return Promise.resolve([]);
+            }
+        })
+        .then((_activeUsers) => {
+            user.activeUsers = _activeUsers;
+            res.json(user);
+        })
+        .catch((err) => console.log('userInfo error', err));
+});
+
 api.post('/register', function(req, res) {
     var params = req.body.params;
     params.password = md5(params.password); // 进行密码加密

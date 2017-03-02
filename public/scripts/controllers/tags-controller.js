@@ -91,6 +91,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     $scope.delBookmark = function(bookmark) {
         $scope.waitDelBookmark = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
+        console.log(JSON.stringify(bookmark));
         dialog = ngDialog.open({
             template: './views/dialog-del-bookmark.html',
             className: 'ngdialog-theme-default',
@@ -105,7 +106,21 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         ngDialog.close(dialog);
         bookmarkService.delBookmark(params)
             .then((data) => {
-                $("#" + bookmarkId).remove();
+                $("#" + bookmarkId).transition({
+                    animation: animation(),
+                    duration: 500,
+                    onComplete: function() {
+                        $("#" + bookmarkId).remove();
+                    }
+                });
+                // 更新分类里面含有书签的数量
+                $scope.tags.forEach((t1) => {
+                    $scope.waitDelBookmark.tags.forEach((t2) => {
+                        if (t1.id == t2.id) {
+                            t1.cnt--;
+                        }
+                    })
+                })
                 toastr.success($scope.waitDelBookmark.title + ' 书签删除成功！', "提示");
             })
             .catch((err) => {
@@ -150,7 +165,17 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         if (!$scope.editMode) {
             getTags({});
         } else {
+            $('.js-edit').transition('hide'); // 没装完逼之前，不允许切换编辑模式，否则动画模式乱了。
             $('.js-tags-table').transition('hide');
+            $('.stackable.cards .card').transition('hide');
+            $('.stackable.cards .card').transition({
+                animation: animation(),
+                reverse: 'auto', // default setting
+                interval: 50,
+                onComplete: function() {
+                    $('.js-edit').transition('show');
+                }
+            });
         }
         updateEditPos();
     }
@@ -200,7 +225,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     $scope.confirmDelTag = function(tagId, tagName) {
-        console.log(tagId);
         ngDialog.close(dialog);
         var params = {
             del: tagName == '未分类' ? false : true,
@@ -209,8 +233,25 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         bookmarkService.delTag(params)
             .then((data) => {
                 if (data.retCode == 0) {
-                    toastr.success('[ ' + tagName + ' ]分类删除成功！将自动更新分类信息', "提示");
-                    getTags({});
+                    toastr.success('[ ' + tagName + ' ]分类删除成功！', "提示");
+                    var index = -1;
+                    $scope.tags.forEach((tag, i) => {
+                        if (tag.id == tagId) {
+                            index = i;
+                        }
+                    })
+                    if (index !== -1) {
+                        $("#tag" + tagId).transition({
+                            animation: animation(),
+                            duration: 500,
+                            onComplete: function() {
+                                $("#tag" + tagId).remove();
+                                $scope.tags.splice(index, 1);
+                            }
+                        });
+                    } else {
+                        getTags({});
+                    }
                 } else {
                     toastr.error('[ ' + tagName + ' ]分类删除失败！', "提示");
                     getTags({});
@@ -386,17 +427,21 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     }
 
-    function transition() {
+    function animation() {
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
             'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
             'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
         ];
         var t = data[parseInt(Math.random() * 1000) % data.length];
 
+        return t;
+    }
+
+    function transition() {
         var className = 'js-tags-table';
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: t,
+            animation: animation(),
             duration: 500,
         });
     }

@@ -4,12 +4,36 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.passwordOrgin = "";
     $scope.passwordNew1 = "";
     $scope.passwordNew2 = "";
-
+    $scope.user = {};
+    $scope.tagCnt = 0;
+    $scope.bookmarkCnt = 0;
     $scope.form[($stateParams && $stateParams.formIndex) || 0] = true;
 
     $scope.changeForm = function(index) {
         $scope.form = $scope.form.map(() => false);
         $scope.form[index] = true;
+
+        if (index == 1) {
+            bookmarkService.userInfo({})
+                .then((data) => {
+                    $scope.user = data;
+                })
+                .catch((err) => {
+                    toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
+                });
+
+            bookmarkService.getTags({})
+                .then((data) => {
+                    $scope.tagCnt = data.length;
+                    $scope.bookmarkCnt = 0;
+                    data.forEach((tag) => {
+                        $scope.bookmarkCnt += tag.cnt;
+                    })
+                })
+                .catch((err) => {
+                    console.log('getTags err', err);
+                });
+        }
     }
 
     $scope.resetPassword = function() {

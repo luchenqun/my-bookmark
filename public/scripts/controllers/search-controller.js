@@ -193,6 +193,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
     function searchBookmarks(params) {
         $scope.loading = true;
+        $('.js-table-search').transition('hide');
         bookmarkService.searchBookmarks(params)
             .then((data) => {
                 $scope.bookmarks = data.bookmarks;

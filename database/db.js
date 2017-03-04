@@ -307,7 +307,7 @@ db.register = function(user) {
 };
 
 db.insertDefaultBookmarks = function(userId) {
-    var tags_name = ["常用", "未分类"];
+    var tags_name = ["常用", "未分类", "收藏"];
 
     db.addTags(userId, tags_name)
         .then((insertId) => {
@@ -315,27 +315,27 @@ db.insertDefaultBookmarks = function(userId) {
                 title: "谷歌",
                 description: "要翻墙的搜索网站",
                 url: "https://www.google.com.hk/",
-                public: "1"
+                public: "0"
             }, {
                 title: "百度",
                 description: "A:百度一下你会死啊？B:会！",
                 url: "https://www.baidu.com/",
-                public: "1"
+                public: "0"
             }, {
                 title: "微博",
                 description: "随时随地发现新鲜事",
                 url: "http://weibo.com/",
-                public: "1"
+                public: "0"
             }, {
                 title: "天猫",
                 description: "上天猫，就够了！",
                 url: "https://www.tmall.com/",
-                public: "1"
+                public: "0"
             }, {
                 title: "优酷",
                 description: "视频网站",
                 url: "http://www.youku.com/",
-                public: "1"
+                public: "0"
             }];
 
             var tags = [insertId];

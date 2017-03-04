@@ -463,7 +463,6 @@ api.get('/searchBookmarks', function(req, res) {
             })
             sendData.totalItems = totalItems;
             sendData.bookmarks = data;
-            console.log(JSON.stringify(sendData))
             res.json(sendData);
         })
         .catch((err) => console.log('bookmarks table or card err', err))
@@ -475,7 +474,30 @@ api.get('/tags', function(req, res) {
         return;
     }
     db.getTags(req.session.user.id)
-        .then((tags) => res.json(tags))
+        .then((tags) => {
+            // 每获取一次标签，就检查一下系统默认的两个分类是不是存在
+            var defaultTags = [];
+            var find1 = false;
+            var find2 = false;
+            tags.forEach((tag) => {
+                if (tag.name == "未分类") {
+                    find1 = true;
+                }
+                if (tag.name == "收藏") {
+                    find2 = true;
+                }
+            })
+            if (!find1) {
+                defaultTags.push("未分类")
+            }
+            if (!find2) {
+                defaultTags.push("收藏")
+            }
+            if (defaultTags.length > 0) {
+                db.addTags(req.session.user.id, defaultTags)
+            }
+            res.json(tags);
+        })
         .catch((err) => console.log('tags', err));
 });
 
@@ -619,6 +641,50 @@ api.post('/addBookmark', function(req, res) {
         }) // 将之前所有的书签分类信息删掉
         .then((bookmark_id) => db.addTagsBookmarks(tags, bookmark_id)) // 插入分类
         .then(() => db.updateLastUseTags(userId, tags)) // 更新最新使用的分类
+        .then(() => db.getBookmark(bookmarkId)) // 获取书签信息，返回去
+        .then((bookmark) => {
+            ret = bookmark;
+            return db.getBookmarkTags(bookmarkId);
+        })
+        .then((bookmarkTags) => {
+            ret.tags = bookmarkTags;
+            res.json(ret)
+        })
+        .catch((err) => console.log('addBookmark err', err)); // oops!
+});
+
+api.post('/favoriteBookmark', function(req, res) {
+    console.log('hello favoriteBookmark', JSON.stringify(req.body));
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var bookmark = req.body.params;
+    var userId = req.session.user.id;
+    var bookmarkId = -1;
+    var ret = {};
+
+    db.addBookmark(userId, bookmark) // 插入书签
+        .then((bookmark_id) => {
+            db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
+            bookmarkId = bookmark_id;
+            return bookmark_id;
+        }) // 将之前所有的书签分类信息删掉
+        .then((bookmark_id) => db.getTags(userId)) // 插入分类
+        .then((tags) => {
+            var tagFavorite = [];
+            tags.forEach((tag) => {
+                if (tag.name == '收藏') {
+                    tagFavorite.push(tag.id);
+                }
+            })
+            if (tagFavorite.length >= 1) {
+                return db.addTagsBookmarks(tagFavorite, bookmarkId)
+            } else {
+                db.addTags(req.session.user.id, ['收藏'])
+                return Promise.reject("没有收藏的分类");
+            }
+        })
         .then(() => db.getBookmark(bookmarkId)) // 获取书签信息，返回去
         .then((bookmark) => {
             ret = bookmark;

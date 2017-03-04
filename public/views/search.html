@@ -136,7 +136,7 @@
                 </span>
             </td>
             <td>
-                <span  title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.id, bookmark.url)" id="searchurl{{bookmark.id}}" style="cursor:default;">{{ bookmark.url }}</span>
+                <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.id, bookmark.url)" id="searchurl{{bookmark.id}}" style="cursor:default;">{{ bookmark.url }}</span>
             </td>
             <td>{{ bookmark.click_count }}</td>
             <td>{{ bookmark.created_at }}</td>
@@ -152,6 +152,9 @@
                 </span>
                 <span ng-show="bookmark.own">
                     <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
+                </span>
+                <span ng-show="!bookmark.own">
+                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏">
                 </span>
                 <span ng-show="!bookmark.own">
                     <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签">

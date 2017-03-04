@@ -114,6 +114,29 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         pubSubService.publish('TagCtr.storeBookmark', b);
     }
 
+    $scope.favoriteBookmark = function(b) {
+        var bookmark = {}
+        bookmark.description = '';
+        bookmark.title = b.title;
+        bookmark.url = b.url;
+        bookmark.public = 1;
+        bookmark.click_count = 1;
+
+        bookmarkService.favoriteBookmark(bookmark)
+            .then((data) => {
+                pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
+                if (data.title) {
+                    toastr.success('[ ' + data.title + ' ] 收藏成功，将自动重新更新书签！', "提示");
+                } else {
+                    toastr.error('[ ' + bookmark.title + ' ] 收藏失败', "提示");
+                }
+            })
+            .catch((err) => {
+                console.log('favoriteBookmark err', err);
+                toastr.error('[ ' + bookmark.title + ' ] 收藏失败' + JSON.stringify(err), "提示");
+            });
+    }
+
     $scope.copy = function(id, url) {
         var clipboard = new Clipboard('#searchurl' + id, {
             text: function() {

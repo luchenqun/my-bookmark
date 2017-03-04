@@ -177,6 +177,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        favoriteBookmark: function(params) {
+            var def = $q.defer();
+            $http.post('/api/favoriteBookmark/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('favorite error');
+                });
+            return def.promise;
+        },
         updateBookmark: function(params) {
             var def = $q.defer();
             $http.post('/api/updateBookmark/', {

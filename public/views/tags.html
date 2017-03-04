@@ -1,7 +1,7 @@
 <div class="ui segment js-tags">
     <div class="ui container" ng-show="!editMode">
         <div class="ui grid">
-            <div class="two wide column  js-tag-label" ng-class="" ng-mouseover="" ng-mouseleave="" ng-repeat="tag in tags">
+            <div class="two wide column  js-tag-label" ng-if="tag.cnt" ng-repeat="tag in tags">
                 <div class="ui small label" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
                     {{ tag.name }}
                     ({{ tag.cnt || 0 }})

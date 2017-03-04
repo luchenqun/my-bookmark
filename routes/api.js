@@ -254,7 +254,6 @@ api.get('/bookmarks', function(req, res) {
         db.getTags(userId)
             .then((tags) => db.getBookmarksNavigate(tags))
             .then((result) => {
-                console.log('ddddddddddddd')
                 var data = [];
                 var tag = {
                     id: result && result[0] && result[0].tag_id,
@@ -295,7 +294,6 @@ api.get('/bookmarks', function(req, res) {
                         click: item.click,
                     }
                 })
-                console.log(JSON.stringify(temp));
                 res.json(data);
             })
             .catch((err) => console.log('bookmarks navigate err', err));

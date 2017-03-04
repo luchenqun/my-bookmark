@@ -126,14 +126,13 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             .then((data) => {
                 pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
                 if (data.title) {
-                    toastr.success('[ ' + data.title + ' ] 收藏成功，将自动重新更新书签！', "提示");
+                    toastr.success('[ ' + data.title + ' ] 收藏成功！', "提示");
                 } else {
-                    toastr.error('[ ' + bookmark.title + ' ] 收藏失败', "提示");
+                    toastr.error('[ ' + bookmark.title + ' ] 收藏失败！', "提示");
                 }
             })
             .catch((err) => {
-                console.log('favoriteBookmark err', err);
-                toastr.error('[ ' + bookmark.title + ' ] 收藏失败' + JSON.stringify(err), "提示");
+                toastr.error('[ ' + bookmark.title + ' ] 收藏失败，' + JSON.stringify(err), "提示");
             });
     }
 

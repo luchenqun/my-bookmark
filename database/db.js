@@ -538,7 +538,6 @@ db.getBookmarksTable = function(params) {
             sql += " ORDER BY bookmarks.click_count DESC, bookmarks.created_at DESC";
         }
     }
-    console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -575,20 +574,11 @@ db.getBookmarksByTag = function(params) {
             if (err) {
                 reject(err);
             } else {
-                sql += " LIMIT " + (params.currentPage - 1) * params.perPageItems + ", " + params.perPageItems;
-                var totalItems = result.length;
-                console.log(totalItems, sql);
-                client.query(sql, (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        var bookmarksData = {
-                            totalItems: totalItems,
-                            bookmarks: result,
-                        }
-                        resolve(bookmarksData);
-                    }
-                });
+                var bookmarksData = {
+                    totalItems: result.length,
+                    bookmarks: result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
+                }
+                resolve(bookmarksData);
             }
         });
     })
@@ -641,20 +631,17 @@ db.getBookmarksSearch = function(params) {
             if (err) {
                 reject(err);
             } else {
-
-                sql += " LIMIT " + (params.currentPage - 1) * params.perPageItems + ", " + params.perPageItems;
-                var totalItems = result.length;
-                client.query(sql, (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        var searchData = {
-                            totalItems: totalItems,
-                            bookmarks: result,
-                        }
-                        resolve(searchData);
-                    }
-                });
+                // 如果是全站搜索，默认有限显示其他用户的
+                if (params.userRange == '2') {
+                    result.sort((a, b) => {
+                        return params.userId == a.user_id ? 1 : -1;
+                    })
+                }
+                var searchData = {
+                    totalItems: result.length,
+                    bookmarks: result.splice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
+                }
+                resolve(searchData);
             }
         });
     })

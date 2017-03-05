@@ -181,8 +181,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     $scope.editTag = function(tag) {
-        if (tag.name == "未分类") {
-            toastr.warning('这个是系统默认分类，暂时不允许更新！', "警告");
+        if (tag.name == "未分类" || tag.name == "收藏") {
+            toastr.warning('这个是系统默认分类，暂时不允许更新名字！', "警告");
             return;
         }
         tag.oldName = tag.name;
@@ -227,7 +227,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.confirmDelTag = function(tagId, tagName) {
         ngDialog.close(dialog);
         var params = {
-            del: tagName == '未分类' ? false : true,
+            del: (tagName == '未分类' || tag.name == "收藏") ? false : true,
             id: tagId,
         }
         bookmarkService.delTag(params)

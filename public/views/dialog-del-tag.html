@@ -6,6 +6,8 @@
     <p>如果删除该分类，那么该分类下的所有书签都会删掉哦！数据无价，谨慎操作！且删且珍惜！</p>
     <p ng-show="waitDelTag.name == '未分类'">
         <code>未分类</code>为系统默认分类，只允许删除该分类下面的书签，不允许删除该分类信息</p>
+    <p ng-show="waitDelTag.name == '收藏'">
+        <code>收藏</code>为系统默认分类，只允许删除该分类下面的书签，不允许删除该分类信息</p>
 </div>
 <div class="ngdialog-buttons">
     <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirmDelTag(waitDelTag.id, waitDelTag.name)">确定删除</button>

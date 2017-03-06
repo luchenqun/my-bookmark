@@ -52,15 +52,15 @@ Date.prototype.format = function(fmt) { //author: meizz
 // update delete 返回影响的行数
 var db = {
 
-}
-// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun1'";
-// client.query(sql, (err, result) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log(result);
-//     }
-// });
+    }
+    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun1'";
+    // client.query(sql, (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log(result);
+    //     }
+    // });
 
 db.addBookmark = function(user_id, bookmark) {
     var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', " + client.escape(bookmark.description) + ", '" + bookmark.url + "', '" + bookmark.public + "', '1')";
@@ -499,13 +499,13 @@ db.getBookmarksNavigate = function(tags) {
     // var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id WHERE t.user_id='" + user_id + "' ORDER BY t.id ASC, b.click_count DESC";
     var sql = "";
     tags.forEach((tag, index) => {
-        var t = 't' + tag.id;
-        if (index >= 1) {
-            sql += " UNION "
-        }
-        sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
-    })
-    // console.log('getBookmarksNavigate ', sql);
+            var t = 't' + tag.id;
+            if (index >= 1) {
+                sql += " UNION "
+            }
+            sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
+        })
+        // console.log('getBookmarksNavigate ', sql);
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
@@ -567,16 +567,38 @@ db.getBookmarksByTag = function(params) {
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
 
-    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id ORDER BY bookmarks.click_count  DESC, bookmarks.created_at DESC";
+    var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id";
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
+                var bookmarksClickCount, bookmarksCreatedAt, bookmarksLatestClick;
+                result.sort((a, b) => {
+                    var click1 = parseInt(a.click_count);
+                    var click2 = parseInt(b.click_count);
+                    if (click1 > click2) {
+                        return -1;
+                    } else if (click1 == click2) {
+                        return a.created_at >= b.created_at ? -1 : 1;
+                    } else {
+                        return 1;
+                    }
+                })
+                bookmarksClickCount = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+
+                result.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
+                bookmarksCreatedAt = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+
+                result.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
+                bookmarksLatestClick = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+
                 var bookmarksData = {
                     totalItems: result.length,
-                    bookmarks: result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
+                    bookmarksClickCount: bookmarksClickCount,
+                    bookmarksCreatedAt: bookmarksCreatedAt,
+                    bookmarksLatestClick: bookmarksLatestClick,
                 }
                 resolve(bookmarksData);
             }

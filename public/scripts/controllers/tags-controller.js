@@ -4,6 +4,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     const perPageItems = 20;
     var dialog = null;
+    $scope.order = [false, false, false];
+    $scope.order[($stateParams && $stateParams.orderIndex) || 0] = true;
     $scope.loadBookmarks = false;
     $scope.loadTags = false;
     $scope.tags = []; // 书签数据
@@ -19,11 +21,24 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.newTag = '';
     $scope.waitDelTag = {};
     $scope.waitDelBookmark = {};
+    $scope.bookmarkData = {};
 
     pubSubService.subscribe('MenuCtr.tags', $scope, function(event, data) {
         console.log('subscribe MenuCtr.tags', data);
         getTags({});
     });
+
+    $scope.changeOrder = function(index) {
+        $scope.order = $scope.order.map(() => false);
+        $scope.order[index] = true;
+        if ($scope.order[0]) {
+            $scope.bookmarks = $scope.bookmarkData.bookmarksClickCount;
+        } else if ($scope.order[1]) {
+            $scope.bookmarks = $scope.bookmarkData.bookmarksCreatedAt;
+        } else {
+            $scope.bookmarks = $scope.bookmarkData.bookmarksLatestClick;
+        }
+    }
 
     $scope.getBookmarks = function(tagId, currentPage) {
         $scope.bookmarkClicked = true;
@@ -44,10 +59,18 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             perPageItems: perPageItems,
         };
         $('.js-tags-table').transition('hide');
+
         bookmarkService.getBookmarksByTag(params)
             .then((data) => {
-                $scope.bookmarks = data.bookmarks;
-                $scope.bookmarkCount = data.totalItems;
+                $scope.bookmarkData = data;
+                if ($scope.order[0]) {
+                    $scope.bookmarks = $scope.bookmarkData.bookmarksClickCount;
+                } else if ($scope.order[1]) {
+                    $scope.bookmarks = $scope.bookmarkData.bookmarksCreatedAt;
+                } else {
+                    $scope.bookmarks = $scope.bookmarkData.bookmarksLatestClick;
+                }
+                $scope.bookmarkCount = $scope.bookmarkData.totalItems;
                 $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
 
                 $scope.inputPage = '';

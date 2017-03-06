@@ -358,14 +358,18 @@ api.get('/bookmarksByTag', function(req, res) {
     var totalItems = 0;
     var totalItems = 0;
     var sendData = {
-        totalItems: totalItems,
-        bookmarks: []
+        totalItems: 0,
+        bookmarksClickCount: [],
+        bookmarksCreatedAt: [],
+        bookmarksLatestClick: [],
     }
     db.getBookmarksByTag(params)
         .then((bookmarksData) => {
-            bookmarks = bookmarksData.bookmarks;
-            totalItems = bookmarksData.totalItems;
-            var bookmarkIds = bookmarks.map((bookmark) => bookmark.id);
+            sendData = bookmarksData;
+            var bookmarkIds = []
+                .concat(sendData.bookmarksClickCount.map((bookmark) => bookmark.id))
+                .concat(sendData.bookmarksCreatedAt.map((bookmark) => bookmark.id))
+                .concat(sendData.bookmarksLatestClick.map((bookmark) => bookmark.id))
             return db.getTagsBookmarks(bookmarkIds);
         })
         .then((tbs) => {
@@ -373,25 +377,24 @@ api.get('/bookmarksByTag', function(req, res) {
             return db.getTags(userId);
         })
         .then((tags) => {
-            var data = [];
             // 获取每个书签的所有分类标签
-            bookmarks.forEach(function(bookmark) {
-                var bookmarkTags = [];
-                tagsBookmarks.forEach(function(tb) {
-                    if (tb.bookmark_id == bookmark.id) {
-                        tags.forEach(function(tag) {
-                            if (tb.tag_id == tag.id) {
-                                bookmarkTags.push(tag)
-                            }
-                        })
-                    }
-                });
-                bookmark.tags = bookmarkTags;
-                data.push(bookmark);
+            var objectName = ['bookmarksClickCount', 'bookmarksCreatedAt', 'bookmarksLatestClick'];
+            objectName.forEach((name) => {
+                console.log(JSON.stringify(tagsBookmarks));
+                sendData[name].forEach(function(bookmark, index) {
+                    var bookmarkTags = [];
+                    tagsBookmarks.forEach(function(tb) {
+                        if (tb.bookmark_id == bookmark.id) {
+                            tags.forEach(function(tag) {
+                                if (tb.tag_id == tag.id) {
+                                    bookmarkTags.push(tag)
+                                }
+                            })
+                        }
+                    });
+                    sendData[name][index].tags = bookmarkTags;
+                })
             })
-            sendData.totalItems = totalItems;
-            sendData.bookmarks = data;
-
             res.json(sendData);
         })
         .catch((err) => console.log('bookmarks table or card err', err))
@@ -591,13 +594,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                            allTags.forEach((at) => {
-                                if (at.name == tag) {
-                                    tags.push(at.id);
-                                }
+                                allTags.forEach((at) => {
+                                    if (at.name == tag) {
+                                        tags.push(at.id);
+                                    }
+                                })
                             })
-                        })
-                        // 插入书签
+                            // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类

@@ -5,7 +5,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     const perPageItems = 20;
     var dialog = null;
     $scope.order = [false, false, false];
-    $scope.order[($stateParams && $stateParams.orderIndex) || 0] = true;
+    $scope.order[($stateParams && $stateParams.orderIndex) || 1] = true;
     $scope.loadBookmarks = false;
     $scope.loadTags = false;
     $scope.tags = []; // 书签数据

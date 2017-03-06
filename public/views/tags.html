@@ -48,14 +48,14 @@
 <div class="ui huge text centered inline loader" ng-class="{active:loadBookmarks, disabled: !loadBookmarks}">
     正在加载中...
 </div>
-<table class="ui celled table js-tags-table" ng-if="bookmarkCount > 0" style="margin-top:-14px;" ng-show="!loadBookmarks && !editMode">
+<table class="ui selectable sortable celled table js-tags-table" ng-if="bookmarkCount > 0" style="margin-top:-14px;" ng-show="!loadBookmarks && !editMode">
     <thead>
         <tr>
             <th>标题</th>
             <th>链接</th>
-            <th style=" width:90px;">点击次数</th>
-            <th style="width:100px;">创建日期</th>
-            <th style="width:100px;">最后点击</th>
+            <th style=" width:90px;" class="sorted descending">点击次数</th>
+            <th style="width:100px;" class="sorted ascending">创建日期</th>
+            <th style="width:100px;" class="sorted descending">最后点击</th>
             <th style="width:150px;">分类</th>
             <th style="width:88px;">操作</th>
         </tr>

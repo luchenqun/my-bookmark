@@ -1,4 +1,4 @@
-<div class="ui modal js-add-bookmark" ng-controller="editCtr">
+<div class="ui long modal js-add-bookmark" ng-controller="editCtr">
     <!-- <i class="close icon"></i> -->
     <div class="header">
         添加书签
@@ -32,7 +32,14 @@
             </div>
             <div class="field">
                 <label>描述</label>
-                <textarea rows="2" placeholder="可以是网站的说明，也可以备忘一下账号密码什么的，就算公开你的链接，这个也只有自己能在详情里面看到" ng-model="description"></textarea>
+                <div
+                    style="border-radius:4px;border:1px solid #DEDEDE;min-height:88px;"
+                    name="text"
+                    ng-model="description"
+                    required
+                    medium-editor
+                    bind-options="{'placeholder': {text: '可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到'},
+                    'buttons': ['bold', 'italic', 'underline', 'header1', 'header2', 'quote', 'orderedlist', 'unorderedlist']}"></div>
             </div>
             <div class="field">
                 <div class="ui checkbox checked js-public">

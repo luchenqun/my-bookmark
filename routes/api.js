@@ -380,7 +380,6 @@ api.get('/bookmarksByTag', function(req, res) {
             // 获取每个书签的所有分类标签
             var objectName = ['bookmarksClickCount', 'bookmarksCreatedAt', 'bookmarksLatestClick'];
             objectName.forEach((name) => {
-                console.log(JSON.stringify(tagsBookmarks));
                 sendData[name].forEach(function(bookmark, index) {
                     var bookmarkTags = [];
                     tagsBookmarks.forEach(function(tb) {
@@ -594,13 +593,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                                allTags.forEach((at) => {
-                                    if (at.name == tag) {
-                                        tags.push(at.id);
-                                    }
-                                })
+                            allTags.forEach((at) => {
+                                if (at.name == tag) {
+                                    tags.push(at.id);
+                                }
                             })
-                            // 插入书签
+                        })
+                        // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类

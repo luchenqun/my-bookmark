@@ -20,6 +20,12 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         }
     });
 
+    $scope.$watch('description', function(newDescription, oldDescription, scope) {
+        setTimeout(function() {
+            $('.ui.modal.js-add-bookmark').modal("refresh");
+        }, 500);
+    });
+
     $scope.$watch('title', function(newValue, oldValue, scope) {
         $timeout(function() {
             $scope.titleError = $scope.title == '' && $('.ui.modal.js-add-bookmark').modal('is active');
@@ -144,6 +150,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
         }).modal('setting', 'transition', transition()).modal('show');
+        setTimeout(function() {
+            $('.ui.modal.js-add-bookmark').modal("refresh");
+        }, 500);
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
         $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         $scope.add = false;

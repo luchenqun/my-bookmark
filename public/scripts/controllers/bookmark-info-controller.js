@@ -10,12 +10,16 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
             closable: false,
         }).modal('setting', 'transition', transition()).modal('show');
         $scope.bookmark = bookmark;
+        $scope.bookmark.description = $sce.trustAsHtml(bookmark.description);
         $scope.content = '';
         var params = {
             url: bookmark.url,
             requestId: 1
         }
         $scope.loading = true;
+        setTimeout(function() {
+            $('.ui.modal.js-bookmark-info').modal("refresh");
+        }, 500);
         bookmarkService.getArticle(params)
             .then((data) => {
                 $scope.content = data.content ? $sce.trustAsHtml(data.content) : $sce.trustAsHtml('<p>数据获取失败，可能是服务器不允许获取，或者是https网站！</p>');
@@ -42,7 +46,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
     }
 
     $scope.copy = function(id, url) {
-        var clipboard = new Clipboard('#detailurl'+id, {
+        var clipboard = new Clipboard('#detailurl' + id, {
             text: function() {
                 return url;
             }

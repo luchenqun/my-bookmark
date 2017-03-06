@@ -169,6 +169,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         if (menusScope.login && menusScope.selectLoginIndex == 0) {
             params.showStyle = $scope.showStyle;
+            params.forbidTransition = true;
             if ($scope.showStyle == 'card') {
                 $scope.currentPage = 1;
                 $scope.bookmarks = [];
@@ -210,8 +211,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     login: true,
                     index: 0
                 });
-
-                transition();
+                if (!(params.forbidTransition && params.forbidTransition == true)) {
+                    transition();
+                }
             })
             .catch((err) => console.log('getBookmarks err', err));
     }

@@ -201,10 +201,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
     // 在输入文字的时候也会触发，暂删掉
     $document.bind("keydown", function(event) {
         $scope.$apply(function() {
-            console.log(event.keyCode);
+            // console.log(event.keyCode);
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
             // Ctrl按键，显示
-            if (event.keyCode == 17 && menusScope.login) {
+            if (event.keyCode == 45 && menusScope.login) {
                 $('.ui.modal.js-add-bookmark').modal({
                     closable: false,
                 }).modal('setting', 'transition', transition()).modal('show');
@@ -221,7 +221,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
             }
 
             // Alt按键，保存书签
-            if (event.keyCode == 18 && menusScope.login && $('.ui.modal.js-add-bookmark').modal('is active')) {
+            if (event.keyCode == 13 && menusScope.login && $('.ui.modal.js-add-bookmark').modal('is active')) {
                 $scope.ok();
             }
         })

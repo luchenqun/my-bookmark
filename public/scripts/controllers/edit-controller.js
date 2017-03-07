@@ -203,7 +203,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         $scope.$apply(function() {
             // console.log(event.keyCode);
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
-            // Ctrl按键，显示
+            // Insert按键，显示
             if (event.keyCode == 45 && menusScope.login) {
                 $('.ui.modal.js-add-bookmark').modal({
                     closable: false,
@@ -220,7 +220,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
                 $scope.cancel();
             }
 
-            // Alt按键，保存书签
+            // Enter按键，保存书签
             if (event.keyCode == 13 && menusScope.login && $('.ui.modal.js-add-bookmark').modal('is active')) {
                 $scope.ok();
             }

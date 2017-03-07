@@ -199,23 +199,33 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
     });
 
     // 在输入文字的时候也会触发，暂删掉
-    // $document.bind("keypress", function(event) {
-    //     $scope.$apply(function() {
-    //         console.log(event.keyCode);
-    //         var menusScope = $('div[ng-controller="menuCtr"]').scope();
-    //         // a按键
-    //         if (event.keyCode == 97 && menusScope.login) {
-    //             $('.ui.modal.js-add-bookmark').modal({
-    //                 closable: false,
-    //             }).modal('setting', 'transition', transition()).modal('show');
-    //             $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
-    //             $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
-    //             $('.ui.checkbox.js-public').checkbox('set checked');
-    //             init();
-    //             getTags({});
-    //         }
-    //     })
-    // });
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            console.log(event.keyCode);
+            var menusScope = $('div[ng-controller="menuCtr"]').scope();
+            // Ctrl按键，显示
+            if (event.keyCode == 17 && menusScope.login) {
+                $('.ui.modal.js-add-bookmark').modal({
+                    closable: false,
+                }).modal('setting', 'transition', transition()).modal('show');
+                $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
+                $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
+                $('.ui.checkbox.js-public').checkbox('set checked');
+                init();
+                getTags({});
+            }
+
+            // Esc按键，退出
+            if (event.keyCode == 27 && menusScope.login) {
+                $scope.cancel();
+            }
+
+            // Alt按键，保存书签
+            if (event.keyCode == 18 && menusScope.login && $('.ui.modal.js-add-bookmark').modal('is active')) {
+                $scope.ok();
+            }
+        })
+    });
 
     function getTags(params) {
         bookmarkService.getTags(params)

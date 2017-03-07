@@ -1,4 +1,4 @@
-app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, bookmarkService, pubSubService) {
+app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, $document, bookmarkService, pubSubService) {
     console.log("Hello editCtr");
     var maxSelections = 3;
     init();
@@ -196,6 +196,25 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'p
         $scope.url = bookmark.url;
         $scope.title = bookmark.title;
         $scope.newTags = bookmark.tags.map((item) => item.name).toString();
+    });
+
+
+    $document.bind("keypress", function(event) {
+        $scope.$apply(function() {
+            console.log(event.keyCode);
+            var menusScope = $('div[ng-controller="menuCtr"]').scope();
+            // a按键
+            if (event.keyCode == 97 && menusScope.login) {
+                $('.ui.modal.js-add-bookmark').modal({
+                    closable: false,
+                }).modal('setting', 'transition', transition()).modal('show');
+                $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
+                $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
+                $('.ui.checkbox.js-public').checkbox('set checked');
+                init();
+                getTags({});
+            }
+        })
     });
 
     function getTags(params) {

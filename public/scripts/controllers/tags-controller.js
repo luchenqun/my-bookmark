@@ -250,7 +250,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.confirmDelTag = function(tagId, tagName) {
         ngDialog.close(dialog);
         var params = {
-            del: (tagName == '未分类' || tag.name == "收藏") ? false : true,
+            del: (tagName == '未分类' || tagName == "收藏") ? false : true,
             id: tagId,
         }
         bookmarkService.delTag(params)
@@ -263,7 +263,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                             index = i;
                         }
                     })
-                    if (index !== -1) {
+                    if (index !== -1 && tagName != '未分类' && tagName != "收藏") {
                         $("#tag" + tagId).transition({
                             animation: animation(),
                             duration: 500,

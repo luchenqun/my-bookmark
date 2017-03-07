@@ -198,24 +198,24 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         $scope.newTags = bookmark.tags.map((item) => item.name).toString();
     });
 
-
-    $document.bind("keypress", function(event) {
-        $scope.$apply(function() {
-            console.log(event.keyCode);
-            var menusScope = $('div[ng-controller="menuCtr"]').scope();
-            // a按键
-            if (event.keyCode == 97 && menusScope.login) {
-                $('.ui.modal.js-add-bookmark').modal({
-                    closable: false,
-                }).modal('setting', 'transition', transition()).modal('show');
-                $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
-                $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
-                $('.ui.checkbox.js-public').checkbox('set checked');
-                init();
-                getTags({});
-            }
-        })
-    });
+    // 在输入文字的时候也会触发，暂删掉
+    // $document.bind("keypress", function(event) {
+    //     $scope.$apply(function() {
+    //         console.log(event.keyCode);
+    //         var menusScope = $('div[ng-controller="menuCtr"]').scope();
+    //         // a按键
+    //         if (event.keyCode == 97 && menusScope.login) {
+    //             $('.ui.modal.js-add-bookmark').modal({
+    //                 closable: false,
+    //             }).modal('setting', 'transition', transition()).modal('show');
+    //             $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
+    //             $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
+    //             $('.ui.checkbox.js-public').checkbox('set checked');
+    //             init();
+    //             getTags({});
+    //         }
+    //     })
+    // });
 
     function getTags(params) {
         bookmarkService.getTags(params)

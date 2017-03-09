@@ -593,13 +593,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                                allTags.forEach((at) => {
-                                    if (at.name == tag) {
-                                        tags.push(at.id);
-                                    }
-                                })
+                            allTags.forEach((at) => {
+                                if (at.name == tag) {
+                                    tags.push(at.id);
+                                }
                             })
-                            // 插入书签
+                        })
+                        // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -959,13 +959,13 @@ api.getFaviconByTimer = function() {
                                 busy = false
                             });
                     } else {
-                        // 尝试用http试一下：手动抓取成功后会被缓存起来,直接使用[http]即可访问.请勿批量使用[https]
+                        // http://www.cnblogs.com/zhangwei595806165/p/4984912.html 各种方法都试一遍
+                        var faviconUrl = "http://g.soz.im/" + url; // 默认地址
                         if (faviconState == 1) {
-                            if (url.startsWith("https")) {
-                                url = "http" + url.substring(5);
-                            }
+                            faviconUrl = "http://www.google.com/s2/favicons?domain=" + url;
+                        } else if (faviconState == 2) {
+                            faviconUrl = "http://favicon.byi.pw/?url=" + url;
                         }
-                        var faviconUrl = "http://g.soz.im/" + url;
                         download(faviconUrl).then(data => {
                             fs.writeFileSync(faviconPath, data);
                             db.updateBookmarkFaviconState(id, -1)

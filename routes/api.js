@@ -877,9 +877,9 @@ api.checkSnapFaviconState = function() {
         .catch((err) => console.log('getBookmarks err', err));
 }
 
-api.getSnapFaviconByTimer = function() {
-    console.log('getSnapFaviconByTimer...........');
-    var timeout = 5000
+api.getSnapByTimer = function() {
+    console.log('getSnapByTimer...........');
+    var timeout = 30000
     setInterval(function() {
         var today = new Date().getDate();
         db.getBookmarkWaitSnap(today)
@@ -887,11 +887,8 @@ api.getSnapFaviconByTimer = function() {
                 if (bookmarks.length == 1) {
                     var id = bookmarks[0].id;
                     var snapState = bookmarks[0].snap_state;
-                    var faviconState = bookmarks[0].favicon_state;
                     var url = bookmarks[0].url;
                     var filePath = './public/images/snap/' + id + '.png';
-                    var faviconPath = './public/images/favicon/' + id + '.ico';
-
                     // 获取截图
                     fs.exists(filePath, function(exists) {
                         if (exists) {
@@ -924,19 +921,32 @@ api.getSnapFaviconByTimer = function() {
                             });
                         }
                     });
+                }
+            })
+            .catch((err) => console.log('getBookmarkWaitSnap err', err));
+    }, timeout + 1000);
+}
+
+
+api.getFaviconByTimer = function() {
+    console.log('getFaviconByTimer...........');
+    var timeout = 3000
+    setInterval(function() {
+        var today = new Date().getDate();
+        db.getBookmarkWaitFavicon(today)
+            .then((bookmarks) => {
+                if (bookmarks.length == 1) {
+                    var id = bookmarks[0].id;
+                    var faviconState = bookmarks[0].favicon_state;
+                    var url = bookmarks[0].url;
+                    var faviconPath = './public/images/favicon/' + id + '.ico';
+                    var defaultFile = './public/images/favicon/default.ico';
 
                     if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
-                        fs.exists(faviconPath, function(exists) {
-                            if (!exists) {
-                                var sourceFile = './public/images/favicon/default.ico';
-                                var readStream = fs.createReadStream(sourceFile);
-                                var writeStream = fs.createWriteStream(faviconPath);
-                                readStream.pipe(writeStream);
-                            }
-                        });
+                        copyFile(defaultFile, faviconPath);
                         db.updateBookmarkFaviconState(id, today + 31);
                     }else{
-                        var faviconUrl = "http://g.soz.im/" + url + "/cdn.ico"
+                        var faviconUrl = "http://g.soz.im/" + url;
                         download(faviconUrl).then(data => {
                             fs.writeFileSync(faviconPath, data);
                             db.updateBookmarkFaviconState(id, -1);
@@ -947,18 +957,29 @@ api.getSnapFaviconByTimer = function() {
                                 newFaviconState = faviconState + 1;
                             } else if (faviconState == 2) {
                                 newFaviconState = today + 31;
+                                copyFile(defaultFile, faviconPath);
                             }
                             db.updateBookmarkFaviconState(id, newFaviconState);
                         });
                     }
                 }
             })
-            .catch((err) => console.log('getBookmarkWaitSnap err', err));
-    }, timeout + 1000);
+            .catch((err) => console.log('getFaviconByTimer err', err));
+    }, timeout);
 }
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
 };
+
+function copyFile(sourceFile, destFile){
+    fs.exists(sourceFile, function(exists) {
+        if (exists) {
+            var readStream = fs.createReadStream(sourceFile);
+            var writeStream = fs.createWriteStream(destFile);
+            readStream.pipe(writeStream);
+        }
+    });
+}
 
 module.exports = api;

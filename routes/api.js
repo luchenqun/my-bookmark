@@ -930,7 +930,7 @@ api.getSnapByTimer = function() {
 
 api.getFaviconByTimer = function() {
     console.log('getFaviconByTimer...........');
-    var timeout = 3000;
+    var timeout = 30000;
     var busy = false;
     setInterval(function() {
         if (busy) {
@@ -995,6 +995,8 @@ api.getFaviconByTimer = function() {
                                 });
                         });
                     }
+                } else {
+                    busy = false;
                 }
             })
             .catch((err) => {

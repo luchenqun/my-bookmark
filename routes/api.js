@@ -959,6 +959,12 @@ api.getFaviconByTimer = function() {
                                 busy = false
                             });
                     } else {
+                        // 尝试用http试一下：手动抓取成功后会被缓存起来,直接使用[http]即可访问.请勿批量使用[https]
+                        if (faviconState == 1) {
+                            if (url.startsWith("https")) {
+                                url = "http" + url.substring(5);
+                            }
+                        }
                         var faviconUrl = "http://g.soz.im/" + url;
                         download(faviconUrl).then(data => {
                             fs.writeFileSync(faviconPath, data);

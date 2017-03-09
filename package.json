@@ -11,6 +11,7 @@
     "cookie-parser": "~1.4.3",
     "crypto": "0.0.3",
     "debug": "~2.2.0",
+    "download": "^5.0.3",
     "ejs": "~2.4.1",
     "express": "~4.13.4",
     "express-session": "^1.14.1",

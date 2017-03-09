@@ -4,7 +4,7 @@ var crypto = require('crypto');
 var read = require('node-readability');
 var db = require('../database/db.js');
 var parseHtml = require('../common/parse_html.js');
-var download = require('../common/download.js');
+var download = require('download');
 var multer = require('multer');
 var webshot = require('webshot');
 var fs = require('fs');
@@ -593,13 +593,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                            allTags.forEach((at) => {
-                                if (at.name == tag) {
-                                    tags.push(at.id);
-                                }
+                                allTags.forEach((at) => {
+                                    if (at.name == tag) {
+                                        tags.push(at.id);
+                                    }
+                                })
                             })
-                        })
-                        // 插入书签
+                            // 插入书签
                         db.addBookmark(userId, bookmark) // 插入书签
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -928,64 +928,29 @@ api.getSnapFaviconByTimer = function() {
                     if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
                         fs.exists(faviconPath, function(exists) {
                             if (!exists) {
-                                var sourceFile =  './public/images/favicon/default.ico';
+                                var sourceFile = './public/images/favicon/default.ico';
                                 var readStream = fs.createReadStream(sourceFile);
                                 var writeStream = fs.createWriteStream(faviconPath);
                                 readStream.pipe(writeStream);
                             }
                         });
                         db.updateBookmarkFaviconState(id, today + 31);
-                        return;
-                    }
-                    var faviconUrl = "http://g.soz.im/"+ url +"/cdn.ico"
-                    if (faviconUrl) {
-                        download(faviconUrl, faviconPath, function(err) {
+                    }else{
+                        var faviconUrl = "http://g.soz.im/" + url + "/cdn.ico"
+                        download(faviconUrl).then(data => {
+                            fs.writeFileSync(faviconPath, data);
+                            db.updateBookmarkFaviconState(id, -1);
+                        }).catch((err) => {
                             var newFaviconState = -1;
-                            if (err) {
-                                console.log("boomarkid = " + id + ", download over", err)
-                                if (faviconState == 0 || faviconState == 1) {
-                                    newFaviconState = faviconState + 1;
-                                } else if (faviconState == 2) {
-                                    newFaviconState = today + 31;
-                                }
+                            console.log("boomarkid = " + id + ", download over", err)
+                            if (faviconState == 0 || faviconState == 1) {
+                                newFaviconState = faviconState + 1;
+                            } else if (faviconState == 2) {
+                                newFaviconState = today + 31;
                             }
                             db.updateBookmarkFaviconState(id, newFaviconState);
                         });
-                    } else {
-                        db.updateBookmarkFaviconState(id, today + 31);
                     }
-
-                    // 获取favicon(由于获取不到有些图标，暂时放弃)
-                    // fs.exists(faviconPath, function(exists) {
-                    //     if (exists) {
-                    //         if (faviconState != -1) {
-                    //             db.updateBookmarkFaviconState(id, -1);
-                    //         }
-                    //     } else {
-                    //         if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
-                    //             db.updateBookmarkFaviconState(id, today + 31);
-                    //             return;
-                    //         }
-                    //         favicon(url, function(err, faviconUrl) {
-                    //             if (faviconUrl) {
-                    //                 download(faviconUrl, faviconPath, function(err) {
-                    //                     var newFaviconState = -1;
-                    //                     if (err) {
-                    //                         console.log("boomarkid = " + id + ", download over", err)
-                    //                         if (faviconState == 0 || faviconState == 1) {
-                    //                             newFaviconState = faviconState + 1;
-                    //                         } else if (faviconState == 2) {
-                    //                             newFaviconState = today + 31;
-                    //                         }
-                    //                     }
-                    //                     db.updateBookmarkFaviconState(id, newFaviconState);
-                    //                 });
-                    //             } else {
-                    //                 db.updateBookmarkFaviconState(id, today + 31);
-                    //             }
-                    //         });
-                    //     }
-                    // });
                 }
             })
             .catch((err) => console.log('getBookmarkWaitSnap err', err));

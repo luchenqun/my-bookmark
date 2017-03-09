@@ -930,8 +930,14 @@ api.getSnapByTimer = function() {
 
 api.getFaviconByTimer = function() {
     console.log('getFaviconByTimer...........');
-    var timeout = 3000
+    var timeout = 3000;
+    var busy = false;
     setInterval(function() {
+        if (busy) {
+            console.log('getFaviconByTimer is busy')
+            return;
+        }
+        busy = true;
         var today = new Date().getDate();
         db.getBookmarkWaitFavicon(today)
             .then((bookmarks) => {
@@ -944,12 +950,26 @@ api.getFaviconByTimer = function() {
 
                     if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
                         copyFile(defaultFile, faviconPath);
-                        db.updateBookmarkFaviconState(id, today + 31);
-                    }else{
+                        db.updateBookmarkFaviconState(id, today + 31)
+                            .then((affectedRows) => {
+                                busy = false
+                            })
+                            .catch((err) => {
+                                console.log('updateBookmarkFaviconState err', err);
+                                busy = false
+                            });
+                    } else {
                         var faviconUrl = "http://g.soz.im/" + url;
                         download(faviconUrl).then(data => {
                             fs.writeFileSync(faviconPath, data);
-                            db.updateBookmarkFaviconState(id, -1);
+                            db.updateBookmarkFaviconState(id, -1)
+                                .then((affectedRows) => {
+                                    busy = false;
+                                })
+                                .catch((err) => {
+                                    console.log('updateBookmarkFaviconState err', err);
+                                    busy = false;
+                                });
                         }).catch((err) => {
                             var newFaviconState = -1;
                             console.log("boomarkid = " + id + ", download over", err)
@@ -959,12 +979,22 @@ api.getFaviconByTimer = function() {
                                 newFaviconState = today + 31;
                                 copyFile(defaultFile, faviconPath);
                             }
-                            db.updateBookmarkFaviconState(id, newFaviconState);
+                            db.updateBookmarkFaviconState(id, newFaviconState)
+                                .then((affectedRows) => {
+                                    busy = false;
+                                })
+                                .catch((err) => {
+                                    console.log('updateBookmarkFaviconState err', err);
+                                    busy = false;
+                                });
                         });
                     }
                 }
             })
-            .catch((err) => console.log('getFaviconByTimer err', err));
+            .catch((err) => {
+                console.log('getFaviconByTimer err', err);
+                busy = false;
+            });
     }, timeout);
 }
 
@@ -972,7 +1002,7 @@ function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
 };
 
-function copyFile(sourceFile, destFile){
+function copyFile(sourceFile, destFile) {
     fs.exists(sourceFile, function(exists) {
         if (exists) {
             var readStream = fs.createReadStream(sourceFile);

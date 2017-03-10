@@ -75,7 +75,7 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-// api.checkSnapFaviconState();
+api.checkSnapFaviconState();
 api.getSnapByTimer();
 api.getFaviconByTimer();
 

@@ -76,7 +76,6 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
             .catch((err) => console.log('addTags err', err));
     }
     $scope.cancel = function() {
-        console.log('Hello , you have click cancel btn......');
         $('.ui.modal.js-add-bookmark').modal('hide');
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
 
@@ -198,7 +197,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         $scope.newTags = bookmark.tags.map((item) => item.name).toString();
     });
 
-    // 在输入文字的时候也会触发，暂删掉
+    // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
     $document.bind("keydown", function(event) {
         $scope.$apply(function() {
             // console.log(event.keyCode);

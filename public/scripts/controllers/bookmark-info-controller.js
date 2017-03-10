@@ -1,4 +1,4 @@
-app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$window', '$filter', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, $sce, $window, $filter, bookmarkService, pubSubService) {
+app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$window', '$filter', '$document', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, $sce, $window, $filter, $document, bookmarkService, pubSubService) {
     console.log("Hello bookmarkInfoCtr");
     $scope.bookmark = {}
     $scope.content = '';
@@ -62,6 +62,15 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
             clipboard.destroy();
         });
     }
+
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            // Esc按键，退出
+            if (event.keyCode == 27) {
+                $('.ui.modal.js-bookmark-info').modal("hide");
+            }
+        })
+    });
 
     function transition() {
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',

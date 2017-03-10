@@ -88,3 +88,8 @@ img.operator {
     width: 16px;
     height: 16px
 }
+.js-bookmark-info .content img {
+    max-width:100%;
+    max-height:100%;
+    padding-right: 20px;
+}

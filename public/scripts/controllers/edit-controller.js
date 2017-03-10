@@ -204,24 +204,23 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
             // Insert按键，显示
             if (event.keyCode == 45 && menusScope.login) {
-                $('.ui.modal.js-add-bookmark').modal({
-                    closable: false,
-                }).modal('setting', 'transition', transition()).modal('show');
-                $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
-                $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
-                $('.ui.checkbox.js-public').checkbox('set checked');
-                init();
-                getTags({});
+                if ($('.ui.modal.js-add-bookmark').modal('is active')) {
+                    $scope.ok();
+                }else {
+                    $('.ui.modal.js-add-bookmark').modal({
+                        closable: false,
+                    }).modal('setting', 'transition', transition()).modal('show');
+                    $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
+                    $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
+                    $('.ui.checkbox.js-public').checkbox('set checked');
+                    init();
+                    getTags({});
+                }
             }
 
             // Esc按键，退出
             if (event.keyCode == 27 && menusScope.login) {
                 $scope.cancel();
-            }
-
-            // Enter按键，保存书签
-            if (event.keyCode == 13 && menusScope.login && $('.ui.modal.js-add-bookmark').modal('is active')) {
-                $scope.ok();
             }
         })
     });

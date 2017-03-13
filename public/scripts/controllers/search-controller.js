@@ -51,7 +51,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     if ($scope.searchWord) {
         searchBookmarks(searchParams);
     } else {
-        toastr.warning("请先登录然后再输入关键字进行查询", "提示");
+        toastr.warning("请输入搜索关键字再进行查询！", "提示");
     }
 
     $scope.jumpToUrl = function(url, id) {

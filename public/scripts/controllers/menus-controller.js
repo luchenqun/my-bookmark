@@ -43,6 +43,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     $scope.searchBookmarks = function(searchWord) {
         $state.go('search', {
             searchWord: searchWord,
+        },{
+            reload:true,
         })
         $scope.login = true;
         updateMenuActive($scope.selectLoginIndex = 0);

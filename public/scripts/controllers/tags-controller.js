@@ -29,6 +29,9 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     });
 
     $scope.changeOrder = function(index) {
+        if (index < 0 || index >= $scope.order.length) {
+            return;
+        }
         $scope.order = $scope.order.map(() => false);
         $scope.order[index] = true;
         if ($scope.order[0]) {
@@ -63,13 +66,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         bookmarkService.getBookmarksByTag(params)
             .then((data) => {
                 $scope.bookmarkData = data;
-                if ($scope.order[0]) {
-                    $scope.bookmarks = $scope.bookmarkData.bookmarksClickCount;
-                } else if ($scope.order[1]) {
-                    $scope.bookmarks = $scope.bookmarkData.bookmarksCreatedAt;
-                } else {
-                    $scope.bookmarks = $scope.bookmarkData.bookmarksLatestClick;
-                }
+                $scope.changeOrder($scope.order.indexOf(true));
                 $scope.bookmarkCount = $scope.bookmarkData.totalItems;
                 $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
 

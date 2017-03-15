@@ -53,7 +53,7 @@
         <tr>
             <th style="cursor:default;">标题</th>
             <th style="cursor:default;">链接</th>
-            <th style=" width:90px;" class="sorted" ng-class="{descending: order[0]}" ng-click="changeOrder(0)">点击次数</th>
+            <th style="width:90px;" class="sorted" ng-class="{descending: order[0]}" ng-click="changeOrder(0)">点击次数</th>
             <th style="width:100px;" class="sorted" ng-class="{descending: order[1]}" ng-click="changeOrder(1)">创建日期</th>
             <th style="width:100px;" class="sorted" ng-class="{descending: order[2]}" ng-click="changeOrder(2)">最后点击</th>
             <th style="width:150px;cursor:default;">分类</th>
@@ -72,8 +72,14 @@
                 <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.id, bookmark.url)" id="tagurl{{bookmark.id}}" style="cursor:default;">{{ bookmark.url }}</span>
             </td>
             <td>{{ bookmark.click_count }}</td>
-            <td><span title="{{bookmark.created_at}}">{{ bookmark.created_at.substr(0, 10) }} </span></td>
-            <td><span title="{{bookmark.last_click}}">{{ bookmark.last_click.substr(0, 10) }} </span></td>
+            <td>
+                <span title="{{bookmark.created_at}}">{{ bookmark.created_at.substr(0, 10) }}
+                </span>
+            </td>
+            <td>
+                <span title="{{bookmark.last_click}}">{{ bookmark.last_click.substr(0, 10) }}
+                </span>
+            </td>
             <td>
                 <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="getBookmarks(tag.id, 1)">
                     {{ tag.name }}

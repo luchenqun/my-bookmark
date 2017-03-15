@@ -14,6 +14,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.inputPage = '';
     $scope.loadBusy = false;
     $scope.waitDelBookmark = {};
+    $scope.order = [false, false, false];
+    $scope.order[($stateParams && $stateParams.orderIndex) || 0] = true;
+    $scope.bookmarkData = {};
 
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
@@ -163,6 +166,21 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         }
     }
 
+    $scope.changeOrder = function(index) {
+        if (index < 0 || index >= $scope.order.length) {
+            return;
+        }
+        $scope.order = $scope.order.map(() => false);
+        $scope.order[index] = true;
+        if ($scope.order[0]) {
+            $scope.bookmarks = $scope.bookmarkData.bookmarksClickCount;
+        } else if ($scope.order[1]) {
+            $scope.bookmarks = $scope.bookmarkData.bookmarksCreatedAt;
+        } else {
+            $scope.bookmarks = $scope.bookmarkData.bookmarksLatestClick;
+        }
+    }
+
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
 
@@ -183,20 +201,29 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             params.currentPage = $scope.currentPage;
             params.perPageItems = perPageItems;
         }
+
+        var sendData = {
+            totalItems: 0,
+            bookmarksClickCount: [],
+            bookmarksCreatedAt: [],
+            bookmarksLatestClick: [],
+        }
+
         bookmarkService.getBookmarks(params)
             .then((data) => {
                 if (params.showStyle != 'navigate') {
+                    $scope.bookmarkData = data;
                     $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
                     if (data.totalItems == 0) {
                         toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
                     }
                     if (params.showStyle == 'card') {
-                        data.bookmarks.forEach(bookmark => {
+                        data.bookmarksCreatedAt.forEach(bookmark => {
                             $scope.bookmarks.push(bookmark);
                         })
                         $scope.loadBusy = false;
                     } else {
-                        $scope.bookmarks = data.bookmarks;
+                        $scope.changeOrder($scope.order.indexOf(true));
                     }
                 } else {
                     $scope.bookmarks = data;
@@ -243,7 +270,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     function animation() {
-
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
             'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
             'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'

@@ -31,6 +31,13 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     }
 
     $scope.favoriteBookmark = function(b) {
+        var menusScope = $('div[ng-controller="menuCtr"]').scope();
+        var login = (menusScope && menusScope.login) || false;
+        if (!login) {
+            $scope.toastrId = toastr.info('请先登录再收藏书签！', "提示");
+            return;
+        }
+
         var bookmark = {}
         bookmark.description = '';
         bookmark.title = b.title;
@@ -53,8 +60,14 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     }
 
     $scope.storeBookmark = function(bookmark) {
-        var b = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
-        pubSubService.publish('TagCtr.storeBookmark', b);
+        var menusScope = $('div[ng-controller="menuCtr"]').scope();
+        var login = (menusScope && menusScope.login) || false;
+        if (!login) {
+            $scope.toastrId = toastr.info('请先登录再转存书签！', "提示");
+        } else {
+            var b = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
+            pubSubService.publish('TagCtr.storeBookmark', b);
+        }
     }
 
     $scope.copy = function(id, url) {

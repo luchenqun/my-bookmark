@@ -25,6 +25,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     }, {
         uiSref: 'settings',
         title: '设置'
+    }, {
+        uiSref: 'hot',
+        title: '热门收藏'
     }];
 
     // 未登陆显示的菜单数据
@@ -34,6 +37,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     }, {
         uiSref: 'login',
         title: '登录|注册'
+    }, {
+        uiSref: 'hot',
+        title: '热门收藏'
     }];
 
     /**

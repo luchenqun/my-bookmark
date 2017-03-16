@@ -9,6 +9,8 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
         $('.ui.modal.js-bookmark-info').modal({
             closable: false,
         }).modal('setting', 'transition', transition()).modal('show');
+        bookmark.favicon = bookmark.favicon || ('http://g.soz.im/'+bookmark.url +'/cdn.ico');
+        bookmark.image = bookmark.image || ('./images/snap/'+bookmark.id+'.png');
         $scope.bookmark = bookmark;
         $scope.bookmark.description = $sce.trustAsHtml(bookmark.description);
         $scope.content = '';

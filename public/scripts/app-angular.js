@@ -14,6 +14,11 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             },
             controller: 'bookmarksCtr'
         })
+        .state('hot', {
+            url: '/hot',
+            templateUrl: '/views/hot.html',
+            controller: 'hotCtr'
+        })
         .state('search', {
             url: '/search',
             templateUrl: '/views/search.html',

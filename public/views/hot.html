@@ -1,0 +1,28 @@
+<div class="ui segment js-hot-card" style="min-height:300px;">
+    <div class="ui five  stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
+        <div class="card" ng-repeat="bookmark in bookmarks">
+            <div class="content" style="max-height:70px;cursor:pointer" ng-click="jumpToUrl(bookmark.url)">
+                <div class="description bookmarkTitle">
+                    {{bookmark.title}}
+                </div>
+            </div>
+            <div class="image hot-image" href="{{ bookmark.url }}" style="cursor:pointer" ng-click="jumpToUrl(bookmark.url)">
+                <img ng-src="{{bookmark.image}}" err-src="./images/snap/default.png" />
+            </div>
+            <div class="extra content" ng-show="!bookmark.edit">
+                <img class="ui avatar image" style="width:16px;height:16px;" ng-src="{{bookmark.favicon}}">
+                <span class="sourceName">{{ bookmark.from }}</span>
+                <span class="favCount">·{{ bookmark.click_count }}人收藏</span>
+                <i class="ellipsis horizontal icon right floated" style="margin-top:6px;"ng-mouseover="bookmark.edit=true;"></i>
+            </div>
+            <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/copy.png" id="hoturl{{$index}}" ng-click="copy($index, bookmark.url)" title="复制链接">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
+            </div>
+        </div>
+    </div>
+    <div class="ui massive text centered inline loader" ng-class="{active:loadBusy, disabled:!loadBusy}" style="top:10px;">
+        正在加载中...</div>
+</div>

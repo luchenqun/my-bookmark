@@ -219,6 +219,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     }
                     if (params.showStyle == 'card') {
                         data.bookmarksCreatedAt.forEach(bookmark => {
+                            bookmark.edit = false;
                             $scope.bookmarks.push(bookmark);
                         })
                         $scope.loadBusy = false;

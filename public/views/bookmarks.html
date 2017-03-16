@@ -100,33 +100,27 @@
     </tfoot>
 </table>
 <div class="ui segment js-segment-card" ng-if="showStyle === 'card'">
-    <div class="ui five link stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
-        <div class="card" ng-repeat="bookmark in bookmarks">
-            <div class="image" href="{{ bookmark.url }}" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
-                <img ng-src="./images/snap/{{bookmark.id}}.png" err-src="./images/snap/default.png"/>
-            </div>
-            <div class="content" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+    <div class="ui five stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
+        <div class="card" ng-repeat="bookmark in bookmarks" id="{{bookmark.id}}">
+            <div class="content" ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="max-height:70px;cursor:pointer">
                 <div class="description bookmarkTitle">
                     {{bookmark.title}}
                 </div>
             </div>
-            <div class="extra content tags">
+            <div class="image" href="{{ bookmark.url }}" ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="cursor:pointer">
+                <img ng-src="./images/snap/{{bookmark.id}}.png" err-src="./images/snap/default.png"/>
+            </div>
+            <div class="extra content tags" ng-show="!bookmark.edit" style="height:50px;">
                 <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="jumpToTags(tag.id)">
                     {{ tag.name }}
                 </div>
+                <i class="ellipsis horizontal icon right floated" style="margin-top:6px;" ng-mouseover="bookmark.edit=true;"></i>
             </div>
-            <div class="extra content bookmarkInfo" ng-click="detailBookmark(bookmark);$event.stopPropagation()" title="点击进入书签详情页面">
-                <span class="left floated like">
-                    <i class="add to calendar icon"></i>
-                    {{ bookmark.created_at }}
-                </span>
-                <!-- <span class="left floated like">
-                    <i class="pointing up icon"></i>
-                    {{ bookmark.click_count }}
-                </span> -->
-                <!-- <span class="right floated">
-                    <img class="ui mini spaced image" style="cursor:default;width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark);$event.stopPropagation()" title="详情">
-                </span> -->
+            <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;" style="height:50px;">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(bookmark.id, bookmark.url)" title="复制链接">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
             </div>
         </div>
     </div>

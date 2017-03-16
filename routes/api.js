@@ -9,6 +9,7 @@ var multer = require('multer');
 var webshot = require('webshot');
 var fs = require('fs');
 var favicon = require('favicon');
+var request = require('request');
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -1006,6 +1007,73 @@ api.getFaviconByTimer = function() {
     }, timeout);
 }
 
+api.getHotBookmarks = function() {
+    console.log('getHotBookmarks...........');
+    var timeout = 1000 * 20;
+    var busy = false;
+    setInterval(function() {
+        if (busy) {
+            console.log('getHotBookmarks is busy')
+            return;
+        }
+        busy = true;
+        var today = new Date();
+        var requireData = {
+            idfa: "d4995f8a0c9b2ad9182369016e376278",
+            os: "ios",
+            osv: "9.3.5",
+            userId: null,
+            lastupdataTime: new Date().getTime(),
+            pageNo: 1,
+            pageSize: 1000,
+            sort: 'desc',
+            renderType: 0,
+            date: CurentDate(0),
+        }
+        var url = "https://api.shouqu.me/api_service/api/v1/daily/dailyMark";
+        var alterRex = "/mmbiz.qpic.cn|images.jianshu.io|zhimg.com/g";
+        var defaultSnap = "./images/snap/default.png";
+        var defaultFavicon = "./images/favicon/default.ico";
+        request.post({
+            url: url,
+            form: requireData
+        }, function(error, response, body) {
+            if (response && response.statusCode == 200) {
+                var data = JSON.parse(body).data;
+                var bookmarks = [];
+                data.list.forEach((b) => {
+                    var bookmark = {};
+                    bookmark.id = b.articleId;
+                    bookmark.date = parseInt(today.format('yyyyMMdd'));
+                    bookmark.title = b.title;
+                    bookmark.url = b.url;
+                    bookmark.fav_count = b.favCount;
+                    bookmark.created_by = b.sourceName;
+                    bookmark.created_at = b.updatetime > b.createtime ? b.createtime : b.updatetime;
+                    bookmark.last_click = b.updatetime < b.createtime ? b.createtime : b.updatetime;
+                    if (b.imageList.length >= 1) {
+                        bookmark.snap_url = (data.pageNo == 1 ? (b.imageList[0].url.match(alterRex) != null ? defaultSnap : b.imageList[0].url) : defaultSnap);
+                    } else {
+                        bookmark.snap_url = defaultSnap;
+                    }
+                    bookmark.favicon_url = b.sourceLogo || defaultFavicon;
+                    bookmarks.push(bookmark);
+                    if (bookmarks.length == 1) {
+                        db.addHotBookmark(bookmark)
+                            .then((id) => {
+                                console.log(id);
+                            })
+                            .catch((err) => {
+                                console.log('getHotBookmarks err', err);
+                            });
+                    }
+
+                })
+            }
+        });
+    }, timeout);
+}
+
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
 };
@@ -1018,6 +1086,19 @@ function copyFile(sourceFile, destFile) {
             readStream.pipe(writeStream);
         }
     });
+}
+
+function CurentDate(i) {
+    if (i == undefined) {
+        i = 0;
+    }
+    var now = new Date();
+    now.setTime(now.getTime() + i * 24 * 60 * 60 * 1000);
+    var year = now.getFullYear(); //年
+    var month = now.getMonth() + 1; //月
+    var day = now.getDate(); //日
+    var clock = year + "年" + month + "月" + day + "日";
+    return (clock);
 }
 
 module.exports = api;

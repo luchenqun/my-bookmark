@@ -67,10 +67,11 @@ CREATE TABLE `advices` (
 drop table if exists hot_bookmarks;
 CREATE TABLE `hot_bookmarks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id(articleId)
+  `date` int(11) NOT NULL DEFAULT 0,        -- 日期(自己添加)
   `title` varchar(255) DEFAULT NULL,        -- 标题(title)
   `description` varchar(4096) DEFAULT NULL, -- 描述(自己添加)
   `url` varchar(1024) DEFAULT NULL,         -- 链接(url)
-  `click_count` smallint DEFAULT 1,         -- 总共点击次数(favCount)
+  `fav_count` smallint DEFAULT 1,           -- 总共收藏人数(favCount)
   `created_by` varchar(64) DEFAULT NULL,    -- 创建者(sourceName)
   `created_at` bigint DEFAULT 0,            -- 创建时间(updatetime)
   `last_click` bigint DEFAULT 0,            -- 最后一次点击时间(createtime)

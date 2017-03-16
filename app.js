@@ -78,5 +78,6 @@ app.use(function(err, req, res, next) {
 api.checkSnapFaviconState();
 api.getSnapByTimer();
 api.getFaviconByTimer();
+api.getHotBookmarks();
 
 module.exports = app;

@@ -775,4 +775,30 @@ db.updateBookmarkFaviconState = function(id, faviconState) {
     });
 }
 
+db.addHotBookmark = function(bookmark) {
+    var insertSql = "INSERT INTO `hot_bookmarks` (`id`, `date`, `title`, `url`, `fav_count`, `created_by`, `created_at`, `last_click`, `snap_url`, `favicon_url`) VALUES ('" + client.escape(bookmark.id) + "', '" + client.escape(bookmark.date) + "', '" + client.escape(bookmark.title) + "', '" + client.escape(bookmark.url) + "', '" + client.escape(bookmark.fav_count) + "', '" + client.escape(bookmark.created_by) + "', '" + client.escape(bookmark.created_at) + "', '" + client.escape(bookmark.last_click) + "', '" + client.escape(bookmark.snap_url) + "', '" + client.escape(bookmark.favicon_url) + "')";
+
+    var selectSql = "SELECT * FROM `bookmarks` WHERE `id` = '" + bookmark.id + "' OR `url` = '" + bookmark.url + "'";
+    console.log(insertSql, selectSql);
+    return new Promise(function(resolve, reject) {
+        client.query(selectSql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (result.length >= 1) {
+                    resolve(result[0].id);
+                } else {
+                    client.query(insertSql, (err, result) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result.insertId);
+                        }
+                    });
+                }
+            }
+        });
+    });
+};
+
 module.exports = db;

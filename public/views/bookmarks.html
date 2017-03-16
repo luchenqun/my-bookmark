@@ -110,10 +110,16 @@
             <div class="image" href="{{ bookmark.url }}" ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="cursor:pointer">
                 <img ng-src="./images/snap/{{bookmark.id}}.png" err-src="./images/snap/default.png"/>
             </div>
-            <div class="extra content tags" ng-show="!bookmark.edit" style="height:50px;">
+            <div class="extra content tags" style="height:50px;">
                 <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="jumpToTags(tag.id)">
                     {{ tag.name }}
                 </div>
+            </div>
+            <div class="extra content" ng-show="!bookmark.edit" style="height:50px;padding-right: 0px;">
+                <span class="left floated like" style="margin-top:4px;">
+                    <img class="ui ui middle aligned tiny image" ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="./images/favicon/{{bookmark.id}}.ico">
+                    {{ bookmark.created_at }}
+                </span>
                 <i class="ellipsis horizontal icon right floated" style="margin-top:6px;" ng-mouseover="bookmark.edit=true;"></i>
             </div>
             <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;" style="height:50px;">

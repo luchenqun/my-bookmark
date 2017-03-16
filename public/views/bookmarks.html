@@ -115,18 +115,18 @@
                     {{ tag.name }}
                 </div>
             </div>
-            <div class="extra content" ng-show="!bookmark.edit" style="height:50px;padding-right: 0px;">
-                <span class="left floated like" style="margin-top:4px;">
+            <div class="extra content" ng-show="!bookmark.edit" style="height:50px;padding-right:2px;padding-left:8px;">
+                <span class="left floated like" style="margin-top:6px;">
                     <img class="ui ui middle aligned tiny image" ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="./images/favicon/{{bookmark.id}}.ico">
                     {{ bookmark.created_at }}
                 </span>
-                <i class="ellipsis horizontal icon right floated" style="margin-top:6px;" ng-mouseover="bookmark.edit=true;"></i>
+                <i class="ellipsis horizontal icon right floated" style="margin-top:8px;" ng-mouseover="bookmark.edit=true;"></i>
             </div>
             <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;" style="height:50px;">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(bookmark.id, bookmark.url)" title="复制链接">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(bookmark.id, bookmark.url)" title="复制链接">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
             </div>
         </div>
     </div>

@@ -1,8 +1,8 @@
-<div class="ui segment js-hot-card" style="min-height:120px;">
+<div class="ui segment js-hot-card" style="min-height:150px;">
     <div class="ui five  stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
         <div class="card" ng-repeat="bookmark in bookmarks">
             <div class="content" style="max-height:70px;cursor:pointer" ng-click="jumpToUrl(bookmark.url)">
-                <div class="description bookmarkTitle">
+                <div class="description bookmarkTitle" title="{{bookmark.title}}">
                     {{bookmark.title}}
                 </div>
             </div>
@@ -23,6 +23,9 @@
             </div>
         </div>
     </div>
-    <div class="ui massive text centered inline loader" ng-class="{active:loadBusy, disabled:!loadBusy}" style="top:10px;">
+    <div style="width:22px;height:22px;" class="js-hot-random" ng-click="randomHotBookmarks()" title="随机查看热门收藏，如需回到最新热门收藏，请点击菜单按钮热门收藏" ng-show="!loadBusy">
+        <img class="ui ui middle aligned tiny image" ng-src="./images/random.png">
+    </div>
+    <div class="ui massive text centered inline loader" ng-class="{active:loadBusy, disabled:!loadBusy}" style="top:15px;">
         正在加载中...</div>
 </div>

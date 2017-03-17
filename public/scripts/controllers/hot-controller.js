@@ -10,6 +10,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     $scope.loadBusy = false;
     $scope.curDay = 0;
     $scope.toastrId = 0;
+    $scope.random = 0;
 
     bookmarkService.autoLogin()
         .then((data) => {
@@ -94,7 +95,6 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     $scope.detailBookmark = function(b) {
         var bookmark = $.extend(true, {}, b); // 利用jQuery执行深度拷贝
         bookmark.own = false;
-        bookmark.own = false;
         bookmark.tags = [{
             id: -1,
             name: '热门收藏'
@@ -104,7 +104,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     }
 
     $scope.loadCardData = function() {
-        if (!$scope.loadBusy) {
+        if (!$scope.loadBusy && !$scope.random) {
             console.log('loadCardData.........')
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
             var login = (menusScope && menusScope.login) || false;
@@ -114,6 +114,22 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                 toastr.remove();
                 $scope.toastrId = toastr.info('想要查看更多热门标签，请先登录！', "提示");
             }
+        }
+    }
+
+    $scope.randomHotBookmarks = function() {
+        var menusScope = $('div[ng-controller="menuCtr"]').scope();
+        var login = (menusScope && menusScope.login) || false;
+        if (login) {
+            $scope.random = true;
+            var beginDay = new Date(2016, 7, 15);   // 注意日期是从0 ~ 11
+            var now = new Date();
+            var dayGap = parseInt(Math.abs(now - beginDay) / (1000 * 60 * 60 * 24)) + 1;
+            $scope.curDay = -(parseInt(Math.random() * 1000000)  % dayGap);
+            $scope.bookmarks = [];
+            getHotBookmarks();
+        } else {
+            $scope.toastrId = toastr.info('您只有先登录，才能使用查看随机热门标签', "提示");
         }
     }
 
@@ -151,21 +167,29 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
             success: function(json) {
                 // console.log('success............', json, JSON.stringify(json.data.list[0]) );
                 var alterRex = "/mmbiz.qpic.cn|images.jianshu.io|zhimg.com/g";
-                var alterImg = "./images/snap/default.png"
+                var defaultSnap = "./images/snap/default.png"
+                var defaultFavicon = "./images/favicon/default.ico"
                 $timeout(function() {
-                    $scope.loadBusy = false;
                     if (json.code == 200) {
                         var bookmarkList = json.data.list;
                         bookmarkList.forEach((bookmark) => {
                             var b = {};
                             b.title = bookmark.title;
                             b.url = bookmark.url;
-                            b.favicon_url = bookmark.sourceLogo;
+                            b.favicon_url = bookmark.sourceLogo || defaultFavicon;
                             b.created_by = bookmark.sourceName;
+                            b.snap_url = defaultSnap;
                             if (bookmark.imageList.length >= 1) {
-                                b.snap_url = (json.data.pageNo == 1 ? (bookmark.imageList[0].url.match(alterRex) != null ? alterImg : bookmark.imageList[0].url) : alterImg);
-                            } else {
-                                b.snap_url = alterImg;
+                                if (bookmark.imageList[0].url) {
+                                    b.snap_url = (json.data.pageNo == 1 ? (bookmark.imageList[0].url.match(alterRex) != null ? defaultSnap : bookmark.imageList[0].url) : defaultSnap);
+                                } else {
+                                    for (var i = 0; i < bookmark.images.length; i++) {
+                                        if (bookmark.images[i]) {
+                                            b.snap_url = bookmark.images[i];
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                             b.fav_count = bookmark.favCount;
                             b.created_at = $filter('date')(new Date(bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
@@ -176,6 +200,8 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                             $scope.bookmarks.push(b);
                         })
                         $scope.curDay--;
+                        $scope.loadBusy = false;
+                        updateEditPos();
                     } else {
                         toastr.error('获取热门书签失败！失败原因：' + json.message + "。将尝试从缓存中获取！", "提示");
                         getHotBookmarksbyCache();
@@ -184,7 +210,6 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
             },
             error: function(json) {
                 toastr.error('获取热门书签失败！失败原因：' + json.message + "。将尝试从缓存中获取！", "提示");
-                $scope.loadBusy = false;
                 getHotBookmarksbyCache();
             }
         });
@@ -205,13 +230,19 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                 })
                 $scope.curDay--;
                 $scope.loadBusy = false;
+                updateEditPos();
             })
             .catch((err) => {
                 toastr.error("getHotBookmarksbyCache: " + JSON.stringify(err), "提示");
                 $scope.curDay--;
                 $scope.loadBusy = false;
+                updateEditPos();
             });
     }
+
+    // TODO: 我要将编辑按钮固定在容器的右上角
+    $(window).resize(updateEditPos);
+    updateEditPos();
 
     function curentDate(i, format) {
         if (i == undefined) {
@@ -237,4 +268,22 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
 
         return t;
     }
+
+    function updateEditPos() {
+        for (var i = 1; i <= 100; i += 10) {
+            setTimeout(function() {
+                var offset = $('.js-hot-card').offset();
+                if (offset) {
+                    var t = offset.top;
+                    var l = offset.left;
+                    var w = $('.js-hot-card').width();
+                    $('.js-hot-random').offset({
+                        top: t + 10,
+                        left: l + w - 10,
+                    })
+                }
+            }, 100 * i)
+        }
+    }
+
 }]);

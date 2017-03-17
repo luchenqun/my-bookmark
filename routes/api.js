@@ -344,6 +344,21 @@ api.get('/bookmarks', function(req, res) {
     }
 });
 
+api.get('/hotBookmarks', function(req, res) {
+    console.log('hello hotBookmarks', JSON.stringify(req.query), req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var userId = req.session.user.id;
+    var params = req.query;
+    var date = params.date || new Date().format('yyyyMMdd');;
+    db.hotBookmarks(date)
+        .then((bookmarks) => {
+            res.json(bookmarks);
+        })
+        .catch((err) => console.log('hotBookmarks err', err))
+});
 
 api.get('/bookmarksByTag', function(req, res) {
     console.log('hello bookmarksByTag', JSON.stringify(req.query), req.session.username);
@@ -1007,9 +1022,9 @@ api.getFaviconByTimer = function() {
     }, timeout);
 }
 
-api.getHotBookmarks = function() {
+api.getHotBookmarksByTimer = function() {
     console.log('getHotBookmarks...........');
-    var timeout = 1000 * 20;
+    var timeout = 1000 * 60 * 10;   // 10分钟更新一遍
     var busy = false;
     setInterval(function() {
         if (busy) {
@@ -1017,6 +1032,7 @@ api.getHotBookmarks = function() {
             return;
         }
         busy = true;
+        console.log('begin getHotBookmarks...');
         var today = new Date();
         var requireData = {
             idfa: "d4995f8a0c9b2ad9182369016e376278",
@@ -1039,8 +1055,14 @@ api.getHotBookmarks = function() {
             form: requireData
         }, function(error, response, body) {
             if (response && response.statusCode == 200) {
+                var inserCnt = 0;
                 var data = JSON.parse(body).data;
-                var bookmarks = [];
+
+                console.log("getHotBookmarks request call back", data.list.length);
+                if (data.list.length == 0) {
+                    busy = false;
+                }
+
                 data.list.forEach((b) => {
                     var bookmark = {};
                     bookmark.id = b.articleId;
@@ -1057,18 +1079,25 @@ api.getHotBookmarks = function() {
                         bookmark.snap_url = defaultSnap;
                     }
                     bookmark.favicon_url = b.sourceLogo || defaultFavicon;
-                    bookmarks.push(bookmark);
-                    if (bookmarks.length == 1) {
-                        db.addHotBookmark(bookmark)
-                            .then((id) => {
-                                console.log(id);
-                            })
-                            .catch((err) => {
-                                console.log('getHotBookmarks err', err);
-                            });
-                    }
 
-                })
+                    db.addHotBookmark(bookmark)
+                        .then((id) => {
+                            inserCnt++;
+                            if (inserCnt == data.list.length) {
+                                busy = false;
+                            }
+                        })
+                        .catch((err) => {
+                            inserCnt++;
+                            console.log('insertHotBookmarks err ', id, err);
+                            if (inserCnt == data.list.length) {
+                                busy = false;
+                            }
+                        });
+                });
+            } else {
+                console.log("HotBookmarks request is error", error, response && response.statusCode);
+                busy = false;
             }
         });
     }, timeout);

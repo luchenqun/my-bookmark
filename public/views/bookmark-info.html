@@ -6,7 +6,7 @@
     <div class="content">
         <div class="ui grid">
             <div class="six wide column">
-                <img class="bordered" ng-src="{{bookmark.image}}" err-src="./images/snap/default.png"/>
+                <img class="bordered" ng-src="{{bookmark.snap_url}}" err-src="./images/snap/default.png"/>
             </div>
             <div class="one wide column"></div>
             <div class="nine wide column">
@@ -15,7 +15,7 @@
                         <div class="column">
                             <img
                                 class="ui middle aligned mini image"
-                                ng-src="{{bookmark.favicon}}"
+                                ng-src="{{bookmark.favicon_url}}"
                                 style="width:16px;height:16px;padding:0;cursor:pointer;"
                                 ng-click="jumpToUrl(bookmark.url, bookmark.id)"
                                 favicon-err="./images/favicon/{{bookmark.id}}.ico"
@@ -32,8 +32,11 @@
                         </div>
                     </div>
                     <div class="two column row">
-                        <div class="column">
+                        <div class="column" ng-if="bookmark.click_count">
                             <i class="hand pointer icon"></i>点击次数：{{bookmark.click_count}}
+                        </div>
+                        <div class="column" ng-if="bookmark.fav_count">
+                            <i class="heart icon"></i>收藏人数：{{bookmark.fav_count}}
                         </div>
                         <div class="column">
                             <i class="tags icon"></i>书签分类：

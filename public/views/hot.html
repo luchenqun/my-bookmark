@@ -7,12 +7,12 @@
                 </div>
             </div>
             <div class="image hot-image" href="{{ bookmark.url }}" style="cursor:pointer" ng-click="jumpToUrl(bookmark.url)">
-                <img ng-src="{{bookmark.image}}" err-src="./images/snap/default.png" />
+                <img ng-src="{{bookmark.snap_url}}" err-src="./images/snap/default.png" />
             </div>
             <div class="extra content" ng-show="!bookmark.edit">
-                <img class="ui avatar image" style="width:16px;height:16px;" ng-src="{{bookmark.favicon}}">
-                <span class="sourceName">{{ bookmark.from }}</span>
-                <span class="favCount">·{{ bookmark.click_count }}人收藏</span>
+                <img class="ui avatar image" style="width:16px;height:16px;" ng-src="{{bookmark.favicon_url}}">
+                <span class="sourceName">{{ bookmark.created_by }}</span>
+                <span class="favCount">·{{ bookmark.fav_count }}人收藏</span>
                 <i class="ellipsis horizontal icon right floated" style="margin-top:6px;"ng-mouseover="bookmark.edit=true;"></i>
             </div>
             <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;">

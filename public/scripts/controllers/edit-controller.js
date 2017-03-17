@@ -198,7 +198,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         $scope.autoGettitle = false;
         $scope.url = bookmark.url;
         $scope.title = bookmark.title;
-        $scope.newTags = bookmark.tags.map((item) => item.name).toString();
+        if(bookmark.tags && bookmark.tags.length >= 1){
+            $scope.newTags = bookmark.tags.map((item) => item.name).toString();
+        }
     });
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键

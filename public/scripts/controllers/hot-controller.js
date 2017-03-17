@@ -24,7 +24,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
             console.log('autoLogin err', err)
         });
 
-    getBookmarks();
+    getHotBookmarks();
 
     $scope.jumpToUrl = function(url) {
         $window.open(url, '_blank');
@@ -66,6 +66,9 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
             $scope.toastrId = toastr.info('请先登录再转存书签！', "提示");
         } else {
             var b = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
+            b.tags = [{
+                name: b.created_by
+            }]
             pubSubService.publish('TagCtr.storeBookmark', b);
         }
     }
@@ -91,6 +94,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     $scope.detailBookmark = function(b) {
         var bookmark = $.extend(true, {}, b); // 利用jQuery执行深度拷贝
         bookmark.own = false;
+        bookmark.own = false;
         bookmark.tags = [{
             id: -1,
             name: '热门收藏'
@@ -100,12 +104,12 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     }
 
     $scope.loadCardData = function() {
-        console.log('loadCardData.........')
         if (!$scope.loadBusy) {
+            console.log('loadCardData.........')
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
             var login = (menusScope && menusScope.login) || false;
             if (login) {
-                getBookmarks();
+                getHotBookmarks();
             } else {
                 toastr.remove();
                 $scope.toastrId = toastr.info('想要查看更多热门标签，请先登录！', "提示");
@@ -113,7 +117,19 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
         }
     }
 
-    function getBookmarks() {
+    function getHotBookmarks() {
+        getHotBookmarksbyAPI(); // 先实时获取，实时获取失败再从缓存中获取
+
+        var menusScope = $('div[ng-controller="menuCtr"]').scope();
+        var login = (menusScope && menusScope.login) || false;
+        var index = login ? 4 : 2;
+        pubSubService.publish('Common.menuActive', {
+            login: login,
+            index: index
+        });
+    }
+
+    function getHotBookmarksbyAPI() {
         $scope.loadBusy = true;
         var requireData = {
             userId: null,
@@ -122,7 +138,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
             pageSize: 1000,
             sort: 'desc',
             renderType: 0,
-            date: CurentDate($scope.curDay),
+            date: curentDate($scope.curDay, "yyyy年M月d日"),
             idfa: "d4995f8a0c9b2ad9182369016e376278",
             os: "ios",
             osv: "9.3.5"
@@ -144,13 +160,14 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                             var b = {};
                             b.title = bookmark.title;
                             b.url = bookmark.url;
-                            b.favicon = bookmark.sourceLogo;
-                            b.from = bookmark.sourceName;
-                            b.image = alterImg;
+                            b.favicon_url = bookmark.sourceLogo;
+                            b.created_by = bookmark.sourceName;
                             if (bookmark.imageList.length >= 1) {
-                                b.image = (json.data.pageNo == 1 ? (bookmark.imageList[0].url.match(alterRex) != null ? alterImg : bookmark.imageList[0].url) : alterImg);
+                                b.snap_url = (json.data.pageNo == 1 ? (bookmark.imageList[0].url.match(alterRex) != null ? alterImg : bookmark.imageList[0].url) : alterImg);
+                            } else {
+                                b.snap_url = alterImg;
                             }
-                            b.click_count = bookmark.favCount;
+                            b.fav_count = bookmark.favCount;
                             b.created_at = $filter('date')(new Date(bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
                             b.last_click = $filter('date')(new Date(bookmark.createtime), "yyyy-MM-dd HH:mm:ss");
                             b.id = bookmark.id;
@@ -160,36 +177,53 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                         })
                         $scope.curDay--;
                     } else {
-                        toastr.error('获取热门书签失败！失败原因：' + json.message, "提示");
+                        toastr.error('获取热门书签失败！失败原因：' + json.message + "。将尝试从缓存中获取！", "提示");
+                        getHotBookmarksbyCache();
                     }
                 }, 100);
             },
             error: function(json) {
-                toastr.error('获取热门书签失败！失败原因：' + json.message, "提示");
+                toastr.error('获取热门书签失败！失败原因：' + json.message + "。将尝试从缓存中获取！", "提示");
                 $scope.loadBusy = false;
+                getHotBookmarksbyCache();
             }
-        });
-
-        var menusScope = $('div[ng-controller="menuCtr"]').scope();
-        var login = (menusScope && menusScope.login) || false;
-        var index = login ? 4 : 2;
-        pubSubService.publish('Common.menuActive', {
-            login: login,
-            index: index
         });
     }
 
-    function CurentDate(i) {
+    function getHotBookmarksbyCache() {
+        var params = {
+            date: curentDate($scope.curDay, "yyyyMMdd"),
+        }
+        $scope.loadBusy = true;
+        bookmarkService.getHotBookmarks(params)
+            .then((data) => {
+                data.forEach((bookmark) => {
+                    bookmark.created_at = $filter('date')(new Date(bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
+                    bookmark.last_click = $filter('date')(new Date(bookmark.createtime), "yyyy-MM-dd HH:mm:ss");
+                    bookmark.edit = false;
+                    $scope.bookmarks.push(bookmark);
+                })
+                $scope.curDay--;
+                $scope.loadBusy = false;
+            })
+            .catch((err) => {
+                toastr.error("getHotBookmarksbyCache: " + JSON.stringify(err), "提示");
+                $scope.curDay--;
+                $scope.loadBusy = false;
+            });
+    }
+
+    function curentDate(i, format) {
         if (i == undefined) {
             i = 0;
         }
+        if (format == undefined) {
+            format = 'yyyyMMddhhmmss'
+        }
         var now = new Date();
         now.setTime(now.getTime() + i * 24 * 60 * 60 * 1000);
-        var year = now.getFullYear(); //年
-        var month = now.getMonth() + 1; //月
-        var day = now.getDate(); //日
-        var clock = year + "年" + month + "月" + day + "日";
-        return (clock);
+        clock = $filter('date')(now, format);
+        return clock;
     }
 
     function transition() {}

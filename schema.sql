@@ -75,9 +75,8 @@ CREATE TABLE `hot_bookmarks` (
   `created_by` varchar(64) DEFAULT NULL,    -- 创建者(sourceName)
   `created_at` bigint DEFAULT 0,            -- 创建时间(updatetime)
   `last_click` bigint DEFAULT 0,            -- 最后一次点击时间(createtime)
-  `snap_url` varchar(2048) DEFAULT NULL,    -- 截图链接(imageList[0])
-  `favicon_url` varchar(2048) DEFAULT NULL, -- icon链接(sourceLogo)
+  `snap_url` varchar(1024) DEFAULT NULL,    -- 截图链接(imageList[0])
+  `favicon_url` varchar(1024) DEFAULT NULL, -- icon链接(sourceLogo)
   `status` tinyint(4) DEFAULT '0',          -- 状态
-  PRIMARY KEY (`id`),
-  KEY `urlIdx` (`url`)
+  PRIMARY KEY (`id`)
 );

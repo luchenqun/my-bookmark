@@ -81,6 +81,9 @@ app.directive('jsDropdownUserRangeInit', function($compile, $timeout) {
                 onChange: function(value, text, $choice) {
                     $timeout(function() {
                         $scope.showTags = (value == '1');
+                        $scope.searchHotBookmarks = (value == '3');
+                        $scope.bookmarks = [];
+                        $scope.totalPages = 0
                     })
                 },
             });

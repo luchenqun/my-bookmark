@@ -484,6 +484,20 @@ api.get('/searchBookmarks', function(req, res) {
         .catch((err) => console.log('bookmarks table or card err', err))
 });
 
+api.get('/searchHotBookmarks', function(req, res) {
+    console.log('hello searchHotBookmarks', JSON.stringify(req.query), req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var params = req.query;
+    db.getHotBookmarksSearch(params)
+        .then((searchData) => {
+            res.json(searchData);
+        })
+        .catch((err) => console.log('getHotBookmarksSearch err', err))
+});
+
 api.get('/tags', function(req, res) {
     if (!req.session.user) {
         res.send(401);
@@ -1024,7 +1038,7 @@ api.getFaviconByTimer = function() {
 
 api.getHotBookmarksByTimer = function() {
     console.log('getHotBookmarks...........');
-    var timeout = 1000 * 60 * 10;   // 10分钟更新一遍
+    var timeout = 1000 * 60 * 10; // 10分钟更新一遍
     var busy = false;
     setInterval(function() {
         if (busy) {

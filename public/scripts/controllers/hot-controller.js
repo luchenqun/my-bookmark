@@ -122,10 +122,10 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
         var login = (menusScope && menusScope.login) || false;
         if (login) {
             $scope.random = true;
-            var beginDay = new Date(2016, 7, 15);   // 注意日期是从0 ~ 11
+            var beginDay = new Date(2016, 7, 15); // 注意日期是从0 ~ 11
             var now = new Date();
             var dayGap = parseInt(Math.abs(now - beginDay) / (1000 * 60 * 60 * 24)) + 1;
-            $scope.curDay = -(parseInt(Math.random() * 1000000)  % dayGap);
+            $scope.curDay = -(parseInt(Math.random() * 1000000) % dayGap);
             $scope.bookmarks = [];
             getHotBookmarks();
         } else {

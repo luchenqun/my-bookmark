@@ -609,8 +609,6 @@ db.getBookmarksByTag = function(params) {
 }
 
 db.getBookmarksSearch = function(params) {
-    params.currentPage = params.currentPage || 1;
-    params.perPageItems = params.perPageItems || 20;
     var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d') as last_click FROM `bookmarks` WHERE 1=1";
 
     if (params.dateCreate) {
@@ -661,6 +659,66 @@ db.getBookmarksSearch = function(params) {
                         return params.userId == a.user_id ? 1 : -1;
                     })
                 }
+                var searchData = {
+                    totalItems: result.length,
+                    bookmarks: result.splice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
+                }
+                resolve(searchData);
+            }
+        });
+    })
+}
+
+// CREATE TABLE `hot_bookmarks` (
+//   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id(articleId)
+//   `date` int(11) NOT NULL DEFAULT 0,        -- 日期(自己添加)
+//   `title` varchar(255) DEFAULT NULL,        -- 标题(title)
+//   `description` varchar(4096) DEFAULT NULL, -- 描述(自己添加)
+//   `url` varchar(1024) DEFAULT NULL,         -- 链接(url)
+//   `fav_count` smallint DEFAULT 1,           -- 总共收藏人数(favCount)
+//   `created_by` varchar(64) DEFAULT NULL,    -- 创建者(sourceName)
+//   `created_at` bigint DEFAULT 0,            -- 创建时间(updatetime)
+//   `last_click` bigint DEFAULT 0,            -- 最后一次点击时间(createtime)
+//   `snap_url` varchar(1024) DEFAULT NULL,    -- 截图链接(imageList[0])
+//   `favicon_url` varchar(1024) DEFAULT NULL, -- icon链接(sourceLogo)
+//   `status` tinyint(4) DEFAULT '0',          -- 状态
+//   PRIMARY KEY (`id`)
+// );
+
+db.getHotBookmarksSearch = function(params) {
+    var sql = "SELECT id, title, description, url, fav_count, created_by, created_at, last_click, snap_url, favicon_url FROM `hot_bookmarks` WHERE status=0";
+
+    if (params.dateCreate) {
+        var d = new Date();
+        d.setDate(d.getDate() - parseInt(params.dateCreate));
+        sql += " AND `created_at` >= '" + d.getTime() + "'"
+    } else if (params.dateCreateBegin && params.dateCreateEnd) {
+        var dateCreateBegin = new Date(params.dateCreateBegin + "T00:00:00");
+        var dateCreateEnd = new Date(params.dateCreateEnd + "T23:59:59");
+        sql += " AND `created_at` >= '" + dateCreateBegin.getTime() + "' AND `created_at` <= '" + dateCreateEnd.getTime() + "' "
+    }
+    if (params.dateClick) {
+        var d = new Date();
+        d.setDate(d.getDate() - parseInt(params.dateClick));
+        sql += " AND `last_click` >= '" + d.getTime() + "'"
+    } else if (params.dateClickBegin && params.dateClickEnd) {
+        var dateClickBegin = new Date(params.dateClickBegin + "T00:00:00");
+        var dateClickEnd = new Date(params.dateClickEnd + "T23:59:59");
+        sql += " AND `last_click` >= '" + dateClickBegin.getTime() + "' AND `last_click` <= '" + dateClickEnd.getTime() + "' "
+    }
+
+    if (params.searchWord) {
+        sql += " AND (`title` LIKE '%" + params.searchWord + "%')"
+    }
+    sql += " ORDER BY fav_count DESC";
+    console.log(sql);
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                params.currentPage = params.currentPage || 1;
+                params.perPageItems = params.perPageItems || 20;
                 var searchData = {
                     totalItems: result.length,
                     bookmarks: result.splice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
@@ -790,7 +848,7 @@ db.addHotBookmark = function(bookmark) {
 };
 
 db.hotBookmarks = function(date) {
-    var sql = "SELECT * FROM `hot_bookmarks` WHERE `date` = "+ date +" AND `status` = 0"
+    var sql = "SELECT * FROM `hot_bookmarks` WHERE `date` = " + date + " AND `status` = 0"
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

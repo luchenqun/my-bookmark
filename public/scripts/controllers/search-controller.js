@@ -20,6 +20,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     $scope.inputPage = '';
     $scope.loading = false;
     $scope.waitDelBookmark = {};
+    $scope.searchHotBookmarks = false;
 
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
@@ -222,18 +223,43 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     function searchBookmarks(params) {
         $scope.loading = true;
         $('.js-table-search').transition('hide');
-        bookmarkService.searchBookmarks(params)
-            .then((data) => {
-                $scope.bookmarks = data.bookmarks;
-                $scope.bookmarkCount = data.totalItems;
-                $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
-                $scope.loading = false;
-                transition();
-            })
-            .catch((err) => {
-                console.log('getBookmarks err', err);
-                $scope.loading = false;
-            });
+        if ($scope.searchHotBookmarks) {
+            console.log(params);
+            bookmarkService.searchHotBookmarks(params)
+                .then((data) => {
+                    $scope.bookmarks = [];
+                    data.bookmarks.forEach((bookmark) => {
+                        bookmark.tags = [{
+                            id: -1,
+                            name: bookmark.created_by, // 给转存用
+                        }]
+                        bookmark.created_at = $filter('date')(new Date(bookmark.created_at), "yyyy-MM-dd HH:mm:ss");
+                        bookmark.last_click = $filter('date')(new Date(bookmark.last_click), "yyyy-MM-dd HH:mm:ss");
+                        $scope.bookmarks.push(bookmark);
+                    })
+                    $scope.bookmarkCount = data.totalItems;
+                    $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
+                    $scope.loading = false;
+                    transition();
+                })
+                .catch((err) => {
+                    console.log('searchHotBookmarks err', err);
+                    $scope.loading = false;
+                });
+        } else {
+            bookmarkService.searchBookmarks(params)
+                .then((data) => {
+                    $scope.bookmarks = data.bookmarks;
+                    $scope.bookmarkCount = data.totalItems;
+                    $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
+                    $scope.loading = false;
+                    transition();
+                })
+                .catch((err) => {
+                    console.log('getBookmarks err', err);
+                    $scope.loading = false;
+                });
+        }
     }
 
     function animation() {

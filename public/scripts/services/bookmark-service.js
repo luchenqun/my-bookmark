@@ -150,6 +150,20 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        searchHotBookmarks: function(params) {
+            var def = $q.defer();
+
+            $http.get('/api/searchHotBookmarks/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data, status) {
+                    def.reject('searchHotBookmarks error');
+                });
+            return def.promise;
+        },
         getBookmark: function(params) {
             var def = $q.defer();
 

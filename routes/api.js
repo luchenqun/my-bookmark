@@ -1074,7 +1074,17 @@ api.getHotBookmarksByTimer = function() {
                     bookmark.created_at = b.updatetime > b.createtime ? b.createtime : b.updatetime;
                     bookmark.last_click = b.updatetime < b.createtime ? b.createtime : b.updatetime;
                     if (b.imageList.length >= 1) {
-                        bookmark.snap_url = (data.pageNo == 1 ? (b.imageList[0].url.match(alterRex) != null ? defaultSnap : b.imageList[0].url) : defaultSnap);
+                        if (b.imageList[0].url) {
+                            bookmark.snap_url = (data.pageNo == 1 ? (b.imageList[0].url.match(alterRex) != null ? defaultSnap : b.imageList[0].url) : defaultSnap);
+                        } else {
+                            bookmark.snap_url = defaultSnap;
+                            for (var i = 0; i < b.images.length; i++) {
+                                if (b.images[i]) {
+                                    bookmark.snap_url = b.images[i];
+                                    break;
+                                }
+                            }
+                        }
                     } else {
                         bookmark.snap_url = defaultSnap;
                     }

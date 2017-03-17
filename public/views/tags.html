@@ -16,7 +16,7 @@
                 <div class="content">
                     <div class="header" ng-if="!tag.edit">{{ tag.name }}</div>
                     <div class="ui large fluid transparent input" style="height:19px;" ng-if="tag.edit">
-                        <input type="text" ng-model="tag.name" style="font-size:18px;" id="tag{{tag.id}}">
+                        <input type="text" ng-model="tag.name" style="font-size:18px;" id="tagedit{{tag.id}}">
                         <i class="checkmark icon" style="cursor:pointer;" ng-click="updateTag(tag)" title="更新分类"></i>
                         <i class="mail forward icon" style="cursor:pointer;" ng-click="backTag(tag)" title="放弃更新"></i>
                     </div>
@@ -29,7 +29,7 @@
                 </div>
                 <div class="extra content">
                     <img class="ui mini spaced image right floated" style="width:16px;height:16px;margin:0 5px" ng-src="./images/delete.png" ng-click="delTag(tag)" title="删除分类">
-                    <label for="tag{{tag.id}}" ng-show="!tag.edit">
+                    <label for="tagedit{{tag.id}}" ng-show="!tag.edit">
                         <img class="ui mini spaced image right floated" style="width:16px;height:16px;margin:0 5px" ng-src="./images/edit-bookmark.png" ng-click="editTag(tag)" title="编辑分类">
                     </label>
                 </div>

@@ -1037,9 +1037,13 @@ api.getFaviconByTimer = function() {
 }
 
 api.getHotBookmarksByTimer = function() {
-    console.log('getHotBookmarks...........');
     var timeout = 1000 * 60 * 10; // 10分钟更新一遍
     var busy = false;
+    var dayIndex = 0;
+    var date = new Date();
+
+    console.log('getHotBookmarks...........', date.format("yyyy-MM-dd hh:mm:ss"));
+
     setInterval(function() {
         if (busy) {
             console.log('getHotBookmarks is busy')
@@ -1047,7 +1051,7 @@ api.getHotBookmarksByTimer = function() {
         }
         busy = true;
         console.log('begin getHotBookmarks...');
-        var today = new Date();
+        date.setTime(date.getTime() + dayIndex * 24 * 60 * 60 * 1000);
         var requireData = {
             idfa: "d4995f8a0c9b2ad9182369016e376278",
             os: "ios",
@@ -1058,7 +1062,7 @@ api.getHotBookmarksByTimer = function() {
             pageSize: 1000,
             sort: 'desc',
             renderType: 0,
-            date: CurentDate(0),
+            date: curentDate(dayIndex, "yyyy年M月d日"),
         }
         var url = "https://api.shouqu.me/api_service/api/v1/daily/dailyMark";
         var alterRex = "/mmbiz.qpic.cn|images.jianshu.io|zhimg.com/g";
@@ -1080,11 +1084,11 @@ api.getHotBookmarksByTimer = function() {
                 data.list.forEach((b) => {
                     var bookmark = {};
                     bookmark.id = b.articleId;
-                    bookmark.date = parseInt(today.format('yyyyMMdd'));
+                    bookmark.date = parseInt(date.format('yyyyMMdd'));
                     bookmark.title = b.title;
                     bookmark.url = b.url;
-                    bookmark.fav_count = b.favCount;
-                    bookmark.created_by = b.sourceName;
+                    bookmark.fav_count = b.favCount || 0;
+                    bookmark.created_by = b.sourceName || '泥巴';
                     bookmark.created_at = b.updatetime > b.createtime ? b.createtime : b.updatetime;
                     bookmark.last_click = b.updatetime < b.createtime ? b.createtime : b.updatetime;
                     if (b.imageList.length >= 1) {
@@ -1141,16 +1145,16 @@ function copyFile(sourceFile, destFile) {
     });
 }
 
-function CurentDate(i) {
+function curentDate(i, f) {
     if (i == undefined) {
         i = 0;
     }
+    if (f == undefined) {
+        f = 'yyyyMMddhhmmss'
+    }
     var now = new Date();
     now.setTime(now.getTime() + i * 24 * 60 * 60 * 1000);
-    var year = now.getFullYear(); //年
-    var month = now.getMonth() + 1; //月
-    var day = now.getDate(); //日
-    var clock = year + "年" + month + "月" + day + "日";
+    var clock = now.format(f);
     return (clock);
 }
 

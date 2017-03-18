@@ -1076,14 +1076,11 @@ api.getHotBookmarksByTimer = function() {
             if (response && response.statusCode == 200) {
                 var inserCnt = 0;
                 var data = JSON.parse(body).data;
+                var dateDate = new Date(data.date)
 
-                console.log("getHotBookmarks request call back", data.lastUpDate, data.list.length);
-                if (data.list.length == 0) {
-                    busy = false;
-                }
-
+                console.log("getHotBookmarks success, date = ", dateDate.format("yyyyMMdd"), ', bookmarks = ', data.list.length);
                 // 因为有第二天很早的时候获取的是前一天的
-                if (date.getHours() <= 6) {
+                if (data.list.length == 0 || (date.format("yyyyMMdd") != dateDate.format("yyyyMMdd"))) {
                     busy = false;
                     return;
                 }

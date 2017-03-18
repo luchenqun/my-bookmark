@@ -216,8 +216,14 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     }
 
     function getHotBookmarksbyCache() {
+        var date = curentDate($scope.curDay, "yyyyMMdd");
+        if (date < "20160715") {
+            $scope.loadBusy = false;
+            toastr.info('您已将将所有的热门标签都加载完了！', "提示");
+            return; // 这是最早的了。
+        }
         var params = {
-            date: curentDate($scope.curDay, "yyyyMMdd"),
+            date: date,
         }
         $scope.loadBusy = true;
         bookmarkService.getHotBookmarks(params)
@@ -230,12 +236,16 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                 })
                 $scope.curDay--;
                 $scope.loadBusy = false;
+                if (data && data.length == 0) {
+                    getHotBookmarksbyCache(); // 没有继续请求
+                }
                 updateEditPos();
             })
             .catch((err) => {
                 toastr.error("getHotBookmarksbyCache: " + JSON.stringify(err), "提示");
                 $scope.curDay--;
                 $scope.loadBusy = false;
+                getHotBookmarksbyCache(); // 没有继续请求
                 updateEditPos();
             });
     }

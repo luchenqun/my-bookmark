@@ -1072,13 +1072,20 @@ api.getHotBookmarksByTimer = function() {
             url: url,
             form: requireData
         }, function(error, response, body) {
+            console.log("HotBookmarks request ", error, response && response.statusCode);
             if (response && response.statusCode == 200) {
                 var inserCnt = 0;
                 var data = JSON.parse(body).data;
 
-                console.log("getHotBookmarks request call back", data.list.length);
+                console.log("getHotBookmarks request call back", data.lastUpDate, data.list.length);
                 if (data.list.length == 0) {
                     busy = false;
+                }
+
+                // 因为有第二天很早的时候获取的是前一天的
+                if (date.getHours() <= 6) {
+                    busy = false;
+                    return;
                 }
 
                 data.list.forEach((b) => {

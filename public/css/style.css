@@ -146,3 +146,8 @@ img.operator {
     word-break: break-all;
     cursor:default;
 }
+
+.ui.sortable.table thead th.forbid_sorted:hover {
+    cursor: default;
+    background: #F9FAFB
+}

@@ -51,13 +51,13 @@
 <table class="ui selectable sortable celled table js-tags-table" ng-if="bookmarkCount > 0" style="margin-top:-14px;" ng-show="!loadBookmarks && !editMode">
     <thead>
         <tr>
-            <th style="cursor:default;">标题</th>
-            <th style="cursor:default;">链接</th>
-            <th style="width:90px;" class="sorted" ng-class="{descending: order[0]}" ng-click="changeOrder(0)">点击次数</th>
-            <th style="width:100px;" class="sorted" ng-class="{descending: order[1]}" ng-click="changeOrder(1)">创建日期</th>
-            <th style="width:100px;" class="sorted" ng-class="{descending: order[2]}" ng-click="changeOrder(2)">最后点击</th>
-            <th style="width:150px;cursor:default;">分类</th>
-            <th style="width:88px;cursor:default;">操作</th>
+            <th class="forbid_sorted">标题</th>
+            <th class="forbid_sorted">链接</th>
+            <th style="width:90px;" ng-class="{descending: order[0], sorted:order[0]}" ng-click="changeOrder(0)" title="点击可对表格进行排序">点击次数</th>
+            <th style="width:100px;" ng-class="{descending: order[1], sorted:order[1]}" ng-click="changeOrder(1)" title="点击可对表格进行排序">创建日期</th>
+            <th style="width:100px;" ng-class="{descending: order[2], sorted:order[2]}" ng-click="changeOrder(2)" title="点击可对表格进行排序">最后点击</th>
+            <th style="width:150px;" class="forbid_sorted">分类</th>
+            <th style="width:88px;" class="forbid_sorted">操作</th>
         </tr>
     </thead>
     <tbody>

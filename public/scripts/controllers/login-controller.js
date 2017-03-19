@@ -38,9 +38,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
                         pubSubService.publish('loginCtr.login', {
                             'login': data.logined,
                         });
-                        $state.go('bookmarks', {
-                            showStyle: 'navigate',
-                        })
+                        $state.go('bookmarks', {})
                     } else {
                         console.log('login failed......................')
                         toastr.error('账号或者密码错误', "错误");

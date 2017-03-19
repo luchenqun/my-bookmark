@@ -125,9 +125,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
                         login: true,
                         index: 0
                     });
-                    $state.go('bookmarks', {
-                        showStyle: 'navigate',
-                    })
+                    $state.go('bookmarks', {})
                 }, 3000);
 
             },

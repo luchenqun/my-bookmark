@@ -190,6 +190,11 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         } else {
             $scope.bookmarks = $scope.bookmarkData.bookmarksLatestClick;
         }
+
+        $timeout(function() {
+            var timeagoInstance = timeago();
+            timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+        }, 100)
     }
 
     $scope.updateCostomTagBookmarks = function(index) {

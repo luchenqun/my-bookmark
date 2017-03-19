@@ -73,12 +73,10 @@
             </td>
             <td>{{ bookmark.click_count }}</td>
             <td>
-                <span title="{{bookmark.created_at}}">{{ bookmark.created_at.substr(0, 10) }}
-                </span>
+                <span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
             </td>
             <td>
-                <span title="{{bookmark.last_click}}">{{ bookmark.last_click.substr(0, 10) }}
-                </span>
+                <span title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
             </td>
             <td>
                 <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="getBookmarks(tag.id, 1)">

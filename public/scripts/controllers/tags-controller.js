@@ -41,6 +41,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         } else {
             $scope.bookmarks = $scope.bookmarkData.bookmarksLatestClick;
         }
+        $timeout(function() {
+            var timeagoInstance = timeago();
+            timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+        }, 100)
     }
 
     $scope.getBookmarks = function(tagId, currentPage) {

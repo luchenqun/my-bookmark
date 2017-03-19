@@ -1,4 +1,4 @@
-app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$window', '$filter', '$document', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, $sce, $window, $filter, $document, bookmarkService, pubSubService) {
+app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$window', '$filter', '$document', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, $sce, $window, $filter, $document, $timeout, bookmarkService, pubSubService) {
     console.log("Hello bookmarkInfoCtr");
     $scope.bookmark = {}
     $scope.content = '';
@@ -9,8 +9,8 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
         $('.ui.modal.js-bookmark-info').modal({
             closable: false,
         }).modal('setting', 'transition', transition()).modal('show');
-        bookmark.favicon_url = bookmark.favicon_url || ('http://g.soz.im/'+bookmark.url +'/cdn.ico');
-        bookmark.snap_url = bookmark.snap_url || ('./images/snap/'+bookmark.id+'.png');
+        bookmark.favicon_url = bookmark.favicon_url || ('http://g.soz.im/' + bookmark.url + '/cdn.ico');
+        bookmark.snap_url = bookmark.snap_url || ('./images/snap/' + bookmark.id + '.png');
         $scope.bookmark = bookmark;
         $scope.bookmark.description = $sce.trustAsHtml(bookmark.description);
         $scope.content = '';
@@ -19,7 +19,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
             requestId: 1
         }
         $scope.loading = true;
-        setTimeout(function() {
+        $timeout(function() {
             $('.ui.modal.js-bookmark-info').modal("refresh");
         }, 500);
         bookmarkService.getArticle(params)

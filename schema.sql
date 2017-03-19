@@ -7,6 +7,7 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,        -- 邮箱
   `created_at` datetime DEFAULT now(),      -- 创建时间
   `last_login` datetime DEFAULT NULL,       -- 最后一次登录时间
+  `show_style` char(16) NOT NULL DEFAULT 'navigate', -- 显示风格
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)

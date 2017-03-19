@@ -2,7 +2,7 @@
     <div class="ui grid">
         <div class="four wide stretched column">
             <div class="ui secondary vertical pointing menu">
-                <a class="item" ng-class="{active:form[0]}" ng-click="changeForm(0)">重置密码
+                <a class="item" ng-class="{active:form[0]}" ng-click="changeForm(0)">系统设置
                 </a>
                 <a class="item" ng-class="{active:form[1]}" ng-click="changeForm(1)">我的信息
                 </a>
@@ -14,6 +14,9 @@
         </div>
         <div class="twelve wide stretched column">
             <form class="ui form" ng-show="form[0]">
+                <h4 class="ui horizontal divider header">
+                    重置密码
+                </h4>
                 <div class="required field">
                     <label>原密码</label>
                     <input type="password" placeholder="" ng-model="passwordOrgin">
@@ -27,6 +30,35 @@
                     <input type="password" placeholder="" ng-model="passwordNew2">
                 </div>
                 <button class="ui button" type="submit" ng-click="resetPassword()">重置密码</button>
+                <h4 class="ui horizontal divider header">
+                    书签默认显示风格配置
+                </h4>
+                <div class="inline fields js-default-show-style">
+                    <div class="field" ng-click="updateDefaultShowStyle('navigate')">
+                        <div class="ui radio checkbox js-radio-default-navigate">
+                            <input type="radio" name="default-show-style" checked="checked">
+                            <label>导航</label>
+                        </div>
+                    </div>
+                    <div class="field" ng-click="updateDefaultShowStyle('costomTag')">
+                        <div class="ui radio checkbox js-radio-default-costomTag">
+                            <input type="radio" name="default-show-style">
+                            <label>标签</label>
+                        </div>
+                    </div>
+                    <div class="field" ng-click="updateDefaultShowStyle('table')">
+                        <div class="ui radio checkbox js-radio-default-table">
+                            <input type="radio" name="default-show-style">
+                            <label>表格</label>
+                        </div>
+                    </div>
+                    <div class="field" ng-click="updateDefaultShowStyle('card')">
+                        <div class="ui radio checkbox js-radio-default-card">
+                            <input type="radio" name="default-show-style">
+                            <label>卡片</label>
+                        </div>
+                    </div>
+                </div>
             </form>
             <div class="ui four statistics" style="margin-top:30px;" ng-show="form[1]">
                 <div class="statistic">

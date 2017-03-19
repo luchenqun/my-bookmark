@@ -300,6 +300,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        updateShowStyle: function(params) {
+            var def = $q.defer();
+            $http.post('/api/updateShowStyle/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('updateShowStyle error');
+                });
+            return def.promise;
+        },
         getAdvices: function getAdvices(params) {
             var def = $q.defer();
             $http.get('/api/advices/', {

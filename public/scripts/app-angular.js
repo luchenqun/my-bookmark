@@ -10,7 +10,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             url: '/bookmarks',
             templateUrl: '/views/bookmarks.html',
             params: {
-                showStyle: 'navigate',
+                showStyle: null,
             },
             controller: 'bookmarksCtr'
         })

@@ -8,7 +8,7 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
                     'login': data.logined,
                 });
                 $state.go('bookmarks', {
-                    showStyle: 'navigate',
+                    showStyle: (data.user && data.user.show_style) || 'costomTag',
                 })
                 toastr.success('自动登陆成功，系统将自动跳转到主页', "提示");
             } else {

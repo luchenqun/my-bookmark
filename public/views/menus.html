@@ -7,19 +7,25 @@
                 <div class="menu js-menu-option">
                     <div class="header">显示方式</div>
                     <div class="divider"></div>
-                    <div class="field item" ng-click="updateShowStyle('navigate')">
-                        <div class="ui radio checkbox checked js-radio-navigate">
+                    <div class="field item js-field-navigate" ng-click="updateShowStyle('navigate')">
+                        <div class="ui radio checkbox js-radio-navigate">
                             <input type="radio" name="show-style" checked="">
                             <label>导航</label>
                         </div>
                     </div>
-                    <div class="field item" ng-click="updateShowStyle('table')">
+                    <div class="field item js-field-costomTag" ng-click="updateShowStyle('costomTag')">
+                        <div class="ui radio checkbox js-radio-costomTag">
+                            <input type="radio" name="costomTag-style">
+                            <label>标签</label>
+                        </div>
+                    </div>
+                    <div class="field item js-field-table" ng-click="updateShowStyle('table')">
                         <div class="ui radio checkbox js-radio-table">
                             <input type="radio" name="show-style">
                             <label>表格</label>
                         </div>
                     </div>
-                    <div class="field item" ng-click="updateShowStyle('card')">
+                    <div class="field item js-field-card" ng-click="updateShowStyle('card')">
                         <div class="ui radio checkbox js-radio-card">
                             <input type="radio" name="show-style">
                             <label>卡片</label>

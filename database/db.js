@@ -291,6 +291,20 @@ db.resetPassword = function(userId, password) {
     });
 }
 
+db.updateShowStyle = function(userId, show_style) {
+    console.log('updateUserLastLogin');
+    var sql = "UPDATE `users` SET `show_style` = '" + show_style + "' WHERE(`id` = '" + userId + "')";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
 db.register = function(user) {
     console.log('register');
     var sql = "INSERT INTO `users` (`username`, `password`, `email`) VALUES ('" + user.username + "', '" + user.password + "', '" + user.email + "')";
@@ -507,6 +521,24 @@ db.getBookmarksNavigate = function(tags) {
     })
     // console.log('getBookmarksNavigate ', sql);
 
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
+db.getBookmarksCostomTag = function(user_id) {
+    console.log('getBookmarksCostomTag');
+    var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `click_count` DESC LIMIT 0, 68)";
+    var sql2 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `created_at` DESC LIMIT 0, 68)";
+    var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `last_click` DESC LIMIT 0, 68)";
+
+    var sql = sql1 + " UNION " + sql2 + " UNION " + sql3;
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

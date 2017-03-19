@@ -47,6 +47,37 @@
         <div class="ui divider"></div>
     </div>
 </div>
+<div class="ui segment js-segment-costomTag" ng-if="showStyle === 'costomTag'">
+    <div class="ui container">
+        <div class="ui grid">
+            <div class="two wide column js-costomTag-label" ng-repeat="tag in costomTags">
+                <div class="ui small label" ng-class="{green:tag.clicked}" ng-click="updateCostomTagBookmarks(tag.index)">
+                    {{ tag.name }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="ui five column grid">
+        <div
+            class="column js-costomTag-item"
+            ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}"
+            ng-mouseover="bookmarkNormalHover=true"
+            ng-mouseleave="bookmarkNormalHover=false"
+            ng-repeat="bookmark in bookmarks"
+            ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+            title="{{ bookmark.title }}"
+            id="{{bookmark.id}}">
+            <img
+                class="ui ui middle aligned tiny image bookmarkInfo"
+                ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico"
+                style="width:16px;height:16px;"
+                ng-click="detailBookmark(bookmark);$event.stopPropagation()"
+                favicon-err="./images/favicon/{{bookmark.id}}.ico">
+            <span>{{ bookmark.title}}</span>
+        </div>
+    </div>
+</div>
 <table class="ui selectable sortable celled table js-table-bookmarks" ng-if="showStyle === 'table'">
     <thead>
         <tr>

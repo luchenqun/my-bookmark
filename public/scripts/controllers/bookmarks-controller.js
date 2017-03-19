@@ -4,8 +4,8 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.showSearch = false; // 搜索对话框
     $scope.bookmarkNormalHover = false;
     $scope.bookmarkEditHover = false;
-    $scope.showStyle = ($stateParams && $stateParams.showStyle) || 'navigate'; // 显示风格'navigate', 'card', 'table'
-    $('.js-radio-' + $scope.showStyle).checkbox('set checked');
+    var menusScope = $('div[ng-controller="menuCtr"]').scope();
+    $scope.showStyle = ($stateParams && $stateParams.showStyle) || (menusScope && menusScope.showStyle); // 显示风格'navigate', 'costomTag', 'card', 'table'
     $scope.edit = false;
     const perPageItems = 20;
     var dialog = null;
@@ -17,6 +17,22 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.order = [false, false, false];
     $scope.order[($stateParams && $stateParams.orderIndex) || 0] = true;
     $scope.bookmarkData = {};
+    $scope.costomTags = [{
+        index: 0,
+        clicked: true,
+        name: '最近使用'
+    }, {
+        index: 1,
+        clicked: false,
+        name: '最近添加'
+    }, {
+        index: 2,
+        clicked: false,
+        name: '最多使用'
+    }]
+
+    updateShowStyle();
+    getBookmarks();
 
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
@@ -25,16 +41,11 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             $scope.loadBusy = true;
             $scope.currentPage = currentPage;
             $scope.inputPage = '';
-            getBookmarks(params);
+            getBookmarks();
         } else {
             $scope.currentPage = $scope.totalPages
         }
     }
-
-    var params = {
-        showStyle: $scope.showStyle,
-    }
-    getBookmarks(params);
 
     $scope.jumpToUrl = function(url, id) {
         if (!$scope.edit) {
@@ -43,7 +54,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 id: id
             });
 
-            if (params.showStyle != 'navigate') {
+            if ($scope.showStyle != 'navigate') {
                 $scope.bookmarks.forEach(function(bookmark) {
                     if (bookmark.id == id) {
                         bookmark.click_count += 1;
@@ -181,91 +192,136 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         }
     }
 
+    $scope.updateCostomTagBookmarks = function(index) {
+        console.log('updateCostomTagBookmarks index = ' + index);
+        $scope.costomTags.forEach((tag, i) => {
+            $scope.costomTags[i].clicked = false;
+        })
+        $scope.costomTags[index].clicked = true;
+
+        if (index == 0) {
+            $scope.bookmarkData.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
+        } else if (index == 1) {
+            $scope.bookmarkData.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
+        } else {
+            $scope.bookmarkData.sort((a, b) => {
+                var click1 = parseInt(a.click_count);
+                var click2 = parseInt(b.click_count);
+                if (click1 > click2) {
+                    return -1;
+                } else if (click1 == click2) {
+                    return a.created_at >= b.created_at ? -1 : 1;
+                } else {
+                    return 1;
+                }
+            })
+        }
+        $scope.bookmarks = $scope.bookmarkData.slice(0, 68);
+    }
+
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
         console.log('subscribe EditCtr.inserBookmarsSuccess', params);
 
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         if (menusScope.login && menusScope.selectLoginIndex == 0) {
-            params.showStyle = $scope.showStyle;
-            params.forbidTransition = true;
+            $scope.showStyle = $scope.showStyle;
+            $scope.forbidTransition = true;
             if ($scope.showStyle == 'card') {
                 $scope.currentPage = 1;
                 $scope.bookmarks = [];
             }
-            getBookmarks(params);
+            getBookmarks();
         }
     });
 
-    function getBookmarks(params) {
-        if (params.showStyle != 'navigate') {
-            params.currentPage = $scope.currentPage;
-            params.perPageItems = perPageItems;
-        }
+    function getBookmarks() {
+        var params = {}
+        params.showStyle = $scope.showStyle
+        params.currentPage = $scope.currentPage;
+        params.perPageItems = perPageItems;
 
-        var sendData = {
-            totalItems: 0,
-            bookmarksClickCount: [],
-            bookmarksCreatedAt: [],
-            bookmarksLatestClick: [],
-        }
-
-        bookmarkService.getBookmarks(params)
-            .then((data) => {
-                if (params.showStyle != 'navigate') {
-                    $scope.bookmarkData = data;
-                    $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
-                    if (data.totalItems == 0) {
-                        toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
-                    }
-                    if (params.showStyle == 'card') {
-                        data.bookmarksCreatedAt.forEach(bookmark => {
-                            bookmark.edit = false;
-                            $scope.bookmarks.push(bookmark);
-                        })
-                        $scope.loadBusy = false;
-                    } else {
-                        $scope.changeOrder($scope.order.indexOf(true));
-                    }
-                } else {
-                    $scope.bookmarks = data;
-                    if ($scope.bookmarks.length <= 2) {
-                        $(".js-msg").removeClass("hidden");
-                    }
-                    if ($scope.bookmarks.length == 0) {
-                        toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
-                    }
-                }
-                pubSubService.publish('Common.menuActive', {
-                    login: true,
-                    index: 0
+        if (!params.showStyle) {
+            bookmarkService.userInfo({})
+                .then((user) => {
+                    $scope.showStyle = user && user.show_style;
+                    updateShowStyle();
+                    getBookmarks(); // 拿到默认显示风格了，继续取获取书签
+                })
+                .catch((err) => {
+                    toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
                 });
-                if (!(params.forbidTransition && params.forbidTransition == true)) {
-                    transition();
-                }
-            })
-            .catch((err) => console.log('getBookmarks err', err));
+        } else {
+            bookmarkService.getBookmarks(params)
+                .then((data) => {
+                    if (params.showStyle != 'navigate') {
+                        $scope.bookmarkData = data;
+                        $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
+                        if (data.totalItems == 0) {
+                            toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
+                        }
+                        if (params.showStyle == 'card') {
+                            data.bookmarksCreatedAt.forEach(bookmark => {
+                                bookmark.edit = false;
+                                $scope.bookmarks.push(bookmark);
+                            })
+                            $scope.loadBusy = false;
+                        } else if (params.showStyle == 'costomTag') {
+                            $scope.costomTags.forEach((tag) => {
+                                console.log('tag', tag)
+                                if (tag.clicked) {
+                                    $scope.updateCostomTagBookmarks(tag.index)
+                                }
+                            })
+                        } else {
+                            $scope.changeOrder($scope.order.indexOf(true));
+                        }
+                    } else {
+                        $scope.bookmarks = data;
+                        if ($scope.bookmarks.length <= 2) {
+                            $(".js-msg").removeClass("hidden");
+                        }
+                        if ($scope.bookmarks.length == 0) {
+                            toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
+                        }
+                    }
+                    pubSubService.publish('Common.menuActive', {
+                        login: true,
+                        index: 0
+                    });
+                    if (!($scope.forbidTransition && $scope.forbidTransition == true)) {
+                        transition();
+                    }
+                })
+                .catch((err) => console.log('getBookmarks err', err));
+        }
     }
 
+    function updateShowStyle() {
+        $timeout(function() {
+            if ($scope.showStyle) {
+                $('.js-bookmark-dropdown' + ' .radio.checkbox').checkbox('set unchecked');
+                $('.js-radio-' + $scope.showStyle).checkbox('set checked');
+                $('.js-bookmark-dropdown' + ' .field.item').removeClass('active selected');
+                $('.js-field-' + $scope.showStyle).addClass('active selected');
+            }
+        }, 100)
+    }
 
     function transition() {
         if ($scope.showStyle == 'card' && $scope.currentPage > 1) {
             return;
         }
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
-            'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-
         var className = 'js-segment-navigate';
         if ($scope.showStyle == 'card') {
             className = 'js-segment-card'
         } else if ($scope.showStyle == 'table') {
             className = 'js-table-bookmarks'
+        } else if ($scope.showStyle == 'costomTag') {
+            className = 'js-segment-costomTag'
         }
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: t,
+            animation: animation(),
             duration: 500,
         });
     }

@@ -159,6 +159,41 @@ api.post('/resetPassword', function(req, res) {
         });
 });
 
+api.post('/updateShowStyle', function(req, res) {
+    console.log("updateShowStyle");
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var params = req.body.params;
+    db.getUser(req.session.user.username)
+        .then((user) => {
+            if (user) {
+                return db.updateShowStyle(req.session.userId, params.showStyle)
+            } else {
+                return Promise.resolve(0)
+            }
+        })
+        .then((affectedRows) => {
+            res.json({
+                retCode: (affectedRows == 1 ? 0 : 1),
+                msg: req.session.username + " 更新书签默认显示风格配置成功！",
+            })
+
+            if (affectedRows) {
+                req.session.user.show_style = params.showStyle;
+            }
+        })
+        .catch((err) => {
+            console.log('resetPassword error', err);
+            res.json({
+                retCode: 2,
+                msg: req.session.username + " 更新书签默认显示风格配置失败！: " + JSON.stringify(err),
+            })
+        });
+});
+
 api.get('/autoLogin', function(req, res) {
     var ret = {
         logined: false,
@@ -251,6 +286,7 @@ api.get('/bookmarks', function(req, res) {
     }
     var userId = req.session.user.id;
     var params = req.query;
+    params.showStyle = params.showStyle || req.session.user.show_style; // 如果没有指定风格，那么用系统风格
     if (params.showStyle === 'navigate') {
         db.getTags(userId)
             .then((tags) => db.getBookmarksNavigate(tags))
@@ -298,6 +334,35 @@ api.get('/bookmarks', function(req, res) {
                 res.json(data);
             })
             .catch((err) => console.log('bookmarks navigate err', err));
+    } else if (params.showStyle === 'costomTag') {
+        var bookmarks = []
+        db.getBookmarksCostomTag(userId)
+            .then((_bookmarks) => {
+                bookmarks = _bookmarks;
+                var bookmarkIds = bookmarks.map((bookmark) => bookmark.id)
+                return db.getTagsBookmarks(bookmarkIds);
+            })
+            .then((tbs) => {
+                tagsBookmarks = tbs;
+                return db.getTags(userId);
+            })
+            .then((tags) => {
+                bookmarks.forEach(function(bookmark, index) {
+                    var bookmarkTags = [];
+                    tagsBookmarks.forEach(function(tb) {
+                        if (tb.bookmark_id == bookmark.id) {
+                            tags.forEach(function(tag) {
+                                if (tb.tag_id == tag.id) {
+                                    bookmarkTags.push(tag)
+                                }
+                            })
+                        }
+                    });
+                    bookmarks[index].tags = bookmarkTags;
+                })
+                res.json(bookmarks);
+            })
+            .catch((err) => console.log('bookmarks costomTag err', err))
     } else {
         var tagsBookmarks = [];
         var sendData = {
@@ -1076,19 +1141,19 @@ api.getHotBookmarksByTimer = function() {
             if (response && response.statusCode == 200) {
                 var inserCnt = 0;
                 var data = JSON.parse(body).data;
-                var dateDate = new Date(data.date)
+                var dataDate = new Date(data.date)
 
-                console.log("getHotBookmarks success, date = ", dateDate.format("yyyyMMdd"), ', bookmarks = ', data.list.length);
-                // 因为有第二天很早的时候获取的是前一天的
-                if (data.list.length == 0 || (date.format("yyyyMMdd") != dateDate.format("yyyyMMdd"))) {
+                console.log("getHotBookmarks success, date = ", dataDate.format("yyyy-MM-dd hh:mm:ss"), ', bookmarks length = ', data.list.length);
+
+                if (data.list.length == 0) {
                     busy = false;
                     return;
                 }
-
+                var dateSql = parseInt(dataDate.format('yyyyMMdd'));
                 data.list.forEach((b) => {
                     var bookmark = {};
                     bookmark.id = b.articleId;
-                    bookmark.date = parseInt(date.format('yyyyMMdd'));
+                    bookmark.date = dateSql; // 因为有第二天很早的时候获取的是前一天的,所以用数据返回日期
                     bookmark.title = b.title;
                     bookmark.url = b.url;
                     bookmark.fav_count = b.favCount || 0;

@@ -4,6 +4,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.searchWord = ''; /**< 搜索关键字 */
+    $scope.showStyle = null;
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
         console.log("subscribe Common.menuActive", params)
@@ -49,15 +50,16 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
     $scope.searchBookmarks = function(searchWord) {
         $state.go('search', {
             searchWord: searchWord,
-        },{
-            reload:true,
+        }, {
+            reload: true,
         })
         $scope.login = true;
         updateMenuActive($scope.selectLoginIndex = 0);
     }
 
     $scope.updateShowStyle = function(showStyle) {
-        console.log('updateShowStyle', showStyle)
+        console.log('updateShowStyle', showStyle);
+        $scope.showStyle = showStyle;
         $('.js-radio-' + showStyle).checkbox('set checked');
         $state.go('bookmarks', {
             showStyle: showStyle,
@@ -70,10 +72,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
         });
     }
     $scope.logout = function() {
-        var params = {
-            userName: 'luchenqun'
-        };
-        bookmarkService.logout(params)
+        bookmarkService.logout({})
             .then((data) => {
                 console.log('logout..........', data)
                 $scope.login = false;

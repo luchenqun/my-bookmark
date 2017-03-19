@@ -192,8 +192,8 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                                 }
                             }
                             b.fav_count = bookmark.favCount;
-                            b.created_at = $filter('date')(new Date(bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
-                            b.last_click = $filter('date')(new Date(bookmark.createtime), "yyyy-MM-dd HH:mm:ss");
+                            b.created_at = $filter('date')(new Date(bookmark.createtime < bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
+                            b.last_click = $filter('date')(new Date(bookmark.createtime > bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
                             b.id = bookmark.id;
 
                             b.edit = false;

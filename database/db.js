@@ -670,9 +670,9 @@ db.getBookmarksSearch = function(params) {
         if (params.tags) {
             sql += " AND `id` IN (SELECT `bookmark_id` FROM `tags_bookmarks` WHERE tag_id IN (" + params.tags + "))"
         }
-    } else {
+    } else if (params.userRange == '2') {
         if (params.username) {
-            sql += " AND `user_id` IN (SELECT `id` FROM `users` WHERE `username` LIKE '%" + params.username + "%' )"
+            sql += " AND `user_id` IN (SELECT `id` FROM `users` WHERE `username` LIKE '%" + params.username + "%' ) AND public=1 "
         }
     }
 

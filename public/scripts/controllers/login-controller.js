@@ -1,5 +1,5 @@
 app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'bookmarkService', 'pubSubService', function($scope, $filter, $state, $cookieStore, bookmarkService, pubSubService) {
-    console.log("Hello loginCtr...", $cookieStore.get("username"), $cookieStore.get("password"));
+    console.log("Hello loginCtr...", $cookieStore.get("username"));
 
     pubSubService.publish('Common.menuActive', {
         login: false,
@@ -7,7 +7,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
     });
 
     $scope.username = $cookieStore.get("username") || "";
-    $scope.password = $cookieStore.get("password") || "";
+    $scope.password = "";
     $scope.showErr = false;
     $scope.errInfo = '';
 
@@ -31,7 +31,6 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
                 autoLogin: autoLogin,
             };
             $cookieStore.put("username", $scope.username);
-            $cookieStore.put("password", $scope.password);
             bookmarkService.login(params)
                 .then((data) => {
                     console.log(data);

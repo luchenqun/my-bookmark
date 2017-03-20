@@ -114,7 +114,7 @@ db.updateBookmark = function(bookmark) {
 }
 
 db.getBookmark = function(id) {
-    var sql = "SELECT * FROM `bookmarks` WHERE `id` = '" + id + "'";
+    var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `id` = '" + id + "'";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
@@ -135,6 +135,19 @@ db.getBookmarkTags = function(bookmard_id) {
             } else {
                 var tags = result.map((item) => item.tag_id);
                 resolve(tags);
+            }
+        });
+    });
+}
+
+db.getBookmarkTagsNames = function(bookmard_id) {
+    var sql = "SELECT tags_bookmarks.tag_id as id,  tags.name FROM tags_bookmarks LEFT JOIN tags ON  tags.id = tags_bookmarks.tag_id WHERE bookmark_id = '"+ bookmard_id +"'";
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
             }
         });
     });

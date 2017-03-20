@@ -236,16 +236,25 @@ api.post('/updateBookmark', function(req, res) {
         res.send(401);
         return;
     }
-    var bookmark = req.body.params;
-    console.log('hello updateBookmark', JSON.stringify(bookmark));
+
     var bookmark = req.body.params;
     var userId = req.session.user.id;
     var tags = bookmark.tags;
+    var ret = {}
+    console.log('hello updateBookmark', JSON.stringify(bookmark));
     db.updateBookmark(bookmark) // 更新标签信息
         .then((affectedRows) => db.delBookmarkTags(bookmark.id)) // 将之前所有的书签分类信息删掉
         .then((insertId) => db.addTagsBookmarks(tags, bookmark.id)) // 将新的分类关联起来
         .then(() => db.updateLastUseTags(userId, tags)) // 更新最近使用的分类(这个有待考虑)
-        .then(() => res.json({})) // 运气不错
+        .then(() => db.getBookmark(bookmark.id)) // 将新的信息返回去
+        .then((bookmark) => {
+            ret = bookmark;
+            return db.getBookmarkTagsNames(bookmark.id);
+        })
+        .then((tags) => {
+            ret.tags = tags;
+            res.json(ret);
+        }) // 运气不错
         .catch((err) => console.log('updateBookmark err', err)); // oops!
 })
 
@@ -726,7 +735,7 @@ api.post('/addBookmark', function(req, res) {
         .then(() => db.getBookmark(bookmarkId)) // 获取书签信息，返回去
         .then((bookmark) => {
             ret = bookmark;
-            return db.getBookmarkTags(bookmarkId);
+            return db.getBookmarkTagsNames(bookmark.id);
         })
         .then((bookmarkTags) => {
             ret.tags = bookmarkTags;

@@ -83,8 +83,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             currentPage: currentPage,
             perPageItems: perPageItems,
         };
-        $('.js-tags-table').transition('hide');
 
+        $('.js-tags-table').transition('hide');
         bookmarkService.getBookmarksByTag(params)
             .then((data) => {
                 $scope.bookmarkData = data;
@@ -436,10 +436,21 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
         console.log('subscribe EditCtr.inserBookmarsSuccess', data);
-
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         if (menusScope.login && menusScope.selectLoginIndex == 1) {
-            getTags({});
+            var find = false;
+            $scope.bookmarkData.bookmarks.forEach((bookmark) => {
+                if (bookmark.id == data.id) {
+                    bookmark.title = data.title;
+                    bookmark.url = data.url;
+                    bookmark.tags = data.tags;
+                    bookmark.description = data.description;
+                    find = true;
+                }
+            })
+            if (!find) {
+                getTags({});
+            }
         }
     });
 

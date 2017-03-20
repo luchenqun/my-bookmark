@@ -231,17 +231,28 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
-        console.log('subscribe EditCtr.inserBookmarsSuccess', params);
+        console.log('subscribe EditCtr.inserBookmarsSuccess', JSON.stringify(data));
 
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         if (menusScope.login && menusScope.selectLoginIndex == 0) {
-            $scope.showStyle = $scope.showStyle;
             $scope.forbidTransition = true;
             if ($scope.showStyle == 'card') {
-                $scope.currentPage = 1;
-                $scope.bookmarks = [];
+                var find = false;
+                $scope.bookmarks.forEach((bookmark) => {
+                    if (bookmark.id == data.id) {
+                        bookmark.title = data.title;
+                        bookmark.url = data.url;
+                        bookmark.tags = data.tags;
+                        bookmark.description = data.description;
+                        find = true;
+                    }
+                })
+                if (!find) {
+                    $scope.bookmarks.unshift(data);
+                }
+            } else {
+                getBookmarks();
             }
-            getBookmarks();
         }
     });
 
@@ -302,6 +313,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                         index: 0
                     });
                     if (!($scope.forbidTransition && $scope.forbidTransition == true)) {
+                        $scope.forbidTransition = false;
                         transition();
                     }
                 })

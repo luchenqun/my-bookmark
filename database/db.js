@@ -712,22 +712,35 @@ db.getBookmarksSearch = function(params) {
 
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
-    sql += " GROUP BY url ORDER BY click_count DESC, created_at DESC";
+    sql += " ORDER BY click_count DESC, created_at DESC";
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
-                // 如果是全站搜索，默认有限显示其他用户的
+                // 如果是全站搜索，默认优先显示其他用户的
                 if (params.userRange == '2') {
                     result.sort((a, b) => {
                         return params.userId == a.user_id ? 1 : -1;
                     })
                 }
+                // 去掉重复的
+                var bookmarks = [];
+                result.forEach((b1) => {
+                    var find = false;
+                    bookmarks.forEach((b2) => {
+                        if (b1.url == b2.url) {
+                            find = true;
+                        }
+                    })
+                    if(!find){
+                        bookmarks.push(b1);
+                    }
+                })
                 var searchData = {
-                    totalItems: result.length,
-                    bookmarks: result.splice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
+                    totalItems: bookmarks.length,
+                    bookmarks: bookmarks.splice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
                 }
                 resolve(searchData);
             }

@@ -52,15 +52,15 @@ Date.prototype.format = function(fmt) { //author: meizz
 // update delete 返回影响的行数
 var db = {
 
-}
-// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun1'";
-// client.query(sql, (err, result) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log(result);
-//     }
-// });
+    }
+    // var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun1'";
+    // client.query(sql, (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log(result);
+    //     }
+    // });
 
 db.addBookmark = function(user_id, bookmark) {
     var insertSql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', '" + bookmark.title + "', " + client.escape(bookmark.description) + ", '" + bookmark.url + "', '" + bookmark.public + "', '1')";
@@ -513,13 +513,13 @@ db.getBookmarksNavigate = function(tags) {
     // var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id WHERE t.user_id='" + user_id + "' ORDER BY t.id ASC, b.click_count DESC";
     var sql = "";
     tags.forEach((tag, index) => {
-        var t = 't' + tag.id;
-        if (index >= 1) {
-            sql += " UNION "
-        }
-        sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
-    })
-    // console.log('getBookmarksNavigate ', sql);
+            var t = 't' + tag.id;
+            if (index >= 1) {
+                sql += " UNION "
+            }
+            sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
+        })
+        // console.log('getBookmarksNavigate ', sql);
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
@@ -564,67 +564,49 @@ db.getBookmarksTable = function(params) {
             if (err) {
                 reject(err);
             } else {
-                var temp = [];
                 var bookmarks = [];
                 var begin = (params.currentPage - 1) * params.perPageItems;
                 var end = params.currentPage * params.perPageItems;
 
                 result.sort((a, b) => {
-                    var click1 = parseInt(a.click_count);
-                    var click2 = parseInt(b.click_count);
-                    if (click1 > click2) {
-                        return -1;
-                    } else if (click1 == click2) {
-                        return a.created_at >= b.created_at ? -1 : 1;
-                    } else {
-                        return 1;
-                    }
-                })
-                temp = result.slice(begin, end);
-                temp.forEach((b1) => {
-                    var find = false;
-                    bookmarks.forEach((b2) => {
-                        if (b1.id == b2.id) {
-                            find = true;
+                        var click1 = parseInt(a.click_count);
+                        var click2 = parseInt(b.click_count);
+                        if (click1 > click2) {
+                            return -1;
+                        } else if (click1 == click2) {
+                            return a.created_at >= b.created_at ? -1 : 1;
+                        } else {
+                            return 1;
                         }
                     })
-                    if (!find) {
-                        bookmarks.push(b1);
-                    }
-                })
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b));// 执行深度复制
+                        bookmark.type = 1;
+                        bookmarks.push(bookmark);
+                    })
 
-                result.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
-                temp = result.slice(begin, end);
-                temp.forEach((b1) => {
-                    var find = false;
-                    bookmarks.forEach((b2) => {
-                        if (b1.id == b2.id) {
-                            find = true;
-                        }
+                result.sort((a, b) => a.created_at >= b.created_at ? -1 : 1)
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b));// 执行深度复制
+                        bookmark.type = 2;
+                        bookmarks.push(bookmark);
                     })
-                    if (!find) {
-                        bookmarks.push(b1);
-                    }
-                })
 
-                result.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
-                temp = result.slice(begin, end);
-                temp.forEach((b1) => {
-                    var find = false;
-                    bookmarks.forEach((b2) => {
-                        if (b1.id == b2.id) {
-                            find = true;
-                        }
+                result.sort((a, b) => a.last_click >= b.last_click ? -1 : 1)
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b));// 执行深度复制
+                        bookmark.type = 3;
+                        bookmarks.push(bookmark);
                     })
-                    if (!find) {
-                        bookmarks.push(b1);
-                    }
-                })
 
                 var bookmarksData = {
                     totalItems: result.length,
                     bookmarks: bookmarks,
                 }
+
                 resolve(bookmarksData);
             }
         });
@@ -643,67 +625,49 @@ db.getBookmarksByTag = function(params) {
             if (err) {
                 reject(err);
             } else {
-                var temp = [];
                 var bookmarks = [];
                 var begin = (params.currentPage - 1) * params.perPageItems;
                 var end = params.currentPage * params.perPageItems;
 
                 result.sort((a, b) => {
-                    var click1 = parseInt(a.click_count);
-                    var click2 = parseInt(b.click_count);
-                    if (click1 > click2) {
-                        return -1;
-                    } else if (click1 == click2) {
-                        return a.created_at >= b.created_at ? -1 : 1;
-                    } else {
-                        return 1;
-                    }
-                })
-                temp = result.slice(begin, end);
-                temp.forEach((b1) => {
-                    var find = false;
-                    bookmarks.forEach((b2) => {
-                        if (b1.id == b2.id) {
-                            find = true;
+                        var click1 = parseInt(a.click_count);
+                        var click2 = parseInt(b.click_count);
+                        if (click1 > click2) {
+                            return -1;
+                        } else if (click1 == click2) {
+                            return a.created_at >= b.created_at ? -1 : 1;
+                        } else {
+                            return 1;
                         }
                     })
-                    if (!find) {
-                        bookmarks.push(b1);
-                    }
-                })
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b));// 执行深度复制
+                        bookmark.type = 1;
+                        bookmarks.push(bookmark);
+                    })
 
-                result.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
-                temp = result.slice(begin, end);
-                temp.forEach((b1) => {
-                    var find = false;
-                    bookmarks.forEach((b2) => {
-                        if (b1.id == b2.id) {
-                            find = true;
-                        }
+                result.sort((a, b) => a.created_at >= b.created_at ? -1 : 1)
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b));// 执行深度复制
+                        bookmark.type = 2;
+                        bookmarks.push(bookmark);
                     })
-                    if (!find) {
-                        bookmarks.push(b1);
-                    }
-                })
 
-                result.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
-                temp = result.slice(begin, end);
-                temp.forEach((b1) => {
-                    var find = false;
-                    bookmarks.forEach((b2) => {
-                        if (b1.id == b2.id) {
-                            find = true;
-                        }
+                result.sort((a, b) => a.last_click >= b.last_click ? -1 : 1)
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b));// 执行深度复制
+                        bookmark.type = 3;
+                        bookmarks.push(bookmark);
                     })
-                    if (!find) {
-                        bookmarks.push(b1);
-                    }
-                })
 
                 var bookmarksData = {
                     totalItems: result.length,
                     bookmarks: bookmarks,
                 }
+
                 resolve(bookmarksData);
             }
         });

@@ -35,18 +35,29 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
         $scope.order = $scope.order.map(() => false);
         $scope.order[index] = true;
-        var begin = ($scope.currentPage - 1) * perPageItems;
-        var end = $scope.currentPage * perPageItems;
+        $scope.bookmarks = [];
 
         if ($scope.order[0]) {
-            $scope.bookmarkData.bookmarks.sort(clickCmp)
-            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);;
+            $scope.bookmarkData.bookmarks.sort(clickCmp);
+            $scope.bookmarkData.bookmarks.forEach((bookmark) => {
+                if (bookmark.type == 1) {
+                    $scope.bookmarks.push(bookmark);
+                }
+            })
         } else if ($scope.order[1]) {
             $scope.bookmarkData.bookmarks.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
-            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);;
+            $scope.bookmarkData.bookmarks.forEach((bookmark) => {
+                if (bookmark.type == 2) {
+                    $scope.bookmarks.push(bookmark);
+                }
+            })
         } else {
             $scope.bookmarkData.bookmarks.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
-            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);;
+            $scope.bookmarkData.bookmarks.forEach((bookmark) => {
+                if (bookmark.type == 3) {
+                    $scope.bookmarks.push(bookmark);
+                }
+            })
         }
         $timeout(function() {
             timeagoInstance.cancel();

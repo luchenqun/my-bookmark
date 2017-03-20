@@ -181,17 +181,28 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         }
         $scope.order = $scope.order.map(() => false);
         $scope.order[index] = true;
-        var begin = ($scope.currentPage - 1) * perPageItems;
-        var end = $scope.currentPage * perPageItems;
+        $scope.bookmarks = [];
         if ($scope.order[0]) {
             $scope.bookmarkData.bookmarks.sort(clickCmp)
-            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);
+            $scope.bookmarkData.bookmarks.forEach((bookmark) => {
+                if (bookmark.type == 1) {
+                    $scope.bookmarks.push(bookmark);
+                }
+            })
         } else if ($scope.order[1]) {
             $scope.bookmarkData.bookmarks.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
-            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);
+            $scope.bookmarkData.bookmarks.forEach((bookmark) => {
+                if (bookmark.type == 2) {
+                    $scope.bookmarks.push(bookmark);
+                }
+            })
         } else {
             $scope.bookmarkData.bookmarks.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
-            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);
+            $scope.bookmarkData.bookmarks.forEach((bookmark) => {
+                if (bookmark.type == 3) {
+                    $scope.bookmarks.push(bookmark);
+                }
+            })
         }
 
         $timeout(function() {
@@ -258,7 +269,11 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                             toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
                         }
                         if (params.showStyle == 'card') {
-                            data.bookmarksCreatedAt.forEach(bookmark => {
+                            $scope.bookmarkData.bookmarks.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
+                            var begin = ($scope.currentPage - 1) * perPageItems;
+                            var end = $scope.currentPage * perPageItems;
+                            var bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);
+                            bookmarks.forEach(bookmark => {
                                 bookmark.edit = false;
                                 $scope.bookmarks.push(bookmark);
                             })

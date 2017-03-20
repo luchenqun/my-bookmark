@@ -1114,7 +1114,7 @@ api.getHotBookmarksByTimer = function() {
             console.log('getHotBookmarks is busy')
             return;
         }
-        if(timeout >= 1000 * 60 * 5){
+        if(timeout < 1000 * 5){
             busy = true;    // 实践证明很容易出错导致busy一直是true，所以干脆去掉此选项了。
         }
         console.log('begin getHotBookmarks...');

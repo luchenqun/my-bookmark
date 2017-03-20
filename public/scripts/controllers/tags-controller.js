@@ -122,7 +122,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             bookmarkService.clickBookmark({
                 id: id
             });
-            $scope.bookmarks.forEach(function(bookmark, index) {
+            $scope.bookmarkData.bookmarks.forEach(function(bookmark, index) {
                 if (bookmark.id == id) {
                     bookmark.click_count += 1;
                     bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");

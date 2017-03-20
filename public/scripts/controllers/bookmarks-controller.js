@@ -56,7 +56,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             });
 
             if ($scope.showStyle != 'navigate') {
-                $scope.bookmarks.forEach(function(bookmark) {
+                $scope.bookmarkData.bookmarks.forEach(function(bookmark) {
                     if (bookmark.id == id) {
                         bookmark.click_count += 1;
                         bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -270,12 +270,11 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                         }
                         if (params.showStyle == 'card') {
                             $scope.bookmarkData.bookmarks.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
-                            var begin = ($scope.currentPage - 1) * perPageItems;
-                            var end = $scope.currentPage * perPageItems;
-                            var bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);
-                            bookmarks.forEach(bookmark => {
-                                bookmark.edit = false;
-                                $scope.bookmarks.push(bookmark);
+                            $scope.bookmarkData.bookmarks.forEach(bookmark => {
+                                if (bookmark.type == 2) {
+                                    bookmark.edit = false;
+                                    $scope.bookmarks.push(bookmark);
+                                }
                             })
                             $scope.loadBusy = false;
                         } else if (params.showStyle == 'costomTag') {

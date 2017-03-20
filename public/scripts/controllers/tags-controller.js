@@ -126,10 +126,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 if (bookmark.id == id) {
                     bookmark.click_count += 1;
                     bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
-                    $("#time"+bookmark.id).attr('data-timeago', bookmark.last_click);
-                    timeagoInstance.render(document.querySelectorAll("#time"+bookmark.id), 'zh_CN');
                 }
             })
+            $timeout(function() {
+                timeagoInstance.cancel();
+                timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+            }, 100)
         }
     }
 

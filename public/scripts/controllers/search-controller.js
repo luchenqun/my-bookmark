@@ -277,6 +277,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
     function transition() {
         $timeout(function() {
+            timeagoInstance.cancel();
             timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
         }, 100)
         var className = 'js-table-search';

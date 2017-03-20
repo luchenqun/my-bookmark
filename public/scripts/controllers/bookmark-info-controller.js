@@ -21,6 +21,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
         $scope.loading = true;
         $timeout(function() {
             $('.ui.modal.js-bookmark-info').modal("refresh");
+            $("p").css("word-wrap", "break-word");
         }, 500);
         bookmarkService.getArticle(params)
             .then((data) => {

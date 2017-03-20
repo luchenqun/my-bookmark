@@ -279,7 +279,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                             $scope.loadBusy = false;
                         } else if (params.showStyle == 'costomTag') {
                             $scope.costomTags.forEach((tag) => {
-                                console.log('tag', tag)
                                 if (tag.clicked) {
                                     $scope.updateCostomTagBookmarks(tag.index)
                                 }
@@ -316,7 +315,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 $('.js-bookmark-dropdown' + ' .field.item').removeClass('active selected');
                 $('.js-field-' + $scope.showStyle).addClass('active selected');
             }
-        }, 100)
+        }, 1000)
     }
 
     function transition() {

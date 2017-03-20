@@ -315,6 +315,8 @@ api.get('/bookmarks', function(req, res) {
                         tag.bookmarks = [];
                     }
                     tag.click += bookmark.click_count;
+                    bookmark.created_at = new Date(bookmark.created_at).format("yyyy-MM-dd hh:mm:ss");
+                    bookmark.last_click = new Date(bookmark.last_click).format("yyyy-MM-dd hh:mm:ss");
                     tag.bookmarks.push(bookmark);
                 });
                 if (result && result.length > 0) {
@@ -367,19 +369,14 @@ api.get('/bookmarks', function(req, res) {
         var tagsBookmarks = [];
         var sendData = {
             totalItems: 0,
-            bookmarksClickCount: [],
-            bookmarksCreatedAt: [],
-            bookmarksLatestClick: [],
+            bookmarks: [],
         }
 
         params.userId = userId;
         db.getBookmarksTable(params)
             .then((bookmarksData) => {
                 sendData = bookmarksData;
-                var bookmarkIds = []
-                    .concat(sendData.bookmarksClickCount.map((bookmark) => bookmark.id))
-                    .concat(sendData.bookmarksCreatedAt.map((bookmark) => bookmark.id))
-                    .concat(sendData.bookmarksLatestClick.map((bookmark) => bookmark.id))
+                var bookmarkIds = sendData.bookmarks.map((bookmark) => bookmark.id)
                 return db.getTagsBookmarks(bookmarkIds);
             })
             .then((tbs) => {
@@ -387,22 +384,20 @@ api.get('/bookmarks', function(req, res) {
                 return db.getTags(userId);
             })
             .then((tags) => {
-                var objectName = ['bookmarksClickCount', 'bookmarksCreatedAt', 'bookmarksLatestClick'];
-                objectName.forEach((name) => {
-                    sendData[name].forEach(function(bookmark, index) {
-                        var bookmarkTags = [];
-                        tagsBookmarks.forEach(function(tb) {
-                            if (tb.bookmark_id == bookmark.id) {
-                                tags.forEach(function(tag) {
-                                    if (tb.tag_id == tag.id) {
-                                        bookmarkTags.push(tag)
-                                    }
-                                })
-                            }
-                        });
-                        sendData[name][index].tags = bookmarkTags;
-                    })
+                sendData.bookmarks.forEach(function(bookmark, index) {
+                    var bookmarkTags = [];
+                    tagsBookmarks.forEach(function(tb) {
+                        if (tb.bookmark_id == bookmark.id) {
+                            tags.forEach(function(tag) {
+                                if (tb.tag_id == tag.id) {
+                                    bookmarkTags.push(tag)
+                                }
+                            })
+                        }
+                    });
+                    sendData.bookmarks[index].tags = bookmarkTags;
                 })
+
                 res.json(sendData);
             })
             .catch((err) => console.log('bookmarks table or card err', err))
@@ -440,17 +435,12 @@ api.get('/bookmarksByTag', function(req, res) {
     var totalItems = 0;
     var sendData = {
         totalItems: 0,
-        bookmarksClickCount: [],
-        bookmarksCreatedAt: [],
-        bookmarksLatestClick: [],
+        bookmarks: [],
     }
     db.getBookmarksByTag(params)
         .then((bookmarksData) => {
             sendData = bookmarksData;
-            var bookmarkIds = []
-                .concat(sendData.bookmarksClickCount.map((bookmark) => bookmark.id))
-                .concat(sendData.bookmarksCreatedAt.map((bookmark) => bookmark.id))
-                .concat(sendData.bookmarksLatestClick.map((bookmark) => bookmark.id))
+            var bookmarkIds = sendData.bookmarks.map((bookmark) => bookmark.id)
             return db.getTagsBookmarks(bookmarkIds);
         })
         .then((tbs) => {
@@ -459,25 +449,22 @@ api.get('/bookmarksByTag', function(req, res) {
         })
         .then((tags) => {
             // 获取每个书签的所有分类标签
-            var objectName = ['bookmarksClickCount', 'bookmarksCreatedAt', 'bookmarksLatestClick'];
-            objectName.forEach((name) => {
-                sendData[name].forEach(function(bookmark, index) {
-                    var bookmarkTags = [];
-                    tagsBookmarks.forEach(function(tb) {
-                        if (tb.bookmark_id == bookmark.id) {
-                            tags.forEach(function(tag) {
-                                if (tb.tag_id == tag.id) {
-                                    bookmarkTags.push(tag)
-                                }
-                            })
-                        }
-                    });
-                    sendData[name][index].tags = bookmarkTags;
-                })
+            sendData.bookmarks.forEach(function(bookmark, index) {
+                var bookmarkTags = [];
+                tagsBookmarks.forEach(function(tb) {
+                    if (tb.bookmark_id == bookmark.id) {
+                        tags.forEach(function(tag) {
+                            if (tb.tag_id == tag.id) {
+                                bookmarkTags.push(tag)
+                            }
+                        })
+                    }
+                });
+                sendData.bookmarks[index].tags = bookmarkTags;
             })
             res.json(sendData);
         })
-        .catch((err) => console.log('bookmarks table or card err', err))
+        .catch((err) => console.log('getBookmarksByTag err', err))
 
 });
 

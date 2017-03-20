@@ -157,7 +157,7 @@
                 <span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
             </td>
             <td>
-                <span title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
+                <span id="time{{bookmark.id}}" title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
             </td>
             <td>
                 <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-if="!searchHotBookmarks">

@@ -564,7 +564,11 @@ db.getBookmarksTable = function(params) {
             if (err) {
                 reject(err);
             } else {
-                var bookmarksClickCount, bookmarksCreatedAt, bookmarksLatestClick;
+                var temp = [];
+                var bookmarks = [];
+                var begin = (params.currentPage - 1) * params.perPageItems;
+                var end = params.currentPage * params.perPageItems;
+
                 result.sort((a, b) => {
                     var click1 = parseInt(a.click_count);
                     var click2 = parseInt(b.click_count);
@@ -576,19 +580,50 @@ db.getBookmarksTable = function(params) {
                         return 1;
                     }
                 })
-                bookmarksClickCount = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+                temp = result.slice(begin, end);
+                temp.forEach((b1) => {
+                    var find = false;
+                    bookmarks.forEach((b2) => {
+                        if (b1.id == b2.id) {
+                            find = true;
+                        }
+                    })
+                    if (!find) {
+                        bookmarks.push(b1);
+                    }
+                })
 
                 result.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
-                bookmarksCreatedAt = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+                temp = result.slice(begin, end);
+                temp.forEach((b1) => {
+                    var find = false;
+                    bookmarks.forEach((b2) => {
+                        if (b1.id == b2.id) {
+                            find = true;
+                        }
+                    })
+                    if (!find) {
+                        bookmarks.push(b1);
+                    }
+                })
 
                 result.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
-                bookmarksLatestClick = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+                temp = result.slice(begin, end);
+                temp.forEach((b1) => {
+                    var find = false;
+                    bookmarks.forEach((b2) => {
+                        if (b1.id == b2.id) {
+                            find = true;
+                        }
+                    })
+                    if (!find) {
+                        bookmarks.push(b1);
+                    }
+                })
 
                 var bookmarksData = {
                     totalItems: result.length,
-                    bookmarksClickCount: bookmarksClickCount,
-                    bookmarksCreatedAt: bookmarksCreatedAt,
-                    bookmarksLatestClick: bookmarksLatestClick,
+                    bookmarks: bookmarks,
                 }
                 resolve(bookmarksData);
             }
@@ -608,7 +643,11 @@ db.getBookmarksByTag = function(params) {
             if (err) {
                 reject(err);
             } else {
-                var bookmarksClickCount, bookmarksCreatedAt, bookmarksLatestClick;
+                var temp = [];
+                var bookmarks = [];
+                var begin = (params.currentPage - 1) * params.perPageItems;
+                var end = params.currentPage * params.perPageItems;
+
                 result.sort((a, b) => {
                     var click1 = parseInt(a.click_count);
                     var click2 = parseInt(b.click_count);
@@ -620,19 +659,50 @@ db.getBookmarksByTag = function(params) {
                         return 1;
                     }
                 })
-                bookmarksClickCount = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+                temp = result.slice(begin, end);
+                temp.forEach((b1) => {
+                    var find = false;
+                    bookmarks.forEach((b2) => {
+                        if (b1.id == b2.id) {
+                            find = true;
+                        }
+                    })
+                    if (!find) {
+                        bookmarks.push(b1);
+                    }
+                })
 
                 result.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
-                bookmarksCreatedAt = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+                temp = result.slice(begin, end);
+                temp.forEach((b1) => {
+                    var find = false;
+                    bookmarks.forEach((b2) => {
+                        if (b1.id == b2.id) {
+                            find = true;
+                        }
+                    })
+                    if (!find) {
+                        bookmarks.push(b1);
+                    }
+                })
 
                 result.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
-                bookmarksLatestClick = result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems);
+                temp = result.slice(begin, end);
+                temp.forEach((b1) => {
+                    var find = false;
+                    bookmarks.forEach((b2) => {
+                        if (b1.id == b2.id) {
+                            find = true;
+                        }
+                    })
+                    if (!find) {
+                        bookmarks.push(b1);
+                    }
+                })
 
                 var bookmarksData = {
                     totalItems: result.length,
-                    bookmarksClickCount: bookmarksClickCount,
-                    bookmarksCreatedAt: bookmarksCreatedAt,
-                    bookmarksLatestClick: bookmarksLatestClick,
+                    bookmarks: bookmarks,
                 }
                 resolve(bookmarksData);
             }

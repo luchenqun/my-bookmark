@@ -30,6 +30,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         clicked: false,
         name: '最多使用'
     }]
+    var timeagoInstance = timeago();
 
     updateShowStyle();
     getBookmarks();
@@ -58,7 +59,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 $scope.bookmarks.forEach(function(bookmark) {
                     if (bookmark.id == id) {
                         bookmark.click_count += 1;
-                        bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
+                        bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
+                        $("#time"+bookmark.id).attr('data-timeago', bookmark.last_click);
+                        timeagoInstance.render(document.querySelectorAll("#time"+bookmark.id), 'zh_CN');
                     }
                 })
             }
@@ -109,15 +112,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         var bookmark = $.extend(true, {}, b); // 利用jQuery执行深度拷贝
         bookmark.own = true;
         if ($scope.showStyle == 'navigate') {
-            bookmark.last_click = bookmark.last_click.substring(0, 10);
-            bookmark.created_at = bookmark.created_at.substring(0, 10);
             bookmark.tags = [{
                 id: bookmark.tag_id,
                 name: bookmark.tag_name
             }];
-        } else if ($scope.showStyle == 'card') {
-            bookmark.last_click = bookmark.last_click.substring(0, 10);
-            bookmark.created_at = bookmark.created_at.substring(0, 10);
         }
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
         bookmarkService.clickBookmark({
@@ -183,16 +181,21 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         }
         $scope.order = $scope.order.map(() => false);
         $scope.order[index] = true;
+        var begin = ($scope.currentPage - 1) * perPageItems;
+        var end = $scope.currentPage * perPageItems;
         if ($scope.order[0]) {
-            $scope.bookmarks = $scope.bookmarkData.bookmarksClickCount;
+            $scope.bookmarkData.bookmarks.sort(clickCmp)
+            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);
         } else if ($scope.order[1]) {
-            $scope.bookmarks = $scope.bookmarkData.bookmarksCreatedAt;
+            $scope.bookmarkData.bookmarks.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
+            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);
         } else {
-            $scope.bookmarks = $scope.bookmarkData.bookmarksLatestClick;
+            $scope.bookmarkData.bookmarks.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
+            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);
         }
 
         $timeout(function() {
-            var timeagoInstance = timeago();
+            timeagoInstance.cancel();
             timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
         }, 100)
     }
@@ -209,17 +212,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         } else if (index == 1) {
             $scope.bookmarkData.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
         } else {
-            $scope.bookmarkData.sort((a, b) => {
-                var click1 = parseInt(a.click_count);
-                var click2 = parseInt(b.click_count);
-                if (click1 > click2) {
-                    return -1;
-                } else if (click1 == click2) {
-                    return a.created_at >= b.created_at ? -1 : 1;
-                } else {
-                    return 1;
-                }
-            })
+            $scope.bookmarkData.sort(clickCmp)
         }
         $scope.bookmarks = $scope.bookmarkData.slice(0, 68);
     }
@@ -248,7 +241,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         if (!params.showStyle) {
             bookmarkService.userInfo({})
                 .then((user) => {
-                    $scope.showStyle = user && user.show_style;
+                    $scope.showStyle = (user && user.show_style) || 'navigate';
                     updateShowStyle();
                     getBookmarks(); // 拿到默认显示风格了，继续取获取书签
                 })
@@ -361,6 +354,18 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     }
                 }, 100 * i)
             }
+        }
+    }
+
+    function clickCmp(a, b){
+        var click1 = parseInt(a.click_count);
+        var click2 = parseInt(b.click_count);
+        if (click1 > click2) {
+            return -1;
+        } else if (click1 == click2) {
+            return a.created_at >= b.created_at ? -1 : 1;
+        } else {
+            return 1;
         }
     }
 }]);

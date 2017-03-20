@@ -21,6 +21,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     $scope.loading = false;
     $scope.waitDelBookmark = {};
     $scope.searchHotBookmarks = false;
+    var timeagoInstance = timeago();
 
     $scope.changeCurrentPage = function(currentPage) {
         currentPage = parseInt(currentPage) || 0;
@@ -62,9 +63,11 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
                 id: id
             });
             $scope.bookmarks.forEach(function(bookmark) {
-                if (bookmark.id == id) {
+                if (bookmark.id == id && bookmark.own) {
                     bookmark.click_count += 1;
-                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
+                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
+                    $("#time"+bookmark.id).attr('data-timeago', bookmark.last_click);
+                    timeagoInstance.render(document.querySelectorAll("#time"+bookmark.id), 'zh_CN');
                 }
             })
         }
@@ -274,7 +277,6 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
     function transition() {
         $timeout(function() {
-            var timeagoInstance = timeago();
             timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
         }, 100)
         var className = 'js-table-search';

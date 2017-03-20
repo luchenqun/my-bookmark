@@ -43,7 +43,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
                 id: id
             });
             $scope.bookmark.click_count += 1;
-            $scope.bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
+            $scope.bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
         }
     }
 

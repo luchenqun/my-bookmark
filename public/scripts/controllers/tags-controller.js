@@ -22,6 +22,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.waitDelTag = {};
     $scope.waitDelBookmark = {};
     $scope.bookmarkData = {};
+    var timeagoInstance = timeago();
 
     pubSubService.subscribe('MenuCtr.tags', $scope, function(event, data) {
         console.log('subscribe MenuCtr.tags', data);
@@ -34,15 +35,21 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
         $scope.order = $scope.order.map(() => false);
         $scope.order[index] = true;
+        var begin = ($scope.currentPage - 1) * perPageItems;
+        var end = $scope.currentPage * perPageItems;
+
         if ($scope.order[0]) {
-            $scope.bookmarks = $scope.bookmarkData.bookmarksClickCount;
+            $scope.bookmarkData.bookmarks.sort(clickCmp)
+            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);;
         } else if ($scope.order[1]) {
-            $scope.bookmarks = $scope.bookmarkData.bookmarksCreatedAt;
+            $scope.bookmarkData.bookmarks.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
+            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);;
         } else {
-            $scope.bookmarks = $scope.bookmarkData.bookmarksLatestClick;
+            $scope.bookmarkData.bookmarks.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
+            $scope.bookmarks = $scope.bookmarkData.bookmarks.slice(begin, end);;
         }
         $timeout(function() {
-            var timeagoInstance = timeago();
+            timeagoInstance.cancel();
             timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
         }, 100)
     }
@@ -104,10 +111,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             bookmarkService.clickBookmark({
                 id: id
             });
-            $scope.bookmarks.forEach(function(bookmark) {
+            $scope.bookmarks.forEach(function(bookmark, index) {
                 if (bookmark.id == id) {
                     bookmark.click_count += 1;
-                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd");
+                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
+                    $("#time"+bookmark.id).attr('data-timeago', bookmark.last_click);
+                    timeagoInstance.render(document.querySelectorAll("#time"+bookmark.id), 'zh_CN');
                 }
             })
         }
@@ -468,5 +477,17 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             animation: animation(),
             duration: 500,
         });
+    }
+
+    function clickCmp(a, b){
+        var click1 = parseInt(a.click_count);
+        var click2 = parseInt(b.click_count);
+        if (click1 > click2) {
+            return -1;
+        } else if (click1 == click2) {
+            return a.created_at >= b.created_at ? -1 : 1;
+        } else {
+            return 1;
+        }
     }
 }]);

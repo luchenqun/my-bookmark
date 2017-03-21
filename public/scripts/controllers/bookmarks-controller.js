@@ -64,17 +64,17 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 })
             }
 
-            if ($scope.showStyle == 'table') {
-                $scope.changeOrder($scope.order.indexOf(true));
-            }
-
-            if ($scope.showStyle == 'costomTag') {
-                $scope.costomTags.forEach((tag) => {
-                    if (tag.clicked) {
-                        $scope.updateCostomTagBookmarks(tag.index)
-                    }
-                })
-            }
+            // if ($scope.showStyle == 'table') {
+            //     $scope.changeOrder($scope.order.indexOf(true));
+            // }
+            //
+            // if ($scope.showStyle == 'costomTag') {
+            //     $scope.costomTags.forEach((tag) => {
+            //         if (tag.clicked) {
+            //             $scope.updateCostomTagBookmarks(tag.index)
+            //         }
+            //     })
+            // }
 
             $timeout(function() {
                 timeagoInstance.cancel();

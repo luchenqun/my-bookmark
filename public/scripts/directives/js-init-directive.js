@@ -55,7 +55,7 @@ app.directive('jsDataCreateInit', function($compile) {
                 startCalendar: $('.ui.calendar.js-date-create-begin')
             });
 
-            $('.js-create-date').dropdown('set value', 0);
+            $('.js-create-date').dropdown('set value', -1);
         },
     };
 });
@@ -84,7 +84,7 @@ app.directive('jsDataClickInit', function($compile) {
                 },
                 startCalendar: $('.ui.calendar.js-date-click-begin')
             });
-            $('.js-click-date').dropdown('set value', 0);
+            $('.js-click-date').dropdown('set value', -1);
         },
     };
 });

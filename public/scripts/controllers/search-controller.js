@@ -176,8 +176,9 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         }
 
         var dateCreate = $('.js-create-date').dropdown('get value') || undefined;
+        console.log('dateCreate = ', dateCreate)
         if (dateCreate) {
-            if (dateCreate != 0) {
+            if (dateCreate != -1) {
                 params.dateCreate = dateCreate;
             }
         } else {
@@ -186,8 +187,9 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         }
 
         var dateClick = $('.js-click-date').dropdown('get value') || undefined;
+        console.log('dateClick = ', dateClick)
         if (dateClick) {
-            if (dateClick != 0) {
+            if (dateClick != -1) {
                 params.dateClick = dateClick
             }
         } else {

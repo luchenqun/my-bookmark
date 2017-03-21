@@ -63,6 +63,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
         $('.js-radio-' + showStyle).checkbox('set checked');
         $state.go('bookmarks', {
             showStyle: showStyle,
+        }, {
+            reload: true,
         })
     }
 

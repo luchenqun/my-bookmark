@@ -39,7 +39,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         currentPage = parseInt(currentPage) || 0;
         console.log('currentPage = ', currentPage);
         if (currentPage <= $scope.totalPages && currentPage >= 1) {
-            $scope.loadBusy = true;
             $scope.currentPage = currentPage;
             $scope.inputPage = '';
             getBookmarks();
@@ -273,8 +272,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
                 });
         } else {
+            $scope.loadBusy = true;
             bookmarkService.getBookmarks(params)
                 .then((data) => {
+                    $scope.loadBusy = false;
                     if (params.showStyle != 'navigate') {
                         $scope.bookmarkData = data;
                         $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
@@ -289,7 +290,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                                     $scope.bookmarks.push(bookmark);
                                 }
                             })
-                            $scope.loadBusy = false;
                         } else if (params.showStyle == 'costomTag') {
                             $scope.costomTags.forEach((tag) => {
                                 if (tag.clicked) {
@@ -317,7 +317,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                         transition();
                     }
                 })
-                .catch((err) => console.log('getBookmarks err', err));
+                .catch((err) => {
+                    console.log('getBookmarks err', err);
+                    $scope.loadBusy = false;
+                });
         }
     }
 

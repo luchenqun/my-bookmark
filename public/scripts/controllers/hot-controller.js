@@ -166,6 +166,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
             data: requireData,
             success: function(json) {
                 // console.log('success............', json, JSON.stringify(json.data.list[0]) );
+                $scope.loadBusy = false;
                 var alterRex = "/mmbiz.qpic.cn|images.jianshu.io|zhimg.com/g";
                 var defaultSnap = "./images/snap/default.png"
                 var defaultFavicon = "./images/favicon/default.ico"
@@ -200,7 +201,6 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                             $scope.bookmarks.push(b);
                         })
                         $scope.curDay--;
-                        $scope.loadBusy = false;
                         updateEditPos();
                     } else {
                         toastr.error('获取热门书签失败！失败原因：' + json.message + "。将尝试从缓存中获取！", "提示");
@@ -209,6 +209,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                 }, 100);
             },
             error: function(json) {
+                $scope.loadBusy = false;
                 toastr.error('获取热门书签失败！失败原因：' + json.message + "。将尝试从缓存中获取！", "提示");
                 getHotBookmarksbyCache();
             }
@@ -216,16 +217,16 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     }
 
     function getHotBookmarksbyCache() {
+        $scope.loadBusy = true;
         var date = curentDate($scope.curDay, "yyyyMMdd");
         if (date < "20160715") {
-            $scope.loadBusy = false;
             toastr.info('您已将将所有的热门标签都加载完了！', "提示");
+            $scope.loadBusy = false;
             return; // 这是最早的了。
         }
         var params = {
             date: date,
         }
-        $scope.loadBusy = true;
         bookmarkService.getHotBookmarks(params)
             .then((data) => {
                 data.forEach((bookmark) => {

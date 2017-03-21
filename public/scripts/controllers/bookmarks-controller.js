@@ -240,7 +240,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         } else {
             $scope.bookmarkData.sort(clickCmp)
         }
-        $scope.bookmarks = $scope.bookmarkData.slice(0, 68);
+        $scope.bookmarks = $scope.bookmarkData.slice(0, 79);
     }
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {

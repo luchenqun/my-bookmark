@@ -547,9 +547,9 @@ db.getBookmarksNavigate = function(tags) {
 
 db.getBookmarksCostomTag = function(user_id) {
     console.log('getBookmarksCostomTag');
-    var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `click_count` DESC LIMIT 0, 68)";
-    var sql2 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `created_at` DESC LIMIT 0, 68)";
-    var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `last_click` DESC LIMIT 0, 68)";
+    var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `click_count` DESC LIMIT 0, 79)";
+    var sql2 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `created_at` DESC LIMIT 0, 79)";
+    var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `last_click` DESC LIMIT 0, 79)";
 
     var sql = sql1 + " UNION " + sql2 + " UNION " + sql3;
     return new Promise(function(resolve, reject) {

@@ -273,9 +273,11 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 });
         } else {
             $scope.loadBusy = true;
+            if (params.showStyle == 'table') {
+                $('.js-table-bookmarks').transition('hide');
+            }
             bookmarkService.getBookmarks(params)
                 .then((data) => {
-                    $scope.loadBusy = false;
                     if (params.showStyle != 'navigate') {
                         $scope.bookmarkData = data;
                         $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
@@ -308,14 +310,16 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                             toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
                         }
                     }
+
                     pubSubService.publish('Common.menuActive', {
                         login: true,
                         index: 0
                     });
-                    if (!($scope.forbidTransition && $scope.forbidTransition == true)) {
+                    if (!$scope.forbidTransition) {
                         $scope.forbidTransition = false;
                         transition();
                     }
+                    $scope.loadBusy = false;
                 })
                 .catch((err) => {
                     console.log('getBookmarks err', err);

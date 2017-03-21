@@ -12,7 +12,7 @@
             </div>
             <div class="extra content" ng-show="!bookmark.edit">
                 <img class="ui avatar image" style="width:16px;height:16px;" ng-src="{{bookmark.favicon_url}}">
-                <span class="sourceName">{{ bookmark.created_by }}</span>
+                <span class="sourceName" title="{{ bookmark.created_by }}">{{ bookmark.created_by }}</span>
                 <span class="favCount">·{{ bookmark.fav_count }}人收藏</span>
                 <i class="ellipsis horizontal icon right floated" style="margin-top:6px;" ng-mouseover="bookmark.edit=true;"></i>
             </div>

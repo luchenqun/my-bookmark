@@ -55,13 +55,27 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
             });
 
             if ($scope.showStyle != 'navigate') {
-                $scope.bookmarkData.bookmarks.forEach(function(bookmark) {
+                var bookmarks = $scope.showStyle == 'table' ? $scope.bookmarkData.bookmarks : $scope.bookmarkData;
+                bookmarks.forEach(function(bookmark) {
                     if (bookmark.id == id) {
                         bookmark.click_count += 1;
                         bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
                     }
                 })
             }
+
+            if ($scope.showStyle == 'table') {
+                $scope.changeOrder($scope.order.indexOf(true));
+            }
+
+            if ($scope.showStyle == 'costomTag') {
+                $scope.costomTags.forEach((tag) => {
+                    if (tag.clicked) {
+                        $scope.updateCostomTagBookmarks(tag.index)
+                    }
+                })
+            }
+
             $timeout(function() {
                 timeagoInstance.cancel();
                 timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');

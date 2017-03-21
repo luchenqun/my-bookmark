@@ -128,6 +128,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
                 }
             })
+            $scope.changeOrder($scope.order.indexOf(true));
             $timeout(function() {
                 timeagoInstance.cancel();
                 timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');

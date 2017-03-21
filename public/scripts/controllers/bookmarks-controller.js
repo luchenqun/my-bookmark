@@ -264,6 +264,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     $scope.bookmarks.unshift(data);
                 }
             } else {
+                $scope.forbidTransition = true;
                 getBookmarks();
             }
         }
@@ -287,7 +288,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 });
         } else {
             $scope.loadBusy = true;
-            if (params.showStyle == 'table') {
+            if (params.showStyle == 'table' && (!$scope.forbidTransition)) {
                 $('.js-table-bookmarks').transition('hide');
             }
             bookmarkService.getBookmarks(params)
@@ -330,9 +331,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                         index: 0
                     });
                     if (!$scope.forbidTransition) {
-                        $scope.forbidTransition = false;
                         transition();
                     }
+                    $scope.forbidTransition = false;
                     $scope.loadBusy = false;
                 })
                 .catch((err) => {

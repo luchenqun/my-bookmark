@@ -767,11 +767,11 @@ db.getHotBookmarksSearch = function(params) {
     if (params.dateCreate) {
         var d = new Date();
         d.setDate(d.getDate() - parseInt(params.dateCreate));
-        sql += " AND `created_at` >= '" + d.getTime() + "'"
+        sql += " AND `date` >= '" + d.format("yyyyMMdd") + "'"
     } else if (params.dateCreateBegin && params.dateCreateEnd) {
-        var dateCreateBegin = new Date(params.dateCreateBegin + "T00:00:00");
-        var dateCreateEnd = new Date(params.dateCreateEnd + "T23:59:59");
-        sql += " AND `created_at` >= '" + dateCreateBegin.getTime() + "' AND `created_at` <= '" + dateCreateEnd.getTime() + "' "
+        var dateCreateBegin = new Date(params.dateCreateBegin).format("yyyyMMdd");
+        var dateCreateEnd = new Date(params.dateCreateEnd).format("yyyyMMdd");
+        sql += " AND `date` >= '" + dateCreateBegin + "' AND `date` <= '" + dateCreateEnd + "' "
     }
     if (params.dateClick) {
         var d = new Date();

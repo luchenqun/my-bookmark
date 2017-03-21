@@ -1,5 +1,6 @@
-<div class="ui segment js-hot-card" style="min-height:150px;">
-    <div class="ui five  stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
+<!-- 高度至少要设置1000，元素少时才能触发滚动条事件 -->
+<div class="ui segment js-hot-card" style="min-height:1000px;">
+    <div class="ui five  stackable cards" infinite-scroll='loadHotBookmarks()' infinite-scroll-immediate-check="false">
         <div class="card" ng-repeat="bookmark in bookmarks">
             <div class="content" style="max-height:70px;cursor:pointer" ng-click="jumpToUrl(bookmark.url)">
                 <div class="description bookmarkTitle" title="{{bookmark.title}}">

@@ -103,9 +103,9 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
     }
 
-    $scope.loadCardData = function() {
+    $scope.loadHotBookmarks = function() {
         if (!$scope.loadBusy && !$scope.random) {
-            console.log('loadCardData.........')
+            console.log('begin loadHotBookmarks.........')
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
             var login = (menusScope && menusScope.login) || false;
             if (login) {

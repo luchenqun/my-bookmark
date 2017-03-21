@@ -68,6 +68,7 @@ api.post('/login', function(req, res) {
                 req.session.username = ret.user.username;
                 req.session.userId = ret.user.id;
             }
+            ret.user.password = "*";
             res.json(ret);
             return ret.logined ? db.updateUserLastLogin(ret.user.id) : Promise.resolve(0);
         })
@@ -87,6 +88,7 @@ api.get('/userInfo', function(req, res) {
     db.getUser(req.session.username)
         .then((_user) => {
             user = _user
+            user.password = "*";
             if (req.session.username == 'lcq' && req.session.userId == 1) {
                 return db.getActiveUsers();
             } else {
@@ -203,6 +205,7 @@ api.get('/autoLogin', function(req, res) {
         db.getUser(req.session.user.username)
             .then((user) => {
                 if (user) {
+                    user.password = "*";
                     ret.logined = true;
                     ret.user = user;
                 }

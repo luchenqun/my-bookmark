@@ -33,7 +33,7 @@
                 <h4 class="ui horizontal divider header">
                     书签默认显示方式配置
                 </h4>
-                <div class="inline fields js-default-show-style">
+                <div class="inline fields js-default-show-style" ng-show="!loadShowStyle">
                     <div class="field" ng-click="updateDefaultShowStyle('navigate')">
                         <div class="ui radio checkbox js-radio-default-navigate">
                             <input type="radio" name="default-show-style" checked="checked">

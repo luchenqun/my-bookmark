@@ -7,6 +7,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.user = {};
     $scope.tagCnt = 0;
     $scope.bookmarkCnt = 0;
+    $scope.loadShowStyle = false;
     $scope.form[($stateParams && $stateParams.formIndex) || 0] = true;
 
     $scope.changeForm = function(index) {
@@ -15,15 +16,18 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         $scope.form[index] = true;
 
         if (index <= 1) {
+            $scope.loadShowStyle = true;
             bookmarkService.userInfo({})
                 .then((data) => {
                     $scope.user = data;
                     if (index == 0) {
-                        updateShowStyle($scope.user && $scope.user.show_style);
+                        updateShowStyle(($scope.user && $scope.user.show_style) || 'navigate');
+                        $scope.loadShowStyle = false;
                     }
                 })
                 .catch((err) => {
                     toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
+                    $scope.loadShowStyle = false;
                 });
             if (index == 1) {
                 bookmarkService.getTags({})

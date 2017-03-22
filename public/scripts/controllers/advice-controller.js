@@ -59,8 +59,8 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
 
     function transition() {
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up',
-            'swing down', 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 
+             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
         ];
         var t = data[parseInt(Math.random() * 1000) % data.length];
 

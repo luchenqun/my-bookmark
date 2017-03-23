@@ -107,6 +107,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
             toastr.error('书签标题不能为空！', "错误");
             return;
         }
+        console.log("add bookmark", params);
         if ($scope.add) {
             bookmarkService.addBookmark(params)
                 .then((data) => {

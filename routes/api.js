@@ -694,7 +694,11 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
                             })
                         })
                         // 插入书签
-                        db.addBookmark(userId, bookmark) // 插入书签
+                        db.getBookmarkbyUrl(userId, bookmark.url)
+                            .then((bookmarkId) => {
+                                // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
+                                return bookmarkId ? Promise.resolve(bookmarkId) : db.addBookmark(userId, bookmark);
+                            })
                             .then((bookmark_id) => {
                                 db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
                                 return bookmark_id;
@@ -727,7 +731,11 @@ api.post('/addBookmark', function(req, res) {
     var tags = bookmark.tags;
     var bookmarkId = -1;
     var ret = {};
-    db.addBookmark(userId, bookmark) // 插入书签
+    db.getBookmarkbyUrl(userId, bookmark.url)
+        .then((bookmarkId) => {
+            // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
+            return bookmarkId ? Promise.resolve(bookmarkId) : db.addBookmark(userId, bookmark);
+        })
         .then((bookmark_id) => {
             db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
             bookmarkId = bookmark_id;
@@ -758,7 +766,11 @@ api.post('/favoriteBookmark', function(req, res) {
     var bookmarkId = -1;
     var ret = {};
 
-    db.addBookmark(userId, bookmark) // 插入书签
+    db.getBookmarkbyUrl(userId, bookmark.url)
+        .then((bookmarkId) => {
+            // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
+            return bookmarkId ? Promise.resolve(bookmarkId) : db.addBookmark(userId, bookmark);
+        })
         .then((bookmark_id) => {
             db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
             bookmarkId = bookmark_id;

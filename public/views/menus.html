@@ -1,6 +1,6 @@
 <div class="js-menu" ng-controller="menuCtr">
     <div class="ui huge menu js-login-in" ng-if="login">
-        <a class="item" ng-class="{selected:$index===selectLoginIndex}" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" js-menu-init>
+        <a class="item" ng-class="{selected:$index===selectLoginIndex}" style="cursor:default;" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" js-menu-init>
             <div>{{ menu.title }}</div>
             <div class="ui floating simple dropdown icon js-bookmark-dropdown" ng-if="$index==0" ng-click="$event.stopPropagation();">
                 <i class="dropdown icon"></i>
@@ -35,12 +35,24 @@
             </div>
         </a>
         <div class="right menu">
-            <div class="item">
+            <div class="item" style="min-width:350px;">
                 <div class="ui transparent icon input">
-                    <input class="prompt" type="text" ng-model="searchWord" placeholder="标题，链接..." ng-keypress="($event.which === 13)?searchBookmarks(searchWord):0">
-                    <i class="search link icon" ng-click="searchBookmarks(searchWord)"></i>
+                    <label for="lcq">
+                        <div class="ui inline dropdown js-search-option" style="margin-top:3px;" js-search-option-init>
+                            <div class="text " style="color:#C9C9C9;font-weight:normal;">百度</div>
+                            <i class="angle down icon"></i>
+                            <div class="menu">
+                                <div class="active item" data-value="0">百度</div>
+                                <div class="item" data-value="1">谷歌</div>
+                                <div class="item" data-value="2">Github</div>
+                                <div class="item" data-value="3">栈溢出</div>
+                                <div class="item" data-value="4">书签</div>
+                            </div>
+                        </div>
+                    </label>
+                    <input class="prompt" type="text" ng-model="searchWord" placeholder="" ng-keypress="($event.which === 13)?search(searchWord):0" id="lcq">
+                    <i class="search link icon" ng-click="search(searchWord)" style="cursor:default;"></i>
                 </div>
-                <div class="results"></div>
             </div>
             <div class="item" title="添加书签" ng-click="showAddBookmarkMoadl()">
                 <i class="add square icon"></i>

@@ -1,4 +1,4 @@
-app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 'bookmarkService', function($scope, $stateParams, $state, pubSubService, bookmarkService) {
+app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSubService', 'bookmarkService', function($scope, $stateParams, $state, $window, pubSubService, bookmarkService) {
     console.log("Hello menuCtr")
     $scope.login = false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
@@ -47,14 +47,25 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', 'pubSubService', 
      * @func
      * @desc 点击搜索按钮搜索书签
      */
-    $scope.searchBookmarks = function(searchWord) {
-        $state.go('search', {
-            searchWord: searchWord,
-        }, {
-            reload: true,
-        })
+    $scope.search = function(searchWord) {
         $scope.login = true;
-        updateMenuActive($scope.selectLoginIndex = 0);
+        var searchOption = $('.js-search-option').dropdown('get value') || 0;
+        if (searchOption == 0) {
+            $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
+        } else if(searchOption == 1){
+            $window.open('https://www.google.com.hk/#newwindow=1&safe=strict&q=' + encodeURIComponent(searchWord), '_blank');
+        } else if(searchOption == 2){
+            $window.open('https://github.com/search?utf8=%E2%9C%93&q='+ encodeURIComponent(searchWord) +'&type=', '_blank');
+        } else if(searchOption == 3){
+            $window.open('https://stackoverflow.com/search?q='+ encodeURIComponent(searchWord), '_blank');
+        }  else {
+            $state.go('search', {
+                searchWord: searchWord,
+            }, {
+                reload: true,
+            })
+            updateMenuActive($scope.selectLoginIndex = 0);
+        }
     }
 
     $scope.updateShowStyle = function(showStyle) {

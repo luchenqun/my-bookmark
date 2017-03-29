@@ -182,6 +182,18 @@ app.directive('jsMenuInit', function($compile) {
     };
 });
 
+app.directive('jsSearchOptionInit', function($compile) {
+    return {
+        restrict: 'A',
+        link: function($scope, $element, $attrs) {
+            console.log('jsSearchOptionInit......')
+            $('.js-search-option').dropdown({
+                // on: 'hover',
+            });
+        },
+    };
+});
+
 app.directive('errSrc', function() {
     return {
         link: function(scope, element, attrs) {

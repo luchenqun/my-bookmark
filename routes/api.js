@@ -731,10 +731,18 @@ api.post('/addBookmark', function(req, res) {
     var tags = bookmark.tags;
     var bookmarkId = -1;
     var ret = {};
+    var update = false;
     db.getBookmarkbyUrl(userId, bookmark.url)
         .then((bookmarkId) => {
             // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
-            return bookmarkId ? Promise.resolve(bookmarkId) : db.addBookmark(userId, bookmark);
+            if(bookmarkId){
+                bookmark.id = bookmarkId;
+                db.updateBookmark(bookmark);    // 如果存在，更新一下。
+                update = true;
+                return Promise.resolve(bookmarkId);
+            } else {
+                return db.addBookmark(userId, bookmark);
+            }
         })
         .then((bookmark_id) => {
             db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -750,6 +758,7 @@ api.post('/addBookmark', function(req, res) {
         })
         .then((bookmarkTags) => {
             ret.tags = bookmarkTags;
+            ret.update = update;
             res.json(ret)
         })
         .catch((err) => console.log('addBookmark err', err)); // oops!
@@ -765,11 +774,18 @@ api.post('/favoriteBookmark', function(req, res) {
     var userId = req.session.user.id;
     var bookmarkId = -1;
     var ret = {};
-
+    var update = false;
     db.getBookmarkbyUrl(userId, bookmark.url)
         .then((bookmarkId) => {
             // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
-            return bookmarkId ? Promise.resolve(bookmarkId) : db.addBookmark(userId, bookmark);
+            if(bookmarkId){
+                bookmark.id = bookmarkId;
+                db.updateBookmark(bookmark);    // 如果存在，更新一下。
+                update = true;
+                return Promise.resolve(bookmarkId);
+            } else {
+                return db.addBookmark(userId, bookmark);
+            }
         })
         .then((bookmark_id) => {
             db.delBookmarkTags(bookmark_id); // 不管3721，先删掉旧的分类
@@ -798,6 +814,7 @@ api.post('/favoriteBookmark', function(req, res) {
         })
         .then((bookmarkTags) => {
             ret.tags = bookmarkTags;
+            ret.update = update;
             res.json(ret)
         })
         .catch((err) => console.log('addBookmark err', err)); // oops!

@@ -12,6 +12,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
             if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(newUrl)) {
                 var params = {
                     url: newUrl,
+                    requestId: 0,
                 }
                 bookmarkService.getArticle(params)
                     .then((data) => $scope.title = data.title)
@@ -113,8 +114,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
                 .then((data) => {
                     $('.ui.modal.js-add-bookmark').modal('hide');
                     pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
+                    console.log(JSON.stringify(data));
                     if (data.title) {
-                        toastr.success('[ ' + data.title + ' ] 添加成功，将自动重新更新书签！', "提示");
+                        toastr.success('[ ' + data.title + ' ] 添加成功，将自动重新更新书签！</br>' + (data.update ? '系统检测到该书签之前添加过，只更新链接，描述，标题，分类。创建日期与最后点击日期不更新！' : ''), "提示");
                     } else {
                         toastr.error('[ ' + params.title + ' ] 添加失败', "提示");
                     }

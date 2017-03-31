@@ -11,7 +11,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.tags = []; // 书签数据
     $scope.tagsIndex = []; // 书签索引
     $scope.bookmarkClicked = false;
-    $scope.bookmarks = [];
+    $scope.bookmarksByTag = [];
     $scope.bookmarkCount = 0;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
@@ -35,27 +35,27 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
         $scope.order = $scope.order.map(() => false);
         $scope.order[index] = true;
-        $scope.bookmarks = [];
+        $scope.bookmarksByTag = [];
 
         if ($scope.order[0]) {
             $scope.bookmarkData.bookmarks.sort(clickCmp);
             $scope.bookmarkData.bookmarks.forEach((bookmark) => {
                 if (bookmark.type == 1) {
-                    $scope.bookmarks.push(bookmark);
+                    $scope.bookmarksByTag.push(bookmark);
                 }
             })
         } else if ($scope.order[1]) {
             $scope.bookmarkData.bookmarks.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
             $scope.bookmarkData.bookmarks.forEach((bookmark) => {
                 if (bookmark.type == 2) {
-                    $scope.bookmarks.push(bookmark);
+                    $scope.bookmarksByTag.push(bookmark);
                 }
             })
         } else {
             $scope.bookmarkData.bookmarks.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
             $scope.bookmarkData.bookmarks.forEach((bookmark) => {
                 if (bookmark.type == 3) {
-                    $scope.bookmarks.push(bookmark);
+                    $scope.bookmarksByTag.push(bookmark);
                 }
             })
         }

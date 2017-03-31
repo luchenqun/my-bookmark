@@ -2,7 +2,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     console.log("Hello searchCtr...", $stateParams);
     const perPageItems = 20;
     var dialog = null;
-    $scope.bookmarks = []; // 书签数据
+    $scope.searchBookmarks = []; // 书签数据
     $scope.showSearch = false; //
     $scope.showTags = false; //
     $scope.searchWord = ($stateParams && $stateParams.searchWord) || ''
@@ -62,7 +62,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             bookmarkService.clickBookmark({
                 id: id
             });
-            $scope.bookmarks.forEach(function(bookmark) {
+            $scope.searchBookmarks.forEach(function(bookmark) {
                 if (bookmark.id == id && bookmark.own) {
                     bookmark.click_count += 1;
                     bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -234,7 +234,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             console.log(params);
             bookmarkService.searchHotBookmarks(params)
                 .then((data) => {
-                    $scope.bookmarks = [];
+                    $scope.searchBookmarks = [];
                     data.bookmarks.forEach((bookmark) => {
                         bookmark.tags = [{
                             id: -1,
@@ -242,7 +242,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
                         }]
                         bookmark.created_at = $filter('date')(new Date(bookmark.created_at), "yyyy-MM-dd HH:mm:ss");
                         bookmark.last_click = $filter('date')(new Date(bookmark.last_click), "yyyy-MM-dd HH:mm:ss");
-                        $scope.bookmarks.push(bookmark);
+                        $scope.searchBookmarks.push(bookmark);
                     })
                     $scope.bookmarkCount = data.totalItems;
                     $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
@@ -256,7 +256,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         } else {
             bookmarkService.searchBookmarks(params)
                 .then((data) => {
-                    $scope.bookmarks = data.bookmarks;
+                    $scope.searchBookmarks = data.bookmarks;
                     $scope.bookmarkCount = data.totalItems;
                     $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
                     $scope.loading = false;

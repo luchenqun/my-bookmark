@@ -51,7 +51,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSu
         $scope.login = true;
         var searchOption = $('.js-search-option').dropdown('get value') || 0;
         if (searchOption == 0) {
-            $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
+            $state.go('search', {
+                searchWord: searchWord,
+            }, {
+                reload: true,
+            })
+            updateMenuActive($scope.selectLoginIndex = 0);
         } else if(searchOption == 1){
             $window.open('https://www.google.com.hk/#newwindow=1&safe=strict&q=' + encodeURIComponent(searchWord), '_blank');
         } else if(searchOption == 2){
@@ -59,12 +64,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSu
         } else if(searchOption == 3){
             $window.open('https://stackoverflow.com/search?q='+ encodeURIComponent(searchWord), '_blank');
         }  else {
-            $state.go('search', {
-                searchWord: searchWord,
-            }, {
-                reload: true,
-            })
-            updateMenuActive($scope.selectLoginIndex = 0);
+            $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
         }
     }
 

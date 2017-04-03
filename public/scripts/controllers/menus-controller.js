@@ -68,6 +68,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         } else {
             $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
         }
+
         // 如果第一个显示的搜索分类跟关键字跟列表一样，那么不要更新
         var newItem = {
             t: searchOption,
@@ -85,6 +86,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         }
 
         var datas = [];
+        $scope.searchHistory.slice(0, 15); // 最多保留15个历史记录
         $scope.searchHistory.forEach((item, index) => {
             datas.push({
                 t: item.t,
@@ -93,8 +95,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         })
 
         var parmes = {
-            searchHistory: JSON.stringify(datas),
+            searchHistory: JSON.stringify(data),
         };
+        // 大于30的不保存到数据库
+        if (searchWord.length >= 30) {
+            return;
+        }
         bookmarkService.updateSearchHistory(parmes)
             .then((data) => {
                 if (data.retCode == 0) {
@@ -161,7 +167,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                     .popup({
                         on: 'focus'
                     });
-            }, 1000)
+            }, 500)
         })
         .catch((err) => {
             toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");

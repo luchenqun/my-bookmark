@@ -1,4 +1,4 @@
-app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSubService', 'bookmarkService', function($scope, $stateParams, $state, $window, pubSubService, bookmarkService) {
+app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', 'pubSubService', 'bookmarkService', function($scope, $stateParams, $state, $window, $timeout, pubSubService, bookmarkService) {
     console.log("Hello menuCtr")
     $scope.login = false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
@@ -119,6 +119,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSu
         types[4] = '百度';
         $('.js-search-option').dropdown('set text', types[type]);
         $('.js-search-option').dropdown('save defaults', types[type]);
+        $scope.search(data);
     }
 
     $scope.updateShowStyle = function(showStyle) {
@@ -152,19 +153,17 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSu
         $('.ui.menu a.item:eq(' + index + ')').addClass('selected');
     }
 
-    setTimeout(function() {
-        bookmarkService.userInfo({})
-            .then((data) => {
-                $scope.searchHistory = JSON.parse(data.search_history || '[]');
-                setTimeout(function() {
-                    $('.search-item')
-                        .popup({
-                            on: 'focus'
-                        });
-                }, 1000);
-            })
-            .catch((err) => {
-                toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
-            });
-    }, 1000);
+    bookmarkService.userInfo({})
+        .then((data) => {
+            $scope.searchHistory = JSON.parse(data.search_history || '[]');
+            $timeout(function() {
+                $('.search-item')
+                    .popup({
+                        on: 'focus'
+                    });
+            }, 100)
+        })
+        .catch((err) => {
+            toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
+        });
 }]);

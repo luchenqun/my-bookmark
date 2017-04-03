@@ -165,7 +165,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $timeout(function() {
                 $('.search-item')
                     .popup({
-                        on: 'focus'
+                        on: 'focus',
+                        inline: true
                     });
             }, 500)
         })

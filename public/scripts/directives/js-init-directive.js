@@ -217,3 +217,16 @@ app.directive('faviconErr', function() {
         }
     }
 });
+
+app.filter('searchType', function() {
+    return function(type) {
+        var types = {};
+        types[0] = '书签';
+        types[1] = '谷歌';
+        types[2] = 'Github';
+        types[3] = '栈溢出';
+        types[4] = '百度';
+
+        return types[type];
+    }
+});

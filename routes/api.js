@@ -196,6 +196,37 @@ api.post('/updateShowStyle', function(req, res) {
         });
 });
 
+api.post('/updateSearchHistory', function(req, res) {
+    console.log("updateSearchHistory");
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var params = req.body.params;
+    db.getUser(req.session.user.username)
+        .then((user) => {
+            if (user) {
+                return db.updateSearchHistory(req.session.userId, params.searchHistory)
+            } else {
+                return Promise.resolve(0)
+            }
+        })
+        .then((affectedRows) => {
+            res.json({
+                retCode: (affectedRows == 1 ? 0 : 1),
+                msg: req.session.username + " 更新历史搜索成功！",
+            })
+        })
+        .catch((err) => {
+            console.log('resetPassword error', err);
+            res.json({
+                retCode: 2,
+                msg: req.session.username + " 更新历史搜索失败！: " + JSON.stringify(err),
+            })
+        });
+});
+
 api.get('/autoLogin', function(req, res) {
     var ret = {
         logined: false,
@@ -735,9 +766,9 @@ api.post('/addBookmark', function(req, res) {
     db.getBookmarkbyUrl(userId, bookmark.url)
         .then((bookmarkId) => {
             // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
-            if(bookmarkId){
+            if (bookmarkId) {
                 bookmark.id = bookmarkId;
-                db.updateBookmark(bookmark);    // 如果存在，更新一下。
+                db.updateBookmark(bookmark); // 如果存在，更新一下。
                 update = true;
                 return Promise.resolve(bookmarkId);
             } else {
@@ -778,9 +809,9 @@ api.post('/favoriteBookmark', function(req, res) {
     db.getBookmarkbyUrl(userId, bookmark.url)
         .then((bookmarkId) => {
             // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
-            if(bookmarkId){
+            if (bookmarkId) {
                 bookmark.id = bookmarkId;
-                db.updateBookmark(bookmark);    // 如果存在，更新一下。
+                db.updateBookmark(bookmark); // 如果存在，更新一下。
                 update = true;
                 return Promise.resolve(bookmarkId);
             } else {
@@ -1142,8 +1173,8 @@ api.getHotBookmarksByTimer = function() {
             console.log('getHotBookmarks is busy')
             return;
         }
-        if(timeout < 1000 * 5){
-            busy = true;    // 实践证明很容易出错导致busy一直是true，所以干脆去掉此选项了。
+        if (timeout < 1000 * 5) {
+            busy = true; // 实践证明很容易出错导致busy一直是true，所以干脆去掉此选项了。
         }
         console.log('begin getHotBookmarks...');
         date.setTime(date.getTime() + dayIndex * 24 * 60 * 60 * 1000);

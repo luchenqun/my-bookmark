@@ -5,6 +5,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSu
     $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.searchWord = ''; /**< 搜索关键字 */
     $scope.showStyle = null;
+    $scope.searchHistory = [];
+
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
         console.log("subscribe Common.menuActive", params)
@@ -57,15 +59,66 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSu
                 reload: true,
             })
             updateMenuActive($scope.selectLoginIndex = 0);
-        } else if(searchOption == 1){
+        } else if (searchOption == 1) {
             $window.open('https://www.google.com.hk/#newwindow=1&safe=strict&q=' + encodeURIComponent(searchWord), '_blank');
-        } else if(searchOption == 2){
-            $window.open('https://github.com/search?utf8=%E2%9C%93&q='+ encodeURIComponent(searchWord) +'&type=', '_blank');
-        } else if(searchOption == 3){
-            $window.open('https://stackoverflow.com/search?q='+ encodeURIComponent(searchWord), '_blank');
-        }  else {
+        } else if (searchOption == 2) {
+            $window.open('https://github.com/search?utf8=%E2%9C%93&q=' + encodeURIComponent(searchWord) + '&type=', '_blank');
+        } else if (searchOption == 3) {
+            $window.open('https://stackoverflow.com/search?q=' + encodeURIComponent(searchWord), '_blank');
+        } else {
             $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
         }
+        // 如果第一个显示的搜索分类跟关键字跟列表一样，那么不要更新
+        var newItem = {
+            t: searchOption,
+            d: searchWord,
+        }
+        var delIndex = -1;
+        $scope.searchHistory.unshift(newItem);
+        $scope.searchHistory.forEach((item, index) => {
+            if (index >= 1 && item.t == searchOption && item.d == searchWord) {
+                delIndex = index;
+            }
+        })
+        if (delIndex >= 0) {
+            $scope.searchHistory.splice(delIndex, 1);
+        }
+
+        var datas = [];
+        $scope.searchHistory.forEach((item, index) => {
+            datas.push({
+                t: item.t,
+                d: item.d,
+            })
+        })
+
+        var parmes = {
+            searchHistory: JSON.stringify(datas),
+        };
+        bookmarkService.updateSearchHistory(parmes)
+            .then((data) => {
+                if (data.retCode == 0) {
+                    // toastr.success('历史搜索更新成功', "提示");
+                } else {
+                    toastr.error('历史搜索更新失败。错误信息：' + data.msg, "错误");
+                }
+            })
+            .catch((err) => {
+                toastr.error('历史搜索更新失败。错误信息：' + JSON.stringify(err), "错误");
+            });
+    }
+
+    $scope.searchByHistory = function(type, data) {
+        $scope.searchWord = data;
+        $('.js-search-option').dropdown('set value', type);
+        var types = {};
+        types[0] = '书签';
+        types[1] = '谷歌';
+        types[2] = 'Github';
+        types[3] = '栈溢出';
+        types[4] = '百度';
+        $('.js-search-option').dropdown('set text', types[type]);
+        $('.js-search-option').dropdown('save defaults', types[type]);
     }
 
     $scope.updateShowStyle = function(showStyle) {
@@ -98,4 +151,20 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', 'pubSu
         $('.ui.menu a.item').removeClass('selected');
         $('.ui.menu a.item:eq(' + index + ')').addClass('selected');
     }
+
+    setTimeout(function() {
+        bookmarkService.userInfo({})
+            .then((data) => {
+                $scope.searchHistory = JSON.parse(data.search_history || '[]');
+                setTimeout(function() {
+                    $('.search-item')
+                        .popup({
+                            on: 'focus'
+                        });
+                }, 1000);
+            })
+            .catch((err) => {
+                toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
+            });
+    }, 1000);
 }]);

@@ -50,7 +50,18 @@
                             </div>
                         </div>
                     </label>
-                    <input class="prompt" type="text" ng-model="searchWord" placeholder="" ng-keypress="($event.which === 13)?search(searchWord):0" id="lcq">
+                    <input class="prompt search-item" type="text" ng-model="searchWord" placeholder="" ng-keypress="($event.which === 13)?search(searchWord):0" data-position="bottom left" id="lcq">
+                    <div class="ui fluid popup top left transition hidden">
+                        <div class="ui selection list">
+                            <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)">
+                                <div class="right floated content">
+                                    {{ item.t  | searchType }}
+                                </div>
+                                <div class="content">{{ item.d}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <i class="search link icon" ng-click="search(searchWord)" style="cursor:default;"></i>
                 </div>
             </div>

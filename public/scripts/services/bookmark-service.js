@@ -313,6 +313,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        updateSearchHistory: function(params) {
+            var def = $q.defer();
+            $http.post('/api/updateSearchHistory/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('updateSearchHistory error');
+                });
+            return def.promise;
+        },
         getAdvices: function getAdvices(params) {
             var def = $q.defer();
             $http.get('/api/advices/', {

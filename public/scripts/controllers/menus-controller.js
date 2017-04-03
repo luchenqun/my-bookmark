@@ -161,7 +161,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                     .popup({
                         on: 'focus'
                     });
-            }, 100)
+            }, 1000)
         })
         .catch((err) => {
             toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");

@@ -69,7 +69,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
         }
 
-        // 如果第一个显示的搜索分类跟关键字跟列表一样，那么不要更新
         var newItem = {
             t: searchOption,
             d: searchWord,
@@ -85,33 +84,10 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $scope.searchHistory.splice(delIndex, 1);
         }
 
-        var datas = [];
-        $scope.searchHistory.slice(0, 15); // 最多保留15个历史记录
-        $scope.searchHistory.forEach((item, index) => {
-            datas.push({
-                t: item.t,
-                d: item.d,
-            })
-        })
-
-        var parmes = {
-            searchHistory: JSON.stringify(data),
-        };
         // 大于30的不保存到数据库
-        if (searchWord.length >= 30) {
-            return;
+        if (searchWord.length <= 30) {
+            saveHistory();
         }
-        bookmarkService.updateSearchHistory(parmes)
-            .then((data) => {
-                if (data.retCode == 0) {
-                    // toastr.success('历史搜索更新成功', "提示");
-                } else {
-                    toastr.error('历史搜索更新失败。错误信息：' + data.msg, "错误");
-                }
-            })
-            .catch((err) => {
-                toastr.error('历史搜索更新失败。错误信息：' + JSON.stringify(err), "错误");
-            });
     }
 
     $scope.searchByHistory = function(type, data) {
@@ -125,7 +101,26 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         types[4] = '百度';
         $('.js-search-option').dropdown('set text', types[type]);
         $('.js-search-option').dropdown('save defaults', types[type]);
+        $('.js-search-option .menu .item').removeClass('active');
+        $('.js-search-option .menu .item:eq(' + type + ')').addClass('active');
+        $('.js-history-popup').removeClass('visible').addClass('hidden');
         $scope.search(data);
+    }
+
+    $scope.delHistory = function(type, data) {
+        var delIndex = -1;
+        $scope.searchHistory.forEach((item, index) => {
+            if (index >= 1 && item.t == type && item.d == data) {
+                delIndex = index;
+            }
+        })
+        if (delIndex >= 0) {
+            $scope.searchHistory.splice(delIndex, 1);
+        }
+        saveHistory();
+        $timeout(function() {
+            $('.js-history-popup').removeClass('hidden').addClass('visible');
+        }, 500)
     }
 
     $scope.updateShowStyle = function(showStyle) {
@@ -159,16 +154,39 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $('.ui.menu a.item:eq(' + index + ')').addClass('selected');
     }
 
+    function saveHistory() {
+        var datas = [];
+        $scope.searchHistory.slice(0, 15); // 最多保留15个历史记录
+        $scope.searchHistory.forEach((item, index) => {
+            datas.push({
+                t: item.t,
+                d: item.d,
+            })
+        })
+
+        var parmes = {
+            searchHistory: JSON.stringify(datas),
+        };
+        bookmarkService.updateSearchHistory(parmes)
+            .then((data) => {
+                if (data.retCode == 0) {
+                    // toastr.success('历史搜索更新成功', "提示");
+                } else {
+                    toastr.error('历史搜索更新失败。错误信息：' + data.msg, "错误");
+                }
+            })
+            .catch((err) => {
+                toastr.error('历史搜索更新失败。错误信息：' + JSON.stringify(err), "错误");
+            });
+    }
+
     bookmarkService.userInfo({})
         .then((data) => {
             $scope.searchHistory = JSON.parse(data.search_history || '[]');
-            $timeout(function() {
-                $('.search-item')
-                    .popup({
-                        on: 'focus',
-                        inline: true
-                    });
-            }, 500)
+            $('.search-item').popup({
+                on: 'focus',
+                inline: true
+            });
         })
         .catch((err) => {
             toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");

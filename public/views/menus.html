@@ -51,13 +51,16 @@
                         </div>
                     </label>
                     <input class="prompt search-item" type="text" ng-model="searchWord" placeholder="" ng-keypress="($event.which === 13)?search(searchWord):0" data-position="bottom left" data-variation="large" id="lcq">
-                    <div class="ui fluid popup top left transition hidden">
+                    <div class="ui fluid popup top left transition hidden js-history-popup" style="padding-left: 0px; padding-right: 0px;" ng-if="searchHistory.length>0">
                         <div class="ui selection list">
-                            <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)">
+                            <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)" style="height:30px;">
                                 <div class="right floated content">
-                                    {{ item.t  | searchType }}
+                                    <span style="margin-right:10px;">{{ item.t  | searchType }}
+                                        <i class="remove icon" ng-click="delHistory(item.t, item.d);$event.stopPropagation()" style="cursor:default;"></i>
+                                    </span>
                                 </div>
-                                <div class="content">{{ item.d}}
+                                <div class="content">
+                                    <span style="margin-left:10px;">{{ item.d}}</span>
                                 </div>
                             </div>
                         </div>

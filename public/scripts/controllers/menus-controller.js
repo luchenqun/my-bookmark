@@ -183,10 +183,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     bookmarkService.userInfo({})
         .then((data) => {
             $scope.searchHistory = JSON.parse(data.search_history || '[]');
-            $('.search-item').popup({
-                on: 'focus',
-                inline: true
-            });
+            $timeout(function() {
+                $('.search-item').popup({
+                    on: 'focus',
+                    inline: true
+                });
+            }, 500)
         })
         .catch((err) => {
             toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");

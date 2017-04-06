@@ -774,8 +774,9 @@ db.getBookmarksSearch = function(params) {
                 })
                 var searchData = {
                     totalItems: bookmarks.length,
-                    bookmarks: bookmarks.splice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
+                    bookmarks: bookmarks.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
                 }
+                console.log("===============", searchData.bookmarks.length);
                 resolve(searchData);
             }
         });
@@ -818,7 +819,7 @@ db.getHotBookmarksSearch = function(params) {
                 params.perPageItems = params.perPageItems || 20;
                 var searchData = {
                     totalItems: result.length,
-                    bookmarks: result.splice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
+                    bookmarks: result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
                 }
                 resolve(searchData);
             }

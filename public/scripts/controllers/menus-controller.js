@@ -69,6 +69,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
         }
 
+        if(!searchWord){ return; }
+
         var newItem = {
             t: searchOption,
             d: searchWord,

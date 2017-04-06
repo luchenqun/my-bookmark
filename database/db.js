@@ -776,7 +776,6 @@ db.getBookmarksSearch = function(params) {
                     totalItems: bookmarks.length,
                     bookmarks: bookmarks.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
                 }
-                console.log("===============", searchData.bookmarks.length);
                 resolve(searchData);
             }
         });

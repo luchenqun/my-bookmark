@@ -51,13 +51,11 @@
                         </div>
                     </label>
                     <input class="prompt search-item" type="text" ng-model="searchWord" placeholder="" ng-keypress="($event.which === 13)?search(searchWord):0" data-position="bottom left" data-variation="large" id="lcq">
-                    <div class="ui fluid popup top left transition hidden js-history-popup" style="padding-left: 0px; padding-right: 0px;" ng-if="searchHistory.length>0">
+                    <div class="ui fluid popup top left transition hidden" style="padding-left: 0px; padding-right: 0px;">
                         <div class="ui selection list">
                             <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)" style="height:30px;">
                                 <div class="right floated content">
-                                    <span style="margin-right:10px;">{{ item.t  | searchType }}
-                                        <!-- <i class="remove icon" ng-click="delHistory(item.t, item.d);$event.stopPropagation()" style="cursor:default;"></i> -->
-                                    </span>
+                                    <span style="margin-right:10px;">{{ item.t  | searchType }}</span>
                                 </div>
                                 <div class="content">
                                     <span style="margin-left:10px;">{{ item.d}}</span>
@@ -69,10 +67,14 @@
                 </div>
             </div>
             <div class="item" title="添加书签" ng-click="showAddBookmarkMoadl()">
-                <i class="add square icon"></i>
+                <span data-tooltip="添加书签">
+                    <i class="add square icon"></i>
+                </span>
             </div>
             <div class="item">
-                <i class="sign out icon" title="退出登陆" ng-click="logout()"></i>
+                <span data-tooltip="退出登陆">
+                    <i class="sign out icon" title="退出登陆" ng-click="logout()"></i>
+                </span>
             </div>
         </div>
     </div>

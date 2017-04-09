@@ -41,7 +41,7 @@
             </div>
         </div>
     </div>
-    <div style="width:22px;height:22px;" class="js-edit" ng-click="toggleMode()" title="{{editMode ? '退出编辑模式' : '点我进入编辑模式'}}">
+    <div style="width:22px;height:22px;" class="js-edit" ng-click="toggleMode()" data-tooltip="{{editMode ? '退出编辑模式' : '点击进入分类编辑模式'}}">
         <img class="ui ui middle aligned tiny image" ng-src="./images/{{ editMode ? 'back' : 'edit'}}.png" ng-show="!loadTags">
     </div>
 </div>

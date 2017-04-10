@@ -40,96 +40,87 @@
 ---------
 ```   
 my-bookmark/
-├── bin/        #          
-│   └── www                # 后台启动文件
-├── common/                    # 自己写的一些模块
-│   └── parse_html.js                # 用来解析从浏览器导出来的书签文件
-├── database/                #
-│   └── db.js                # 所有数据库的操作都在这里
-├── node_modules/                    # nodejs模块安装文件夹
-│   ├── express/              # 一个nodejs Web 应用程序框架
-│   ├── .....                # 其他nodejs用到的包
-│   └── mysql/                # mysql包
-├── public/                    # 网站实现文件夹
-│   ├── css/                 # 样式表文件夹
-│   │   ├── externe/                 # 外部引入引来的css文件
-│   │   └── style.css                # 自己写的css文件
-│   ├── images/              # 图片文件夹
-│   │   ├── favicon/                 # 下载书签的favicon文件夹
-│   │   ├── snap/                 # 书签的截图文件夹
-│   │   ├── .....                 # 其他图片文件
-│   │   └── edit.png                # 编辑图片
-│   ├── scripts/             # 前端逻辑实现的JS文件以及引入的JS文件
-│   │   ├── controllers/                 # 所有的AngularJS控制器
-│   │   │   ├── advice-controller.js                 #
-│   │   │   ├── bookmark-info-controller.js                 #
-│   │   │   ├── bookmarks-controller.js                 #
-│   │   │   ├── edit-controller.js                 #
-│   │   │   ├── home-controller.js                 #
-│   │   │   ├── hot-controller.js                 #
-│   │   │   ├── login-controller.js                 #
-│   │   │   ├── menus-controller.js                 #
-│   │   │   ├── search-controller.js                 #
-│   │   │   ├── settings-controller.js                 #
-│   │   │   └── tags-controller.js                 #
-│   │   ├── directives/                 # 所有的AngularJS指令
-│   │   │   ├── js-init-directive.js                 #
-│   │   │   └── module-directive.js                #
-│   │   ├── externe/                 # 外部引入的JS文件
-|   |   |   ├── angular.min.js
-|   |   |   ├── angular-cookies.min.js
-|   |   |   ├── angular-medium-editor.min.js
-|   |   |   ├── angular-sortable-view.min.js
-|   |   |   ├── angular-ui-router.min.js
-|   |   |   ├── calendar.min.js
-|   |   |   ├── canvas-nest.min.js
-|   |   |   ├── clipboard.min.js
-|   |   |   ├── jquery.form.js
-|   |   |   ├── jquery.uploadfile.min.js
-|   |   |   ├── jquery-3.1.1.min.js
-|   |   |   ├── medium-editor.min.js
-|   |   |   ├── ngDialog.min.js
-|   |   |   ├── ng-infinite-scroll.min.js
-|   |   |   ├── semantic.min.js
-|   |   |   ├── timeago.min.js
-|   |   |   └── toastr.min.js
-│   │   ├── services/                 # 所有的AngularJS服务文件
-|   |   |   ├── bookmark-service.js
-|   |   |   ├── data-service.js
-|   |   |   └── pub-sub-service.js
-│   │   └── app-angular.js                # AngularJS路由配置文件
-│   ├── views        # 页面实现文件
-|   |   ├── advice.html
-|   |   ├── bookmark-info.html
-|   |   ├── bookmarks.html
-|   |   ├── dialog-add-tag.html
-|   |   ├── dialog-del-bookmark.html
-|   |   ├── dialog-del-tag.html
-|   |   ├── edit.html
-|   |   ├── home.html
-|   |   ├── hot.html
-|   |   ├── login.html
-|   |   ├── menus.html
-|   |   ├── pagination.html
-|   |   ├── search.html
-|   |   ├── settings.html
-|   |   └── tags.html
-│   ├── favicon.ico                # 网站favicon为念
-│   └── index.html                # 单页面应用主页
-├── routes/                    # ogs实现代码以及各个券商对接代码
-│   ├── api.js                 # ai 实现文件
-│   ├── index.js              # ddvip 券商实现文件
-│   └── users.js                # ufx 券商实现文件
-├── uploads/                    # ogs实现代码以及各个券商对接代码
-├── views/                    # ogs实现代码以及各个券商对接代码
-│   ├── ai/                 # ai 实现文件
-│   ├── ddvip/              # ddvip 券商实现文件
-│   ├── main.cc             # ogs实现代码
-│   ├── OgsServer.cc        # ogs实现代码
-│   ├── ....                # ogs其他实现代码
-│   └── ufx/                # ufx 券商实现文件
-├── app.js               # 更新日志
-├── package.json          # 项目工程文件
-├── README.md          # 项目工程文件
-└── schema.sql               # 项目介绍文件
+├── bin/                                      # 应用启动文件夹    
+│   └── www                                   # 后台启动文件
+├── common/                                   # 自己写的一些模块
+│   └── parse_html.js                         # 用来解析从浏览器导出来的书签文件
+├── database/                                 # 数据库相关操作文件夹
+│   └── db.js                                 # 所有数据库的操作都在这里
+├── node_modules/                             # nodejs模块安装文件夹
+│   ├── express/                              # 一个nodejs Web 应用程序框架
+│   ├── .....                                 # 其他nodejs用到的包
+│   └── mysql/                                # mysql包
+├── public/                                   # 网站实现文件夹
+│   ├── css/                                  # 样式表文件夹
+│   │   ├── externe/                          # 外部引入引来的css文件
+│   │   └── style.css                         # 自己写的css文件
+│   ├── images/                               # 图片文件夹
+│   │   ├── favicon/                          # 下载书签的favicon文件夹
+│   │   ├── snap/                             # 书签的截图文件夹
+│   │   ├── .....                             # 其他图片文件
+│   │   └── edit.png                          # 编辑图片
+│   ├── scripts/                              # 前端逻辑实现的JS文件以及引入的JS文件
+│   │   ├── controllers/                      # 所有的AngularJS控制器
+│   │   │   ├── advice-controller.js          # 留言页面控制器
+│   │   │   ├── bookmark-info-controller.js   # 书签详情页面控制器
+│   │   │   ├── bookmarks-controller.js       # 书签页面控制器
+│   │   │   ├── edit-controller.js            # 编辑书签页面控制器
+│   │   │   ├── home-controller.js            # 未登录时首页页面控制器
+│   │   │   ├── hot-controller.js             # 热门收藏页面控制器
+│   │   │   ├── login-controller.js           # 登陆注册页面控制器
+│   │   │   ├── menus-controller.js           # 菜单栏控制器
+│   │   │   ├── search-controller.js          # 搜索书签页面控制器
+│   │   │   ├── settings-controller.js        # 设置页面控制器
+│   │   │   └── tags-controller.js            # 分类页面控制器
+│   │   ├── directives/                       # 所有的AngularJS指令
+│   │   │   ├── js-init-directive.js          # 一些初始化指令
+│   │   │   └── module-directive.js           # 模块指令(如：分页模块等)
+│   │   ├── externe/                          # 外部引入的JS文件
+|   |   |   ├── angular.min.js                # angular文件
+|   |   |   ├── angular-cookies.min.js        # angular前台cookies模块
+|   |   |   ├── angular-medium-editor.min.js  # 编辑器，书签编辑页面使用
+|   |   |   ├── angular-sortable-view.min.js  # 可以拖拽元素的控件，用于分类页面
+|   |   |   ├── angular-ui-router.min.js      # angular web客户端的路由
+|   |   |   ├── calendar.min.js               # 一个日历控件，用于搜索页面
+|   |   |   ├── canvas-nest.min.js            # 一个很赞的网页背景效果(装逼)
+|   |   |   ├── clipboard.min.js              # 用于复制粘贴库，不需要flash
+|   |   |   ├── jquery.form.js                # 表单异步提交(想不起哪里用了)
+|   |   |   ├── jquery.uploadfile.min.js      # 文件上传控件，用于上传浏览器导出书签
+|   |   |   ├── jquery-3.1.1.min.js           # jquery文件
+|   |   |   ├── medium-editor.min.js          # 编辑器，angular-medium-editor依赖
+|   |   |   ├── ngDialog.min.js               # 一个angular对话框控件
+|   |   |   ├── ng-infinite-scroll.min.js     # 一个angular无限滚动加载数据控件
+|   |   |   ├── semantic.min.js               # semantic文件
+|   |   |   ├── timeago.min.js                # 一个将时间戳转换成易读的时间轴
+|   |   |   └── toastr.min.js                 # 一个消息提示插件
+│   │   ├── services/                         # 所有的AngularJS服务文件
+|   |   |   ├── bookmark-service.js           # 前端与后端交互服务
+|   |   |   ├── data-service.js               # 数据服务(本来想将一些数据结构放这里)
+|   |   |   └── pub-sub-service.js            # 控制器之间消息通讯服务组件
+│   │   └── app-angular.js                    # AngularJS路由配置文件
+│   ├── views                                 # 页面实现文件
+|   |   ├── advice.html                       # 留言页面
+|   |   ├── bookmark-info.html                # 书签详情页面
+|   |   ├── bookmarks.html                    # 书签页面
+|   |   ├── dialog-add-tag.html               # 分类添加页面
+|   |   ├── dialog-del-bookmark.html          # 书签删除确认页面
+|   |   ├── dialog-del-tag.html               # 分类删除确认页面
+|   |   ├── edit.html                         # 书签添加修改页面
+|   |   ├── home.html                         # 未登录时首页页面
+|   |   ├── hot.html                          # 热门收藏页面
+|   |   ├── login.html                        # 登陆注册页面
+|   |   ├── menus.html                        # 菜单组件
+|   |   ├── pagination.html                   # 分页组件
+|   |   ├── search.html                       # 搜索书签页面
+|   |   ├── settings.html                     # 设置页面
+|   |   └── tags.html                         # 分类页面
+│   ├── favicon.ico                           # 网站favicon
+│   └── index.html                            # 前端单页面应用主页
+├── routes/                                   # 路由文件夹
+│   └── api.js                                # 整个应用路由实现
+├── uploads/                                  # 文件上传文件夹
+├── app.js                                    # app文件
+├── package.json                              # nodejs package文件
+├── README.md                                 # 项目工程说明文件
+└── schema.sql                                # mysql数据库建表文件
 ```   

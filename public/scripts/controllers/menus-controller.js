@@ -187,14 +187,17 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     bookmarkService.userInfo({})
         .then((data) => {
             $scope.searchHistory = JSON.parse(data.search_history || '[]');
-            for (var i = 1; i <= 100; i += 10) {
-                $timeout(function() {
-                    $('.search-item').popup({
-                        on: 'focus',
-                        inline: true
-                    });
-                }, 100 * i)
-            }
+            var count = 1;
+            var id = setInterval(function () {
+                var items = $('.search-item').popup({
+                    on: 'focus',
+                    inline: true
+                });
+                console.log("searchHistory = ", items.length);
+                if (items.length >= 1 || count >= 20) {
+                    clearInterval(id);
+                }
+            }, 200);
         })
         .catch((err) => {
             toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");

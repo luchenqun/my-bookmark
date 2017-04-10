@@ -8,8 +8,6 @@ var download = require('download');
 var multer = require('multer');
 var webshot = require('webshot');
 var fs = require('fs');
-var favicon = require('favicon');
-var request = require('request');
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {

@@ -124,3 +124,22 @@ my-bookmark/
 ├── README.md                                 # 项目工程说明文件
 └── schema.sql                                # mysql数据库建表文件
 ```   
+6 用到的nodejs模块说明
+--------------------
+```
+"body-parser": bodyParser用于解析客户端请求的body中的内容,内部使用JSON编码处理
+"connect-mongo": 用于将session存入mongo
+"cookie-parser": 处理每一个请求的cookie
+"crypto": 加密模块，主要用来加密用户的密码
+"debug": 这个好像没用到，看名字好像调试的。
+"download": 主要用来下载书签的favicon文件
+"express": Web 应用程序框架
+"express-session": session模块
+"jsdom": 用来解析从浏览器导出来上传到服务器的书签html文件
+"morgan": 一个node.js关于http请求的日志中间件
+"multer": 文件上传模块
+"mysql": sql数据库操作模块
+"node-readability": 获取网页title(添加书签用到)跟内容(书签详情用到)模块。
+"supervisor": 文件改变监视文件，开发使用
+"webshot": 网页截图模块
+```

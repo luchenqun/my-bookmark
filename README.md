@@ -1,5 +1,5 @@
 # 在线书签管理工具
-1 线上部署(demo)
+1 例子(demo)
 -------------
 [在线书签管理系统](http://mybookmark.cn/ "在线书签管理系统")，体验账号：test。密码：123456。
 
@@ -143,3 +143,14 @@ my-bookmark/
 "supervisor": 文件改变监视文件，开发使用
 "webshot": 网页截图模块
 ```
+
+7 安装部署指南
+-------------
+1、安装MySql数据库。如果不会，请戳教程[mysql 数据库安装教程](http://t.cn/RXhwLyJ "mysql 数据库安装教程")。
+2、新建一个数据库名，使用mysql将根目录下面的schema.sql文件执行一遍，创建数据库表格。
+3、安装MongoDB 安装教程。如果不会，请戳教程[MongoDB 安装教程](http://t.cn/RXhAORF "MongoDB 安装教程")，安装完成之后请启动MongoDB。
+4、安装Nodejs。不会的话，请按照上面步骤1、3提供的方法自行解决。
+5、克隆代码`git@github.com:luchenqun/my-bookmark.git`，切换到项目根目录下面，执行`npm install`安装package。
+6、更新/database/db.js文件，将你mysql的数据信息更新上去。
+7、如果上面的都做好了，在项目根目录下面执行`node ./bin/www`，如果是开发，可以使用`npm start`(记得全局装好`npm install supervisor -g`)
+8、在浏览器里面输入：127.0.0.1:2000。

@@ -63,14 +63,6 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         });
 });
 
-//自定义过滤器
-app.filter('formatDate', function() {
-    return function(date) {
-        console.log(date);
-        return 22222;
-    }
-})
-
 console.log([
     "                   _ooOoo_",
     "                  o8888888o",

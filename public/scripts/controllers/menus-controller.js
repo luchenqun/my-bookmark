@@ -94,6 +94,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
     $scope.searchByHistory = function(type, data) {
         $scope.searchWord = data;
+        $('.search-item').val($scope.searchWord);
+        
         $('.js-search-option').dropdown('set value', type);
         var types = {};
         types[0] = '书签';

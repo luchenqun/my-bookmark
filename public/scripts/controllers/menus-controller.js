@@ -95,7 +95,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.searchByHistory = function(type, data) {
         $scope.searchWord = data;
         $('.search-item').val($scope.searchWord);
-        
+
         $('.js-search-option').dropdown('set value', type);
         var types = {};
         types[0] = '书签';
@@ -187,12 +187,14 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     bookmarkService.userInfo({})
         .then((data) => {
             $scope.searchHistory = JSON.parse(data.search_history || '[]');
-            $timeout(function() {
-                $('.search-item').popup({
-                    on: 'focus',
-                    inline: true
-                });
-            }, 1000)
+            for (var i = 1; i <= 100; i += 10) {
+                $timeout(function() {
+                    $('.search-item').popup({
+                        on: 'focus',
+                        inline: true
+                    });
+                }, 100 * i)
+            }
         })
         .catch((err) => {
             toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");

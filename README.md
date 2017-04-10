@@ -33,7 +33,7 @@
 **MySql**: 用来做数据存储。  
 **AngularJS**：大家都懂的。   
 **jQuery**: 大家都懂的。本来用了AngularJS是不需要再使用jQuery了的。但是有些功能AngularJS要大费周章才能完成，jQuery一句代码就能解决。所以还是忍不住将它导入了进来。   
-**mongo**：保存登陆的session。    
+**mongo**：后台保存登陆的session。    
 **Semantic**：由于没有美工人员，自己开发的，不想界面太丑，用了这套UI。   
 
 5 目录结构

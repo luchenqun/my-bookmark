@@ -160,7 +160,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
     function saveHistory() {
         var datas = [];
-        $scope.searchHistory.slice(0, 15); // 最多保留15个历史记录
+        $scope.searchHistory = $scope.searchHistory.slice(0, 15); // 最多保留15个历史记录
         $scope.searchHistory.forEach((item, index) => {
             datas.push({
                 t: item.t,

@@ -1,7 +1,7 @@
 # 在线书签管理工具
 ![image](https://github.com/luchenqun/my-bookmark/blob/master/public/images/screenshot.png)   
 
-1 例子(demo)
+1 在线体验(demo)
 -------------
 [在线书签管理系统](http://mybookmark.cn/ "在线书签管理系统")，体验账号：test。密码：123456。
 
@@ -60,6 +60,7 @@ my-bookmark/
 │   │   ├── favicon/                          # 下载书签的favicon文件夹
 │   │   ├── snap/                             # 书签的截图文件夹
 │   │   ├── .....                             # 其他图片文件
+│   │   ├── screenshot.png                    # 应用截图，Github展示
 │   │   └── edit.png                          # 编辑图片
 │   ├── scripts/                              # 前端逻辑实现的JS文件以及引入的JS文件
 │   │   ├── controllers/                      # 所有的AngularJS控制器

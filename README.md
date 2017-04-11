@@ -32,11 +32,11 @@
 
 4 主要用到的模块说明
 ------------------
-**NodeJS**：用来做后台服务。  
-**MySql**: 用来做数据存储。  
-**AngularJS**：大家都懂的。   
-**jQuery**: 大家都懂的。本来用了AngularJS是不需要再使用jQuery了的。但是有些功能AngularJS要大费周章才能完成，jQuery一句代码就能解决。所以还是忍不住将它导入了进来。   
-**mongo**：后台保存登陆的session。    
+**NodeJS**：`v6.6.0` 用来做后台服务。  
+**MySql**: `v5.17.7`用来做数据存储。  
+**AngularJS**：前端JavaScript框架。   
+**jQuery**: 本来用了AngularJS是不需要再使用jQuery了的。但是有些功能AngularJS要大费周章才能完成，jQuery一句代码就能解决。所以还是忍不住将它导入了进来。   
+**mongodb**：`v2.6.10`后台保存登陆的session。    
 **Semantic**：由于没有美工人员，自己开发的，不想界面太丑，用了这套UI。   
 
 5 目录结构
@@ -169,6 +169,12 @@ source /home/lcq/schema.sql; // 执行schema.sql文件创建数据库表格。�
 8、在浏览器里面输入：127.0.0.1:2000。  
 9、部署的话，推荐使用nginx作为HTTP和反向代理服务器，使用forever让nodejs应用后台执行。相关知识，请自行百度。
 
-8 细节说明
+8 其他说明
 ---------
 1、对于favicon的下载，如果你部署在国内的服务器上，优先从国内提供的服务获取。代码在api.js文件下面的`api.getFaviconByTimer`函数处调整。   
+2、我没有做浏览器兼容测试，只在Google Chrome下面进行了测试开发。
+
+9 开源许可证
+-----------
+[MIT License](http://www.opensource.org/licenses/MIT)    
+你可以随意使用此项目，无需通知我，因为我可能很忙没空搭理你。

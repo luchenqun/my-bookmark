@@ -168,3 +168,7 @@ source /home/lcq/schema.sql; // 执行schema.sql文件创建数据库表格。�
 7、如果上面的都做好了，在项目根目录下面执行`node ./bin/www`，如果是开发，可以使用`npm start`。  
 8、在浏览器里面输入：127.0.0.1:2000。  
 9、部署的话，推荐使用nginx作为HTTP和反向代理服务器，使用forever让nodejs应用后台执行。相关知识，请自行百度。
+
+8 细节说明
+---------
+1、对于favicon的下载，如果你部署在国内的服务器上，优先从国内提供的服务获取。代码在api.js文件下面的`api.getFaviconByTimer`函数处调整。   

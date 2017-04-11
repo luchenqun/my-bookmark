@@ -1,4 +1,5 @@
 # 在线书签管理工具
+![image](https://github.com/luhenqun/my-bookmark/raw/master/public/images/screenshot.png)
 1 例子(demo)
 -------------
 [在线书签管理系统](http://mybookmark.cn/ "在线书签管理系统")，体验账号：test。密码：123456。
@@ -158,9 +159,9 @@ use mybookmarks; //选择刚创建的数据库。
 source /home/lcq/schema.sql; // 执行schema.sql文件创建数据库表格。注意，将路径换为你schema.sql所在路径。   
 ```
 3、安装MongoDB 安装教程。如果不会，请戳教程[MongoDB 安装教程](http://t.cn/RXhAORF "MongoDB 安装教程")，安装完成之后如果MongoDB没有启动，请启动MongoDB。   
-4、安装Nodejs。不会的话，请按照上面步骤1、3提供的方法自行解决。   
+4、安装Nodejs。Nodejs版本至少要求6.0以上。不会的话，请按照上面步骤1、3提供的方法自行解决。   
 5、克隆代码`git@github.com:luchenqun/my-bookmark.git`，切换到项目根目录下面，执行`npm install`安装package。   
-6、更新/database/db.js文件，将你mysql的数据信息更新上去。   
+6、更新/database/db.js文件的dbConfig配置，将你mysql的数据信息更新上去。   
 7、如果上面的都做好了，在项目根目录下面执行`node ./bin/www`，如果是开发，可以使用`npm start`。  
 8、在浏览器里面输入：127.0.0.1:2000。  
 9、部署的话，推荐使用nginx作为HTTP和反向代理服务器，使用forever让nodejs应用后台执行。相关知识，请自行百度。

@@ -8,6 +8,18 @@ var mongoStore = require('connect-mongo')(session);
 
 var api = require('./routes/api');
 var app = express();
+var fs = require('fs');
+// 创建下载的目录
+var folders = ['./uploads', './public/images/favicon', './public/images/snap'];
+folders.forEach((folder) => {
+    fs.exists(folder, function(exists) {
+        if(!exists){
+            fs.mkdir(folder,function(err){ if(err) console.error(err); });
+        } else {
+            console.log(folder + "is exists!");
+        }
+    });
+})
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

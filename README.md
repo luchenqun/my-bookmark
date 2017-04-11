@@ -146,9 +146,16 @@ my-bookmark/
 
 7 安装部署指南
 -------------
-1、安装MySql数据库。如果不会，请戳教程[mysql 数据库安装教程](http://t.cn/RXhwLyJ "mysql 数据库安装教程")。   
-2、新建一个数据库名，使用mysql将根目录下面的schema.sql文件执行一遍，创建数据库表格。   
-3、安装MongoDB 安装教程。如果不会，请戳教程[MongoDB 安装教程](http://t.cn/RXhAORF "MongoDB 安装教程")，安装完成之后请启动MongoDB。   
+1、安装MySql数据库。如果不会，请戳教程[mysql 数据库安装教程](http://t.cn/RXhwLyJ "mysql 数据库安装教程")。有点需要注意的是，MySql的版本至少要是5.6。否则执行schema.sql文件会出错。   
+2、新建一个数据库名，使用mysql将根目录下面的schema.sql文件执行一遍，创建数据库表格。有个问题尤其要注意：数据库一定要使用UTF-8的编码，否则执行一些sql语句会出错！如果是Ubuntu，大概过程如下。
+> mysql -u root -p // 使用root账号进入mysql数据库。按回车之后输入安装时候root的密码。
+> CREATE DATABASE mybookmarks; // 创建mybookmarks数据库。
+> CREATE USER 'test'@'%' IDENTIFIED BY '123456';// 创建一个以用户名为test，密码为123456的用户
+> GRANT ALL ON *.* TO 'test'@'%';  // 给刚创建的test用户数据库所有的权限
+> use mybookmarks; //选择刚创建的数据库。
+> source /home/lcq/schema.sql; // 执行schema.sql文件创建数据库表格。注意，将路径换为你schema.sql所在路径。   
+
+3、安装MongoDB 安装教程。如果不会，请戳教程[MongoDB 安装教程](http://t.cn/RXhAORF "MongoDB 安装教程")，安装完成之后如果MongoDB没有启动，请启动MongoDB。   
 4、安装Nodejs。不会的话，请按照上面步骤1、3提供的方法自行解决。   
 5、克隆代码`git@github.com:luchenqun/my-bookmark.git`，切换到项目根目录下面，执行`npm install`安装package。   
 6、更新/database/db.js文件，将你mysql的数据信息更新上去。   

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>提示-404</title>
@@ -21,6 +22,7 @@
             box-shadow: none;
             position: static;
         }
+
         #content {
             font-family: "微软雅黑";
             background: url("images/404.png") no-repeat 122px 0px;
@@ -29,18 +31,23 @@
             font-size: 18px;
             color: #999;
         }
+
         #content p {
             padding: 180px 0 0 426px;
             line-height: 38px;
         }
 
         #content p a.backhome {
-            font-size: 14px;
+            font-size: 18px;
         }
 
         #content p a.backhome span {
             width: 80px;
         }
+        #totalSecond {
+            color: #f00;
+        }
+
     </style>
 </head>
 
@@ -49,10 +56,31 @@
         <div id="content" style="height: 530px;">
             <p>
                 对不起，您的风筝已掉线，请时光倒流回前一秒。<br>
-                <a href="http://mybookmark.cn" class="adaptbtn2 btn-green42 backhome"><span class="adaptbtn2">返回首页</span></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span id="totalSecond">5</span>秒后自动
+                <a href="http://mybookmark.cn" class="backhome"><span>返回首页</span></a>
             </p>
         </div>
     </div>
 </body>
+<script language="javascript" type="text/javascript">
+    var second = document.getElementById('totalSecond').textContent;
+    // 判断是IE浏览器还是Firefox浏览器，采用相应措施取得秒数
+    if (navigator.appName.indexOf("Explorer") > -1) {
+        second = document.getElementById('totalSecond').innerText;
+    } else {
+        second = document.getElementById('totalSecond').textContent;
+    }
+    setInterval(function(){
+        if (second < 0) {
+            location.href = 'http://mybookmark.cn';
+        } else {
+            if (navigator.appName.indexOf("Explorer") > -1) {
+                document.getElementById('totalSecond').innerText = second--;
+            } else {
+                document.getElementById('totalSecond').textContent = second--;
+            }
+        }
+    }, 1000);
+</script>
 
 </html>

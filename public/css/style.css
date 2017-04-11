@@ -155,3 +155,7 @@ img.operator {
 .ui.selection.list .list>.item, .ui.selection.list>.item {
     border-radius: 0;
 }
+
+.js-p-info p{
+    margin-bottom:5px;
+}

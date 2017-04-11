@@ -19,6 +19,7 @@
     "multer": "^1.3.0",
     "mysql": "^2.11.1",
     "node-readability": "^2.2.0",
+    "request": "^2.81.0",
     "supervisor": "^0.11.0",
     "webshot": "^0.18.0"
   }

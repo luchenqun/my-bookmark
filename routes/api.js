@@ -448,10 +448,6 @@ api.get('/bookmarks', function(req, res) {
 
 api.get('/hotBookmarks', function(req, res) {
     console.log('hello hotBookmarks', JSON.stringify(req.query), req.session.username);
-    if (!req.session.user) {
-        res.send(401);
-        return;
-    }
     var userId = req.session.user.id;
     var params = req.query;
     var date = params.date || new Date().format('yyyyMMdd');;

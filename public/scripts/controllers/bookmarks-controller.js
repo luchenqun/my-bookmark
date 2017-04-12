@@ -284,7 +284,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     getBookmarks(); // 拿到默认显示风格了，继续取获取书签
                 })
                 .catch((err) => {
-                    toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
+                    console.log('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
                 });
         } else {
             $scope.loadBusy = true;

@@ -155,7 +155,7 @@ my-bookmark/
 2、新建一个数据库名，使用mysql将根目录下面的schema.sql文件执行一遍，创建数据库表格。有个问题尤其要注意：**数据库一定要使用UTF-8的编码**，否则执行一些汉字的sql语句会出错！如果是Ubuntu，大概过程如下。
 ```
 mysql -u root -p // 使用root账号进入mysql数据库。按回车之后输入安装时候root的密码。
-CREATE DATABASE mybookmarks; // 创建mybookmarks数据库。
+CREATE DATABASE mybookmarks DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; // 创建mybookmarks数据库。
 CREATE USER 'test'@'%' IDENTIFIED BY '123456';// 创建一个以用户名为test，密码为123456的用户
 GRANT ALL ON *.* TO 'test'@'%';  // 给刚创建的test用户数据库所有的权限
 use mybookmarks; //选择刚创建的数据库。

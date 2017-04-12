@@ -1113,11 +1113,11 @@ api.getFaviconByTimer = function() {
                             });
                     } else {
                         // http://www.cnblogs.com/zhangwei595806165/p/4984912.html 各种方法都试一遍
-                        var faviconUrl = "http://www.google.com/s2/favicons?domain=" + url; // 默认地址
+                        var faviconUrl = "http://favicon.byi.pw/?url=" + url; // 默认地址
                         if (faviconState == 1) {
-                            faviconUrl = "http://favicon.byi.pw/?url=" + url;
+                            faviconUrl = "http://g.soz.im/" + url ;
                         } else if (faviconState == 2) {
-                            faviconUrl = "http://g.soz.im/" + url;
+                            faviconUrl = "http://www.google.com/s2/favicons?domain=" + url;
                         }
                         download(faviconUrl).then(data => {
                             fs.writeFileSync(faviconPath, data);

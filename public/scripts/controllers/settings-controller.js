@@ -26,6 +26,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
                     }
                 })
                 .catch((err) => {
+                    console.log(err);
                     toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
                     $scope.loadShowStyle = false;
                 });

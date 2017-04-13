@@ -5,6 +5,7 @@ var dbConfig = {
     password: '123456', // mysql 的密码
     database: 'mybookmarks',
     multipleStatements: true,
+    useConnectionPooling: true,
     port: 3306
 };
 var client = {}

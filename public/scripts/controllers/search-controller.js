@@ -227,6 +227,18 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         $('.ui.dropdown.js-search-tags .text').text(text);
     }
 
+    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
+        console.log('subscribe EditCtr.inserBookmarsSuccess', JSON.stringify(data));
+        $scope.searchBookmarks.forEach((bookmark) => {
+            if(bookmark.id == data.id){
+                bookmark.title = data.title;
+                bookmark.url = data.url;
+                bookmark.description = data.description;
+                bookmark.tags = data.tags;
+            }
+        })
+    });
+
     function searchBookmarks(params) {
         $scope.loading = true;
         $('.js-table-search').transition('hide');

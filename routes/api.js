@@ -44,6 +44,7 @@ api.post('/logout', function(req, res) {
 });
 
 api.post('/clickBookmark', function(req, res) {
+    console.log("clickBookmark username = ", req.session.username);
     db.clickBookmark(req.body.params.id, req.session.userId)
         .then((affectedRows) => res.json({}))
         .catch((err) => console.log('clickBookmark error', err));
@@ -78,7 +79,7 @@ api.post('/login', function(req, res) {
 });
 
 api.get('/userInfo', function(req, res) {
-    console.log("userInfo");
+    console.log("userInfo username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -123,7 +124,7 @@ api.post('/register', function(req, res) {
 });
 
 api.post('/resetPassword', function(req, res) {
-    console.log("resetPassword");
+    console.log("resetPassword username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -161,7 +162,7 @@ api.post('/resetPassword', function(req, res) {
 });
 
 api.post('/updateShowStyle', function(req, res) {
-    console.log("updateShowStyle");
+    console.log("updateShowStyle username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -196,7 +197,7 @@ api.post('/updateShowStyle', function(req, res) {
 });
 
 api.post('/updateSearchHistory', function(req, res) {
-    console.log("updateSearchHistory");
+    console.log("updateSearchHistory username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -227,6 +228,7 @@ api.post('/updateSearchHistory', function(req, res) {
 });
 
 api.get('/autoLogin', function(req, res) {
+    console.log("autoLogin username = ", req.session.username);
     var ret = {
         logined: false,
         user: {},
@@ -251,6 +253,7 @@ api.get('/autoLogin', function(req, res) {
 });
 
 api.delete('/delBookmark', function(req, res) {
+    console.log("delBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -265,6 +268,7 @@ api.delete('/delBookmark', function(req, res) {
 })
 
 api.post('/updateBookmark', function(req, res) {
+    console.log("updateBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -292,6 +296,7 @@ api.post('/updateBookmark', function(req, res) {
 })
 
 api.get('/bookmark', function(req, res) {
+    console.log("bookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -321,7 +326,7 @@ api.get('/bookmark', function(req, res) {
 })
 
 api.get('/bookmarks', function(req, res) {
-    console.log('hello bookmarks', JSON.stringify(req.query), req.session.username);
+    console.log("bookmarks username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -447,7 +452,7 @@ api.get('/bookmarks', function(req, res) {
 });
 
 api.get('/hotBookmarks', function(req, res) {
-    console.log('hello hotBookmarks', JSON.stringify(req.query), req.session.username);
+    console.log("hotBookmarks username = ", req.session.username);
     var userId = req.session.user.id;
     var params = req.query;
     var date = params.date || new Date().format('yyyyMMdd');;
@@ -459,7 +464,7 @@ api.get('/hotBookmarks', function(req, res) {
 });
 
 api.get('/bookmarksByTag', function(req, res) {
-    console.log('hello bookmarksByTag', JSON.stringify(req.query), req.session.username);
+    console.log("bookmarksByTag username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -507,7 +512,7 @@ api.get('/bookmarksByTag', function(req, res) {
 });
 
 api.get('/searchBookmarks', function(req, res) {
-    console.log('hello searchBookmarks', JSON.stringify(req.query), req.session.username);
+    console.log("searchBookmarks username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -575,7 +580,7 @@ api.get('/searchBookmarks', function(req, res) {
 });
 
 api.get('/searchHotBookmarks', function(req, res) {
-    console.log('hello searchHotBookmarks', JSON.stringify(req.query), req.session.username);
+    console.log("searchHotBookmarks username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -589,6 +594,7 @@ api.get('/searchHotBookmarks', function(req, res) {
 });
 
 api.get('/tags', function(req, res) {
+    console.log("tags username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -622,6 +628,7 @@ api.get('/tags', function(req, res) {
 });
 
 api.get('/advices', function(req, res) {
+    console.log("advices username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -633,7 +640,7 @@ api.get('/advices', function(req, res) {
 });
 
 api.post('/addAdvice', function(req, res) {
-    console.log('hello addAdvice', JSON.stringify(req.body));
+    console.log("addAdvice username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -661,7 +668,7 @@ api.post('/addAdvice', function(req, res) {
 
 // 发现使用node启动没问题，forever启动有问题。
 api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
-    console.log('hello uploadBookmarkFile');
+    console.log("uploadBookmarkFile username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -747,7 +754,7 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 });
 
 api.post('/addBookmark', function(req, res) {
-    console.log('hello addBookmark', JSON.stringify(req.body));
+    console.log("addBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -791,7 +798,7 @@ api.post('/addBookmark', function(req, res) {
 });
 
 api.post('/favoriteBookmark', function(req, res) {
-    console.log('hello favoriteBookmark', JSON.stringify(req.body));
+    console.log("favoriteBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -847,7 +854,7 @@ api.post('/favoriteBookmark', function(req, res) {
 });
 
 api.post('/addTags', function(req, res) {
-    console.log('hello addTags', JSON.stringify(req.query), JSON.stringify(req.body));
+    console.log("addTags username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -876,7 +883,7 @@ api.post('/addTags', function(req, res) {
 });
 
 api.post('/updateTagName', function(req, res) {
-    console.log('hello updateTagName', JSON.stringify(req.query), JSON.stringify(req.body));
+    console.log("updateTagName username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -919,7 +926,7 @@ api.post('/updateTagName', function(req, res) {
 });
 
 api.post('/updateTagsIndex', function(req, res) {
-    console.log('hello updateTagsIndex', JSON.stringify(req.query), JSON.stringify(req.body));
+    console.log("updateTagsIndex username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -949,7 +956,7 @@ api.post('/updateTagsIndex', function(req, res) {
 });
 
 api.post('/delTag', function(req, res) {
-    console.log('hello delTag', JSON.stringify(req.query), JSON.stringify(req.body));
+    console.log("delTag username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
@@ -985,6 +992,7 @@ api.post('/delTag', function(req, res) {
 });
 
 api.post('/getArticle', function(req, res) {
+    console.log("getArticle username = ", req.session.username);
     var params = req.body.params;
     var url = params.url;
     var requestId = params.requestId || 0;
@@ -1075,7 +1083,6 @@ api.getSnapByTimer = function() {
             .catch((err) => console.log('getBookmarkWaitSnap err', err));
     }, timeout + 1000);
 }
-
 
 api.getFaviconByTimer = function() {
     console.log('getFaviconByTimer...........');

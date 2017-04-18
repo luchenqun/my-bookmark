@@ -10,7 +10,10 @@ var dbConfig = {
 };
 var client = {}
 
+var disconnect = 0;
 function handleDisconnect() {
+    console.error("handleDisconnect, disconnect = ", disconnect++);
+    
     client = mysql.createConnection(dbConfig);
 
     client.connect(function(err) {
@@ -896,6 +899,7 @@ db.getBookmarkWaitFavicon = function(today) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
+                handleDisconnect();
             } else {
                 resolve(result);
             }

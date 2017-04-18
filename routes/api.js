@@ -1067,7 +1067,7 @@ api.getSnapByTimer = function() {
                             webshot(url, filePath, webshotOptions, function(err) {
                                 var newSnapState = -1;
                                 if (err) {
-                                    console.log("boomarkid = " + id + ", webshot over", err)
+                                    console.log("boomarkid = " + id + ", url = " + url + ", webshot over")
                                     if (snapState == 0 || snapState == 1) {
                                         newSnapState = snapState + 1;
                                     } else if (snapState == 2) {
@@ -1134,7 +1134,7 @@ api.getFaviconByTimer = function() {
                                 });
                         }).catch((err) => {
                             var newFaviconState = -1;
-                            console.log("boomarkid = " + id + ", download over", err)
+                            console.log("boomarkid = " + id + ", url = " + url +", download over")
                             if (faviconState == 0 || faviconState == 1) {
                                 newFaviconState = faviconState + 1;
                             } else if (faviconState == 2) {

@@ -13,7 +13,7 @@ var client = {}
 var disconnect = 0;
 function handleDisconnect() {
     console.error("handleDisconnect, disconnect = ", disconnect++);
-    
+
     client = mysql.createConnection(dbConfig);
 
     client.connect(function(err) {
@@ -57,14 +57,17 @@ Date.prototype.format = function(fmt) { //author: meizz
 var db = {
 
 }
-// var sql = "SELECT * FROM `users` WHERE `username` = 'luchenqun1'";
-// client.query(sql, (err, result) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log(result);
-//     }
-// });
+
+// 每隔10秒查询一下，出现问题直接挂掉nodejs,让forever将其重启！
+setInterval(function () {
+    var sql = "SELECT * FROM `users` WHERE `id` = '1'";
+    client.query(sql, (err, result) => {
+        if (err) {
+            throw new Error("数据查询出问题了，直接挂掉程序，让forever重启应用，错误信息：" + JSON.stringify(err));
+        }
+    });
+}, 10000);
+
 
 db.getBookmarkbyUrl = function(user_id, url) {
     var sql = "SELECT * FROM `bookmarks` WHERE `user_id` = '" + user_id + "' AND `url` = '" + url + "'"
@@ -899,7 +902,6 @@ db.getBookmarkWaitFavicon = function(today) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
-                handleDisconnect();
             } else {
                 resolve(result);
             }

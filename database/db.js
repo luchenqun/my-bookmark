@@ -8,32 +8,8 @@ var dbConfig = {
     useConnectionPooling: true,
     port: 3306
 };
-var client = {}
 
-var disconnect = 0;
-function handleDisconnect() {
-    console.error("handleDisconnect, disconnect = ", disconnect++);
-
-    client = mysql.createConnection(dbConfig);
-
-    client.connect(function(err) {
-        if (err) {
-            console.log('error when connecting to db:', err);
-            setTimeout(handleDisconnect, 2000);
-        }
-    });
-
-    client.on('error', function(err) {
-        console.log('db error', err);
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-            handleDisconnect();
-        } else {
-            throw err;
-        }
-    });
-}
-
-handleDisconnect();
+var client = mysql.createConnection(dbConfig);
 
 Date.prototype.format = function(fmt) { //author: meizz
     var o = {
@@ -66,7 +42,7 @@ setInterval(function () {
             throw new Error("数据查询出问题了，直接挂掉程序，让forever重启应用，错误信息：" + JSON.stringify(err));
         }
     });
-}, 10000);
+}, 60000);
 
 
 db.getBookmarkbyUrl = function(user_id, url) {

@@ -35,11 +35,13 @@ var db = {
 }
 
 // 每隔10秒查询一下，出现问题直接挂掉nodejs,让forever将其重启！
-setInterval(function () {
+setInterval(function() {
     var sql = "SELECT * FROM `users` WHERE `id` = '1'";
     client.query(sql, (err, result) => {
         if (err) {
-            throw new Error("数据查询出问题了，直接挂掉程序，让forever重启应用，错误信息：" + JSON.stringify(err));
+            var date = new Date().format('yyyy-MM-dd hh:mm:ss');
+            console.log(date + " :数据查询出问题了，直接挂掉程序，让forever重启应用，错误信息：" + JSON.stringify(err));
+            throw new Error("");
         }
     });
 }, 60000);

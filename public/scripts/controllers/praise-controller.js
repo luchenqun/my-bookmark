@@ -9,10 +9,12 @@ app.controller('praiseCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
                 login: login,
                 index: index
             });
+            transition();
         })
         .catch((err) => {
             console.log('autoLogin err', err)
         });
+    $('.js-segment-praise').transition('hide');
 
     function animation() {
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
@@ -25,11 +27,7 @@ app.controller('praiseCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     function transition() {
-        $timeout(function() {
-            timeagoInstance.cancel();
-            timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
-        }, 100)
-        var className = 'js-table-search';
+        var className = 'js-segment-praise';
         $('.' + className).transition('hide');
         $('.' + className).transition({
             animation: animation(),

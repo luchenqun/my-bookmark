@@ -31,6 +31,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     }, {
         uiSref: 'hot',
         title: '热门收藏'
+    }, {
+        uiSref: 'praise',
+        title: '赞赏'
     }];
 
     // 未登陆显示的菜单数据
@@ -43,6 +46,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     }, {
         uiSref: 'hot',
         title: '热门收藏'
+    }, {
+        uiSref: 'praise',
+        title: '赞赏'
     }];
 
     /**
@@ -69,7 +75,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
         }
 
-        if(!searchWord){ return; }
+        if (!searchWord) {
+            return;
+        }
 
         var newItem = {
             t: searchOption,
@@ -188,7 +196,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         .then((data) => {
             $scope.searchHistory = JSON.parse(data.search_history || '[]');
             var count = 1;
-            var id = setInterval(function () {
+            var id = setInterval(function() {
                 var items = $('.search-item').popup({
                     on: 'focus',
                     inline: true

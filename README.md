@@ -32,11 +32,11 @@
 
 4 主要用到的模块说明
 ------------------
-**NodeJS**：`v6.6.0` 用来做后台服务。  
-**MySql**: `v5.17.7`用来做数据存储。  
+**Node.js**：`v6.6.0` 用来做后台服务。  
+**MySQL**: `v5.17.7`用来做数据存储。  
 **AngularJS**：前端JavaScript框架。   
 **jQuery**: 本来用了AngularJS是不需要再使用jQuery了的。但是有些功能AngularJS要大费周章才能完成，jQuery一句代码就能解决。所以还是忍不住将它导入了进来。   
-**mongodb**：`v2.6.10`后台保存登陆的session。    
+**MongoDB**：`v2.6.10`后台保存登陆的session。    
 **Semantic**：由于没有美工人员，自己开发的，不想界面太丑，用了这套UI。   
 
 5 目录结构
@@ -132,7 +132,7 @@ my-bookmark/
 --------------------
 ```
 "body-parser": bodyParser用于解析客户端请求的body中的内容,内部使用JSON编码处理
-"connect-mongo": 用于将session存入mongo
+"connect-mongo": 用于将session存入MongoDB
 "cookie-parser": 处理每一个请求的cookie
 "crypto": 加密模块，主要用来加密用户的密码
 "debug": 这个好像没用到，看名字好像调试的。
@@ -140,7 +140,7 @@ my-bookmark/
 "express": Web 应用程序框架
 "express-session": session模块
 "jsdom": 用来解析从浏览器导出来上传到服务器的书签html文件
-"morgan": 一个node.js关于http请求的日志中间件
+"morgan": 一个Node.js关于http请求的日志中间件
 "multer": 文件上传模块
 "mysql": sql数据库操作模块
 "node-readability": 获取网页title(添加书签用到)跟内容(书签详情用到)模块。
@@ -151,8 +151,8 @@ my-bookmark/
 
 7 安装部署指南
 -------------
-1、安装MySql数据库。如果不会，请戳教程[mysql 数据库安装教程](http://let-me-teach-you-baidu.luchenqun.com/?mysql%20%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B "mysql 数据库安装教程")。有点需要注意的是，MySql的版本至少要是5.6。否则执行schema.sql文件会出错。   
-2、新建一个数据库名，使用mysql将根目录下面的schema.sql文件执行一遍，创建数据库表格。有个问题尤其要注意：**数据库一定要使用UTF-8的编码**，否则执行一些汉字的sql语句会出错！如果是Ubuntu，大概过程如下。
+1、安装MySQL数据库。如果不会，请戳教程[MySQL 数据库安装教程](http://let-me-teach-you-baidu.luchenqun.com/?mysql%20%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B "mysql 数据库安装教程")。有点需要注意的是，MySQL的版本至少要是5.6。否则执行schema.sql文件会出错。   
+2、新建一个数据库名，使用MySQL将根目录下面的schema.sql文件执行一遍，创建数据库表格。有个问题尤其要注意：**数据库一定要使用UTF-8的编码**，否则执行一些汉字的sql语句会出错！如果是Ubuntu，大概过程如下。
 ```
 mysql -u root -p // 使用root账号进入mysql数据库。按回车之后输入安装时候root的密码。
 CREATE DATABASE mybookmarks DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; // 创建mybookmarks数据库。
@@ -162,7 +162,7 @@ use mybookmarks; //选择刚创建的数据库。
 source /home/lcq/schema.sql; // 执行schema.sql文件创建数据库表格。注意，将路径换为你schema.sql所在路径。   
 ```
 3、安装MongoDB 安装教程。如果不会，请戳教程[MongoDB 安装教程](http://let-me-teach-you-baidu.luchenqun.com/?MongoDB%20%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B "MongoDB 安装教程")，安装完成之后如果MongoDB没有启动，请启动MongoDB。   
-4、安装Nodejs。Nodejs版本至少要求6.0以上。不会的话，请按照上面步骤1、3提供的方法自行解决。   
+4、安装Node.js。Node.js版本至少要求6.0以上。不会的话，请按照上面步骤1、3提供的方法自行解决。   
 5、克隆代码`git@github.com:luchenqun/my-bookmark.git`，切换到项目根目录下面，执行`npm install`安装package。   
 6、更新/database/db.js文件的dbConfig配置，将你mysql的数据信息更新上去。   
 7、如果上面的都做好了，在项目根目录下面执行`node ./bin/www`，如果是开发，可以使用`npm start`。  

@@ -128,7 +128,7 @@ my-bookmark/
 ├── README.md                                 # 项目工程说明文件
 └── schema.sql                                # mysql数据库建表文件
 ```   
-6 用到的nodejs模块说明
+6 用到的Node.js模块说明
 --------------------
 ```
 "body-parser": bodyParser用于解析客户端请求的body中的内容,内部使用JSON编码处理

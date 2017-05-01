@@ -1,6 +1,6 @@
 -- 用户信息表
 drop table if exists users;
-CREATE TABLE `users` (
+CREATE TABLE `users` (  
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
   `username` varchar(255) DEFAULT NULL,     -- 用户名
   `password` varchar(255) DEFAULT NULL,     -- 密码

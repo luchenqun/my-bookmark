@@ -29,7 +29,7 @@ var parsehtml = function(file, callback) {
                         var folder, tag;
                         folder = $(ee).prev();
                         tag = folder.text().replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' ');
-                        if (tag != "Bookmarks" && tag != "书签栏") {
+                        if (tag != "Bookmarks" && tag != "书签栏" && tag != "") {
                             if (allTags.indexOf(tag) == -1) {
                                 allTags.push(tag);
                             }

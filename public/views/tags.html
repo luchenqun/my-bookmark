@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class="ui container" ng-show="editMode" ng-mousedown="storeTagIndex()" ng-mouseup="updateTagIndex()">
-        <p>提示：拖拽分类即可进行排序</p>
+        <p>提示：拖拽分类即可进行排序。如果添加新的分类，返回之后不会显示添加的分类，因为默认只显示有书签的分类。</p>
         <div class="ui six stackable cards" sv-root sv-part="tags">
             <div class="card" ng-repeat="tag in tags" id="tag{{tag.id}}" sv-element>
                 <div class="content">

@@ -480,7 +480,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     var t = offset.top;
                     var l = offset.left;
                     var w = $('.js-tags').width();
-                    $('.js-edit').offset({
+                    $('.js-note-add').offset({
                         top: t + 10,
                         left: l + w - 10,
                     })

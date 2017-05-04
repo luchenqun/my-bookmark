@@ -326,7 +326,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
-        getAdvices: function getAdvices(params) {
+        getAdvices: function(params) {
             var def = $q.defer();
             $http.get('/api/advices/', {
                     params: params
@@ -363,6 +363,32 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 })
                 .error(function(data, status) {
                     def.reject('getHotBookmarks error');
+                });
+            return def.promise;
+        },
+        addNote: function(params) {
+            var def = $q.defer();
+            $http.post('/api/addNote/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data, status) {
+                    def.reject('addNote error');
+                });
+            return def.promise;
+        },
+        getNotes: function(params) {
+            var def = $q.defer();
+            $http.get('/api/notes/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('getNotes error');
                 });
             return def.promise;
         },

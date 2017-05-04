@@ -1263,6 +1263,48 @@ api.getHotBookmarksByTimer = function() {
     }, timeout);
 }
 
+api.post('/addNote', function(req, res) {
+    console.log("addNote username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var params = req.body.params;
+    params.user_id = req.session.user.id;
+
+    db.addNote(params)
+        .then((affectedRows) => {
+            res.json({
+                retCode: 0,
+                msg: "添加备忘成功 ",
+            })
+            console.log('addNote affectedRows ', affectedRows)
+        })
+        .catch((err) => {
+            console.log('addNote error', err);
+            res.json({
+                retCode: 1,
+                msg: "添加备忘失败: " + JSON.stringify(err),
+            })
+        });
+});
+
+api.get('/notes', function(req, res) {
+    console.log("getNotes username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var params = req.query;
+    params.user_id = req.session.user.id;
+    db.getNotes(params)
+        .then((notes) => res.json(notes))
+        .catch((err) => console.log('notes', err));
+});
+
+
+
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
 };

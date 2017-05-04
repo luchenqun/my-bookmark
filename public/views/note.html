@@ -1,0 +1,42 @@
+<div class="ui segment js-note-card">
+    <div class="ui form" ng-show="edit">
+        <div class="required field">
+            <label>内容</label>
+            <textarea rows="4" placeholder="" ng-model="content"></textarea>
+        </div>
+        <div class="field">
+            <div class="actions">
+                <div class="ui cancel button" ng-click="edit=false;">取消</div>
+                <div class="ui green button" ng-click="addNote(false)">提交关闭</div>
+                <div class="ui green button" ng-click="addNote(true)">提交继续</div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider" ng-show="edit"></div>
+    <div class="ui five stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
+        <div class="card" ng-repeat="note in notes" id="{{note.id}}">
+            <div class="content"  id="noteid{{note.id}}" ng-click="copy(note.id, note.content)" style="max-height:200px;margin-bottom:10px;">
+                <div class="description" style="word-break:break-all; word-wrap:break-word;">
+                    <p>{{ note.content | characters:200:false }}</p>
+                </div>
+            </div>
+            <div class="extra content" ng-show="!note.edit" style="height:50px;padding-right:2px;padding-left:8px;">
+                <span class="left floated like" style="margin-top:6px;">
+                    <i class="add to calendar icon"></i>{{ note.created_at }}
+                </span>
+                <i class="ellipsis horizontal icon right floated" style="margin-top:8px;" ng-mouseover="note.edit=true;"></i>
+            </div>
+            <div class="extra content" ng-show="note.edit" ng-mouseleave="note.edit=false;" style="height:50px;">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/delete.png" ng-click="delNote(note.id)" title="删除备忘">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id)" title="编辑备忘">
+                <!-- <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(note.id, note.content)" title="复制备忘"> -->
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/detail.png" ng-click="detailNote(note)" title="备忘详情">
+            </div>
+        </div>
+    </div>
+    <div style="width:22px;height:22px;" class="js-note-add" ng-click="showAddNote()" data-tooltip="添加备忘" ng-show="!edit">
+        <img class="ui ui middle aligned tiny image" src="./images/edit.png" ng-show="!loadBusy">
+    </div>
+</div>
+<div class="ui massive text centered inline loader js-hot-loader" ng-class="{active:loadBusy, disabled:!loadBusy}">
+    正在加载中...</div>

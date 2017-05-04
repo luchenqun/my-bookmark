@@ -1,6 +1,6 @@
 -- 用户信息表
 drop table if exists users;
-CREATE TABLE `users` (  
+CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
   `username` varchar(255) DEFAULT NULL,     -- 用户名
   `password` varchar(255) DEFAULT NULL,     -- 密码
@@ -80,5 +80,16 @@ CREATE TABLE `hot_bookmarks` (
   `snap_url` varchar(1024) DEFAULT NULL,    -- 截图链接(imageList[0])
   `favicon_url` varchar(1024) DEFAULT NULL, -- icon链接(sourceLogo)
   `status` tinyint(4) DEFAULT '0',          -- 状态
+  PRIMARY KEY (`id`)
+);
+
+-- 备忘录
+drop table if exists notes;
+CREATE TABLE `notes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
+  `user_id` int(11) NOT NULL,               -- 用户id
+  `content` varchar(4096) DEFAULT NULL,     -- 备忘内容
+  `tag_id` int(11) DEFAULT NULL,            -- 分类id
+  `created_at` datetime DEFAULT now(),      -- 创建时间
   PRIMARY KEY (`id`)
 );

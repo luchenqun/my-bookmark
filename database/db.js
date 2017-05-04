@@ -942,4 +942,33 @@ db.hotBookmarks = function(date) {
     });
 };
 
+db.addNote = function(note) {
+    var sql = "INSERT INTO `notes` (`user_id`, `content`, `tag_id`) VALUES ('"+ note.user_id +"', "+ client.escape(note.content) +", '"+ note.tag_id +"')";
+    console.log(sql);
+
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.insertId);
+            }
+        });
+    });
+};
+
+db.getNotes = function(params) {
+    var sql = "SELECT notes.id, notes.content, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '"+params.user_id+"' ORDER BY `created_at` DESC";
+    console.log(sql);
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
 module.exports = db;

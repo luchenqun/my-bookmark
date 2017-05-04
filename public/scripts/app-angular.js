@@ -24,6 +24,11 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: '/views/praise.html',
             controller: 'praiseCtr'
         })
+        .state('note', {
+            url: '/note',
+            templateUrl: '/views/note.html',
+            controller: 'noteCtr'
+        })
         .state('search', {
             url: '/search',
             templateUrl: '/views/search.html',

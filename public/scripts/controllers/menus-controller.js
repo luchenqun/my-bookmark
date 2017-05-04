@@ -34,6 +34,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     }, {
         uiSref: 'praise',
         title: '赞赏'
+    }, {
+        uiSref: 'note',
+        title: '备忘录'
     }];
 
     // 未登陆显示的菜单数据

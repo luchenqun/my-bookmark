@@ -1,6 +1,6 @@
 <div class="js-menu" ng-controller="menuCtr">
     <div class="ui huge menu js-login-in" ng-if="login">
-        <a class="item" ng-class="{selected:$index===selectLoginIndex}" style="cursor:default;" ui-sref="{{ menu.uiSref }}" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" js-menu-init>
+        <a class="item" ng-class="{selected:$index===selectLoginIndex}" style="cursor:default;" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" ui-sref="{{ menu.uiSref }}({searchWord:null})" js-menu-init>
             <div>{{ menu.title }}</div>
             <div class="ui floating simple dropdown icon js-bookmark-dropdown" ng-if="$index==0" ng-click="$event.stopPropagation();">
                 <i class="dropdown icon"></i>
@@ -47,6 +47,7 @@
                                 <div class="item" data-value="2">Github</div>
                                 <div class="item" data-value="3">栈溢出</div>
                                 <div class="item" data-value="4">百度</div>
+                                <div class="item" data-value="5">备忘录</div>
                             </div>
                         </div>
                     </label>

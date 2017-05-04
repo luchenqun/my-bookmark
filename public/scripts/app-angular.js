@@ -27,6 +27,9 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('note', {
             url: '/note',
             templateUrl: '/views/note.html',
+            params: {
+                searchWord: null,
+            },
             controller: 'noteCtr'
         })
         .state('search', {

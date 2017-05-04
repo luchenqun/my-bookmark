@@ -219,7 +219,6 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 }
             })
         }
-
         $timeout(function() {
             timeagoInstance.cancel();
             timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
@@ -262,6 +261,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 })
                 if (!find) {
                     $scope.bookmarks.unshift(data);
+                    $timeout(function() {
+                        timeagoInstance.cancel();
+                        timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+                    }, 100)
                 }
             } else {
                 $scope.forbidTransition = true;
@@ -307,6 +310,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                                     $scope.bookmarks.push(bookmark);
                                 }
                             })
+                            $timeout(function() {
+                                timeagoInstance.cancel();
+                                timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+                            }, 100)
                         } else if (params.showStyle == 'costomTag') {
                             $scope.costomTags.forEach((tag) => {
                                 if (tag.clicked) {
@@ -376,7 +383,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     function animation() {
         var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
             'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+            'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
         ];
         var t = data[parseInt(Math.random() * 1000) % data.length];
 
@@ -406,7 +413,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         }
     }
 
-    function clickCmp(a, b){
+    function clickCmp(a, b) {
         var click1 = parseInt(a.click_count);
         var click2 = parseInt(b.click_count);
         if (click1 > click2) {

@@ -1,0 +1,11 @@
+<div class="ngdialog-message">
+    <h3>删除提示</h3>
+    <p ng-show="ngDialogId" style="word-break:break-all; word-wrap:break-word;">您确认要删除备忘:<br/><br/>
+        {{ content | characters:600:false  }}
+    </p>
+    <p>如果删除该备忘，那么再也无法查看到。</p>
+</div>
+<div class="ngdialog-buttons">
+    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirmDelNote()">确定删除</button>
+    <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog('button')">取消</button>
+</div>

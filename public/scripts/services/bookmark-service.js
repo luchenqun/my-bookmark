@@ -392,6 +392,32 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        delNote: function(params) {
+            var def = $q.defer();
+            $http.delete('/api/delNote/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('delNote error');
+                });
+            return def.promise;
+        },
+        updateNote: function(params) {
+            var def = $q.defer();
+            $http.post('/api/updateNote/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('updateNote error');
+                });
+            return def.promise;
+        },
     };
 
     return service;

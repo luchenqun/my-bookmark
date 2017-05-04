@@ -943,7 +943,7 @@ db.hotBookmarks = function(date) {
 };
 
 db.addNote = function(note) {
-    var sql = "INSERT INTO `notes` (`user_id`, `content`, `tag_id`) VALUES ('"+ note.user_id +"', "+ client.escape(note.content) +", '"+ note.tag_id +"')";
+    var sql = "INSERT INTO `notes` (`user_id`, `content`, `tag_id`) VALUES ('" + note.user_id + "', " + client.escape(note.content) + ", '" + note.tag_id + "')";
     console.log(sql);
 
     return new Promise(function(resolve, reject) {
@@ -958,17 +958,57 @@ db.addNote = function(note) {
 };
 
 db.getNotes = function(params) {
-    var sql = "SELECT notes.id, notes.content, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '"+params.user_id+"' ORDER BY `created_at` DESC";
+    var sql = "SELECT notes.id, notes.content, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '" + params.user_id + "'";
+
+    if (params.searchWord) {
+        sql += " AND notes.content LIKE '%" + params.searchWord + "%'";
+    }
+
+    sql += " ORDER BY `created_at` DESC"
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
-                resolve(result);
+                params.currentPage = params.currentPage || 1;
+                params.perPageItems = params.perPageItems || 20;
+                var searchData = {
+                    totalItems: result.length,
+                    notes: result.slice((params.currentPage - 1) * params.perPageItems, params.currentPage * params.perPageItems),
+                }
+                resolve(searchData);
+            }
+        });
+    })
+};
+
+db.delNote = function(id) {
+    var sql = "DELETE FROM `notes` WHERE (`id`='" + id + "')";
+    console.log(sql);
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
             }
         });
     });
-};
+}
+
+db.updateNote = function(id, content) {
+    var sql = "UPDATE `notes` SET `content`=" + client.escape(content) + " WHERE (`id`='" + id + "')";
+    console.log(sql);
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
 
 module.exports = db;

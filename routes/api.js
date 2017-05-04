@@ -1118,7 +1118,7 @@ api.getFaviconByTimer = function() {
                         // http://www.cnblogs.com/zhangwei595806165/p/4984912.html 各种方法都试一遍
                         var faviconUrl = "http://favicon.byi.pw/?url=" + url; // 默认地址
                         if (faviconState == 1) {
-                            faviconUrl = "http://g.soz.im/" + url ;
+                            faviconUrl = "http://g.soz.im/" + url;
                         } else if (faviconState == 2) {
                             faviconUrl = "http://www.google.com/s2/favicons?domain=" + url;
                         }
@@ -1134,7 +1134,7 @@ api.getFaviconByTimer = function() {
                                 });
                         }).catch((err) => {
                             var newFaviconState = -1;
-                            console.log("boomarkid = " + id + ", url = " + url +", download over")
+                            console.log("boomarkid = " + id + ", url = " + url + ", download over")
                             if (faviconState == 0 || faviconState == 1) {
                                 newFaviconState = faviconState + 1;
                             } else if (faviconState == 2) {
@@ -1299,11 +1299,49 @@ api.get('/notes', function(req, res) {
     var params = req.query;
     params.user_id = req.session.user.id;
     db.getNotes(params)
-        .then((notes) => res.json(notes))
+        .then((data) => res.json(data))
         .catch((err) => console.log('notes', err));
 });
 
+api.delete('/delNote', function(req, res) {
+    console.log("delBookmark username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var noteId = req.query.id;
+    db.delNote(noteId)
+        .then((affectedRows) => res.json({
+            result: affectedRows
+        }))
+        .catch((err) => {
+            console.log('delBookmark err', err);
+            res.json({
+                result: -1
+            })
+        });
+})
 
+api.post('/updateNote', function(req, res) {
+    console.log("updateNote username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var note = req.body.params;
+    console.log('hello updateNote', JSON.stringify(note));
+    db.updateNote(note.id, note.content)
+        .then((affectedRows) => res.json({
+            result: affectedRows
+        }))
+        .catch((err) => {
+            console.log('updateBookmark err', err);
+            res.json({
+                result: -1
+            })
+        }); // oops!
+})
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');

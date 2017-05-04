@@ -74,8 +74,15 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $window.open('https://github.com/search?utf8=%E2%9C%93&q=' + encodeURIComponent(searchWord) + '&type=', '_blank');
         } else if (searchOption == 3) {
             $window.open('https://stackoverflow.com/search?q=' + encodeURIComponent(searchWord), '_blank');
-        } else {
+        } else if (searchOption == 4) {
             $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
+        } else if (searchOption == 5) {
+            $state.go('note', {
+                searchWord: searchWord,
+            }, {
+                reload: true,
+            })
+            updateMenuActive($scope.selectLoginIndex = 6);
         }
 
         if (!searchWord) {

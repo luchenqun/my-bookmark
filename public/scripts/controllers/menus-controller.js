@@ -205,18 +205,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     bookmarkService.userInfo({})
         .then((data) => {
             $scope.searchHistory = JSON.parse(data.search_history || '[]');
-            var count = 1;
-            var id = setInterval(function() {
-                var items = $('.search-item').popup({
-                    on: 'focus',
-                    inline: true
-                });
-                console.log("searchHistory = ", items.length, JSON.stringify(data.search_history));
-                count++;
-                if (items.length >= 1 || count >= 20) {
-                    clearInterval(id);
-                }
-            }, 200);
         })
         .catch((err) => {
             console.log(err);

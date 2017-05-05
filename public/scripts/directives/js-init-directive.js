@@ -177,6 +177,11 @@ app.directive('jsMenuInit', function($compile) {
                 $('.ui.menu a.item').on('click', function() {
                     $(this).addClass('selected').siblings().removeClass('selected');
                 });
+
+                $('.search-item').popup({
+                    on: 'focus',
+                    inline: true
+                });
             }
         },
     };

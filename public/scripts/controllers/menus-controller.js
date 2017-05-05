@@ -211,7 +211,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                     on: 'focus',
                     inline: true
                 });
-                console.log("searchHistory = ", items.length);
+                console.log("searchHistory = ", items.length, JSON.stringify(data.search_history));
+                count++;
                 if (items.length >= 1 || count >= 20) {
                     clearInterval(id);
                 }

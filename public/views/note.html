@@ -44,7 +44,7 @@
     </div>
     <div class="ui divider"></div>
     <div class="ui grid">
-        <div class="eight wide column" style="margin-top:10px;">共找到备忘一共约{{notes.length}}个</div>
+        <div class="eight wide column" style="margin-top:10px;"><span ng-show="searchWord">通过搜索关键字"{{searchWord}}"，</span>共找到备忘一共约{{totalItems}}个</div>
         <div class="eight wide column">
             <pagination></pagination>
         </div>

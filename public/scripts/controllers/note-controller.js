@@ -13,6 +13,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.inputPage = '';
+    $scope.searchWord = $stateParams.searchWord
+    $scope.totalItems = 0;
 
     var timeagoInstance = timeago();
 
@@ -188,12 +190,13 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         var params = {
             currentPage: $scope.currentPage,
             perPageItems: perPageItems,
-            searchWord: $stateParams.searchWord,
+            searchWord: $scope.searchWord,
         };
         bookmarkService.getNotes(params)
             .then((data) => {
                 $scope.notes = data.notes;
                 $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
+                $scope.totalItems = data.totalItems;
                 $timeout(function() {
                     timeagoInstance.cancel();
                     timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');

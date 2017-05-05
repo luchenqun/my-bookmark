@@ -1,7 +1,7 @@
 app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService) {
     console.log("Hello noteCtr...", $stateParams);
 
-    const perPageItems = 36;
+    const perPageItems = 35;
     var dialog = null;
     $scope.loadBusy = false;
     $scope.add = false;

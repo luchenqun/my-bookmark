@@ -60,6 +60,7 @@ app.factory('dataService', [function() {
             var t = data[parseInt(Math.random() * 1000) % data.length];
             return t;
         },
+        historyTypes: ['书签', '谷歌', 'Github', '栈溢出', '百度', '备忘录'],
     };
 
     return service;

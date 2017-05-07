@@ -42,12 +42,7 @@
                             <div class="text " style="color:#C9C9C9;font-weight:normal;">书签</div>
                             <i class="angle down icon"></i>
                             <div class="menu">
-                                <div class="item active" data-value="0">书签</div>
-                                <div class="item" data-value="1">谷歌</div>
-                                <div class="item" data-value="2">Github</div>
-                                <div class="item" data-value="3">栈溢出</div>
-                                <div class="item" data-value="4">百度</div>
-                                <div class="item" data-value="5">备忘录</div>
+                                <div class="item" data-value="$index" ng-class="{active:$index==0}" ng-repeat="historyType in historyTypes">{{historyType}}</div>
                             </div>
                         </div>
                     </label>
@@ -56,7 +51,7 @@
                         <div class="ui selection list">
                             <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)" style="height:30px;">
                                 <div class="right floated content">
-                                    <span style="margin-right:10px;">{{ item.t  | searchType }}</span>
+                                    <span style="margin-right:10px;">{{ historyTypes[item.t] }}</span>
                                 </div>
                                 <div class="content">
                                     <span style="margin-left:10px;">{{ item.d}}</span>

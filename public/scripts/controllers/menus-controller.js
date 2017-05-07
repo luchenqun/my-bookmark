@@ -6,6 +6,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.searchWord = ''; /**< 搜索关键字 */
     $scope.showStyle = null;
     $scope.searchHistory = [];
+    $scope.historyTypes = dataService.historyTypes;
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
@@ -15,11 +16,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         updateMenuActive(index);
     });
 
-    // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
-    $scope.loginMenus = dataService.loginMenus;
-
-    // 未登陆显示的菜单数据
-    $scope.notLoginMenus = dataService.notLoginMenus;
+    $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
+    $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
     /**
      * @func
@@ -49,7 +47,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             }, {
                 reload: true,
             })
-            updateMenuActive($scope.selectLoginIndex = 6);
+            updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
         }
 
         if (!searchWord) {
@@ -82,12 +80,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $('.search-item').val($scope.searchWord);
 
         $('.js-search-option').dropdown('set value', type);
-        var types = {};
-        types[0] = '书签';
-        types[1] = '谷歌';
-        types[2] = 'Github';
-        types[3] = '栈溢出';
-        types[4] = '百度';
+        var types = $scope.historyTypes;
         $('.js-search-option').dropdown('set text', types[type]);
         $('.js-search-option').dropdown('save defaults', types[type]);
         $('.js-search-option .menu .item').removeClass('active');
@@ -170,8 +163,17 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     }
 
     bookmarkService.userInfo({})
-        .then((data) => {
-            $scope.searchHistory = JSON.parse(data.search_history || '[]');
+        .then((user) => {
+            $scope.searchHistory = JSON.parse(user.search_history || '[]');
+            $timeout(function() {
+                var showStyle = (user && user.show_style) || 'navigate';
+                if (showStyle) {
+                    $('.js-bookmark-dropdown' + ' .radio.checkbox').checkbox('set unchecked');
+                    $('.js-radio-' + showStyle).checkbox('set checked');
+                    $('.js-bookmark-dropdown' + ' .field.item').removeClass('active selected');
+                    $('.js-field-' + showStyle).addClass('active selected');
+                }
+            }, 1000)
         })
         .catch((err) => {
             console.log(err);

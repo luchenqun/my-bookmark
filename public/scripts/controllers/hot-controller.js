@@ -1,4 +1,4 @@
-app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService) {
+app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello hotCtr...");
     $scope.bookmarks = []; // 书签数据
     $scope.bookmarkNormalHover = false;
@@ -15,7 +15,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
     bookmarkService.autoLogin()
         .then((data) => {
             var login = data.logined;
-            var index = login ? 4 : 2;
+            var index = login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot;
             pubSubService.publish('Common.menuActive', {
                 login: login,
                 index: index
@@ -138,7 +138,7 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
 
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         var login = (menusScope && menusScope.login) || false;
-        var index = login ? 4 : 2;
+        var index = login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot;
         pubSubService.publish('Common.menuActive', {
             login: login,
             index: index
@@ -266,18 +266,6 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
         now.setTime(now.getTime() + i * 24 * 60 * 60 * 1000);
         clock = $filter('date')(now, format);
         return clock;
-    }
-
-    function transition() {}
-
-    function animation() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-
-        return t;
     }
 
     function updateEditPos() {

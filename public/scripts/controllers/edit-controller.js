@@ -1,4 +1,4 @@
-app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, $document, bookmarkService, pubSubService) {
+app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $timeout, $document, bookmarkService, pubSubService, dataService) {
     console.log("Hello editCtr");
     var maxSelections = 3;
     init();
@@ -143,7 +143,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         console.log('subscribe MenuCtr.showAddBookmarkMoadl', params);
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
-        }).modal('setting', 'transition', transition()).modal('show');
+        }).modal('setting', 'transition', dataService.animation()).modal('show');
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
         $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         $('.ui.checkbox.js-public').checkbox('set checked');
@@ -155,7 +155,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         console.log('subscribe bookmarksCtr.editBookmark', params);
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
-        }).modal('setting', 'transition', transition()).modal('show');
+        }).modal('setting', 'transition', dataService.animation()).modal('show');
         setTimeout(function() {
             $('.ui.modal.js-add-bookmark').modal("refresh");
         }, 500);
@@ -192,7 +192,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         console.log('TagCtr.storeBookmark', bookmark);
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
-        }).modal('setting', 'transition', transition()).modal('show');
+        }).modal('setting', 'transition', dataService.animation()).modal('show');
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
         $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         $('.ui.checkbox.js-public').checkbox('set checked');
@@ -201,7 +201,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         $scope.autoGettitle = false;
         $scope.url = bookmark.url;
         $scope.title = bookmark.title;
-        if(bookmark.tags && bookmark.tags.length >= 1){
+        if (bookmark.tags && bookmark.tags.length >= 1) {
             $scope.newTags = bookmark.tags.map((item) => item.name).toString();
         }
     });
@@ -215,10 +215,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
             if (event.keyCode == 45 && menusScope.login) {
                 if ($('.ui.modal.js-add-bookmark').modal('is active')) {
                     $scope.ok();
-                }else {
+                } else {
                     $('.ui.modal.js-add-bookmark').modal({
                         closable: false,
-                    }).modal('setting', 'transition', transition()).modal('show');
+                    }).modal('setting', 'transition', dataService.animation()).modal('show');
                     $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
                     $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
                     $('.ui.checkbox.js-public').checkbox('set checked');
@@ -263,14 +263,6 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
                 }
             });
         }, 1000)
-    }
-
-    function transition() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        return data[parseInt(Math.random() * 1000) % data.length];
     }
 
     function init() {

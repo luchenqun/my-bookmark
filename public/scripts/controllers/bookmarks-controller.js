@@ -1,4 +1,4 @@
-app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService) {
+app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello bookmarksCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 搜索对话框
@@ -104,7 +104,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         bookmarkService.delBookmark(params)
             .then((data) => {
                 $("#" + bookmarkId).transition({
-                    animation: animation(),
+                    animation: dataService.animation(),
                     duration: 500,
                     onComplete: function() {
                         $("#" + bookmarkId).remove();
@@ -169,13 +169,13 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         });
         pubSubService.publish('Common.menuActive', {
             login: true,
-            index: 3
+            index: dataService.LoginIndexSettings
         });
     }
 
     $scope.closeMsg = function() {
         $('.js-msg').transition({
-            animation: animation(),
+            animation: dataService.animation(),
             duration: '500ms',
             onComplete: function() {
                 $(".js-msg").remove();
@@ -335,7 +335,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
                     pubSubService.publish('Common.menuActive', {
                         login: true,
-                        index: 0
+                        index: dataService.LoginIndexBookmarks
                     });
                     if (!$scope.forbidTransition) {
                         transition();
@@ -375,19 +375,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
         }
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: animation(),
+            animation: dataService.animation(),
             duration: 500,
         });
-    }
-
-    function animation() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-            'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-
-        return t;
     }
 
     // TODO: 我要将编辑按钮固定在容器的右上角

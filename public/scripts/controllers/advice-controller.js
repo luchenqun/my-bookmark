@@ -1,4 +1,4 @@
-app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', function($scope, $state, $timeout, bookmarkService, pubSubService) {
+app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $timeout, bookmarkService, pubSubService, dataService) {
     console.log("Hello adviceCtr");
     var maxSelections = 3;
 
@@ -7,7 +7,7 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
     $scope.category = ["功能", "BUG", "其他"]
 
     $scope.ok = function() {
-        if($scope.comment == ''){
+        if ($scope.comment == '') {
             toastr.error('留言失败内容不能为空', "错误");
             return;
         }
@@ -41,7 +41,7 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
                 $scope.advices = data;
                 pubSubService.publish('Common.menuActive', {
                     login: true,
-                    index: 2
+                    index: dataService.LoginIndexAdvice
                 });
             })
             .catch((err) => console.log('getAdvices err', err));
@@ -49,8 +49,7 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
 
     setTimeout(function() {
         $('.ui.dropdown.js-categorys').dropdown({
-            onChange: function(value, text, $choice) {
-            }
+            onChange: function(value, text, $choice) {}
         });
         getAdvices({});
     }, 100)
@@ -58,16 +57,10 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
     $('.js-segment-advice').transition('hide');
 
     function transition() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-
         var className = 'js-segment-advice';
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: t,
+            animation: dataService.animation(),
             duration: 500,
         });
     }

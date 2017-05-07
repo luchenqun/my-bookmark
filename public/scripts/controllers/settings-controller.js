@@ -1,4 +1,4 @@
-app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService) {
+app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService, dataService) {
     console.log('Hello settingsCtr......', $stateParams);
     $scope.form = [false, false, false, false];
     $scope.passwordOrgin = "";
@@ -70,7 +70,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
                                 console.log('logout..........', data)
                                 pubSubService.publish('Common.menuActive', {
                                     login: false,
-                                    index: 1
+                                    index: dataService.NotLoginIndexLogin
                                 });
                                 $state.go('login', {})
                             })
@@ -128,7 +128,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
                 setTimeout(function() {
                     pubSubService.publish('Common.menuActive', {
                         login: true,
-                        index: 0
+                        index: dataService.LoginIndexBookmarks
                     });
                     $state.go('bookmarks', {})
                 }, 3000);
@@ -140,21 +140,15 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
 
     pubSubService.publish('Common.menuActive', {
         login: true,
-        index: 3
+        index: dataService.LoginIndexSettings
     });
     transition();
 
     function transition() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-
         var className = 'js-segment-settings';
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: t,
+            animation: dataService.animation(),
             duration: 500,
         });
     }

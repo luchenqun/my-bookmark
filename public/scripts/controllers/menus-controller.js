@@ -1,4 +1,4 @@
-app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', 'pubSubService', 'bookmarkService', function($scope, $stateParams, $state, $window, $timeout, pubSubService, bookmarkService) {
+app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', 'pubSubService', 'bookmarkService', 'dataService', function($scope, $stateParams, $state, $window, $timeout, pubSubService, bookmarkService, dataService) {
     console.log("Hello menuCtr")
     $scope.login = false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
@@ -16,43 +16,10 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     });
 
     // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
-    $scope.loginMenus = [{
-        uiSref: 'bookmarks',
-        title: '书签'
-    }, {
-        uiSref: 'tags',
-        title: '书签分类'
-    }, {
-        uiSref: 'advice',
-        title: '留言'
-    }, {
-        uiSref: 'settings',
-        title: '设置'
-    }, {
-        uiSref: 'hot',
-        title: '热门收藏'
-    }, {
-        uiSref: 'praise',
-        title: '赞赏'
-    }, {
-        uiSref: 'note',
-        title: '备忘录'
-    }];
+    $scope.loginMenus = dataService.loginMenus;
 
     // 未登陆显示的菜单数据
-    $scope.notLoginMenus = [{
-        uiSref: '/',
-        title: '首页'
-    }, {
-        uiSref: 'login',
-        title: '登录|注册'
-    }, {
-        uiSref: 'hot',
-        title: '热门收藏'
-    }, {
-        uiSref: 'praise',
-        title: '赞赏'
-    }];
+    $scope.notLoginMenus = dataService.notLoginMenus;
 
     /**
      * @func

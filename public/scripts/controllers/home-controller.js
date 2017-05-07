@@ -1,4 +1,4 @@
-app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService) {
+app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService, dataService) {
     console.log('Hello homeCtr......');
 
     bookmarkService.autoLogin()
@@ -15,7 +15,7 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
                 console.log('autoLogin failed......................')
                 pubSubService.publish('Common.menuActive', {
                     login: false,
-                    index: 0
+                    index: dataService.NotLoginIndexHome
                 });
                 transition();
             }
@@ -26,16 +26,10 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
     $('.js-segment-home').transition('hide');
 
     function transition() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-
         var className = 'js-segment-home';
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: t,
+            animation: dataService.animation(),
             duration: 500,
         });
     }

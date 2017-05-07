@@ -1,4 +1,4 @@
-app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService) {
+app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello searchCtr...", $stateParams);
     const perPageItems = 20;
     var dialog = null;
@@ -41,7 +41,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     // 默认登陆
     pubSubService.publish('Common.menuActive', {
         login: true,
-        index: 0
+        index: dataService.LoginIndexBookmarks
     });
 
     var searchParams = {
@@ -92,7 +92,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         bookmarkService.delBookmark(params)
             .then((data) => {
                 $("#" + bookmarkId).transition({
-                    animation: animation(),
+                    animation: dataService.animation(),
                     duration: 500,
                     onComplete: function() {
                         $("#" + bookmarkId).remove();
@@ -230,7 +230,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
         console.log('subscribe EditCtr.inserBookmarsSuccess', JSON.stringify(data));
         $scope.searchBookmarks.forEach((bookmark) => {
-            if(bookmark.id == data.id){
+            if (bookmark.id == data.id) {
                 bookmark.title = data.title;
                 bookmark.url = data.url;
                 bookmark.description = data.description;
@@ -281,16 +281,6 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         }
     }
 
-    function animation() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-
-        return t;
-    }
-
     function transition() {
         $timeout(function() {
             timeagoInstance.cancel();
@@ -299,7 +289,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         var className = 'js-table-search';
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: animation(),
+            animation: dataService.animation(),
             duration: 500,
         });
     }

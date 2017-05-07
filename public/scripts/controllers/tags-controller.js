@@ -1,4 +1,4 @@
-app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', function($scope, $filter, $window, $stateParams, $timeout, ngDialog, bookmarkService, pubSubService) {
+app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $filter, $window, $stateParams, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello tagsCtr...", $stateParams);
     getTags({});
 
@@ -97,7 +97,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
                 pubSubService.publish('Common.menuActive', {
                     login: true,
-                    index: 1
+                    index: dataService.LoginIndexTags
                 });
                 transition();
             })
@@ -154,7 +154,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         bookmarkService.delBookmark(params)
             .then((data) => {
                 $("#" + bookmarkId).transition({
-                    animation: animation(),
+                    animation: dataService.animation(),
                     duration: 500,
                     onComplete: function() {
                         $("#" + bookmarkId).remove();
@@ -216,7 +216,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             $('.js-tags-table').transition('hide');
             $('.stackable.cards .card').transition('hide');
             $('.stackable.cards .card').transition({
-                animation: animation(),
+                animation: dataService.animation(),
                 reverse: 'auto', // default setting
                 interval: 50,
                 onComplete: function() {
@@ -289,7 +289,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     })
                     if (index !== -1 && tagName != '未分类' && tagName != "收藏") {
                         $("#tag" + tagId).transition({
-                            animation: animation(),
+                            animation: dataService.animation(),
                             duration: 500,
                             onComplete: function() {
                                 $("#tag" + tagId).remove();
@@ -326,7 +326,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     $scope.addTag = function(tag) {
         console.log(tag);
-        if($scope.tags.length >= 30){
+        if ($scope.tags.length >= 30) {
             toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
             return;
         }
@@ -435,7 +435,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
         pubSubService.publish('Common.menuActive', {
             login: true,
-            index: 1
+            index: dataService.LoginIndexTags
         });
     }
 
@@ -489,26 +489,16 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     }
 
-    function animation() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-        return t;
-    }
-
     function transition() {
         var className = 'js-tags-table';
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: animation(),
+            animation: dataService.animation(),
             duration: 500,
         });
     }
 
-    function clickCmp(a, b){
+    function clickCmp(a, b) {
         var click1 = parseInt(a.click_count);
         var click2 = parseInt(b.click_count);
         if (click1 > click2) {

@@ -1,9 +1,9 @@
-app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'bookmarkService', 'pubSubService', function($scope, $filter, $state, $cookieStore, bookmarkService, pubSubService) {
+app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $filter, $state, $cookieStore, bookmarkService, pubSubService, dataService) {
     console.log("Hello loginCtr...", $cookieStore.get("username"));
 
     pubSubService.publish('Common.menuActive', {
         login: false,
-        index: 1
+        index: dataService.NotLoginIndexLogin
     });
 
     $scope.username = $cookieStore.get("username") || "";
@@ -51,7 +51,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
     $scope.showRegister = function() {
         $('.ui.modal.js-register').modal({
             closable: false,
-        }).modal('setting', 'transition', transition()).modal('show');
+        }).modal('setting', 'transition', dataService.animation()).modal('show');
 
         $scope.emailRegister = "";
         $scope.usernameRegister = "";
@@ -106,15 +106,8 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', 'book
     var className = 'js-form-login';
     $('.' + className).transition('hide');
     $('.' + className).transition({
-        animation: transition(),
+        animation: dataService.animation(),
         duration: 500,
     });
 
-    function transition() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 
-             'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        return data[parseInt(Math.random() * 1000) % data.length];
-    }
 }]);

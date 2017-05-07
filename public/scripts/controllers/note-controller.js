@@ -1,4 +1,4 @@
-app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService) {
+app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello noteCtr...", $stateParams);
 
     const perPageItems = 35;
@@ -21,7 +21,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     bookmarkService.autoLogin()
         .then((data) => {
             var login = data.logined;
-            var index = login ? 6 : 1;
+            var index = login ? dataService.LoginIndexNote : dataService.NotLoginIndexLogin;
             pubSubService.publish('Common.menuActive', {
                 login: login,
                 index: index
@@ -121,7 +121,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                 .then((data) => {
                     if (data.result == 1) {
                         $("#" + $scope.currentNoteId).transition({
-                            animation: animation(),
+                            animation: dataService.animation(),
                             duration: 500,
                             onComplete: function() {
                                 $("#" + $scope.currentNoteId).remove();
@@ -184,7 +184,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             scope: $scope
         });
     }
-    // $('.js-segment-praise').transition('hide');
+
     function getNotes() {
         $scope.loadBusy = true;
         var params = {
@@ -202,6 +202,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                     timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
                 }, 100)
                 $scope.loadBusy = false;
+                transition();
             })
             .catch((err) => {
                 $scope.notes = [];
@@ -209,21 +210,13 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             });
     }
 
-    function animation() {
-        var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-            'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-            'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
-        ];
-        var t = data[parseInt(Math.random() * 1000) % data.length];
-
-        return t;
-    }
+    $('.js-note-card').transition('hide');
 
     function transition() {
         var className = 'js-note-card';
         $('.' + className).transition('hide');
         $('.' + className).transition({
-            animation: animation(),
+            animation: dataService.animation(),
             duration: 500,
         });
     }

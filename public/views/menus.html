@@ -42,7 +42,7 @@
                             <div class="text " style="color:#C9C9C9;font-weight:normal;">书签</div>
                             <i class="angle down icon"></i>
                             <div class="menu">
-                                <div class="item" data-value="$index" ng-class="{active:$index==0}" ng-repeat="historyType in historyTypes">{{historyType}}</div>
+                                <div class="item" data-value="{{$index}}" ng-class="{active:$index==0}" ng-repeat="historyType in historyTypes">{{historyType}}</div>
                             </div>
                         </div>
                     </label>

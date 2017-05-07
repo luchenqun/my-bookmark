@@ -10,7 +10,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
-        console.log("subscribe Common.menuActive", params)
+        console.log("subscribe Common.menuActive, login = " + params.login + ", index = " + params.index);
         $scope.login = (params && params.login) || false;
         var index = $scope.login ? ($scope.selectLoginIndex = (params && params.index) || 0) : ($scope.selectNotLoginIndex = (params && params.index) || 0);
         updateMenuActive(index);
@@ -24,6 +24,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
      * @desc 点击搜索按钮搜索书签
      */
     $scope.search = function(searchWord) {
+        console.log('search......', searchWord);
+
         $scope.login = true;
         var searchOption = $('.js-search-option').dropdown('get value') || 0;
         if (searchOption == 0) {
@@ -42,6 +44,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         } else if (searchOption == 4) {
             $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
         } else if (searchOption == 5) {
+            console.log('search note, word = ', searchWord);
             $state.go('note', {
                 searchWord: searchWord,
             }, {

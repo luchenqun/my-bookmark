@@ -62,19 +62,9 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                         bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
                     }
                 })
-            }
+            } else {
 
-            // if ($scope.showStyle == 'table') {
-            //     $scope.changeOrder($scope.order.indexOf(true));
-            // }
-            //
-            // if ($scope.showStyle == 'costomTag') {
-            //     $scope.costomTags.forEach((tag) => {
-            //         if (tag.clicked) {
-            //             $scope.updateCostomTagBookmarks(tag.index)
-            //         }
-            //     })
-            // }
+            }
 
             $timeout(function() {
                 timeagoInstance.cancel();

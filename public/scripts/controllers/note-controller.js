@@ -66,6 +66,11 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         $scope.add = (!$scope.add);
         $scope.edit = false;
         $scope.content = '';
+        if ($scope.add) {
+            $timeout(function() {
+                $("#noteedit")[0].focus();
+            });
+        }
         updateEditPos();
     }
 

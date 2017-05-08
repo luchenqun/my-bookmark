@@ -1,4 +1,4 @@
-app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello noteCtr...", $stateParams);
 
     const perPageItems = 35;
@@ -43,6 +43,24 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             $scope.currentPage = $scope.totalPages
         }
     }
+
+    // 快捷键a增加书签
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            var menusScope = $('div[ng-controller="menuCtr"]').scope();
+            var login = (menusScope && menusScope.login) || false;
+            var blur = (menusScope && menusScope.blur) || false;
+            // a按键，显示
+            if (event.keyCode == 65 && login && (!blur) && (!$scope.add)) {
+                $scope.showAddNote();
+            }
+
+            // Esc按键，退出
+            if (event.keyCode == 27 && login && (!blur) && ($scope.add)) {
+                $scope.showAddNote();
+            }
+        })
+    });
 
     $scope.showAddNote = function() {
         $scope.add = (!$scope.add);

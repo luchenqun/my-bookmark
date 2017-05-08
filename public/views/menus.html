@@ -46,7 +46,17 @@
                             </div>
                         </div>
                     </label>
-                    <input class="prompt search-item" type="text" ng-model="searchWord" placeholder="" ng-keypress="($event.which === 13)?search(searchWord):0" data-position="bottom left" data-variation="large" id="lcq">
+                    <input
+                        class="prompt search-item"
+                        type="text"
+                        ng-model="searchWord"
+                        placeholder=""
+                        ng-keypress="($event.which === 13)?search(searchWord):0"
+                        data-position="bottom left"
+                        data-variation="large"
+                        id="lcq"
+                        ng-focus="inputBlur(true)"
+                        ng-blur="inputBlur(false)">
                     <div class="ui fluid popup top left transition hidden" style="padding-left: 0px; padding-right: 0px;">
                         <div class="ui selection list">
                             <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)" style="height:30px;">
@@ -63,7 +73,7 @@
                 </div>
             </div>
             <div class="item" title="添加书签" ng-click="showAddBookmarkMoadl()">
-                <span data-tooltip="添加书签">
+                <span data-tooltip="添加书签，可用Insert快捷键">
                     <i class="add square icon"></i>
                 </span>
             </div>

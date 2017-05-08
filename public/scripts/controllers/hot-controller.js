@@ -1,4 +1,4 @@
-app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello hotCtr...");
     $scope.bookmarks = []; // 书签数据
     $scope.bookmarkNormalHover = false;
@@ -116,6 +116,20 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
             }
         }
     }
+
+    // 快捷键r随机推荐
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            // console.log(event.keyCode);
+            var menusScope = $('div[ng-controller="menuCtr"]').scope();
+            var login = (menusScope && menusScope.login) || false;
+            var blur = (menusScope && menusScope.blur) || false;
+            // r按键，显示
+            if (event.keyCode == 82 && login && (!blur)) {
+                $scope.randomHotBookmarks();
+            }
+        })
+    });
 
     $scope.randomHotBookmarks = function() {
         var menusScope = $('div[ng-controller="menuCtr"]').scope();

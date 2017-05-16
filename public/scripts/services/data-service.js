@@ -62,6 +62,36 @@ app.factory('dataService', [function() {
         },
         historyTypes: ['书签', '谷歌', 'Github', '栈溢出', '百度', '备忘录'],
         showStyles: ['navigate', 'costomTag', 'card', 'table'],
+        keyShortcuts: function() {  // 判断快捷方式是否生效
+            var ret = true;
+            var menusScope = $('div[ng-controller="menuCtr"]').scope();
+            var login = (menusScope && menusScope.login) || false;
+
+            if (login) {
+                do {
+                    // 如果有对话框(删除，备忘录详情等)
+                    ret = $(".ngdialog").length == 0;
+                    if (!ret) break;
+
+                    // 如果有对话框(新增书签，更新书签，书签详情)
+                    ret = $(".ui.modals.visible").length == 0;
+                    if (!ret) break;
+
+                    // 输入框是否聚焦
+                    ret = !($('input').is(':focus'));
+                    if (!ret) break;
+
+                    // textarea 是否聚焦
+                    ret = !($('textarea').is(':focus'));
+                    if (!ret) break;
+
+                } while (false);
+            } else {
+                ret = false;
+            }
+
+            return ret;
+        }
     };
 
     return service;

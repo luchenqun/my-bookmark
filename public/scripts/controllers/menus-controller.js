@@ -1,4 +1,4 @@
-app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', 'pubSubService', 'bookmarkService', 'dataService', function($scope, $stateParams, $state, $window, $timeout, pubSubService, bookmarkService, dataService) {
+app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'pubSubService', 'bookmarkService', 'dataService', function($scope, $stateParams, $state, $window, $timeout, $document, pubSubService, bookmarkService, dataService) {
     console.log("Hello menuCtr")
     $scope.login = false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
@@ -7,7 +7,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.showStyle = null;
     $scope.searchHistory = [];
     $scope.historyTypes = dataService.historyTypes;
-    $scope.blur = false;
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
@@ -19,10 +18,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
     $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
-
-    $scope.inputBlur = function(blur) {
-        $scope.blur = blur;
-    }
 
     /**
      * @func
@@ -187,4 +182,28 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             console.log(err);
             // toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
         });
+
+    // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            if (dataService.keyShortcuts()) {
+                var key = event.key.toUpperCase();
+                var urls = {
+                    'B':'https://www.baidu.com/',
+                    'G':'https://www.google.com.hk/',
+                    'L':'http://luchenqun.com/',
+                    'H':'https://github.com/',
+                    'S':'https://stackoverflow.com/',
+                    'V':'https://www.v2ex.com/',
+                    'Q':'http://www.iqiyi.com/',
+                };
+
+                var url = urls[key];
+                if (url) {
+                    $window.open(url, '_blank');
+                }
+            }
+        })
+    });
+
 }]);

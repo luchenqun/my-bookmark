@@ -47,16 +47,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     // 快捷键a增加书签
     $document.bind("keydown", function(event) {
         $scope.$apply(function() {
-            var menusScope = $('div[ng-controller="menuCtr"]').scope();
-            var login = (menusScope && menusScope.login) || false;
-            var blur = (menusScope && menusScope.blur) || false;
             // a按键，显示
-            if (event.keyCode == 65 && login && (!blur) && (!$scope.add)) {
-                $scope.showAddNote();
-            }
-
-            // Esc按键，退出
-            if (event.keyCode == 27 && login && (!blur) && ($scope.add)) {
+            if (event.keyCode == 65 && dataService.keyShortcuts() && (!$scope.add)) {
                 $scope.showAddNote();
             }
         })

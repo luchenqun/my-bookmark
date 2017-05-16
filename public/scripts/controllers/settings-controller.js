@@ -1,4 +1,4 @@
-app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService, dataService) {
+app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $stateParams, $filter, $state, $window, $timeout, bookmarkService, pubSubService, dataService) {
     console.log('Hello settingsCtr......', $stateParams);
     $scope.form = [false, false, false, false];
     $scope.passwordOrgin = "";
@@ -9,6 +9,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.bookmarkCnt = 0;
     $scope.loadShowStyle = false;
     $scope.form[($stateParams && $stateParams.formIndex) || 0] = true;
+    $scope.key = '';
 
     $scope.changeForm = function(index) {
         console.log("changeForm = ", index);
@@ -103,6 +104,18 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
             .catch((err) => {
                 toastr.error('书签默认显示风格配置。错误信息：' + JSON.stringify(err), "错误");
             });
+    }
+
+
+    $scope.quickKey = function(key) {
+        key = key.toUpperCase();
+        console.log('key = ', key);
+        if (!((key >= 'A' && key <= 'Z') || (key >= '1' && key <= '9'))) {
+            key = '';
+        }
+        $timeout(function() {
+            $scope.key = key;
+        });
     }
 
     function updateShowStyle(showStyle) {

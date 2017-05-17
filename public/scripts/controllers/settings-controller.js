@@ -126,6 +126,10 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     }
 
     $scope.addQuickUrl = function(){
+        if ($scope.url == '' || $scope.key == '') {
+            toastr.warning('快捷键或者网站地址为空！', "警告");
+        }
+
         if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test($scope.url)) {
             toastr.warning($scope.url + '<br/>检撤到您的书签链接非法，是否忘记加http或者https了？建议直接从打开浏览器地址栏复制出来直接粘贴到输入框。', "警告");
             $scope.url = '';

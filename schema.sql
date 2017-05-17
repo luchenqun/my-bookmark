@@ -9,7 +9,7 @@ CREATE TABLE `users` (
   `last_login` datetime DEFAULT NULL,       -- 最后一次登录时间
   `show_style` char(16) NOT NULL DEFAULT 'navigate', -- 显示风格
   `search_history` varchar(512) DEFAULT NULL, -- 历史搜索记录
-  `quick_url` varchar(2048) DEFAULT NULL,   -- 全局快捷地址
+  `quick_url` varchar(2048) DEFAULT '{\"B\":\"https://www.baidu.com/\",\"G\":\"https://www.google.com.hk/\",\"V\":\"https://www.v2ex.com/\",\"L\":\"http://luchenqun.com/\",\"H\":\"https://github.com/\",\"Q\":\"http://www.iqiyi.com/\",\"J\":\"https://www.jd.com/\"}',   -- 全局快捷地址
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)

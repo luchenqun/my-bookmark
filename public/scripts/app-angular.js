@@ -29,6 +29,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: '/views/note.html',
             params: {
                 searchWord: null,
+                key:null,
             },
             controller: 'noteCtr'
         })

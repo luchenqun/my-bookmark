@@ -195,6 +195,18 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $scope.$apply(function() {
             if (dataService.keyShortcuts()) {
                 var key = event.key.toUpperCase();
+                // 全局处理添加备忘录
+                if (key == 'A') {
+                    if ($scope.selectLoginIndex !== dataService.LoginIndexNote) {
+                        updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
+                        $state.go('note', {
+                            key: key,
+                        }, {
+                            reload: true,
+                        })
+                    }
+                }
+
                 var url = $scope.quickUrl[key];
                 if (url) {
                     $window.open(url, '_blank');

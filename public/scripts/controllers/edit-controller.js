@@ -209,10 +209,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
     $document.bind("keydown", function(event) {
         $scope.$apply(function() {
-            // console.log(event.keyCode);
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
-            // Insert按键，显示
-            if (event.keyCode == 45 && menusScope.login) {
+            var key = event.key.toUpperCase();
+            // console.log(key);
+            if (key == 'INSERT' && menusScope.login) {
                 if ($('.ui.modal.js-add-bookmark').modal('is active')) {
                     $scope.ok();
                 } else {
@@ -228,7 +228,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
             }
 
             // Esc按键，退出
-            if (event.keyCode == 27 && menusScope.login) {
+            if (key == 'ESCAPE' && menusScope.login) {
                 $scope.cancel();
             }
         })

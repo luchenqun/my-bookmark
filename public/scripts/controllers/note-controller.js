@@ -14,6 +14,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $scope.currentPage = 1;
     $scope.inputPage = '';
     $scope.searchWord = $stateParams.searchWord
+    $scope.key = $stateParams.key
     $scope.totalItems = 0;
 
     var timeagoInstance = timeago();
@@ -48,7 +49,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $document.bind("keydown", function(event) {
         $scope.$apply(function() {
             // a按键，显示
-            if (event.keyCode == 65 && dataService.keyShortcuts() && (!$scope.add)) {
+            var key = event.key.toUpperCase();
+            if (key == 'A' && dataService.keyShortcuts() && (!$scope.add)) {
                 $scope.showAddNote();
             }
         })
@@ -215,6 +217,11 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                 $timeout(function() {
                     timeagoInstance.cancel();
                     timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+                    // 如果需要增加书签
+                    if ($scope.key == 'A') {
+                        $scope.key = null;
+                        $scope.showAddNote();
+                    }
                 }, 100)
                 $scope.loadBusy = false;
                 transition();

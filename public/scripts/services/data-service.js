@@ -62,6 +62,12 @@ app.factory('dataService', [function() {
         },
         historyTypes: ['书签', '谷歌', 'Github', '栈溢出', '百度', '备忘录'],
         showStyles: ['navigate', 'costomTag', 'card', 'table'],
+        forbidQuickKey:{
+            'A':'在备忘录界面，已用做新增备忘录',
+            'R':'在热门收藏界面，已用作随机查看热门收藏',
+            'INSERT':'全局页面，已用做添加书签',
+            'ESC':'全局页面，已用做退出弹窗',
+        },
         keyShortcuts: function() {  // 判断快捷方式是否生效
             var ret = true;
             var menusScope = $('div[ng-controller="menuCtr"]').scope();

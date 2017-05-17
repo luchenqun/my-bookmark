@@ -7,6 +7,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.showStyle = null;
     $scope.searchHistory = [];
     $scope.historyTypes = dataService.historyTypes;
+    $scope.quickUrl = { };
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
@@ -14,6 +15,10 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $scope.login = (params && params.login) || false;
         var index = $scope.login ? ($scope.selectLoginIndex = (params && params.index) || 0) : ($scope.selectNotLoginIndex = (params && params.index) || 0);
         updateMenuActive(index);
+    });
+
+    pubSubService.subscribe('Settings.quickUrl', $scope, function(event, params) {
+        $scope.quickUrl = params.quickUrl;
     });
 
     $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
@@ -168,6 +173,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     bookmarkService.userInfo({})
         .then((user) => {
             $scope.searchHistory = JSON.parse(user.search_history || '[]');
+            $scope.quickUrl = JSON.parse(user.quick_url || '{}');
+
             $timeout(function() {
                 var showStyle = (user && user.show_style) || 'navigate';
                 if (showStyle) {
@@ -188,17 +195,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $scope.$apply(function() {
             if (dataService.keyShortcuts()) {
                 var key = event.key.toUpperCase();
-                var urls = {
-                    'B':'https://www.baidu.com/',
-                    'G':'https://www.google.com.hk/',
-                    'L':'http://luchenqun.com/',
-                    'H':'https://github.com/',
-                    'S':'https://stackoverflow.com/',
-                    'V':'https://www.v2ex.com/',
-                    'Q':'http://www.iqiyi.com/',
-                };
-
-                var url = urls[key];
+                var url = $scope.quickUrl[key];
                 if (url) {
                     $window.open(url, '_blank');
                 }

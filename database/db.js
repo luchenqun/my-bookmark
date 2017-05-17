@@ -324,6 +324,20 @@ db.updateSearchHistory = function(userId, search_history) {
     });
 };
 
+db.updateQuickUrl = function(userId, quick_url) {
+    var sql = "UPDATE `users` SET `quick_url`=" + client.escape(quick_url) + " WHERE (`id`='" + userId + "')";
+    console.log('updateQuickUrl', sql);
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+};
+
 db.register = function(user) {
     console.log('register');
     var sql = "INSERT INTO `users` (`username`, `password`, `email`) VALUES ('" + user.username + "', '" + user.password + "', '" + user.email + "')";

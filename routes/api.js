@@ -227,6 +227,37 @@ api.post('/updateSearchHistory', function(req, res) {
         });
 });
 
+api.post('/updateQuickUrl', function(req, res) {
+    console.log("updateQuickUrl username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var params = req.body.params;
+    db.getUser(req.session.user.username)
+        .then((user) => {
+            if (user) {
+                return db.updateQuickUrl(req.session.userId, params.quickUrl)
+            } else {
+                return Promise.resolve(0)
+            }
+        })
+        .then((affectedRows) => {
+            res.json({
+                retCode: (affectedRows == 1 ? 0 : 1),
+                msg: req.session.username + " 更新全局快捷键成功！",
+            })
+        })
+        .catch((err) => {
+            console.log('resetPassword error', err);
+            res.json({
+                retCode: 2,
+                msg: req.session.username + " 更新全局快捷键失败！: " + JSON.stringify(err),
+            })
+        });
+});
+
 api.get('/autoLogin', function(req, res) {
     console.log("autoLogin username = ", req.session.username);
     var ret = {

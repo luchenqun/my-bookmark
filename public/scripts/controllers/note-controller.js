@@ -145,6 +145,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                             }
                         });
                         toastr.success('备忘删除成功！', "提示");
+                        $scope.totalItems -= 1;
                     } else {
                         toastr.error('没有找到对应的备忘录，删除失败！请刷新页面再尝试', "提示");
                     }
@@ -199,6 +200,16 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             className: 'ngdialog-theme-default',
             width: width,
             scope: $scope
+        });
+    }
+
+    $scope.closeNote = function() {
+        $('.js-note').transition({
+            animation: dataService.animation(),
+            duration: '500ms',
+            onComplete: function() {
+                $(".js-note").remove();
+            }
         });
     }
 

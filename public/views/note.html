@@ -1,3 +1,14 @@
+<div class="ui info message js-note"  ng-if="(!add) && notes.length == 0" >
+    <i class="close icon" ng-click="closeNote()"></i>
+    <div class="content">
+        <div class="header">系统检测到您好像还没添加过备忘录哦！
+        </div>
+        <ul class="list">
+            <li>您可以在任意界面按快捷键A(不区分大小写)增加备忘录。双击备忘录可查看详情！</li>
+        </ul>
+    </div>
+</div>
+
 <div class="ui segment js-note-card">
     <div class="ui form" ng-show="add">
         <div class="required field">
@@ -43,8 +54,8 @@
         <img class="ui ui middle aligned tiny image" src="./images/add-note.png" ng-show="!loadBusy && false">
     </div>
     <div class="ui divider"></div>
-    <div class="ui grid">
-        <div class="eight wide column" style="margin-top:10px;" ng-show="totalItems>0">
+    <div class="ui grid" ng-show="totalItems>0">
+        <div class="eight wide column" style="margin-top:10px;">
             <span ng-show="searchWord">通过搜索关键字"{{searchWord}}"(点击菜单"备忘录"重新查看所有)，</span>共找到备忘一共约{{totalItems}}个
         </div>
         <div class="eight wide column">

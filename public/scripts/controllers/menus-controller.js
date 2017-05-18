@@ -8,6 +8,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.searchHistory = [];
     $scope.historyTypes = dataService.historyTypes;
     $scope.quickUrl = { };
+    $scope.longPress = false;
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
@@ -193,9 +194,14 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
     $document.bind("keydown", function(event) {
         $scope.$apply(function() {
+            var key = event.key.toUpperCase();
+            if (key == 'CONTROL' || key == 'SHIFT' || key == 'ALT') {
+                $scope.longPress = true;
+            }
+
             if (dataService.keyShortcuts()) {
-                var key = event.key.toUpperCase();
                 // 全局处理添加备忘录
+                // console.log('keydown key = ', key);
                 if (key == 'A') {
                     if ($scope.selectLoginIndex !== dataService.LoginIndexNote) {
                         updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
@@ -211,6 +217,17 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                 if (url) {
                     $window.open(url, '_blank');
                 }
+            }
+        })
+    });
+
+    // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
+    $document.bind("keyup", function(event) {
+        $scope.$apply(function() {
+            var key = event.key.toUpperCase();
+            // console.log('keyup key = ', key);
+            if (key == 'CONTROL' || key == 'SHIFT' || key == 'ALT') {
+                $scope.longPress = false;
             }
         })
     });

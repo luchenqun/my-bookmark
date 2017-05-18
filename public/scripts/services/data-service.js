@@ -71,9 +71,10 @@ app.factory('dataService', [function() {
         keyShortcuts: function() {  // 判断快捷方式是否生效
             var ret = true;
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
-            var login = (menusScope && menusScope.login) || false;
+            var login = (menusScope && menusScope.login);
+            var longPress = (menusScope && menusScope.longPress);
 
-            if (login) {
+            if (login && (!longPress)) {
                 do {
                     // 如果有对话框(删除，备忘录详情等)
                     ret = $(".ngdialog").length == 0;

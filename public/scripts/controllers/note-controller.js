@@ -235,6 +235,9 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                     }
                 }, 100)
                 $scope.loadBusy = false;
+                if ($scope.totalItems == 0) {
+                    $(".js-note").removeClass("hidden");
+                }
                 transition();
             })
             .catch((err) => {

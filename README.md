@@ -75,6 +75,8 @@ my-bookmark/
 │   │   │   ├── hot-controller.js             # 热门收藏页面控制器
 │   │   │   ├── login-controller.js           # 登陆注册页面控制器
 │   │   │   ├── menus-controller.js           # 菜单栏控制器
+│   │   │   ├── note-controller.js            # 备忘录控制器
+│   │   │   ├── praise-controller.js          # 赞赏控制器
 │   │   │   ├── search-controller.js          # 搜索书签页面控制器
 │   │   │   ├── settings-controller.js        # 设置页面控制器
 │   │   │   └── tags-controller.js            # 分类页面控制器
@@ -110,13 +112,17 @@ my-bookmark/
 |   |   ├── bookmarks.html                    # 书签页面
 |   |   ├── dialog-add-tag.html               # 分类添加页面
 |   |   ├── dialog-del-bookmark.html          # 书签删除确认页面
+|   |   ├── dialog-del-note.html              # 备忘录删除确认页面
 |   |   ├── dialog-del-tag.html               # 分类删除确认页面
+|   |   ├── dialog-detail-note.html           # 备忘录详情页面
 |   |   ├── edit.html                         # 书签添加修改页面
 |   |   ├── home.html                         # 未登录时首页页面
 |   |   ├── hot.html                          # 热门收藏页面
 |   |   ├── login.html                        # 登陆注册页面
 |   |   ├── menus.html                        # 菜单组件
+|   |   ├── note.html                         # 备忘录页面
 |   |   ├── pagination.html                   # 分页组件
+|   |   ├── praise.html                       # 赞赏页面
 |   |   ├── search.html                       # 搜索书签页面
 |   |   ├── settings.html                     # 设置页面
 |   |   └── tags.html                         # 分类页面

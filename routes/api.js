@@ -1305,12 +1305,13 @@ api.post('/addNote', function(req, res) {
     params.user_id = req.session.user.id;
 
     db.addNote(params)
-        .then((affectedRows) => {
+        .then((insertId) => {
             res.json({
                 retCode: 0,
+                insertId:insertId,
                 msg: "添加备忘成功 ",
             })
-            console.log('addNote affectedRows ', affectedRows)
+            console.log('addNote insertId ', insertId)
         })
         .catch((err) => {
             console.log('addNote error', err);

@@ -86,9 +86,18 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         bookmarkService.addNote(note)
             .then((data) => {
                 console.log(JSON.stringify(data));
+                if(data.retCode == 0){
+                    note.id = data.insertId;
+                    note.created_at = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
+                    note.name = '';
+                    $scope.notes.unshift(note);
+                    $timeout(function() {
+                        timeagoInstance.cancel();
+                        timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+                    }, 100)
+                }
                 $scope.preContent = $scope.content;
                 $scope.content = '';
-                getNotes();
                 updateEditPos();
             })
             .catch((err) => {

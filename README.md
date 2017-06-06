@@ -185,4 +185,4 @@ source /home/lcq/schema.sql; // 执行schema.sql文件创建数据库表格。�
 9 开源许可证
 -----------
 [MIT License](http://www.opensource.org/licenses/MIT)    
-你可以随意使用此项目，无需通知我，因为我可能很忙没时间。
+你可以随意使用此项目，无需通知我，因为我可能很忙没时间。   

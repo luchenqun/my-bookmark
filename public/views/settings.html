@@ -158,43 +158,43 @@
                 <p>1、该代码我托管在Github上<a href="https://github.com/luchenqun/my-bookmark" target="_blank">my-bookmark</a>。该地址有文件夹详细说明以及部署步骤。git地址：git@github.com:luchenqun/my-bookmark.git。如果你需要源码，你尽可随意使用此项目无需通知我。</p>
             </div>
             <div class="ui container js-p-info" ng-show="form[4]">
-                <p>功能说明：可在该页面，设置全局快速打开的链接。快捷键只能是数字1 ~ 9或者字母a ~ z，字母不区分大小写。</p>
-            <div class="ui divider"></div>
-            <table class="ui selectable sortable celled table js-quick-url-table">
-                <thead>
-                    <tr>
-                        <th style="width:80px;">快捷键</th>
-                        <th>网站地址</th>
-                        <th style="width:45px;">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="(key, value) in quickUrl">
-                        <td>{{key}}</td>
-                        <td>{{value}}</td>
-                        <td>
-                            <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delUrl(key)" title="删除书签">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="ui divider"></div>
-            <div class="ui form">
-                <div class="inline fields">
-                    <div class="five wide field">
-                        <label style="min-width:55px;">快捷键：</label>
-                        <input type="text" placeholder="请按相应的快捷键" ng-model="key" ng-keypress="quickKey($event.key)">
-                    </div>
-                    <div class="nine wide field">
-                        <label style="min-width:66px;">网站地址：</label>
-                        <input type="text" placeholder="请输入你需要快捷打开的网站地址" ng-model="url">
-                    </div>
-                    <div class="two wide field">
-                        <div class="ui green button" ng-click="addQuickUrl()">确定</div>
+                <p>功能说明：可在该页面，设置全局快速打开的链接。快捷键只能是字母a ~ z，字母不区分大小写。</p>
+                <div class="ui divider"></div>
+                <table class="ui selectable sortable celled table js-quick-url-table">
+                    <thead>
+                        <tr>
+                            <th style="width:80px;">快捷键</th>
+                            <th>网站地址</th>
+                            <th style="width:45px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(key, value) in quickUrl">
+                            <td>{{key}}</td>
+                            <td>{{value}}</td>
+                            <td>
+                                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delUrl(key)" title="删除书签">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="ui divider"></div>
+                <div class="ui form">
+                    <div class="inline fields">
+                        <div class="five wide field">
+                            <label style="min-width:55px;">快捷键：</label>
+                            <input type="text" placeholder="请按相应的快捷键" ng-model="key" ng-keypress="quickKey($event.key)">
+                        </div>
+                        <div class="nine wide field">
+                            <label style="min-width:66px;">网站地址：</label>
+                            <input type="text" placeholder="请输入你需要快捷打开的网站地址" ng-model="url">
+                        </div>
+                        <div class="two wide field">
+                            <div class="ui green button" ng-click="addQuickUrl()">确定</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>

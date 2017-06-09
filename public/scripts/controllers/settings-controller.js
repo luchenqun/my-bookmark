@@ -116,16 +116,16 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.quickKey = function(key) {
         key = key.toUpperCase();
         console.log('key = ', key);
-        if (!((key >= 'A' && key <= 'Z') || (key >= '1' && key <= '9'))) {
+        if (!(key >= 'A' && key <= 'Z')) {
             key = '';
-            toastr.warning('快捷键只能是数字1 ~ 9或者字母a ~ z，字母不区分大小写。', "警告");
+            toastr.warning('快捷键只能是字母a ~ z，字母不区分大小写。', "警告");
         }
         $timeout(function() {
             $scope.key = key;
         });
     }
 
-    $scope.addQuickUrl = function(){
+    $scope.addQuickUrl = function() {
         if ($scope.url == '' || $scope.key == '') {
             toastr.warning('快捷键或者网站地址为空！', "警告");
         }
@@ -136,7 +136,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
             return;
         }
         if (!(($scope.key >= 'A' && $scope.key <= 'Z') || ($scope.key >= 'a' && $scope.key <= 'z') || ($scope.key >= '1' && $scope.key <= '9'))) {
-            toastr.warning('快捷键只能是数字1 ~ 9或者字母a ~ z，字母不区分大小写。', "警告");
+            toastr.warning('快捷键只能是字母a ~ z，字母不区分大小写。', "警告");
             $scope.key = '';
             return;
         }
@@ -227,6 +227,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     }
 
     transition();
+
     function transition() {
         var className = 'js-segment-settings';
         $('.' + className).transition('hide');

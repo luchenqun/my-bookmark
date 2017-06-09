@@ -7,7 +7,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.showStyle = null;
     $scope.searchHistory = [];
     $scope.historyTypes = dataService.historyTypes;
-    $scope.quickUrl = { };
+    $scope.quickUrl = {};
     $scope.longPress = false;
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
@@ -213,9 +213,21 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                     }
                 }
 
-                var url = $scope.quickUrl[key];
-                if (url) {
-                    $window.open(url, '_blank');
+                // 数字键用来切换菜单
+                if (!isNaN(key)) {
+                    var num = parseInt(key);
+                    pubSubService.publish('Common.menuActive', {
+                        login: $scope.login,
+                        index: num - 1
+                    });
+                    $state.go(dataService.loginMenus[num - 1].uiSref, {}, {
+                        reload: true,
+                    })
+                } else {
+                    var url = $scope.quickUrl[key];
+                    if (url) {
+                        $window.open(url, '_blank');
+                    }
                 }
             }
         })

@@ -41,14 +41,18 @@
             </div>
         </div>
     </div>
-    <div style="width:22px;height:22px;" class="js-tag-edit" ng-click="toggleMode()" data-tooltip="{{editMode ? '退出编辑模式' : '点击进入分类编辑模式'}}">
-        <img class="ui ui middle aligned tiny image" ng-src="./images/{{ editMode ? 'back' : 'edit'}}.png" ng-show="!loadTags">
-    </div>
+</div>
+<div style="width:22px;height:22px;" class="js-tag-edit" ng-click="toggleMode()" data-tooltip="{{editMode ? '退出编辑模式' : '点击进入分类编辑模式'}}">
+    <img class="ui ui middle aligned tiny image" ng-src="./images/{{ editMode ? 'back' : 'edit'}}.png" ng-show="!loadTags">
+</div>
+<div style="width:22px;height:22px;" class="js-tag-show-mode" data-tooltip="{{showMode=='table' ? '点击以条目显示' : '点击以表格显示'}}" ng-show="!editMode">
+    <i class="table large icon" ng-if="showMode=='table'" ng-click="toggleShowMode('item')"></i>
+    <i class="list layout large icon" ng-if="showMode=='item'" ng-click="toggleShowMode('table')"></i>
 </div>
 <div class="ui huge text centered inline loader" ng-class="{active:loadBookmarks, disabled: !loadBookmarks}">
     正在加载中...
 </div>
-<table class="ui selectable sortable celled table js-tags-table" ng-if="bookmarkCount > 0" style="margin-top:-14px;" ng-show="!loadBookmarks && !editMode">
+<table class="ui selectable sortable celled table js-tags-table" ng-if="bookmarkCount > 0  && showMode=='table'" style="margin-top:-55px;" ng-show="!loadBookmarks && !editMode">
     <thead>
         <tr>
             <th class="forbid_sorted">标题</th>
@@ -98,3 +102,35 @@
         </tr>
     </tfoot>
 </table>
+<div class="ui segment js-tag-costomTag" ng-if="bookmarkCount > 0 && showMode=='item'" style="margin-top:-55px;" ng-show="!loadBookmarks && !editMode">
+    <div class="ui five column grid">
+        <div
+            class="column js-costomTag-item"
+            ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}"
+            ng-mouseover="bookmarkNormalHover=true"
+            ng-mouseleave="bookmarkNormalHover=false"
+            ng-repeat="bookmark in bookmarksByTag"
+            ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+            title="{{ bookmark.title }}"
+            id="{{bookmark.id}}">
+            <img
+                class="ui ui middle aligned tiny image bookmarkInfo"
+                ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico"
+                style="width:16px;height:16px;"
+                ng-click="detailBookmark(bookmark);$event.stopPropagation()"
+                favicon-err="./images/favicon/{{bookmark.id}}.ico">
+            <span>{{ bookmark.title}}</span>
+        </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="ui grid">
+        <div class="eight wide column" style="margin-top:10px;">
+            <i class="sort numeric descending large icon" ng-class="{green: order[0]}" ng-click="changeOrder(0)" title="按点击次数排序" style="margin-left:10px;"></i>
+            <i class="add to calendar large icon" ng-class="{green: order[1]}" ng-click="changeOrder(1)" title="按添加日期排序" style="margin-left:10px;"></i>
+            <i class="sort alphabet descending large icon" ng-class="{green: order[2]}" ng-click="changeOrder(2)" title="按最后点击时间排序" style="margin-left:10px;"></i>
+        </div>
+        <div class="eight wide column">
+            <pagination></pagination>
+        </div>
+    </div>
+</div>

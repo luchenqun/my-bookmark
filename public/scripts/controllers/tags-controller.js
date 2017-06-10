@@ -2,7 +2,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     console.log("Hello tagsCtr...", $stateParams);
     getTags({});
 
-    const perPageItems = 20;
+    var perPageItems = 20;
     var dialog = null;
     $scope.order = [false, false, false];
     $scope.order[($stateParams && $stateParams.orderIndex) || 1] = true;
@@ -18,10 +18,13 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.inputPage = '';
     $scope.currentTagId = ($stateParams && $stateParams.tagId) || '';
     $scope.editMode = false;
+    $scope.showMode = 'item';
     $scope.newTag = '';
     $scope.waitDelTag = {};
     $scope.waitDelBookmark = {};
     $scope.bookmarkData = {};
+    $scope.bookmarkNormalHover = false;
+
     var timeagoInstance = timeago();
 
     pubSubService.subscribe('MenuCtr.tags', $scope, function(event, data) {
@@ -70,6 +73,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         $scope.currentTagId = tagId;
         $scope.currentPage = currentPage;
         $scope.loadBookmarks = true;
+
+        perPageItems = ($scope.showMode == 'item') ? 50 : 20;
 
         $scope.tags.forEach(function(tag) {
             tag.bookmarkClicked = false;
@@ -123,12 +128,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 id: id
             });
             $scope.bookmarkData.bookmarks.forEach(function(bookmark, index) {
-                if (bookmark.id == id) {
-                    bookmark.click_count += 1;
-                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
-                }
-            })
-            // $scope.changeOrder($scope.order.indexOf(true));
+                    if (bookmark.id == id) {
+                        bookmark.click_count += 1;
+                        bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
+                    }
+                })
+                // $scope.changeOrder($scope.order.indexOf(true));
             $timeout(function() {
                 timeagoInstance.cancel();
                 timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
@@ -225,6 +230,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             });
         }
         updateEditPos();
+    }
+
+    $scope.toggleShowMode = function(showMode) {
+        $scope.showMode = showMode;
     }
 
     $scope.editTag = function(tag) {
@@ -482,6 +491,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     var w = $('.js-tags').width();
                     $('.js-tag-edit').offset({
                         top: t + 10,
+                        left: l + w - 10,
+                    })
+                    $('.js-tag-show-mode').offset({
+                        top: t + 40,
                         left: l + w - 10,
                     })
                 }

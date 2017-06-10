@@ -1,9 +1,10 @@
-app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $filter, $window, $stateParams, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $filter, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello tagsCtr...", $stateParams);
     getTags({});
 
     var perPageItems = 20;
     var dialog = null;
+    $scope.hoverBookmark = null;
     $scope.order = [false, false, false];
     $scope.order[($stateParams && $stateParams.orderIndex) || 1] = true;
     $scope.loadBookmarks = false;
@@ -234,6 +235,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     $scope.toggleShowMode = function(showMode) {
         $scope.showMode = showMode;
+        $timeout(function() {
+            timeagoInstance.cancel();
+            timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+        }, 100)
     }
 
     $scope.editTag = function(tag) {
@@ -405,6 +410,26 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             console.log('updateTagIndex needUpdate = ' + needUpdate)
         }, 300)
     }
+
+    $scope.setHoverBookmark = function(bookmark) {
+        $scope.hoverBookmark = bookmark;
+    }
+
+    // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            var key = event.key.toUpperCase();
+            if ($scope.hoverBookmark && dataService.keyShortcuts()) {
+                if (key == 'E') {
+                    $scope.editBookmark($scope.hoverBookmark.id)
+                } else if (key == 'I') {
+                    $scope.detailBookmark($scope.hoverBookmark)
+                } else if (key == 'D') {
+                    $scope.delBookmark($scope.hoverBookmark)
+                }
+            }
+        })
+    });
 
     function getTags(params) {
         $scope.loadTags = true;

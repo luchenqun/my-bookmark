@@ -65,7 +65,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="bookmark in bookmarksByTag" id="{{ bookmark.id }}">
+        <tr ng-repeat="bookmark in bookmarksByTag" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
             <td>
                 <img class="ui ui middle aligned tiny image" ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="./images/favicon/{{bookmark.id}}.ico">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
@@ -105,11 +105,11 @@
 <div class="ui segment js-tag-costomTag" ng-if="bookmarkCount > 0 && showMode=='item'" style="margin-top:-55px;" ng-show="!loadBookmarks && !editMode">
     <div class="ui five column grid">
         <div
+            ng-repeat="bookmark in bookmarksByTag"
             class="column js-costomTag-item"
             ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}"
-            ng-mouseover="bookmarkNormalHover=true"
-            ng-mouseleave="bookmarkNormalHover=false"
-            ng-repeat="bookmark in bookmarksByTag"
+            ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)"
+            ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)"
             ng-click="jumpToUrl(bookmark.url, bookmark.id)"
             title="{{ bookmark.title }}"
             id="{{bookmark.id}}">

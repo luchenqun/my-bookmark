@@ -1,5 +1,7 @@
 app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello hotCtr...");
+
+    $scope.hoverBookmark = null;
     $scope.bookmarks = []; // 书签数据
     $scope.bookmarkNormalHover = false;
     $scope.bookmarkEditHover = false;
@@ -139,6 +141,24 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
             $scope.toastrId = toastr.info('您只有先登录，才能使用查看随机热门标签', "提示");
         }
     }
+
+    $scope.setHoverBookmark = function(bookmark) {
+        $scope.hoverBookmark = bookmark;
+    }
+
+    // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            var key = event.key.toUpperCase();
+            if ($scope.hoverBookmark && dataService.keyShortcuts()) {
+                if (key == 'I') {
+                    $scope.detailBookmark($scope.hoverBookmark)
+                } else if (key == 'C') {
+                    $scope.copy($scope.hoverBookmark.url)
+                }
+            }
+        })
+    });
 
     function getHotBookmarks() {
         getHotBookmarksbyAPI(); // 先实时获取，实时获取失败再从缓存中获取

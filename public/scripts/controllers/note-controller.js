@@ -3,6 +3,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
     const perPageItems = 35;
     var dialog = null;
+    $scope.hoverNote = null;
     $scope.loadBusy = false;
     $scope.add = false;
     $scope.edit = false;
@@ -213,6 +214,28 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             }
         });
     }
+
+    $scope.setHoverNote = function(note) {
+        $scope.hoverNote = note;
+    }
+
+    // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            var key = event.key.toUpperCase();
+            if ($scope.hoverNote && dataService.keyShortcuts()) {
+                if (key == 'E') {
+                    $scope.editNote($scope.hoverNote.id, $scope.hoverNote.content)
+                } else if (key == 'I') {
+                    $scope.detailNote($scope.hoverNote.content)
+                } else if (key == 'D') {
+                    $scope.delNote($scope.hoverNote.id, $scope.hoverNote.content)
+                } else if (key == 'C') {
+                    $scope.copy($scope.hoverNote.content)
+                }
+            }
+        })
+    });
 
     function getNotes() {
         $scope.loadBusy = true;

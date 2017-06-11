@@ -1,7 +1,8 @@
-app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello searchCtr...", $stateParams);
     const perPageItems = 20;
     var dialog = null;
+    $scope.hoverBookmark = null;
     $scope.searchBookmarks = []; // 书签数据
     $scope.showSearch = false; //
     $scope.showTags = false; //
@@ -219,6 +220,29 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         var text = $('.ui.dropdown.js-search-tags .text').text().replace('selected', '个已选');
         $('.ui.dropdown.js-search-tags .text').text(text);
     }
+
+    $scope.setHoverBookmark = function(bookmark) {
+        $scope.hoverBookmark = bookmark;
+    }
+
+    // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            var key = event.key.toUpperCase();
+            console.log($scope.hoverBookmark);
+            if ($scope.hoverBookmark && dataService.keyShortcuts()) {
+                if (key == 'E' && $scope.hoverBookmark.own) {
+                    $scope.editBookmark($scope.hoverBookmark.id)
+                } else if (key == 'I') {
+                    $scope.detailBookmark($scope.hoverBookmark)
+                } else if (key == 'D' && $scope.hoverBookmark.own) {
+                    $scope.delBookmark($scope.hoverBookmark)
+                } else if (key == 'C') {
+                    $scope.copy($scope.hoverBookmark.url)
+                }
+            }
+        })
+    });
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
         console.log('subscribe EditCtr.inserBookmarsSuccess', JSON.stringify(data));

@@ -1,12 +1,12 @@
-app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello bookmarksCtr...", $stateParams);
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 搜索对话框
     $scope.bookmarkNormalHover = false;
     $scope.bookmarkEditHover = false;
+    $scope.hoverBookmark = null;
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
     $scope.showStyle = ($stateParams && $stateParams.showStyle) || (menusScope && menusScope.showStyle); // 显示风格'navigate', 'costomTag', 'card', 'table'
-    $scope.edit = false;
     const perPageItems = 20;
     var dialog = null;
     $scope.totalPages = 0;
@@ -48,33 +48,28 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
 
     $scope.jumpToUrl = function(url, id) {
-        if (!$scope.edit) {
-            $window.open(url, '_blank');
-            bookmarkService.clickBookmark({
-                id: id
-            });
+        $window.open(url, '_blank');
+        bookmarkService.clickBookmark({
+            id: id
+        });
 
-            if ($scope.showStyle != 'navigate') {
-                var bookmarks = $scope.showStyle == 'table' ? $scope.bookmarkData.bookmarks : $scope.bookmarkData;
-                bookmarks.forEach(function(bookmark) {
-                    if (bookmark.id == id) {
-                        bookmark.click_count += 1;
-                        bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
-                    }
-                })
-            } else {
+        if ($scope.showStyle != 'navigate') {
+            var bookmarks = $scope.showStyle == 'table' ? $scope.bookmarkData.bookmarks : $scope.bookmarkData;
+            bookmarks.forEach(function(bookmark) {
+                if (bookmark.id == id) {
+                    bookmark.click_count += 1;
+                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
+                }
+            })
+        } else {
 
-            }
-
-            $timeout(function() {
-                timeagoInstance.cancel();
-                timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
-            }, 100)
         }
+
+        $timeout(function() {
+            timeagoInstance.cancel();
+            timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+        }, 100)
     }
-    $scope.toggleMode = function() {
-        $scope.edit = !$scope.edit
-    };
 
     $scope.delBookmark = function(bookmark) {
         console.log('delBookmark..........')
@@ -254,6 +249,29 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                 getBookmarks();
             }
         }
+    });
+
+    $scope.setHoverBookmark = function(bookmark) {
+        $scope.hoverBookmark = bookmark;
+    }
+
+    // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
+    $document.bind("keydown", function(event) {
+        $scope.$apply(function() {
+            var key = event.key.toUpperCase();
+            console.log(key);
+            if ($scope.hoverBookmark && dataService.keyShortcuts()) {
+                if (key == 'E') {
+                    $scope.editBookmark($scope.hoverBookmark.id)
+                } else if (key == 'I') {
+                    $scope.detailBookmark($scope.hoverBookmark)
+                } else if (key == 'D') {
+                    $scope.delBookmark($scope.hoverBookmark)
+                } else if (key == 'C') {
+                    $scope.copy($scope.hoverBookmark.url)
+                }
+            }
+        })
     });
 
     function getBookmarks() {

@@ -25,7 +25,7 @@
     </div>
     <div class="ui divider" ng-show="add"></div>
     <div class="ui five stackable cards">
-        <div class="card" ng-repeat="note in notes" id="{{note.id}}">
+        <div class="card" ng-repeat="note in notes" id="{{note.id}}" ng-mouseover="setHoverNote(note)" ng-mouseleave="setHoverNote(null)">
             <div class="content" style="height:200px;margin-bottom:8px;" ng-dblclick="detailNote(note.content)">
                 <div class="description" style="word-break:break-all;max-width:175px;height:184px;line-height:21px; word-wrap:break-word;text-overflow:ellipsis;overflow:hidden;">
                     <pre class="note-content" style="margin-top:0px;">{{ note.content }}</pre>

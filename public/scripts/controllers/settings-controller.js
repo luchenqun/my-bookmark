@@ -1,5 +1,7 @@
 app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $stateParams, $filter, $state, $window, $timeout, bookmarkService, pubSubService, dataService) {
     console.log('Hello settingsCtr......', $stateParams);
+
+    $scope.forbidQuickKey = dataService.forbidQuickKey
     $scope.form = [false, false, false, false];
     $scope.passwordOrgin = "";
     $scope.passwordNew1 = "";

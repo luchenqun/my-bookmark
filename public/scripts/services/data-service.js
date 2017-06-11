@@ -58,6 +58,10 @@ app.factory('dataService', [function() {
         showStyles: ['navigate', 'costomTag', 'card', 'table'],
         forbidQuickKey: {
             'A': '在任意界面，已用做新增备忘录',
+            'C': '在有关书签页面，用作复制书签链接',
+            'E': '在有关书签页面，用作编辑书签',
+            'D': '在有关书签页面，用作删除书签',
+            'I': '在有关书签页面，用作查看书签详情',
             'R': '在热门收藏界面，已用作随机查看热门收藏',
             'INSERT': '全局页面，已用做添加书签',
             'ESC': '全局页面，已用做退出弹窗',

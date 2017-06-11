@@ -131,7 +131,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="bookmark in searchBookmarks" id="{{ bookmark.id }}">
+        <tr ng-repeat="bookmark in searchBookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
             <td>
                 <img
                     class="ui ui middle aligned mini image"

@@ -228,10 +228,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     $scope.toggleShowMode = function(showMode) {
         $scope.showMode = showMode;
-        $timeout(function() {
-            timeagoInstance.cancel();
-            timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
-        }, 100)
+        $scope.getBookmarks($scope.currentTagId, 1);
     }
 
     $scope.editTag = function(tag) {

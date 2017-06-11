@@ -195,22 +195,15 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         });
     }
 
-    $scope.copy = function(id, url) {
-        var clipboard = new Clipboard('#tagurl' + id, {
-            text: function() {
-                return url;
+    $scope.copy = function(url) {
+        clipboard.copy(url).then(
+            function() {
+                toastr.success(url + '<br/>已复制到您的剪切板', "提示");
+            },
+            function(err) {
+                toastr.error(url + '<br/>复制失败', "提示");
             }
-        });
-
-        clipboard.on('success', function(e) {
-            toastr.success(url + '<br/>已复制到您的剪切板', "提示");
-            clipboard.destroy();
-        });
-
-        clipboard.on('error', function(e) {
-            toastr.error(url + '<br/>复制失败', "提示");
-            clipboard.destroy();
-        });
+        );
     }
 
     $scope.toggleMode = function() {
@@ -426,6 +419,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     $scope.detailBookmark($scope.hoverBookmark)
                 } else if (key == 'D') {
                     $scope.delBookmark($scope.hoverBookmark)
+                } else if (key == 'C') {
+                    $scope.copy($scope.hoverBookmark.url)
                 }
             }
         })

@@ -19,7 +19,7 @@
             <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签">
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/copy.png" id="hoturl{{$index}}" ng-click="copy($index, bookmark.url)" title="复制链接">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/copy.png" ng-click="copy(bookmark.url)" title="复制链接">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:4px;" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
             </div>
         </div>

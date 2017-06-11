@@ -86,7 +86,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         bookmarkService.addNote(note)
             .then((data) => {
                 console.log(JSON.stringify(data));
-                if(data.retCode == 0){
+                if (data.retCode == 0) {
                     note.id = data.insertId;
                     note.created_at = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
                     note.name = '';
@@ -105,24 +105,16 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             });
     }
 
-    $scope.copy = function(id, content) {
-        console.log("copy note.....");
+    $scope.copy = function(content) {
         var showContent = content.length >= 180 ? content.substr(0, 180) + '...' : content;
-        var clipboard = new Clipboard("#noteid" + id, {
-            text: function() {
-                return content;
+        clipboard.copy(showContent).then(
+            function() {
+                toastr.success(showContent + '<br/>已复制到您的剪切板', "提示");
+            },
+            function(err) {
+                toastr.error(showContent + '<br/>复制失败', "提示");
             }
-        });
-
-        clipboard.on('success', function(e) {
-            toastr.success(showContent + '<br/>已复制到您的剪切板', "提示");
-            clipboard.destroy();
-        });
-
-        clipboard.on('error', function(e) {
-            toastr.error(showContent + '<br/>复制失败', "提示");
-            clipboard.destroy();
-        });
+        );
     }
 
     $scope.delNote = function(id, content) {

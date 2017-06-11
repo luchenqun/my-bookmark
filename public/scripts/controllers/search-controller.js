@@ -142,22 +142,15 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             });
     }
 
-    $scope.copy = function(id, url) {
-        var clipboard = new Clipboard('#searchurl' + id, {
-            text: function() {
-                return url;
+    $scope.copy = function(url) {
+        clipboard.copy(url).then(
+            function() {
+                toastr.success(url + '<br/>已复制到您的剪切板', "提示");
+            },
+            function(err) {
+                toastr.error(url + '<br/>复制失败', "提示");
             }
-        });
-
-        clipboard.on('success', function(e) {
-            toastr.success(url + '<br/>已复制到您的剪切板', "提示");
-            clipboard.destroy();
-        });
-
-        clipboard.on('error', function(e) {
-            toastr.error(url + '<br/>复制失败', "提示");
-            clipboard.destroy();
-        });
+        );
     }
 
     $scope.search = function(page) {

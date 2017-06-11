@@ -1,4 +1,4 @@
-<div class="ui hidden info message js-note"  ng-if="(!add) && notes.length == 0" >
+<div class="ui hidden info message js-note" ng-if="(!add) && notes.length == 0">
     <i class="close icon" ng-click="closeNote()"></i>
     <div class="content">
         <div class="header">系统检测到您好像还没添加过备忘录哦！
@@ -8,7 +8,6 @@
         </ul>
     </div>
 </div>
-
 <div class="ui segment js-note-card">
     <div class="ui form" ng-show="add">
         <div class="required field">
@@ -45,7 +44,7 @@
                 <label for="noteedit">
                     <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id, note.content)" title="编辑备忘">
                 </label>
-                <img class="ui mini spaced image" id="noteid{{note.id}}" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(note.id, note.content)" title="复制备忘">
+                <img class="ui mini spaced image" id="noteid{{note.id}}" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(note.content)" title="复制备忘">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/detail.png" ng-click="detailNote(note.content)" title="备忘详情">
             </div>
         </div>

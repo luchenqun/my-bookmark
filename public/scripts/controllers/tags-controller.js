@@ -25,6 +25,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     $scope.waitDelBookmark = {};
     $scope.bookmarkData = {};
     $scope.bookmarkNormalHover = false;
+    $scope.costomTag = {
+        id: -1,
+        cnt: 50,
+        bookmarkClicked: false,
+        name: '分类定制',
+    }
 
     var timeagoInstance = timeago();
 
@@ -74,6 +80,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         $scope.currentTagId = tagId;
         $scope.currentPage = currentPage;
         $scope.loadBookmarks = true;
+        $scope.costomTag.bookmarkClicked = false;
 
         perPageItems = ($scope.showMode == 'item') ? 50 : 20;
 
@@ -83,6 +90,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 tag.bookmarkClicked = true;
             }
         });
+
+        if (tagId == -1) {
+            $scope.costomTag.bookmarkClicked = true;
+        }
 
         var params = {
             tagId: tagId,
@@ -96,7 +107,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 $scope.bookmarkData = data;
                 $scope.changeOrder($scope.order.indexOf(true));
                 $scope.bookmarkCount = $scope.bookmarkData.totalItems;
-                $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
+                $scope.totalPages = tagId == -1 ? 1 : Math.ceil($scope.bookmarkCount / perPageItems);
 
                 $scope.inputPage = '';
                 $scope.loadBookmarks = false;

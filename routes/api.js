@@ -417,8 +417,8 @@ api.get('/bookmarks', function(req, res) {
     } else if (params.showStyle === 'costomTag') {
         var bookmarks = []
         db.getBookmarksCostomTag(userId)
-            .then((_bookmarks) => {
-                bookmarks = _bookmarks;
+            .then((bookmarksData) => {
+                bookmarks = bookmarksData.bookmarks;
                 var bookmarkIds = bookmarks.map((bookmark) => bookmark.id)
                 return db.getTagsBookmarks(bookmarkIds);
             })
@@ -511,7 +511,10 @@ api.get('/bookmarksByTag', function(req, res) {
         totalItems: 0,
         bookmarks: [],
     }
-    db.getBookmarksByTag(params)
+
+    var fun = (params.tagId == -1) ? (db.getBookmarksCostomTag) : (db.getBookmarksByTag);
+
+    fun((params.tagId == -1) ? (userId) : (params), params.perPageItems)
         .then((bookmarksData) => {
             sendData = bookmarksData;
             var bookmarkIds = sendData.bookmarks.map((bookmark) => bookmark.id)

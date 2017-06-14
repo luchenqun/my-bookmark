@@ -7,6 +7,12 @@
                     ({{ tag.cnt || 0 }})
                 </div>
             </div>
+            <div class="two wide column  js-tag-label">
+                <div class="ui small label" ng-class="{green:costomTag.bookmarkClicked}" ng-click="getBookmarks(-1, 1)">
+                    {{ costomTag.name }}
+                    ({{ costomTag.cnt || 0 }})
+                </div>
+            </div>
         </div>
     </div>
     <div class="ui container" ng-show="editMode" ng-mousedown="storeTagIndex()" ng-mouseup="updateTagIndex()">

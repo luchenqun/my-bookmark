@@ -180,6 +180,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         }
     }
 
+    $scope.addTagsToBookmark = function(id){
+        
+    }
+
     pubSubService.subscribe('MenuCtr.showAddBookmarkMoadl', $scope, function(event, params) {
         console.log('subscribe MenuCtr.showAddBookmarkMoadl', params);
         $('.ui.modal.js-add-bookmark').modal({

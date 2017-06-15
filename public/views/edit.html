@@ -41,7 +41,7 @@
                         <i class="info circle icon"></i>
                     </span>
                 </label>
-                <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags">{{ tag.name }}</div>
+                <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="addTagsToBookmark(tag.id)">{{ tag.name }}</div>
                 <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" title="添加新分类" ng-click="showAddTag()">
                     <i style="margin-left:10px;" class="plus icon"></i>
                 </div>

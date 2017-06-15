@@ -1,6 +1,7 @@
-app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $timeout, $document, bookmarkService, pubSubService, dataService) {
+app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello editCtr");
     var maxSelections = 3;
+    var dialog = null;
     init();
 
     $scope.$watch('url', function(newUrl, oldUrl, scope) {
@@ -139,6 +140,46 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
         }
     }
 
+    $scope.showAddTag = function() {
+        if ($scope.tags.length < 30) {
+            console.log('showAddTag..........')
+            $scope.newTag = "";
+            dialog = ngDialog.open({
+                template: './views/dialog-add-tag.html',
+                className: 'ngdialog-theme-default',
+                scope: $scope
+            });
+        } else {
+            toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
+        }
+    }
+
+    $scope.addTag = function(tag) {
+        console.log(tag);
+        return;
+        if ($scope.tags.length >= 30) {
+            toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
+            return;
+        }
+        tag = tag.replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格，多个空格转为一个空格;
+        if (tag) {
+            ngDialog.close(dialog);
+
+            var tags = [];
+            tags.push(tag);
+            bookmarkService.addTags(tags)
+                .then((data) => {
+                    toastr.success('[ ' + tag + ' ]插入分类成功！将自动更新分类信息', "提示");
+                    getTags({});
+                })
+                .catch((err) => {
+                    toastr.warning('[ ' + tag + ' ]插入分类失败：' + JSON.stringify(err), "提示");
+                });
+        } else {
+            toastr.warning('您可能没有输入分类或者输入的分类有误', "提示");
+        }
+    }
+
     pubSubService.subscribe('MenuCtr.showAddBookmarkMoadl', $scope, function(event, params) {
         console.log('subscribe MenuCtr.showAddBookmarkMoadl', params);
         $('.ui.modal.js-add-bookmark').modal({
@@ -241,6 +282,12 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'bookmar
                     if (a.last_use > b.last_use) return -1;
                     return 1;
                 })
+                data.forEach((tag) => {
+                    tag.clicked = false;
+                })
+                if ($scope.add && data.length >= 1) {
+                    data[0].clicked = true;
+                }
                 $scope.tags = data;
                 initJsTags();
                 $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');

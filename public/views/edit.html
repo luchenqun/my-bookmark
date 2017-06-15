@@ -5,15 +5,19 @@
     </div>
     <div class="content">
         <div class="ui form">
-            <div class="required field" ng-class="{error:urlError}">
-                <label>书签链接</label>
-                <input type="text" placeholder="输粘贴网页地址，如：http://mybookmark.cn/" ng-model="url">
-            </div>
-            <div class="required field" ng-class="{error:titleError}">
-                <label>书签标题</label>
-                <input type="text" placeholder="" ng-model="title">
-            </div>
             <div class="required field">
+                <div class="fields">
+                    <div class="required eight wide field" ng-class="{error:urlError}">
+                        <label>书签链接</label>
+                        <input type="text" placeholder="输粘贴网页地址，如：http://mybookmark.cn/" ng-model="url">
+                    </div>
+                    <div class="required eight wide field" ng-class="{error:titleError}">
+                        <label>书签标题</label>
+                        <input type="text" placeholder="" ng-model="title">
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="required field">
                 <label>已有书签分类</label>
                 <div class="fields">
                     <div class="eight wide field" ng-class="{error:tagsError }">
@@ -29,16 +33,23 @@
                         </div>
                     </div>
                 </div>
+            </div> -->
+
+            <div class="required field">
+                <label>已有书签分类选择
+                    <span title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;友情提示：&#10;1、添加新书签，根据使用经验，默认会选择最后一次使用分类。&#10;2、如果不是的，直接去选择其他的就好，系统会自动取消。&#10;3、如果你想同时选默认与其他的分类，你选了其他分类之后，再来选中取消的默认分类即可。">
+                        <i class="info circle icon"></i>
+                    </span>
+                </label>
+                <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags">{{ tag.name }}</div>
+                <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" title="添加新分类" ng-click="showAddTag()">
+                    <i style="margin-left:10px;" class="plus icon"></i>
+                </div>
             </div>
+
             <div class="field">
                 <label>描述</label>
-                <div
-                    style="border-radius:4px;border:1px solid #DEDEDE;min-height:88px;"
-                    name="text"
-                    ng-model="description"
-                    required
-                    medium-editor
-                    bind-options="{'placeholder': {text: '可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到'},
+                <div style="border-radius:4px;border:1px solid #DEDEDE;min-height:88px;" name="text" ng-model="description" required medium-editor bind-options="{'placeholder': {text: '可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到'},
                     'buttons': ['bold', 'italic', 'underline', 'header1', 'header2', 'quote', 'orderedlist', 'unorderedlist']}"></div>
             </div>
             <div class="field">

@@ -2,6 +2,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     console.log("Hello editCtr");
     var maxSelections = 3;
     var dialog = null;
+    var cancelDefault = false;
     init();
 
     $scope.$watch('url', function(newUrl, oldUrl, scope) {
@@ -84,8 +85,13 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         init();
     }
     $scope.ok = function() {
-        var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
-        // console.log('Hello ok clicked', $scope.url, $scope.title, $scope.description, $scope.public, selectedTags);
+        var selectedTags = [];
+        $scope.tags.forEach((tag) => {
+            if (tag.clicked) {
+                selectedTags.push(tag.id);
+            }
+        });
+        // console.log('Hello ok clicked', $scope.url, $scope.title, $scope.description, $scope.public, selectedTags, $scope.tags);
         $scope.urlError = $scope.url == '';
         $scope.titleError = $scope.title == '';
         $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections);
@@ -156,7 +162,6 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
 
     $scope.addTag = function(tag) {
         console.log(tag);
-        return;
         if ($scope.tags.length >= 30) {
             toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
             return;
@@ -169,8 +174,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
             tags.push(tag);
             bookmarkService.addTags(tags)
                 .then((data) => {
+                    console.log(JSON.stringify(data));
                     toastr.success('[ ' + tag + ' ]插入分类成功！将自动更新分类信息', "提示");
-                    getTags({});
+                    // getTags({});
                 })
                 .catch((err) => {
                     toastr.warning('[ ' + tag + ' ]插入分类失败：' + JSON.stringify(err), "提示");
@@ -180,8 +186,31 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         }
     }
 
-    $scope.addTagsToBookmark = function(id){
-        
+    $scope.clickTag = function(id, clicked) {
+        var clickTag = null;
+        var currCntTag = 0;
+        $scope.tags.forEach((tag) => {
+                if (tag.id == id) {
+                    clickTag = tag;
+                }
+                currCntTag += Number(tag.clicked);
+            })
+            // 如果是新增书签，而且是第一次点其他选项，那么取消默认选中的分类
+        if (cancelDefault && $scope.add && clicked && currCntTag == 1) {
+            $scope.tags[0].clicked = false;
+            currCntTag -= 1;
+            cancelDefault = false; // 后面在点就不取消默认的了
+        }
+
+        currCntTag += Number(clicked);
+        if (currCntTag <= 3) {
+            if (clickTag) {
+                clickTag.clicked = clicked;
+            }
+        } else {
+            toastr.error('您至少要选择一个分类！最多选择三个分类！' + currCntTag, "错误");
+        }
+
     }
 
     pubSubService.subscribe('MenuCtr.showAddBookmarkMoadl', $scope, function(event, params) {
@@ -192,6 +221,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
         $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         $('.ui.checkbox.js-public').checkbox('set checked');
+        cancelDefault = true;
         init();
         getTags({});
     });
@@ -217,14 +247,20 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                 $scope.url = (bookmark && bookmark.url) || '';
                 $scope.title = (bookmark && bookmark.title) || '';
                 $scope.description = (bookmark && bookmark.description) || '';
-                $scope.tags = data.tags;
+                $scope.tags = data.tags.map((tag) => {
+                    tag.clicked = false;
+                    return tag;
+                });
                 $scope.public = (bookmark && bookmark.id) || '1';
                 $('.ui.checkbox.js-public').checkbox((bookmark && bookmark.public && bookmark.public == '1') ? 'set checked' : 'set unchecked')
 
-
                 $timeout(function() {
                     data.bookmarkTags.forEach((tagId) => {
-                        $('.ui.fluid.search.dropdown').dropdown('set selected', tagId);
+                        $scope.tags.forEach((tag) => {
+                            if (tag.id == tagId) {
+                                tag.clicked = true;
+                            }
+                        })
                     });
                 });
 
@@ -267,6 +303,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                     $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
                     $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
                     $('.ui.checkbox.js-public').checkbox('set checked');
+                    cancelDefault = true;
                     init();
                     getTags({});
                 }

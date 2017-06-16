@@ -35,52 +35,8 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         });
     });
 
-    $scope.addTags = function() {
-        console.log('Hello , you have click add tag btn......');
-
-        // 先将中文逗号替换成英文逗号，然后将多个英文逗号换成一个英文逗号
-        $scope.newTags = $scope.newTags.replace(/，/g, ",").replace(/,+/g, ",");
-        var tags = $scope.newTags.split(",");
-        var params = [];
-        tags.forEach(function(tag) {
-            tag = tag.replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格，多个空格转为一个空格;
-            // 过滤是""的情况
-            if (tag) {
-                params.push(tag);
-            }
-        });
-
-        if (tags.length + $scope.tags.length >= 30) {
-            toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
-            return;
-        }
-
-        bookmarkService.addTags(params)
-            .then((data) => {
-                $scope.tags = data;
-                pubSubService.publish('EditCtr.addTagsSuccess', data);
-                $scope.newTags = '';
-                toastr.success('[ ' + params.toString() + ' ]分类添加成功！', "提示");
-                $timeout(() => {
-                    // 将新增加的分类自动添加到下啦列表中
-                    var count = 0;
-                    params.forEach((tagName) => {
-                        data.forEach((tag) => {
-                            if (tagName == tag.name) {
-                                if (count < maxSelections) {
-                                    $('.ui.fluid.search.dropdown').dropdown('set selected', tag.id);
-                                }
-                                count++;
-                            }
-                        });
-                    });
-                });
-            })
-            .catch((err) => console.log('addTags err', err));
-    }
     $scope.cancel = function() {
         $('.ui.modal.js-add-bookmark').modal('hide');
-        $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
 
         init();
     }
@@ -121,7 +77,6 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                 .then((data) => {
                     $('.ui.modal.js-add-bookmark').modal('hide');
                     pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
-                    console.log(JSON.stringify(data));
                     if (data.title) {
                         toastr.success('[ ' + data.title + ' ] 添加成功，将自动重新更新书签！</br>' + (data.update ? '系统检测到该书签之前添加过，只更新链接，描述，标题，分类。创建日期与最后点击日期不更新！' : ''), "提示");
                     } else {
@@ -166,7 +121,17 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
             toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
             return;
         }
+
         tag = tag.replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格，多个空格转为一个空格;
+
+        var exist = $scope.tags.some((item) => {
+            return item.name == tag;
+        })
+        if (exist) {
+            toastr.error('该分类【' + tag + '】已存在！', "提示");
+            return;
+        }
+
         if (tag) {
             ngDialog.close(dialog);
 
@@ -174,9 +139,23 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
             tags.push(tag);
             bookmarkService.addTags(tags)
                 .then((data) => {
-                    console.log(JSON.stringify(data));
-                    toastr.success('[ ' + tag + ' ]插入分类成功！将自动更新分类信息', "提示");
-                    // getTags({});
+
+                    // 获取已经选择的个数
+                    var clickedCount = $scope.tags.filter((item) => {
+                        return item.clicked;
+                    }).length
+
+                    // 获取新增的tag(由于这里只增加一个，所以弹出数组最后一个即可)
+                    var newTag = data.filter((item) => {
+                        return item.name == tag;
+                    }).pop();
+
+                    if (newTag) {
+                        newTag.clicked = clickedCount <= 2;
+                        $scope.tags.push(newTag);
+                    }
+
+                    toastr.success('[ ' + tag + ' ]插入分类成功！', "提示");
                 })
                 .catch((err) => {
                     toastr.warning('[ ' + tag + ' ]插入分类失败：' + JSON.stringify(err), "提示");
@@ -203,7 +182,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         }
 
         currCntTag += Number(clicked);
-        if (currCntTag <= 3) {
+        if (currCntTag <= 3 && currCntTag >= 1) {
             if (clickTag) {
                 clickTag.clicked = clicked;
             }
@@ -218,8 +197,6 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
         }).modal('setting', 'transition', dataService.animation()).modal('show');
-        $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
-        $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         $('.ui.checkbox.js-public').checkbox('set checked');
         cancelDefault = true;
         init();
@@ -234,9 +211,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         setTimeout(function() {
             $('.ui.modal.js-add-bookmark').modal("refresh");
         }, 500);
-        $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
-        $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         $scope.add = false;
+        $scope.loadTags = true;
+        cancelDefault = false;
         bookmarkService.getBookmark(params)
             .then((data) => {
                 console.log('getBookmark ', data);
@@ -263,8 +240,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                         })
                     });
                 });
-
-                $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
+                $scope.loadTags = false;
             })
             .catch((err) => console.log('updateBookmark err', err));
     });
@@ -274,17 +250,13 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
         }).modal('setting', 'transition', dataService.animation()).modal('show');
-        $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
-        $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
         $('.ui.checkbox.js-public').checkbox('set checked');
+        cancelDefault = false;
         init();
         getTags({});
         $scope.autoGettitle = false;
         $scope.url = bookmark.url;
         $scope.title = bookmark.title;
-        if (bookmark.tags && bookmark.tags.length >= 1) {
-            $scope.newTags = bookmark.tags.map((item) => item.name).toString();
-        }
     });
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
@@ -300,8 +272,6 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                     $('.ui.modal.js-add-bookmark').modal({
                         closable: false,
                     }).modal('setting', 'transition', dataService.animation()).modal('show');
-                    $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('clear');
-                    $('.ui.modal.js-add-bookmark .ui.dropdown').addClass('loading');
                     $('.ui.checkbox.js-public').checkbox('set checked');
                     cancelDefault = true;
                     init();
@@ -326,41 +296,24 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                 data.forEach((tag) => {
                     tag.clicked = false;
                 })
+
                 if ($scope.add && data.length >= 1) {
                     data[0].clicked = true;
                 }
                 $scope.tags = data;
-                initJsTags();
-                $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
+                $scope.loadTags = false;
             })
             .catch((err) => console.log('getTags err', err));
     }
 
-    function initJsTags() {
-        setTimeout(function() {
-            $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
-            $('.ui.dropdown.js-tags').dropdown({
-                forceSelection: false,
-                maxSelections: maxSelections,
-                action: 'combo',
-                onChange: function(value, text, $choice) {
-                    var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
-                    $timeout(function() {
-                        $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections) && ($('.ui.modal.js-add-bookmark').modal('is active'));
-                    });
-                }
-            });
-        }, 1000)
-    }
-
     function init() {
         $scope.add = true;
+        $scope.loadTags = true;
         $scope.autoGettitle = true;
         $scope.id = '';
         $scope.url = '';
         $scope.title = '';
         $scope.description = '';
-        $scope.newTags = '';
         $scope.tags = []; // tag = {id:xxx, name:'yyy'}
 
         $scope.urlError = false;

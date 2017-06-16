@@ -346,6 +346,15 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             return;
         }
         tag = tag.replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格，多个空格转为一个空格;
+
+        var exist = $scope.tags.some((item) => {
+            return item.name == tag;
+        })
+        if (exist) {
+            toastr.error('该分类【' + tag + '】已存在！', "提示");
+            return;
+        }
+        
         if (tag) {
             ngDialog.close(dialog);
 

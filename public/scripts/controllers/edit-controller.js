@@ -187,7 +187,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                 clickTag.clicked = clicked;
             }
         } else {
-            toastr.error('您至少要选择一个分类！最多选择三个分类！' + currCntTag, "错误");
+            toastr.error('您至少要选择一个分类！最多选择三个分类！如果暂时没想到放到哪个分类，可以先选择未分类。', "错误");
         }
 
     }
@@ -251,7 +251,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
             closable: false,
         }).modal('setting', 'transition', dataService.animation()).modal('show');
         $('.ui.checkbox.js-public').checkbox('set checked');
-        cancelDefault = false;
+        cancelDefault = true;
         init();
         getTags({});
         $scope.autoGettitle = false;
@@ -294,10 +294,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                     return 1;
                 })
                 data.forEach((tag) => {
-                    tag.clicked = false;
-                })
-
-                if ($scope.add && data.length >= 1) {
+                        tag.clicked = false;
+                    })
+                    // 只有在新增的时候，才默认最近使用书签分类(编辑，转存不默认)
+                if ($scope.add && data.length >= 1 && $scope.url == '' && $scope.title == '') {
                     data[0].clicked = true;
                 }
                 $scope.tags = data;

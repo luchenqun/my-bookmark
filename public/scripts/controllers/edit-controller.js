@@ -16,9 +16,20 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                     url: newUrl,
                     requestId: 0,
                 }
+                $scope.loadTitle = true;
                 bookmarkService.getArticle(params)
-                    .then((data) => $scope.title = data.title)
-                    .catch((err) => console.log('getTitle err', err))
+                    .then((data) => {
+                        $scope.loadTitle = false;
+                        $scope.title = data.title;
+                        if (!$scope.title) {
+                            toastr.error('获取书签标题失败，请手动填入', "提示");
+                        }
+                    })
+                    .catch((err) => {
+                        console.log('getTitle err', err);
+                        toastr.error('获取书签标题失败：' + JSON.stringify(err) + '，请手动填入', "提示");
+                        $scope.loadTitle = false;
+                    })
             }
         }
     });
@@ -310,6 +321,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         $scope.add = true;
         $scope.loadTags = true;
         $scope.autoGettitle = true;
+        $scope.loadTitle = false;
         $scope.id = '';
         $scope.url = '';
         $scope.title = '';

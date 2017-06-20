@@ -13,7 +13,10 @@
                     </div>
                     <div class="required eight wide field" ng-class="{error:titleError}">
                         <label>书签标题</label>
-                        <input type="text" placeholder="" ng-model="title">
+                        <div class="ui icon input" ng-class="{loading:loadTitle}">
+                            <input type="text" ng-attr-placeholder="{{loadTitle ? '正在获取书签标题。。。' : '在书签链接处粘贴正确的网站会自动获取'}}" ng-model="title">
+                            <i class="search icon" ng-show="loadTitle && title.length==0"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -33,7 +36,13 @@
             </div>
             <div class="field">
                 <label>描述</label>
-                <div style="border-radius:4px;border:1px solid #DEDEDE;min-height:88px;" name="text" ng-model="description" required medium-editor bind-options="{'placeholder': {text: '可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到'},
+                <div
+                    style="border-radius:4px;border:1px solid #DEDEDE;min-height:88px;"
+                    name="text"
+                    ng-model="description"
+                    required
+                    medium-editor
+                    bind-options="{'placeholder': {text: '可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到'},
                     'buttons': ['bold', 'italic', 'underline', 'header1', 'header2', 'quote', 'orderedlist', 'unorderedlist']}"></div>
             </div>
             <div class="field">

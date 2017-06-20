@@ -142,6 +142,7 @@ my-bookmark/
 ```
 "body-parser": bodyParser用于解析客户端请求的body中的内容,内部使用JSON编码处理
 "connect-mongo": 用于将session存入MongoDB
+"cheerio": 用于后端的jQuery
 "cookie-parser": 处理每一个请求的cookie
 "crypto": 加密模块，主要用来加密用户的密码
 "debug": 这个好像没用到，看名字好像调试的。

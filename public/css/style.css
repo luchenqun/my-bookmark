@@ -144,7 +144,7 @@ img.operator {
 .urlSpan {
     word-wrap: break-word;
     word-break: break-all;
-    cursor:default;
+    cursor: default;
 }
 
 .ui.sortable.table thead th.forbid_sorted:hover {
@@ -156,16 +156,24 @@ img.operator {
     border-radius: 0;
 }
 
-.js-p-info p{
-    margin-bottom:5px;
+.js-p-info p {
+    margin-bottom: 5px;
     font-size: 16px;
 }
 
-.note-content{
+.note-content {
     font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
-    white-space:pre-wrap;
-    white-space:-moz-pre-wrap;
-    white-space:-pre-wrap;
-    white-space:-o-pre-wrap;
-    word-wrap:break-word;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
+
+.fontgreen {
+    color: RGB(33, 186, 69);
+}
+
+.fontred {
+    color: #F00;
 }

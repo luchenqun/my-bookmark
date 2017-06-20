@@ -130,12 +130,23 @@
     </div>
     <div class="ui divider"></div>
     <div class="ui grid">
-        <div class="eight wide column" style="margin-top:10px;">
-            <i class="sort numeric descending large icon" ng-class="{green: order[0]}" ng-click="changeOrder(0)" title="按点击次数排序" style="margin-left:10px;"></i>
-            <i class="add to calendar large icon" ng-class="{green: order[1]}" ng-click="changeOrder(1)" title="按添加日期排序" style="margin-left:10px;"></i>
-            <i class="sort alphabet descending large icon" ng-class="{green: order[2]}" ng-click="changeOrder(2)" title="按最后点击时间排序" style="margin-left:10px;"></i>
+        <div class="five wide column" style="margin-top:10px;">
+            <div class="ui three column grid" style="cursor: default;">
+                <div class="column" ng-click="changeOrder(0)">
+                    <i class="sort numeric descending large icon" ng-class="{green: order[0]}" style="margin-bottom:4px;"></i>
+                    <span ng-class="{fontgreen: order[0]}" style="margin-left:-5px;">点击次数</span>
+                </div>
+                <div class="column" ng-click="changeOrder(1)">
+                    <i class="add to calendar large icon" ng-class="{green: order[1]}" style="margin-bottom:4px;"></i>
+                    <span ng-class="{fontgreen: order[1]}" style="margin-left:-5px;">添加日期</span>
+                </div>
+                <div class="column" ng-click="changeOrder(2)">
+                    <i class="sort alphabet descending large icon" ng-class="{green: order[2]}" style="margin-bottom:4px;"></i>
+                    <span ng-class="{fontgreen: order[2]}" style="margin-left:-5px;">最后点击</span>
+                </div>
+            </div>
         </div>
-        <div class="eight wide column">
+        <div class="eleven wide column">
             <pagination></pagination>
         </div>
     </div>

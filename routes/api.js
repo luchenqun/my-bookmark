@@ -9,6 +9,7 @@ var multer = require('multer');
 var webshot = require('webshot');
 var fs = require('fs');
 var request = require('request');
+var cheerio = require('cheerio');
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -1051,6 +1052,68 @@ api.post('/getArticle', function(req, res) {
     });
 })
 
+api.post('/getUpdateLog', function(req, res) {
+    console.log("getArticle username = ", req.session.username);
+    var params = req.body.params;
+    var defaultUrl = 'https://github.com/luchenqun/my-bookmark/commits/master'
+    var url = params.url || defaultUrl;
+
+    request(url, function(error, response, body) {
+        console.log("HotBookmarks request ", error, response && response.statusCode);
+        if (response && response.statusCode == 200) {
+            const $ = cheerio.load(body);
+            var data = [];
+            $('.commit-group-title').each(function() {
+                var updateLogs = {};
+
+                var dateMap = {
+                    'Jan': 1,
+                    'Feb': 2,
+                    'Mar': 3,
+                    'Apr': 4,
+                    'May': 5,
+                    'Jun': 6,
+                    'Jul': 7,
+                    'Aug': 8,
+                    'Sep': 9,
+                    'Oct': 10,
+                    'Nov': 11,
+                    'Dec': 12,
+                }
+                var date = $(this).text().replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' '); // 去除前后空格得到字符串 Commits on Jun 16, 2017;
+                var dateArray = date.replace(',', '').replace('Commits on ', '').split(' ');
+
+                updateLogs.date = dateArray[2] + '-' + (dateMap[dateArray[0]] || dateArray[0]) + '-' + dateArray[1];
+                updateLogs.logs = [];
+
+                $(this).next().children('li').each(function() {
+                    var $log = $(this).children('.table-list-cell').eq(1).children('p').children('a');
+                    var commit = $log.text()
+                    var href = 'https://github.com' + $log.attr('href');
+
+                    updateLogs.logs.push({
+                        commit: commit,
+                        href: href,
+                    })
+                })
+                data.push(updateLogs)
+            })
+
+            var oldUrl = $('.paginate-container .pagination a').attr('href');
+            if (oldUrl) {
+                oldUrl = 'https://github.com' + oldUrl;
+            }
+
+            res.json({
+                updateLogs: data,
+                oldUrl: oldUrl || defaultUrl
+            });
+        } else {
+            console.log("HotBookmarks request is error", error, response && response.statusCode);
+        }
+    });
+})
+
 api.checkSnapFaviconState = function() {
     db.getBookmarks()
         .then((bookmarks) => {
@@ -1297,6 +1360,8 @@ api.getHotBookmarksByTimer = function() {
     }, timeout);
 }
 
+
+
 api.post('/addNote', function(req, res) {
     console.log("addNote username = ", req.session.username);
     if (!req.session.user) {
@@ -1311,7 +1376,7 @@ api.post('/addNote', function(req, res) {
         .then((insertId) => {
             res.json({
                 retCode: 0,
-                insertId:insertId,
+                insertId: insertId,
                 msg: "添加备忘成功 ",
             })
             console.log('addNote insertId ', insertId)

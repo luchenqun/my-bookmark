@@ -14,6 +14,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        getUpdateLog: function(params) {
+            var def = $q.defer();
+            $http.post('/api/getUpdateLog/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('getUpdateLog error');
+                });
+            return def.promise;
+        },
         login: function(params) {
             var def = $q.defer();
             $http.post('/api/login/', {

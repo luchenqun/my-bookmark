@@ -14,11 +14,30 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.key = '';
     $scope.url = '';
     $scope.quickUrl = {};
+    $scope.updateLogs = [];
+    $scope.logsUrl = 'https://github.com/luchenqun/my-bookmark/commits/master';
 
+    $scope.getUpdateLog = function(url) {
+        console.log(url);
+        $scope.updateLogs = [];
+        bookmarkService.getUpdateLog({
+                url: url
+            })
+            .then((data) => {
+                $scope.updateLogs = data.updateLogs;
+                $scope.logsUrl = data.oldUrl;
+                console.log(data);
+            })
+            .catch((err) => {
+                toastr.error('获取更新日志失败。错误信息：' + JSON.stringify(err), "错误");
+            });
+    }
+    
     $scope.changeForm = function(index) {
         console.log("changeForm = ", index);
         $scope.form = $scope.form.map(() => false);
         $scope.form[index] = true;
+        $scope.updateLogs = [];
 
         if (index == 0 || index == 1 || index == 4) {
             $scope.loadShowStyle = true;
@@ -52,6 +71,10 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
                 .catch((err) => {
                     console.log('getTags err', err);
                 });
+        }
+
+        if (index == 5) {
+            $scope.getUpdateLog($scope.logsUrl);
         }
     }
 
@@ -168,6 +191,10 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.delUrl = function(key) {
         delete $scope.quickUrl[key];
         saveQuickUrl();
+    }
+
+    $scope.jumpCommit = function(url) {
+        $window.open(url, '_blank');
     }
 
     function updateShowStyle(showStyle) {

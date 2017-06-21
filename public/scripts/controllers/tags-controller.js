@@ -354,7 +354,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             toastr.error('该分类【' + tag + '】已存在！', "提示");
             return;
         }
-        
+
         if (tag) {
             ngDialog.close(dialog);
 
@@ -497,10 +497,17 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     bookmark.tags = data.tags;
                     bookmark.description = data.description;
                     find = true;
+                    if ($scope.order[bookmark.type - 1]) {
+                        dataService.transition('#' + bookmark.id);
+                    }
                 }
             })
             if (!find) {
-                getTags({});
+                if (data.tags.map((tag) => tag.id).indexOf($scope.currentTagId) >= 0) {
+                    if (!$scope.editMode) {
+                        $scope.getBookmarks($scope.currentTagId, $scope.currentPage = 1);
+                    }
+                }
             }
         }
     });
@@ -540,12 +547,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     function transition() {
-        var className = 'js-tags-table';
-        $('.' + className).transition('hide');
-        $('.' + className).transition({
-            animation: dataService.animation(),
-            duration: 500,
-        });
+        dataService.transition($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table');
     }
 
     function clickCmp(a, b) {

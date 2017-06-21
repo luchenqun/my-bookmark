@@ -54,6 +54,31 @@ app.factory('dataService', [function() {
             var t = data[parseInt(Math.random() * 1000) % data.length];
             return t;
         },
+        transition: function(selector, params) {
+            var data = {};
+            data.animation = (params && params.animation) ? params.animation : service.animation();
+            data.duration = (params && params.duration) ? params.duration : 1000;
+            data.onComplete = function() {
+                if (params) {
+                    if (params.state == 'hide') {
+                        $(selector).hide();
+                    } else if (params.state == 'show') {
+                        $(selector).show();
+                    } else if (params.state == 'remove') {
+                        $(selector).remove();
+                    } else {
+                        $(selector).show();
+                    }
+                    params.cb && params.cb(); // 完成之后回调！
+                } else {
+                    $(selector).show();
+                }
+
+            }
+            $(selector).transition('hide'); // 不管怎样，先隐藏
+            console.log(data);
+            $(selector).transition(data); //这个执行完之后一定是show
+        },
         historyTypes: ['书签', '谷歌', 'Github', '栈溢出', '百度', '备忘录'],
         showStyles: ['navigate', 'costomTag', 'card', 'table'],
         forbidQuickKey: {

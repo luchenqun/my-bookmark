@@ -202,9 +202,9 @@
             </div>
             <div class="ui container js-p-info" ng-show="form[5]">
                 <!-- <h3 class="ui dividing header">更新日志</h3> -->
-                <div class="ui active inverted dimmer" ng-class="{active:updateLogs.length==0, disabled: updateLogs.length>0}">
-                    <div class="ui text loader">正在从Github获取提交日志(大概需要30s)。。。</div>
-                </div>
+                <!-- <div class="ui active inverted dimmer" ng-class="{active:loadingLogs, disabled: !loadingLogs}">
+                    <div class="ui text loader">正在从Github获取提交日志。。。</div>
+                </div> -->
                 <div class="ui message" ng-repeat="updateLog in updateLogs">
                     <div class="header">{{ updateLog.date }}</div>
                     <ul class="list" style="cursor: default;">
@@ -213,7 +213,8 @@
                         </li>
                     </ul>
                 </div>
-                <button class="fluid ui button" ng-click='getUpdateLog(logsUrl)' ng-show="updateLogs.length>0">
+                <div ng-show="loadingLogs"><img class="ui centered medium image" src="/images/loading.gif"></div>
+                <button class="fluid ui button" ng-click='getUpdateLog(logsUrl)' ng-show="!loadingLogs">
                     更早日志
                 </button>
             </div>

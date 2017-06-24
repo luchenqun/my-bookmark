@@ -4,6 +4,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     var perPageItems = 20;
     var dialog = null;
+    var forbidTransition = false;
+    var addBookmarkId = -1;
     $scope.hoverBookmark = null;
     $scope.order = [false, false, false];
     $scope.order[($stateParams && $stateParams.orderIndex) || 0] = true;
@@ -101,7 +103,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             perPageItems: perPageItems,
         };
 
-        $('.js-tags-table').transition('hide');
         bookmarkService.getBookmarksByTag(params)
             .then((data) => {
                 $scope.bookmarkData = data;
@@ -116,11 +117,20 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     login: true,
                     index: dataService.LoginIndexTags
                 });
-                transition();
+                if (!forbidTransition) {
+                    dataService.transition($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table');
+                }
+                $timeout(function() {
+                    dataService.transition('#' + addBookmarkId);
+                    addBookmarkId = -1;
+                }, 1000);
+                forbidTransition = false;
             })
             .catch((err) => {
                 console.log('getTags err', err);
                 $scope.loadBookmarks = false;
+                forbidTransition = false;
+                addBookmarkId = -1;
             });
     };
 
@@ -505,8 +515,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             if (!find) {
                 if (data.tags.map((tag) => tag.id).indexOf($scope.currentTagId) >= 0) {
                     if (!$scope.editMode) {
-                        $scope.getBookmarks($scope.currentTagId, $scope.currentPage = 1);
+                        $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
+                        forbidTransition = true;
                     }
+                    addBookmarkId = data.id;
                 }
             }
         }
@@ -544,10 +556,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 }
             }, 100 * i)
         }
-    }
-
-    function transition() {
-        dataService.transition($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table');
     }
 
     function clickCmp(a, b) {

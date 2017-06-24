@@ -2,7 +2,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     console.log('Hello settingsCtr......', $stateParams);
 
     $scope.forbidQuickKey = dataService.forbidQuickKey
-    $scope.form = [false, false, false, false];
+    $scope.form = [false, false, false, false, false, false];
     $scope.passwordOrgin = "";
     $scope.passwordNew1 = "";
     $scope.passwordNew2 = "";
@@ -16,23 +16,29 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.quickUrl = {};
     $scope.updateLogs = [];
     $scope.logsUrl = 'https://github.com/luchenqun/my-bookmark/commits/master';
+    $scope.loadingLogs = false;
 
     $scope.getUpdateLog = function(url) {
-        console.log(url);
-        $scope.updateLogs = [];
+        if ($scope.updateLogs.length > 0 && url == 'https://github.com/luchenqun/my-bookmark/commits/master') {
+            toastr.warning('没有更早的日志可供您查看了！', "错误");
+            return;
+        }
+
+        $scope.loadingLogs = true;
         bookmarkService.getUpdateLog({
                 url: url
             })
             .then((data) => {
-                $scope.updateLogs = data.updateLogs;
+                Array.prototype.push.apply($scope.updateLogs, data.updateLogs);
                 $scope.logsUrl = data.oldUrl;
-                console.log(data);
+                $scope.loadingLogs = false;
             })
             .catch((err) => {
                 toastr.error('获取更新日志失败。错误信息：' + JSON.stringify(err), "错误");
+                $scope.loadingLogs = false;
             });
     }
-    
+
     $scope.changeForm = function(index) {
         console.log("changeForm = ", index);
         $scope.form = $scope.form.map(() => false);
@@ -74,6 +80,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         }
 
         if (index == 5) {
+            $scope.logsUrl = 'https://github.com/luchenqun/my-bookmark/commits/master'
             $scope.getUpdateLog($scope.logsUrl);
         }
     }
@@ -224,7 +231,6 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
                     });
                     $state.go('bookmarks', {})
                 }, 3000);
-
             },
         });
         $(".ui.pointing.menu .item").removeClass("selected");
@@ -255,15 +261,5 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
             });
     }
 
-    transition();
-
-    function transition() {
-        var className = 'js-segment-settings';
-        $('.' + className).transition('hide');
-        $('.' + className).transition({
-            animation: dataService.animation(),
-            duration: 500,
-        });
-    }
-
+    dataService.transition('.js-segment-settings');
 }]);

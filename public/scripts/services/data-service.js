@@ -76,8 +76,9 @@ app.factory('dataService', [function() {
 
             }
             $(selector).transition('hide'); // 不管怎样，先隐藏
-            console.log(data);
             $(selector).transition(data); //这个执行完之后一定是show
+
+            return $(selector).length >= 1;
         },
         historyTypes: ['书签', '谷歌', 'Github', '栈溢出', '百度', '备忘录'],
         showStyles: ['navigate', 'costomTag', 'card', 'table'],

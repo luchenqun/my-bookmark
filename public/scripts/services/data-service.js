@@ -47,8 +47,8 @@ app.factory('dataService', [function() {
         animationIndex: 0,
         animation: function() {
             var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
-                'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down',
-                'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right'
+                'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up', 'swing down',
+                'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right', 'jiggle', 'shake', 'pulse', 'tada', 'bounce'
             ];
 
             var t = data[parseInt(Math.random() * 1000) % data.length];
@@ -57,7 +57,7 @@ app.factory('dataService', [function() {
         transition: function(selector, params) {
             var data = {};
             data.animation = (params && params.animation) ? params.animation : service.animation();
-            data.duration = (params && params.duration) ? params.duration : 1000;
+            data.duration = (params && params.duration) ? params.duration : 500;
             data.onComplete = function() {
                 if (params) {
                     if (params.state == 'hide') {

@@ -121,7 +121,9 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     dataService.transition($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table');
                 }
                 $timeout(function() {
-                    dataService.transition('#' + addBookmarkId);
+                    dataService.transition('#' + addBookmarkId, {
+                        duration: 1000,
+                    });
                     addBookmarkId = -1;
                 }, 1000);
                 forbidTransition = false;
@@ -508,7 +510,9 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     bookmark.description = data.description;
                     find = true;
                     if ($scope.order[bookmark.type - 1]) {
-                        dataService.transition('#' + bookmark.id);
+                        dataService.transition('#' + bookmark.id, {
+                            duration: 1000,
+                        });
                     }
                 }
             })

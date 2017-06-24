@@ -10,6 +10,7 @@ var webshot = require('webshot');
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
+const path = require('path');
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -755,13 +756,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                            allTags.forEach((at) => {
-                                if (at.name == tag) {
-                                    tags.push(at.id);
-                                }
+                                allTags.forEach((at) => {
+                                    if (at.name == tag) {
+                                        tags.push(at.id);
+                                    }
+                                })
                             })
-                        })
-                        // 插入书签
+                            // 插入书签
                         db.getBookmarkbyUrl(userId, bookmark.url)
                             .then((bookmarkId) => {
                                 // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
@@ -1442,6 +1443,20 @@ api.post('/updateNote', function(req, res) {
             })
         }); // oops!
 })
+
+// 实现文件下载
+api.get('/download', function(req, res) {
+    var fileName = req.query.fileName;
+    var filePath = path.join(path.resolve(__dirname, '..'), 'uploads', fileName);
+    console.log('download fileName = ', fileName, ', download filePath = ' + filePath);
+    res.download(filePath, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('download filePath[ ' + filePath + ' ]success!');
+        }
+    });
+});
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');

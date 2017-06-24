@@ -204,6 +204,12 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         $window.open(url, '_blank');
     }
 
+    $scope.exportBookmark = function() {
+        toastr.warning('功能正在开发中，敬请期待......', '提示');
+        return;
+        $window.open("api/download?fileName=lcq-20170304213023.html");
+    }
+
     function updateShowStyle(showStyle) {
         setTimeout(function() {
             if (showStyle) {

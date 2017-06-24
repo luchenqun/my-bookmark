@@ -6,7 +6,7 @@
                 </a>
                 <a class="item" ng-class="{active:form[1]}" ng-click="changeForm(1)">我的信息
                 </a>
-                <a class="item" ng-class="{active:form[2]}" ng-click="changeForm(2)">上传书签
+                <a class="item" ng-class="{active:form[2]}" ng-click="changeForm(2)">上传或导出书签
                 </a>
                 <a class="item" ng-class="{active:form[3]}" ng-click="changeForm(3)">网站说明
                 </a>
@@ -44,12 +44,6 @@
                             <label>导航</label>
                         </div>
                     </div>
-                    <!-- <div class="field" ng-click="updateDefaultShowStyle('costomTag')">
-                        <div class="ui radio checkbox js-radio-default-costomTag">
-                            <input type="radio" name="default-show-style">
-                            <label>标签</label>
-                        </div>
-                    </div> -->
                     <div class="field" ng-click="updateDefaultShowStyle('table')">
                         <div class="ui radio checkbox js-radio-default-table">
                             <input type="radio" name="default-show-style">
@@ -118,9 +112,10 @@
                 </tbody>
             </table>
             <form class="ui form" ng-show="form[2]">
+                <h2 class="ui dividing header">上传浏览器书签到系统</h2>
                 <div id="fileuploader" style="min-width:100px">点我上传</div>
-                <h2 class="ui dividing header">注意事项</h2>
                 <div class="ui container js-p-info">
+                    <p>注意事项</p>
                     <p>1、导入的方法是将浏览器里面收藏的网站导出HTML文件。然后将导出的HTML文件点击上面的<code>Upload</code>按钮上传到服务器。目前只测试过谷歌浏览器跟IE浏览器的书签导入。但是因为浏览器的标签是可以支持互相导入的，我觉得应该是没问题的。如果不成功，可以先将其他浏览器的书签导入谷歌浏览器再导出。</p>
                     <p>2、谷歌浏览器书签导出文件方法：<a href="http://jingyan.baidu.com/article/0bc808fc2d3b841bd485b9fb.html" target="_blank">chrome浏览器书签导出</a>
                     </p>
@@ -129,6 +124,8 @@
                     <p>4、导入的文件不能超过10M</p>
                     <p>5、如果重复导入，新的会覆盖旧的信息。</p>
                 </div>
+                <h2 class="ui dividing header">导出为浏览器书签</h2>
+                <button class="fluid ui button" ng-click="exportBookmark()">导出书签</button>
             </form>
             <div class="ui container js-p-info" ng-show="form[3]">
                 <h3 class="ui dividing header">为什么要做个网络书签</h3>
@@ -201,10 +198,6 @@
                 </table>
             </div>
             <div class="ui container js-p-info" ng-show="form[5]">
-                <!-- <h3 class="ui dividing header">更新日志</h3> -->
-                <!-- <div class="ui active inverted dimmer" ng-class="{active:loadingLogs, disabled: !loadingLogs}">
-                    <div class="ui text loader">正在从Github获取提交日志。。。</div>
-                </div> -->
                 <div class="ui message" ng-repeat="updateLog in updateLogs">
                     <div class="header">{{ updateLog.date }}</div>
                     <ul class="list" style="cursor: default;">

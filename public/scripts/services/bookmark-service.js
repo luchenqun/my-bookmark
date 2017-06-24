@@ -444,6 +444,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        download: function(params) {
+            var def = $q.defer();
+            $http.get('/api/download/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('download error');
+                });
+            return def.promise;
+        },
     };
 
     return service;

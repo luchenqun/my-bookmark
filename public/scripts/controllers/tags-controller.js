@@ -102,7 +102,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             currentPage: currentPage,
             perPageItems: perPageItems,
         };
-
+        $scope.bookmarksByTag = [];
         bookmarkService.getBookmarksByTag(params)
             .then((data) => {
                 $scope.bookmarkData = data;

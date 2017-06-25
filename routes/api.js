@@ -10,7 +10,8 @@ var webshot = require('webshot');
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
-const path = require('path');
+var path = require('path');
+var beautify_html = require('js-beautify').html;
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -19,7 +20,7 @@ var storage = multer.diskStorage({
     filename: function(req, file, cb) {
         var now = new Date().format('yyyyMMddhhmmss')
         if (req.session.user) {
-            cb(null, req.session.username + '-' + now + '.html')
+            cb(null, 'importbookmark-' + req.session.username + '-' + now + '.html')
         } else {
             cb(null, "UnknowUser" + '-' + now + '.html')
         }
@@ -1446,16 +1447,64 @@ api.post('/updateNote', function(req, res) {
 
 // 实现文件下载
 api.get('/download', function(req, res) {
-    var fileName = req.query.fileName;
-    var filePath = path.join(path.resolve(__dirname, '..'), 'uploads', fileName);
-    console.log('download fileName = ', fileName, ', download filePath = ' + filePath);
-    res.download(filePath, function(err) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('download filePath[ ' + filePath + ' ]success!');
-        }
-    });
+    console.log("download username = ", req.session.username);
+
+    var userId = req.query.userId;
+    var type = req.query.type;
+    if (!req.session.user || req.session.user.id != userId) {
+        res.send(401);
+        return;
+    }
+    if (type == 'exportbookmark' && userId) {
+        db.getTags(userId)
+            .then((tags) => {
+                var meta = '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">';
+                var init = '<TITLE>Bookmarks</TITLE><H1>Bookmarks</H1><DL id="0"></DL>';
+                var $ = cheerio.load(init, {
+                    decodeEntities: false,
+                    xmlMode: true,
+                });
+
+                tags.forEach((tag, tagIndex) => {
+                    $('#0').append('<DT><H3>' + tag.name + '</H3></DT><DL id="' + tag.id + '"></DL>'); // 增加文件夹
+                    db.getExportBookmarksByTag(tag.id)
+                        .then((bookmarks) => {
+                            bookmarks.forEach((bookmark) => {
+                                $('#' + bookmark.tag_id).append('<DT><A HREF="' + bookmark.url + '">' + bookmark.title + '</A></DT>');
+                            });
+                            if (tagIndex == tags.length - 1) {
+                                console.log('export bookmarks document construct end...');
+                                var now = new Date().format('yyyyMMddhhmmss')
+                                var fileName = 'exportbookmark-' + req.session.username + '-' + now + '.html';
+                                var filePath = path.join(path.resolve(__dirname, '..'), 'uploads', fileName);
+                                fs.writeFile(filePath, beautify_html($.xml(), {
+                                    indent_size: 4,
+                                }), function(err) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        res.download(filePath, function(err) {
+                                            if (err) {
+                                                console.log(err);
+                                            } else {
+                                                console.log('download filePath[ ' + filePath + ' ]success!');
+                                            }
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                        .catch((err) => {
+                            console.log('getExportBookmarksByTag err', err);
+                        })
+                })
+            })
+            .catch((err) => {
+                console.log('exportbookmark err', err);
+            });
+    } else {
+        res.send(401);
+    }
 });
 
 function md5(str) {

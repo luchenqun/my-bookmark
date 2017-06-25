@@ -546,13 +546,13 @@ db.getBookmarksNavigate = function(tags) {
     // var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id WHERE t.user_id='" + user_id + "' ORDER BY t.id ASC, b.click_count DESC";
     var sql = "";
     tags.forEach((tag, index) => {
-        var t = 't' + tag.id;
-        if (index >= 1) {
-            sql += " UNION "
-        }
-        sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
-    })
-    // console.log('getBookmarksNavigate ', sql);
+            var t = 't' + tag.id;
+            if (index >= 1) {
+                sql += " UNION "
+            }
+            sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
+        })
+        // console.log('getBookmarksNavigate ', sql);
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
@@ -568,9 +568,9 @@ db.getBookmarksNavigate = function(tags) {
 db.getBookmarksCostomTag = function(user_id, perPageItems) {
     console.log('getBookmarksCostomTag', user_id, perPageItems);
     perPageItems = perPageItems || 50;
-    var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `click_count` DESC LIMIT 0, "+ perPageItems +")";
-    var sql2 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `created_at` DESC LIMIT 0, "+ perPageItems +")";
-    var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `last_click` DESC LIMIT 0, "+ perPageItems +")";
+    var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `click_count` DESC LIMIT 0, " + perPageItems + ")";
+    var sql2 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `created_at` DESC LIMIT 0, " + perPageItems + ")";
+    var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `last_click` DESC LIMIT 0, " + perPageItems + ")";
 
     var sql = sql1 + " UNION " + sql2 + " UNION " + sql3;
     return new Promise(function(resolve, reject) {
@@ -746,6 +746,20 @@ db.getBookmarksByTag = function(params) {
                 }
 
                 resolve(bookmarksData);
+            }
+        });
+    })
+}
+
+db.getExportBookmarksByTag = function(tag_id) {
+    var sql = "SELECT tags_bookmarks.tag_id, bookmarks.title, bookmarks.url, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id ORDER BY bookmarks.click_count DESC";
+
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
             }
         });
     })

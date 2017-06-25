@@ -205,9 +205,14 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     }
 
     $scope.exportBookmark = function() {
-        toastr.warning('功能正在开发中，敬请期待......', '提示');
-        return;
-        $window.open("api/download?fileName=lcq-20170304213023.html");
+        var userId = $scope.user && $scope.user.id;
+        if (userId) {
+            // toastr.warning('功能正在开发中，敬请期待......', '提示');
+            // return;
+            $window.open("api/download?userId=" + userId + "&type=exportbookmark");
+        } else {
+            toastr.warning('用户信息无法获取到，请尝试按刷新网页再尝试！', '提示');
+        }
     }
 
     function updateShowStyle(showStyle) {

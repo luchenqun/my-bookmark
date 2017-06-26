@@ -102,7 +102,9 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             currentPage: currentPage,
             perPageItems: perPageItems,
         };
-        $($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table').transition('hide');
+        if (!forbidTransition) {
+            $($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table').transition('hide');
+        }
         bookmarkService.getBookmarksByTag(params)
             .then((data) => {
                 $scope.bookmarkData = data;
@@ -519,8 +521,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             if (!find) {
                 if (data.tags.map((tag) => tag.id).indexOf($scope.currentTagId) >= 0) {
                     if (!$scope.editMode) {
-                        $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
                         forbidTransition = true;
+                        $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
                     }
                     addBookmarkId = data.id;
                 }

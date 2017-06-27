@@ -81,7 +81,9 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         $scope.bookmarkClicked = true;
         $scope.currentTagId = tagId;
         $scope.currentPage = currentPage;
-        $scope.loadBookmarks = true;
+        if (!forbidTransition) {
+            $scope.loadBookmarks = true;
+        }
         $scope.costomTag.bookmarkClicked = false;
 
         perPageItems = ($scope.showMode == 'item') ? 50 : 20;

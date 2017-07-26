@@ -757,13 +757,13 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
                         var tags = [];
                         item.tags.forEach((tag) => {
-                                allTags.forEach((at) => {
-                                    if (at.name == tag) {
-                                        tags.push(at.id);
-                                    }
-                                })
+                            allTags.forEach((at) => {
+                                if (at.name == tag) {
+                                    tags.push(at.id);
+                                }
                             })
-                            // 插入书签
+                        })
+                        // 插入书签
                         db.getBookmarkbyUrl(userId, bookmark.url)
                             .then((bookmarkId) => {
                                 // 如果这个url的书签存在了，那么直接返回书签，否则返回插入的书签
@@ -1433,7 +1433,7 @@ api.post('/updateNote', function(req, res) {
 
     var note = req.body.params;
     console.log('hello updateNote', JSON.stringify(note));
-    db.updateNote(note.id, note.content)
+    db.updateNote(note.id, note.content, note.tag_id)
         .then((affectedRows) => res.json({
             result: affectedRows
         }))

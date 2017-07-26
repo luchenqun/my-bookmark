@@ -9,7 +9,9 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $scope.edit = false;
     $scope.preContent = '';
     $scope.content = '';
+    $scope.currentTagId = null;
     $scope.currentNoteId = null;
+    $scope.tags = []; // 书签数据
     $scope.notes = [];
     $scope.totalPages = 0;
     $scope.currentPage = 1;
@@ -28,6 +30,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                 login: login,
                 index: index
             });
+            getTags();
             getNotes();
         })
         .catch((err) => {
@@ -79,30 +82,42 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             return;
         }
         $scope.add = close;
+        var tagName = '';
+
+        $scope.tags.forEach((tag) => {
+            if ($scope.currentTagId === tag.id) {
+                tagName = tag.name;
+            }
+            if (!$scope.currentTagId) {
+                if (tag.name == '未分类') {
+                    $scope.currentTagId = tag.id;
+                    tagName = tag.name
+                }
+            }
+        })
+
         var note = {
-            tag_id: -1,
+            tag_id: $scope.currentTagId,
             content: $scope.content,
         }
 
         bookmarkService.addNote(note)
             .then((data) => {
-                console.log(JSON.stringify(data));
-                if (data.retCode == 0) {
-                    note.id = data.insertId;
-                    note.created_at = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");
-                    note.name = '';
-                    $scope.notes.unshift(note);
-                    $timeout(function() {
-                        timeagoInstance.cancel();
-                        timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
-                    }, 100)
-                }
+                // 增加成功，重新获取一次备忘录
+                $scope.tags.forEach((tag) => {
+                    tag.clicked = false;
+                })
                 $scope.preContent = $scope.content;
                 $scope.content = '';
                 updateEditPos();
+                $scope.currentTagId = null;
+                $scope.currentPage = 1;
+                $scope.searchWord = '';
+                getNotes();
             })
             .catch((err) => {
-                console.log('addNote err', err)
+                console.log('addNote err', err);
+                $scope.currentTagId = null;
             });
     }
 
@@ -160,17 +175,38 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         }
     }
 
-    $scope.editNote = function(id, content) {
+    $scope.editNote = function(id, content, tagId) {
         $scope.add = true;
         $scope.edit = true;
         $scope.content = content;
         $scope.currentNoteId = id;
+        $scope.currentTagId = tagId;
+        $scope.tags.forEach((tag) => {
+            tag.clicked = false;
+            if (tag.id == tagId) {
+                tag.clicked = true;
+            }
+        })
     }
 
     $scope.updateNote = function() {
+        var tagName = '';
+        $scope.tags.forEach((tag) => {
+            if ($scope.currentTagId === tag.id) {
+                tagName = tag.name;
+            }
+            if (!$scope.currentTagId) {
+                if (tag.name == '未分类') {
+                    $scope.currentTagId = tag.id;
+                    tagName = tag.name
+                }
+            }
+        })
+
         var params = {
             id: $scope.currentNoteId,
             content: $scope.content,
+            tag_id: $scope.currentTagId,
         }
 
         bookmarkService.updateNote(params)
@@ -180,6 +216,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                     $scope.notes.forEach((note) => {
                         if (note.id == $scope.currentNoteId) {
                             note.content = $scope.content;
+                            note.tagName = tagName;
+                            note.tag_id = $scope.currentTagId;
                         }
                     })
                     $scope.add = false;
@@ -225,7 +263,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             var key = event.key.toUpperCase();
             if ($scope.hoverNote && dataService.keyShortcuts()) {
                 if (key == 'E') {
-                    $scope.editNote($scope.hoverNote.id, $scope.hoverNote.content)
+                    $scope.editNote($scope.hoverNote.id, $scope.hoverNote.content, $scope.hoverNote.tag_id)
                 } else if (key == 'I') {
                     $scope.detailNote($scope.hoverNote.content)
                 } else if (key == 'D') {
@@ -237,13 +275,17 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         })
     });
 
-    function getNotes() {
+    function getNotes(tagId) {
+        $scope.notes = [];
         $scope.loadBusy = true;
         var params = {
             currentPage: $scope.currentPage,
             perPageItems: perPageItems,
             searchWord: $scope.searchWord,
         };
+        if (tagId) {
+            params.tagId = tagId;
+        }
         bookmarkService.getNotes(params)
             .then((data) => {
                 $scope.notes = data.notes;
@@ -268,6 +310,48 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                 $scope.notes = [];
                 $scope.loadBusy = false;
             });
+    }
+
+    function getTags(params) {
+        $scope.loadBusy = true;
+        bookmarkService.getTags(params)
+            .then((data) => {
+                $scope.tags = []
+                var find = false;
+                data.forEach((tag) => {
+                    $scope.tags.push(tag);
+                    if (tag.id == $scope.currentTagId) {
+                        find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
+                    }
+                })
+                if (!find) $scope.currentTagId = null;
+
+                if ($scope.currentTagId) {
+                    getTags($scope.currentTagId);
+                }
+                $scope.loadBusy = false;
+            })
+            .catch((err) => {
+                console.log('getTags err', err);
+                $scope.loadBusy = false;
+            });
+    }
+
+    $scope.clickTag = function(id, clicked) {
+        $scope.currentTagId = id;
+        // 只允许选择一个
+        $scope.tags.forEach((tag) => {
+            tag.clicked = false;
+            if (tag.id == id) {
+                tag.clicked = true;
+            }
+        })
+
+        if ($scope.add || $scope.edit) {
+
+        } else {
+            getNotes($scope.currentTagId);
+        }
     }
 
     $('.js-note-card').transition('hide');

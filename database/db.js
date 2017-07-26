@@ -546,13 +546,13 @@ db.getBookmarksNavigate = function(tags) {
     // var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id WHERE t.user_id='" + user_id + "' ORDER BY t.id ASC, b.click_count DESC";
     var sql = "";
     tags.forEach((tag, index) => {
-            var t = 't' + tag.id;
-            if (index >= 1) {
-                sql += " UNION "
-            }
-            sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
-        })
-        // console.log('getBookmarksNavigate ', sql);
+        var t = 't' + tag.id;
+        if (index >= 1) {
+            sql += " UNION "
+        }
+        sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
+    })
+    // console.log('getBookmarksNavigate ', sql);
 
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
@@ -1030,10 +1030,14 @@ db.addNote = function(note) {
 };
 
 db.getNotes = function(params) {
-    var sql = "SELECT notes.id, notes.content, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '" + params.user_id + "'";
+    var sql = "SELECT notes.id, notes.content, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name as tagName FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '" + params.user_id + "'";
 
     if (params.searchWord) {
         sql += " AND notes.content LIKE '%" + params.searchWord + "%'";
+    }
+
+    if (params.tagId) {
+        sql += " AND notes.tag_id  = '" + params.tagId + "'";
     }
 
     sql += " ORDER BY `created_at` DESC"
@@ -1069,8 +1073,8 @@ db.delNote = function(id) {
     });
 }
 
-db.updateNote = function(id, content) {
-    var sql = "UPDATE `notes` SET `content`=" + client.escape(content) + " WHERE (`id`='" + id + "')";
+db.updateNote = function(id, content, tag_id) {
+    var sql = "UPDATE `notes` SET `content`=" + client.escape(content) + ", `tag_id`='" + tag_id + "' WHERE (`id`='" + id + "')";
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

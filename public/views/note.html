@@ -1,14 +1,5 @@
-<div class="ui hidden info message js-note" ng-if="(!add) && notes.length == 0">
-    <i class="close icon" ng-click="closeNote()"></i>
-    <div class="content">
-        <div class="header">系统检测到您好像还没添加过备忘录哦！
-        </div>
-        <ul class="list">
-            <li>您可以在任意界面按快捷键A(不区分大小写)增加备忘录。双击备忘录可查看详情！</li>
-        </ul>
-    </div>
-</div>
 <div class="ui segment js-note-card">
+    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id, !tag.clicked)" ng-show="!loadBusy">{{ tag.name }}</div>
     <div class="ui form" ng-show="add">
         <div class="required field">
             <label>内容</label>
@@ -23,7 +14,17 @@
             </div>
         </div>
     </div>
-    <div class="ui divider" ng-show="add"></div>
+    <div class="ui divider" ng-show="notes.length > 0"></div>
+    <div class="ui hidden info message js-note" ng-if="(!add) && notes.length == 0">
+        <i class="close icon" ng-click="closeNote()"></i>
+        <div class="content">
+            <div class="header">系统提示！
+            </div>
+            <ul class="list">
+                <li>您可以在任意界面按快捷键A(不区分大小写)增加备忘录。双击备忘录可查看详情！</li>
+            </ul>
+        </div>
+    </div>
     <div class="ui five stackable cards">
         <div class="card" ng-repeat="note in notes" id="{{note.id}}" ng-mouseover="setHoverNote(note)" ng-mouseleave="setHoverNote(null)">
             <div class="content" style="height:200px;margin-bottom:8px;" ng-dblclick="detailNote(note.content)">
@@ -34,15 +35,15 @@
             <div class="extra content" ng-show="!note.edit" style="height:50px;padding-right:2px;padding-left:8px;">
                 <span class="left floated like" style="margin-top:6px;">
                     <i class="add to calendar icon"></i>
-                    创建于:
                     <span title="{{note.created_at}}" class="need_to_be_rendered" data-timeago="{{ note.created_at }}"></span>
                 </span>
+                <div class="ui label" ng-click="clickTag(tag.id, !tag.clicked)" style="margin:3px 0px 0px 10px;cursor:default;">{{ note.tagName }}</div>
                 <i class="ellipsis horizontal icon right floated" style="margin-top:8px;" ng-mouseover="note.edit=true;"></i>
             </div>
             <div class="extra content" ng-show="note.edit" ng-mouseleave="note.edit=false;" style="height:50px;">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/delete.png" ng-click="delNote(note.id, note.content)" title="删除备忘">
                 <label for="noteedit">
-                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id, note.content)" title="编辑备忘">
+                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id, note.content, note.tag_Id)" title="编辑备忘">
                 </label>
                 <img class="ui mini spaced image" id="noteid{{note.id}}" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(note.content)" title="复制备忘">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/detail.png" ng-click="detailNote(note.content)" title="备忘详情">
@@ -52,7 +53,8 @@
     <div style="width:22px;height:22px;" class="js-note-add" ng-click="showAddNote()" data-tooltip="添加备忘" ng-show="!add">
         <img class="ui ui middle aligned tiny image" src="./images/add-note.png" ng-show="!loadBusy && false">
     </div>
-    <div class="ui divider"></div>
+    <div class="ui divider" ng-show="notes.length > 0"></div>
+    <div style="height:20px;" ng-show="notes.length === 0"></div>
     <div class="ui grid" ng-show="totalItems>0">
         <div class="eight wide column" style="margin-top:10px;">
             <span ng-show="searchWord">通过搜索关键字"{{searchWord}}"(点击菜单"备忘录"重新查看所有)，</span>共找到备忘一共约{{totalItems}}个

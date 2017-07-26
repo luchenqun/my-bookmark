@@ -43,7 +43,7 @@
             <div class="extra content" ng-show="note.edit" ng-mouseleave="note.edit=false;" style="height:50px;">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/delete.png" ng-click="delNote(note.id, note.content)" title="删除备忘">
                 <label for="noteedit">
-                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id, note.content, note.tag_Id)" title="编辑备忘">
+                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id, note.content, note.tag_id)" title="编辑备忘">
                 </label>
                 <img class="ui mini spaced image" id="noteid{{note.id}}" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(note.content)" title="复制备忘">
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/detail.png" ng-click="detailNote(note.content)" title="备忘详情">

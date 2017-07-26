@@ -1,5 +1,5 @@
 <div class="ui segment js-note-card">
-    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id, !tag.clicked)" ng-show="!loadBusy">{{ tag.name }}</div>
+    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id)" ng-show="!loadBusy">{{ tag.name }}</div>
     <div class="ui form" ng-show="add">
         <div class="required field">
             <label>内容</label>
@@ -37,7 +37,7 @@
                     <i class="add to calendar icon"></i>
                     <span title="{{note.created_at}}" class="need_to_be_rendered" data-timeago="{{ note.created_at }}"></span>
                 </span>
-                <div class="ui label" ng-click="clickTag(tag.id, !tag.clicked)" style="margin:3px 0px 0px 10px;cursor:default;">{{ note.tagName }}</div>
+                <div class="ui label" ng-click="clickTag(note.tag_id)" style="margin:3px 0px 0px 10px;cursor:default;">{{ note.tagName }}</div>
                 <i class="ellipsis horizontal icon right floated" style="margin-top:8px;" ng-mouseover="note.edit=true;"></i>
             </div>
             <div class="extra content" ng-show="note.edit" ng-mouseleave="note.edit=false;" style="height:50px;">

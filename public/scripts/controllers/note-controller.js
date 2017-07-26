@@ -181,12 +181,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         $scope.content = content;
         $scope.currentNoteId = id;
         $scope.currentTagId = tagId;
-        $scope.tags.forEach((tag) => {
-            tag.clicked = false;
-            if (tag.id == tagId) {
-                tag.clicked = true;
-            }
-        })
+        updateSelectTag(tagId);
     }
 
     $scope.updateNote = function() {
@@ -255,6 +250,27 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
     $scope.setHoverNote = function(note) {
         $scope.hoverNote = note;
+    }
+
+    $scope.clickTag = function(id) {
+        $scope.currentTagId = id;
+        updateSelectTag(id);
+
+        if ($scope.add || $scope.edit) {
+
+        } else {
+            getNotes($scope.currentTagId);
+        }
+    }
+
+    function updateSelectTag(tagId) {
+        $scope.tags.forEach((tag) => {
+            tag.clicked = false;
+            if (tag.id == tagId) {
+                tag.clicked = true;
+                t = tag;
+            }
+        })
     }
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
@@ -335,23 +351,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                 console.log('getTags err', err);
                 $scope.loadBusy = false;
             });
-    }
-
-    $scope.clickTag = function(id, clicked) {
-        $scope.currentTagId = id;
-        // 只允许选择一个
-        $scope.tags.forEach((tag) => {
-            tag.clicked = false;
-            if (tag.id == id) {
-                tag.clicked = true;
-            }
-        })
-
-        if ($scope.add || $scope.edit) {
-
-        } else {
-            getNotes($scope.currentTagId);
-        }
     }
 
     $('.js-note-card').transition('hide');

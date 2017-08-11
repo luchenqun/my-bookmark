@@ -41,3 +41,4 @@ uploads
 /public/images/snap/
 /public/images/favicon/
 .tags
+package-lock.json

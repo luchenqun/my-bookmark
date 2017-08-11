@@ -69,6 +69,18 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                 $("#noteedit")[0].focus();
             });
         }
+        console.log('$scope.showAddNote');
+        // 没有选中分类，默认一个分类
+        if (!$scope.currentTagId) {
+            $scope.tags.forEach((tag) => {
+                tag.clicked = false;
+                if (tag.name == '未分类') {
+                    $scope.currentTagId = tag.id;
+                    tag.clicked = true;
+                }
+            })
+        }
+
         updateEditPos();
     }
 

@@ -23,10 +23,10 @@ app.factory('dataService', [function() {
             title: '分类'
         }, {
             uiSref: 'note',
-            title: '备忘录'
+            title: '备忘'
         }, {
             uiSref: 'hot',
-            title: '热门收藏'
+            title: '热门'
         }, {
             uiSref: 'settings',
             title: '设置'
@@ -39,10 +39,10 @@ app.factory('dataService', [function() {
             title: '首页'
         }, {
             uiSref: 'login',
-            title: '登录|注册'
+            title: '登录'
         }, {
             uiSref: 'hot',
-            title: '热门收藏'
+            title: '热门'
         }],
         animationIndex: 0,
         animation: function() {

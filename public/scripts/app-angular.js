@@ -46,6 +46,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: '/views/tags.html',
             params: {
                 tagId: null,
+                orderIndex: null,
             },
             controller: 'tagsCtr'
         })

@@ -1,4 +1,4 @@
-app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'pubSubService', 'bookmarkService', 'dataService', function($scope, $stateParams, $state, $window, $timeout, $document, pubSubService, bookmarkService, dataService) {
+app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'pubSubService', 'bookmarkService', 'dataService', function ($scope, $stateParams, $state, $window, $timeout, $document, pubSubService, bookmarkService, dataService) {
     console.log("Hello menuCtr")
     $scope.login = false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
@@ -11,14 +11,14 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.longPress = false;
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
-    pubSubService.subscribe('Common.menuActive', $scope, function(event, params) {
+    pubSubService.subscribe('Common.menuActive', $scope, function (event, params) {
         console.log("subscribe Common.menuActive, login = " + params.login + ", index = " + params.index);
         $scope.login = (params && params.login) || false;
         var index = $scope.login ? ($scope.selectLoginIndex = (params && params.index) || 0) : ($scope.selectNotLoginIndex = (params && params.index) || 0);
         updateMenuActive(index);
     });
 
-    pubSubService.subscribe('Settings.quickUrl', $scope, function(event, params) {
+    pubSubService.subscribe('Settings.quickUrl', $scope, function (event, params) {
         $scope.quickUrl = params.quickUrl;
     });
 
@@ -29,7 +29,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
      * @func
      * @desc 点击搜索按钮搜索书签
      */
-    $scope.search = function(searchWord) {
+    $scope.search = function (searchWord) {
         console.log('search......', searchWord);
 
         $scope.login = true;
@@ -38,8 +38,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $state.go('search', {
                 searchWord: searchWord,
             }, {
-                reload: true,
-            })
+                    reload: true,
+                })
             updateMenuActive($scope.selectLoginIndex = 0);
         } else if (searchOption == 1) {
             $window.open('https://www.google.com.hk/#newwindow=1&safe=strict&q=' + encodeURIComponent(searchWord), '_blank');
@@ -54,8 +54,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $state.go('note', {
                 searchWord: searchWord,
             }, {
-                reload: true,
-            })
+                    reload: true,
+                })
             updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
         }
 
@@ -84,7 +84,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         }
     }
 
-    $scope.searchByHistory = function(type, data) {
+    $scope.searchByHistory = function (type, data) {
         $scope.searchWord = data;
         $('.search-item').val($scope.searchWord);
 
@@ -98,7 +98,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $scope.search(data);
     }
 
-    $scope.delHistory = function(type, data) {
+    $scope.delHistory = function (type, data) {
         var delIndex = -1;
         $scope.searchHistory.forEach((item, index) => {
             if (index >= 1 && item.t == type && item.d == data) {
@@ -109,28 +109,28 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $scope.searchHistory.splice(delIndex, 1);
         }
         saveHistory();
-        $timeout(function() {
+        $timeout(function () {
             $('.js-history-popup').removeClass('hidden').addClass('visible');
         }, 500)
     }
 
-    $scope.updateShowStyle = function(showStyle) {
+    $scope.updateShowStyle = function (showStyle) {
         console.log('updateShowStyle', showStyle);
         $scope.showStyle = showStyle;
         $('.js-radio-' + showStyle).checkbox('set checked');
         $state.go('bookmarks', {
             showStyle: showStyle,
         }, {
-            reload: true,
-        })
+                reload: true,
+            })
     }
 
-    $scope.showAddBookmarkMoadl = function() {
+    $scope.showAddBookmarkMoadl = function () {
         pubSubService.publish('MenuCtr.showAddBookmarkMoadl', {
             'action': 'add'
         });
     }
-    $scope.logout = function() {
+    $scope.logout = function () {
         bookmarkService.logout({})
             .then((data) => {
                 console.log('logout..........', data)
@@ -186,7 +186,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $scope.searchHistory = JSON.parse(user.search_history || '[]');
             $scope.quickUrl = JSON.parse(user.quick_url || '{}');
 
-            $timeout(function() {
+            $timeout(function () {
                 var showStyle = (user && user.show_style) || 'navigate';
                 if (showStyle) {
                     $('.js-bookmark-dropdown' + ' .radio.checkbox').checkbox('set unchecked');
@@ -201,7 +201,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             // toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
         });
 
-    $timeout(function() {
+    $timeout(function () {
         $('.suggest')
             .popup({
                 title: '操作提示',
@@ -212,8 +212,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     }, 1000)
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
-    $document.bind("keydown", function(event) {
-        $scope.$apply(function() {
+    $document.bind("keydown", function (event) {
+        $scope.$apply(function () {
             var key = event.key.toUpperCase();
             if (key == 'CONTROL' || key == 'SHIFT' || key == 'ALT') {
                 $scope.longPress = true;
@@ -225,12 +225,20 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                 if (key == 'A') {
                     if ($scope.selectLoginIndex !== dataService.LoginIndexNote) {
                         updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
-                        $state.go('note', {
-                            key: key,
-                        }, {
-                            reload: true,
-                        })
+                        $state.go('note', { key: key }, { reload: true })
                     }
+                }
+
+                if (key == ',' || key == '.' || key == '/') {
+                    pubSubService.publish('Common.menuActive', {
+                        login: $scope.login,
+                        index: dataService.LoginIndexTags
+                    });
+                    var stateParams = {
+                        tagId: -1,
+                        orderIndex: (key == ',' ? 0 : (key == '.' ? 1 : 2)),
+                    }
+                    $state.go(dataService.loginMenus[dataService.LoginIndexTags].uiSref, stateParams, { reload: true, })
                 }
 
                 // 数字键用来切换菜单
@@ -254,8 +262,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     });
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
-    $document.bind("keyup", function(event) {
-        $scope.$apply(function() {
+    $document.bind("keyup", function (event) {
+        $scope.$apply(function () {
             var key = event.key.toUpperCase();
             // console.log('keyup key = ', key);
             if (key == 'CONTROL' || key == 'SHIFT' || key == 'ALT') {

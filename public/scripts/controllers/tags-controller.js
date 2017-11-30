@@ -78,6 +78,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     }
 
     $scope.getBookmarks = function(tagId, currentPage) {
+        console.log(tagId, currentPage)
         $scope.bookmarkClicked = true;
         $scope.currentTagId = tagId;
         $scope.currentPage = currentPage;
@@ -473,7 +474,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                         find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
                     }
                 })
-                if (!find) $scope.currentTagId = null;
+                if (!find && $scope.currentTagId !== -1) $scope.currentTagId = null;
                 if (!$scope.currentTagId && $scope.tags.length > 0) {
                     $scope.currentTagId = $scope.tags[0].id;
                     $scope.tags[0].bookmarkClicked = true;

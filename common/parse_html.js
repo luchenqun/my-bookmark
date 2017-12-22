@@ -17,7 +17,7 @@ var parsehtml = function(file, callback) {
         anchors.each(function(i, e) {
             var add_date, name, bookmark, tags, url;
             url = $(e).attr("href");
-            name = $(e).text();
+            name = $(e).text() || "无标题";
             add_date = $(e).attr("add_date");
             tags = new Array();
             $(e).parents("dl").each(function(ii, ee) {

@@ -630,12 +630,12 @@ db.getBookmarksCostomTag = function(user_id, perPageItems) {
 db.getBookmarksCostomAllUsersTag = function(user_id, perPageItems) {
     console.log('getBookmarksCostomAllUsersTag', user_id, perPageItems);
     perPageItems = perPageItems || 50;
-    var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' ORDER BY `click_count` DESC LIMIT 0, " + perPageItems + ")";
-    var sql2 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' ORDER BY `created_at` DESC LIMIT 0, " + perPageItems + ")";
-    var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' ORDER BY `last_click` DESC LIMIT 0, " + perPageItems + ")";
+    var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' AND public != 0 ORDER BY `click_count` DESC LIMIT 0, " + perPageItems + ")";
+    var sql2 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' AND public != 0 ORDER BY `created_at` DESC LIMIT 0, " + perPageItems + ")";
+    var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' AND public != 0 ORDER BY `last_click` DESC LIMIT 0, " + perPageItems + ")";
 
     var sql = sql1 + " UNION " + sql2 + " UNION " + sql3;
-    console.log(sql);
+    // console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

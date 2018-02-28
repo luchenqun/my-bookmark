@@ -515,9 +515,9 @@ api.get('/bookmarksByTag', function(req, res) {
         bookmarks: [],
     }
 
-    var fun = (params.tagId == -1) ? (db.getBookmarksCostomTag) : (db.getBookmarksByTag);
+    var fun = (params.tagId <= -1) ? (params.tagId == -1 ? db.getBookmarksCostomTag : db.getBookmarksCostomAllUsersTag) : (db.getBookmarksByTag);
 
-    fun((params.tagId == -1) ? (userId) : (params), params.perPageItems)
+    fun((params.tagId <= -1) ? (userId) : (params), params.perPageItems)
         .then((bookmarksData) => {
             sendData = bookmarksData;
             var bookmarkIds = sendData.bookmarks.map((bookmark) => bookmark.id)

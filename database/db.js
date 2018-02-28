@@ -627,6 +627,69 @@ db.getBookmarksCostomTag = function(user_id, perPageItems) {
     });
 };
 
+db.getBookmarksCostomAllUsersTag = function(user_id, perPageItems) {
+    console.log('getBookmarksCostomAllUsersTag', user_id, perPageItems);
+    perPageItems = perPageItems || 50;
+    var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' ORDER BY `click_count` DESC LIMIT 0, " + perPageItems + ")";
+    var sql2 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' ORDER BY `created_at` DESC LIMIT 0, " + perPageItems + ")";
+    var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' ORDER BY `last_click` DESC LIMIT 0, " + perPageItems + ")";
+
+    var sql = sql1 + " UNION " + sql2 + " UNION " + sql3;
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                var bookmarks = [];
+                var begin = 0;
+                var end = perPageItems;
+
+                result.sort((a, b) => {
+                        var click1 = parseInt(a.click_count);
+                        var click2 = parseInt(b.click_count);
+                        if (click1 > click2) {
+                            return -1;
+                        } else if (click1 == click2) {
+                            return a.created_at >= b.created_at ? -1 : 1;
+                        } else {
+                            return 1;
+                        }
+                    })
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b)); // 执行深度复制
+                        bookmark.type = 1;
+                        bookmarks.push(bookmark);
+                    })
+
+                result.sort((a, b) => a.created_at >= b.created_at ? -1 : 1)
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b)); // 执行深度复制
+                        bookmark.type = 2;
+                        bookmarks.push(bookmark);
+                    })
+
+                result.sort((a, b) => a.last_click >= b.last_click ? -1 : 1)
+                    .slice(begin, end)
+                    .forEach((b) => {
+                        var bookmark = JSON.parse(JSON.stringify(b)); // 执行深度复制
+                        bookmark.type = 3;
+                        bookmarks.push(bookmark);
+                    })
+
+
+                var bookmarksData = {
+                    totalItems: result.length,
+                    bookmarks: bookmarks,
+                }
+                resolve(bookmarksData);
+            }
+        });
+    });
+};
+
+
 db.getBookmarksTable = function(params) {
     var user_id = params.userId;
     params.currentPage = params.currentPage || 1;

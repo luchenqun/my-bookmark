@@ -77,6 +77,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 }
             })
         }
+
         $timeout(function() {
             timeagoInstance.cancel();
             timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
@@ -92,6 +93,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             $scope.loadBookmarks = true;
         }
         $scope.costomTag.bookmarkClicked = false;
+        $scope.costomAllUsersTag.bookmarkClicked = false;
 
         perPageItems = ($scope.showMode == 'item') ? 50 : 20;
 
@@ -583,7 +585,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         if (click1 > click2) {
             return -1;
         } else if (click1 == click2) {
-            return a.created_at >= b.created_at ? -1 : 1;
+            return a.url > b.url ? -1 : 1;
         } else {
             return 1;
         }

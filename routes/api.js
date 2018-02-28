@@ -48,7 +48,8 @@ api.post('/logout', function(req, res) {
 
 api.post('/clickBookmark', function(req, res) {
     console.log("clickBookmark username = ", req.session.username);
-    db.clickBookmark(req.body.params.id, req.session.userId)
+    db.getUser(req.session.username)
+        .then((user) => { return user.id == req.session.userId ? db.clickBookmark(req.body.params.id, req.session.userId) : Promise.resolve(0); })
         .then((affectedRows) => res.json({}))
         .catch((err) => console.log('clickBookmark error', err));
 });

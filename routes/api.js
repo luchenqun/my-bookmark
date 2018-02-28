@@ -1089,7 +1089,7 @@ api.post('/getUpdateLog', function(req, res) {
                 updateLogs.logs = [];
 
                 $(this).next().children('li').each(function() {
-                    var $log = $(this).children('.table-list-cell').eq(1).children('p').children('a');
+                    var $log = $(this).children('.table-list-cell').eq(0).children('p').children('a');
                     var commit = $log.text()
                     var href = 'https://github.com' + $log.attr('href');
 

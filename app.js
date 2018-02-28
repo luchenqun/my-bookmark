@@ -34,7 +34,7 @@ app.use(session({
     saveUninitialized: true, //
     secret: 'ILoveYiJia', // 建议使用 128 个字符的随机字符串
     cookie: {
-        maxAge: 1 * 24 * 60 * 60 * 1000, // 一天
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 一周
     },
     store: new mongoStore({
         url: 'mongodb://localhost/mybookmarks'

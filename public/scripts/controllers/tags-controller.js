@@ -391,7 +391,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             tags.push(tag);
             bookmarkService.addTags(tags)
                 .then((data) => {
-                    toastr.success('[ ' + tag + ' ]插入分类成功！将自动更新分类信息', "提示");
+                    toastr.success('[ ' + tag + ' ]插入分类成功！将自动更新分类信息<br />注意：分类页面只有分类下面有书签才显示分类', "提示");
                     getTags({});
                 })
                 .catch((err) => {

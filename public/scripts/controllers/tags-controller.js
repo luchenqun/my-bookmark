@@ -344,7 +344,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                         getTags({});
                     }
                 } else {
-                    toastr.error('[ ' + tagName + ' ]分类删除失败！', "提示");
+                    toastr.error('[ ' + tagName + ' ]分类删除失败！' + data.msg, "提示");
                     getTags({});
                 }
             })

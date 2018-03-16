@@ -995,6 +995,13 @@ api.post('/updateTagsIndex', function(req, res) {
 
 api.post('/delTag', function(req, res) {
     console.log("delTag username = ", req.session.username);
+    if(req.session.username === "test") {
+        res.json({
+            retCode: 100,
+            msg: "test用户不允许删除分类！",
+        })
+        return;
+    }
     if (!req.session.user) {
         res.send(401);
         return;

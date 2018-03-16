@@ -1,5 +1,5 @@
 # 在线书签管理工具
-![image](https://github.com/luchenqun/my-bookmark/blob/master/public/images/screenshot.png)   
+![image](https://github.com/luchenqun/my-bookmark/blob/master/public/images/screenshot.gif)   
 
 1 在线体验(demo)
 -------------
@@ -31,7 +31,9 @@
 - [x] 在热门标签里面，有在网上找的热门书签。可以转存收藏到自己书签里面，快捷键R随机查看热门书签。
 - [x] 新增备忘录功能，有时候随手要做点纪录，就方便了。任意界面按快捷键A增加备忘录。双击备忘录可查看详情！
 - [x] 在设置的全局链接，可设置快捷键，用来在任何页面，快速打开设置的链接。
+- [x] 增加[Chrome插件](https://chrome.google.com/webstore/detail/%E4%B9%A6%E7%AD%BE%E5%BF%AB%E9%80%9F%E6%B7%BB%E5%8A%A0/paajmalhmjgdihaikmdfiplfmjlnkjgp)，可在任意界面快速添加书签至系统。
 - [ ] 适配手机平板（无限搁置）。
+
 
 4 主要用到的模块说明
 ------------------

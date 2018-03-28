@@ -49,14 +49,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
     }
 
     $scope.copy = function(url) {
-        clipboard.copy(url).then(
-            function() {
-                toastr.success(url + '<br/>已复制到您的剪切板', "提示");
-            },
-            function(err) {
-                toastr.error(url + '<br/>复制失败', "提示");
-            }
-        );
+        dataService.clipboard(url);
     }
 
     $document.bind("keydown", function(event) {

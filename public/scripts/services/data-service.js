@@ -125,6 +125,10 @@ app.factory('dataService', [function() {
             }
 
             return ret;
+        },
+        clipboard: function(text) {
+            $("#clipboard").attr("data-clipboard-text", text);
+            document.getElementById("clipboard").click();
         }
     };
 

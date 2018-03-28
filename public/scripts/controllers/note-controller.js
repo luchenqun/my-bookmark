@@ -134,15 +134,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     }
 
     $scope.copy = function(content) {
-        var showContent = content.length >= 180 ? content.substr(0, 180) + '...' : content;
-        clipboard.copy(content).then(
-            function() {
-                toastr.success(showContent + '<br/>已复制到您的剪切板', "提示");
-            },
-            function(err) {
-                toastr.error(showContent + '<br/>复制失败', "提示");
-            }
-        );
+        dataService.clipboard(content);
     }
 
     $scope.delNote = function(id, content) {

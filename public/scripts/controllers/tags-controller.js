@@ -543,8 +543,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             getTags({});
         }
     });
-
-    $('.js-tag-label .ui.label .icon').popup();
+    
+    setTimeout(() => {
+        $('.js-tag-label .ui.label .icon').popup();
+    }, 3000);
 
     function clickCmp(a, b) {
         var click1 = parseInt(a.click_count);

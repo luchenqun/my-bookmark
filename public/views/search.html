@@ -142,7 +142,7 @@
                     ng-if="searchHotBookmarks">
                 <img
                     class="ui ui middle aligned mini image"
-                    ng-src="http://g.soz.im/{{bookmark.url}}/cdn.ico"
+                    ng-src="https://api.statvoo.com/favicon/?url={{bookmark.url}}"
                     style="width:16px;height:16px;cursor:pointer;"
                     ng-click="jumpToUrl(bookmark.url, bookmark.id)"
                     favicon-err="./images/favicon/{{bookmark.id}}.ico"

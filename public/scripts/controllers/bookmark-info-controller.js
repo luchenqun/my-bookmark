@@ -9,7 +9,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
         $('.ui.modal.js-bookmark-info').modal({
             closable: false,
         }).modal('setting', 'transition', dataService.animation()).modal('show');
-        bookmark.favicon_url = bookmark.favicon_url || ('http://g.soz.im/' + bookmark.url + '/cdn.ico');
+        bookmark.favicon_url = bookmark.favicon_url || ('https://api.statvoo.com/favicon/?url=' + bookmark.url);
         bookmark.snap_url = bookmark.snap_url || ('./images/snap/' + bookmark.id + '.png');
         $scope.bookmark = bookmark;
         $scope.bookmark.description = $sce.trustAsHtml(bookmark.description);

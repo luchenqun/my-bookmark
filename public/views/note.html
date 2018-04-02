@@ -1,5 +1,6 @@
 <div class="ui segment js-note-card">
     <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id)" ng-show="!loadBusy">{{ tag.name }}</div>
+    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-click="showAddNote()" data-tooltip="点击添加备忘。你也可以在任意界面按快捷键A(不区分大小写)增加备忘录。"><i class="plus icon" style="margin-right:0px;"></i></div>
     <div class="ui form" ng-show="add">
         <div class="required field">
             <label>内容</label>
@@ -49,9 +50,6 @@
                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/detail.png" ng-click="detailNote(note.content)" title="备忘详情">
             </div>
         </div>
-    </div>
-    <div style="width:22px;height:22px;" class="js-note-add" ng-click="showAddNote()" data-tooltip="添加备忘" ng-show="!add">
-        <img class="ui ui middle aligned tiny image" src="./images/add-note.png" ng-show="!loadBusy && false">
     </div>
     <div class="ui divider" ng-show="notes.length > 0"></div>
     <div style="height:20px;" ng-show="notes.length === 0"></div>

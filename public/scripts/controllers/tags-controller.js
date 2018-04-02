@@ -1,4 +1,4 @@
-app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $filter, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello tagsCtr...", $stateParams);
     getTags({});
 
@@ -42,12 +42,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
     var timeagoInstance = timeago();
 
-    pubSubService.subscribe('MenuCtr.tags', $scope, function(event, data) {
+    pubSubService.subscribe('MenuCtr.tags', $scope, function (event, data) {
         console.log('subscribe MenuCtr.tags', data);
         getTags({});
     });
 
-    $scope.changeOrder = function(index) {
+    $scope.changeOrder = function (index) {
         if (index < 0 || index >= $scope.order.length) {
             return;
         }
@@ -78,13 +78,13 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             })
         }
 
-        $timeout(function() {
+        $timeout(function () {
             timeagoInstance.cancel();
             timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
         }, 100)
     }
 
-    $scope.getBookmarks = function(tagId, currentPage) {
+    $scope.getBookmarks = function (tagId, currentPage) {
         console.log(tagId, currentPage)
         $scope.bookmarkClicked = true;
         $scope.currentTagId = tagId;
@@ -97,7 +97,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
 
         perPageItems = ($scope.showMode == 'item') ? 50 : 20;
 
-        $scope.tags.forEach(function(tag) {
+        $scope.tags.forEach(function (tag) {
             tag.bookmarkClicked = false;
             if (tag.id == tagId) {
                 tag.bookmarkClicked = true;
@@ -137,7 +137,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 if (!forbidTransition) {
                     dataService.transition($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table');
                 }
-                $timeout(function() {
+                $timeout(function () {
                     dataService.transition('#' + addBookmarkId, {
                         duration: 1000,
                     });
@@ -153,7 +153,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             });
     };
 
-    $scope.changeCurrentPage = function(currentPage) {
+    $scope.changeCurrentPage = function (currentPage) {
         currentPage = parseInt(currentPage) || 0;
         console.log(currentPage);
         if (currentPage <= $scope.totalPages && currentPage >= 1) {
@@ -162,27 +162,27 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     }
 
-    $scope.jumpToUrl = function(url, id) {
+    $scope.jumpToUrl = function (url, id) {
         if (!$scope.editMode) {
             $window.open(url, '_blank');
             bookmarkService.clickBookmark({
                 id: id
             });
-            $scope.bookmarkData.bookmarks.forEach(function(bookmark, index) {
-                    if (bookmark.id == id) {
-                        bookmark.click_count += 1;
-                        bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
-                    }
-                })
-                // $scope.changeOrder($scope.order.indexOf(true));
-            $timeout(function() {
+            $scope.bookmarkData.bookmarks.forEach(function (bookmark, index) {
+                if (bookmark.id == id) {
+                    bookmark.click_count += 1;
+                    bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
+                }
+            })
+            // $scope.changeOrder($scope.order.indexOf(true));
+            $timeout(function () {
                 timeagoInstance.cancel();
                 timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
             }, 100)
         }
     }
 
-    $scope.delBookmark = function(bookmark) {
+    $scope.delBookmark = function (bookmark) {
         $scope.waitDelBookmark = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
         console.log(JSON.stringify(bookmark));
         dialog = ngDialog.open({
@@ -192,7 +192,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         });
     }
 
-    $scope.confirmDelBookmark = function(bookmarkId) {
+    $scope.confirmDelBookmark = function (bookmarkId) {
         var params = {
             id: bookmarkId
         }
@@ -202,7 +202,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 $("#" + bookmarkId).transition({
                     animation: dataService.animation(),
                     duration: 500,
-                    onComplete: function() {
+                    onComplete: function () {
                         $("#" + bookmarkId).remove();
                     }
                 });
@@ -221,13 +221,13 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             });
     }
 
-    $scope.editBookmark = function(bookmarkId) {
+    $scope.editBookmark = function (bookmarkId) {
         pubSubService.publish('bookmarksCtr.editBookmark', {
             'bookmarkId': bookmarkId
         });
     }
 
-    $scope.detailBookmark = function(bookmark) {
+    $scope.detailBookmark = function (bookmark) {
         bookmark.own = true;
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
         bookmarkService.clickBookmark({
@@ -235,11 +235,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         });
     }
 
-    $scope.copy = function(url) {
+    $scope.copy = function (url) {
         dataService.clipboard(url);
     }
 
-    $scope.toggleMode = function() {
+    $scope.toggleMode = function () {
         $scope.editMode = !$scope.editMode;
         if (!$scope.editMode) {
             getTags({});
@@ -251,20 +251,19 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                 animation: dataService.animation(),
                 reverse: 'auto', // default setting
                 interval: 50,
-                onComplete: function() {
+                onComplete: function () {
                     $('.js-edit').transition('show');
                 }
             });
         }
-        updateEditPos();
     }
 
-    $scope.toggleShowMode = function(showMode) {
+    $scope.toggleShowMode = function (showMode) {
         $scope.showMode = showMode;
         $scope.getBookmarks($scope.currentTagId, 1);
     }
 
-    $scope.editTag = function(tag) {
+    $scope.editTag = function (tag) {
         if (tag.name == "未分类" || tag.name == "收藏") {
             toastr.warning('这个是系统默认分类，暂时不允许更新名字！', "警告");
             return;
@@ -272,7 +271,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         tag.oldName = tag.name;
         tag.edit = true;
     }
-    $scope.updateTag = function(tag) {
+    $scope.updateTag = function (tag) {
         if (tag.name == tag.oldName) {
             toastr.warning('您没有编辑分类', "警告");
             return;
@@ -298,7 +297,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             });
     }
 
-    $scope.delTag = function(tag) {
+    $scope.delTag = function (tag) {
         console.log('delTag..........')
         $scope.waitDelTag = $.extend(true, {}, tag); // 利用jQuery执行深度拷贝
         dialog = ngDialog.open({
@@ -308,7 +307,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         });
     }
 
-    $scope.confirmDelTag = function(tagId, tagName) {
+    $scope.confirmDelTag = function (tagId, tagName) {
         ngDialog.close(dialog);
         var params = {
             del: (tagName == '未分类' || tagName == "收藏") ? false : true,
@@ -328,7 +327,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                         $("#tag" + tagId).transition({
                             animation: dataService.animation(),
                             duration: 500,
-                            onComplete: function() {
+                            onComplete: function () {
                                 $("#tag" + tagId).remove();
                                 $scope.tags.splice(index, 1);
                             }
@@ -347,7 +346,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             });
     }
 
-    $scope.showAddTag = function() {
+    $scope.showAddTag = function () {
         if ($scope.tags.length < 30) {
             console.log('showAddTag..........')
             $scope.newTag = "";
@@ -361,7 +360,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     }
 
-    $scope.addTag = function(tag) {
+    $scope.addTag = function (tag) {
         console.log(tag);
         if ($scope.tags.length >= 30) {
             toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
@@ -395,12 +394,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     }
 
-    $scope.backTag = function(tag) {
+    $scope.backTag = function (tag) {
         tag.edit = false;
         tag.name = tag.oldName;
     }
 
-    $scope.storeTagIndex = function() {
+    $scope.storeTagIndex = function () {
         $scope.tagsIndex = [];
         $scope.tags.forEach((tag, index) => {
             $scope.tagsIndex[index] = {
@@ -411,9 +410,9 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         console.log('storeTagIndex');
     }
 
-    $scope.updateTagIndex = function() {
+    $scope.updateTagIndex = function () {
         // 要开个timer，因为释放鼠标模型还没更新
-        setTimeout(function() {
+        setTimeout(function () {
             var needUpdate = false;
             for (var i = 0; i < $scope.tags.length; i++) {
                 if ($scope.tags[i].id != $scope.tagsIndex[i].id) {
@@ -443,13 +442,13 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }, 300)
     }
 
-    $scope.setHoverBookmark = function(bookmark) {
+    $scope.setHoverBookmark = function (bookmark) {
         $scope.hoverBookmark = bookmark;
     }
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
-    $document.bind("keydown", function(event) {
-        $scope.$apply(function() {
+    $document.bind("keydown", function (event) {
+        $scope.$apply(function () {
             var key = event.key.toUpperCase();
             if ($scope.hoverBookmark && dataService.keyShortcuts()) {
                 if (key == 'E') {
@@ -493,12 +492,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
                 }
                 $scope.loadTags = false;
-                updateEditPos();
             })
             .catch((err) => {
                 console.log('getTags err', err);
                 $scope.loadTags = false;
-                updateEditPos();
             });
 
         pubSubService.publish('Common.menuActive', {
@@ -507,7 +504,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         });
     }
 
-    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
+    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function (event, data) {
         console.log('subscribe EditCtr.inserBookmarsSuccess', data);
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         if (menusScope.login && menusScope.selectLoginIndex == 1) {
@@ -538,7 +535,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     });
 
-    pubSubService.subscribe('EditCtr.addTagsSuccess', $scope, function(event, data) {
+    pubSubService.subscribe('EditCtr.addTagsSuccess', $scope, function (event, data) {
         console.log('subscribe EditCtr.addTagsSuccess', data);
 
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
@@ -547,30 +544,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         }
     });
 
-    // TODO: 我要将编辑按钮固定在容器的右上角
-    $(window).resize(updateEditPos);
-    updateEditPos();
-
-    function updateEditPos() {
-        for (var i = 1; i <= 100; i += 10) {
-            setTimeout(function() {
-                var offset = $('.js-tags').offset();
-                if (offset) {
-                    var t = offset.top;
-                    var l = offset.left;
-                    var w = $('.js-tags').width();
-                    $('.js-tag-edit').offset({
-                        top: t + 10,
-                        left: l + w - 10,
-                    })
-                    $('.js-tag-show-mode').offset({
-                        top: t + 40,
-                        left: l + w - 10,
-                    })
-                }
-            }, 100 * i)
-        }
-    }
+    $('.js-tag-label .ui.label .icon').popup();
 
     function clickCmp(a, b) {
         var click1 = parseInt(a.click_count);

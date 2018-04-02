@@ -80,8 +80,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                 }
             })
         }
-
-        updateEditPos();
     }
 
     $scope.addNote = function(close) {
@@ -121,7 +119,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                 })
                 $scope.preContent = $scope.content;
                 $scope.content = '';
-                updateEditPos();
                 $scope.currentTagId = null;
                 $scope.currentPage = 1;
                 $scope.searchWord = '';
@@ -221,7 +218,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                     })
                     $scope.add = false;
                     $scope.edit = false;
-                    updateEditPos();
                 } else {
                     toastr.error('备忘更新失败！请刷新页面再尝试', "提示");
                 }
@@ -366,25 +362,5 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             animation: dataService.animation(),
             duration: 500,
         });
-    }
-    // TODO: 我要将编辑按钮固定在容器的右上角
-    $(window).resize(updateEditPos);
-    updateEditPos();
-
-    function updateEditPos() {
-        for (var i = 1; i <= 100; i += 10) {
-            setTimeout(function() {
-                var offset = $('.js-note-card').offset();
-                if (offset) {
-                    var t = offset.top;
-                    var l = offset.left;
-                    var w = $('.js-note-card').width();
-                    $('.js-note-add').offset({
-                        top: t + 10,
-                        left: l + w - 10,
-                    })
-                }
-            }, 100 * i)
-        }
     }
 }]);

@@ -19,7 +19,7 @@
             <div class="two wide column js-tag-label">
                 <div class="ui small label">
                     <i class="plus icon" data-content="点击添加分类" data-position="top center" ng-click="showAddTag()"></i>
-                    <i class="pencil alternate icon" data-content="点击进入分类编辑模式" data-position="top center" ng-click="toggleMode()"></i>
+                    <i class="pencil alternate icon" data-content="点击进入分类编辑模式" data-position="top center" ng-click="toggleMode(true)"></i>
                     <i class="table icon" style="margin-right:0px;" data-content="点击以条目显示" data-position="top center" ng-show="showMode=='table'" ng-click="toggleShowMode('item')"></i>
                     <i class="list icon" style="margin-right:0px;" data-content="点击以表格显示" data-position="top center" ng-show="showMode=='item'" ng-click="toggleShowMode('table')"></i>
                 </div>
@@ -34,7 +34,7 @@
                     <img src="./images/add-tag.png">
                 </div>
             </div>
-            <div class="card" style="background-color:#F5F5F5;" ng-click="toggleMode()" data-tooltip="退出编辑模式">
+            <div class="card" style="background-color:#F5F5F5;" ng-click="toggleMode(false)" data-tooltip="退出编辑模式">
                 <div class="image">
                     <img src="./images/back-tag.png">
                 </div>

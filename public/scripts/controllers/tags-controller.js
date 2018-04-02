@@ -239,21 +239,18 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
         dataService.clipboard(url);
     }
 
-    $scope.toggleMode = function () {
-        $scope.editMode = !$scope.editMode;
+    $scope.toggleMode = function (mode) {
+        $scope.editMode = mode;
         if (!$scope.editMode) {
             getTags({});
         } else {
-            $('.js-edit').transition('hide'); // 没装完逼之前，不允许切换编辑模式，否则动画模式乱了。
             $('.js-tags-table').transition('hide');
+            $('.js-tag-costomTag').transition('hide');
             $('.stackable.cards .card').transition('hide');
             $('.stackable.cards .card').transition({
                 animation: dataService.animation(),
                 reverse: 'auto', // default setting
-                interval: 50,
-                onComplete: function () {
-                    $('.js-edit').transition('show');
-                }
+                interval: 50
             });
         }
     }
@@ -543,7 +540,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
             getTags({});
         }
     });
-    
+
     setTimeout(() => {
         $('.js-tag-label .ui.label .icon').popup();
     }, 3000);

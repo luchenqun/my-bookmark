@@ -1223,7 +1223,7 @@ api.getFaviconByTimer = function() {
                             });
                     } else {
                         // http://www.cnblogs.com/zhangwei595806165/p/4984912.html 各种方法都试一遍
-                        var faviconUrl = "https://api.byi.pw/favicon/?url=" + url; // 默认地址
+                        var faviconUrl = "http://45.32.69.126:3000/?url=" + url; // 默认地址
                         if (faviconState == 1) {
                             faviconUrl = "https://api.statvoo.com/favicon/?url=" + url;
                         } else if (faviconState == 2) {

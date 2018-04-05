@@ -254,6 +254,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
     $scope.clickTag = function(id) {
         $scope.currentTagId = id;
+        $scope.totalItems = 0;
         updateSelectTag(id);
 
         if ($scope.add || $scope.edit) {

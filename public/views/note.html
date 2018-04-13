@@ -1,5 +1,5 @@
 <div class="ui segment js-note-card">
-    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id)">{{ tag.name }}</div>
+    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id)">{{ tag.name }} ({{ tag.ncnt || 0 }})</div>
     <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-click="showAddNote()" data-tooltip="点击添加备忘。你也可以在任意界面按快捷键A(不区分大小写)增加备忘录。"><i class="plus icon" style="margin-right:0px;"></i></div>
     <div class="ui form" ng-show="add">
         <div class="required field">

@@ -270,10 +270,10 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             var detail = note.detail;
             $scope.notes.forEach((note) => {
                 note.detail = false;
-                $("#" + note.id).css("background", "none");
+                $("#" + note.id).removeClass("secondary")
             })
             note.detail = !detail;
-            $("#" + note.id).css("background", note.detail ? "#f8f8f8" : "none");
+            note.detail && $("#" + note.id).addClass("secondary")
         }
         if (flag) {
             $event && $event.stopPropagation();

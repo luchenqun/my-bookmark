@@ -35,7 +35,7 @@
     </div>
     <div class="ui vertical segment" ng-repeat="note in notes" ng-click="noteClick(note)" ng-mouseover="setHoverNote(note)" ng-mouseleave="setHoverNote(null)" id="{{note.id}}" style="margin:0px;padding-top:10px;padding-bottom: 10px;">
         <pre class="note-content" title="单击查看详情，C复制，D删除，E编辑" style="margin:0px;padding-left:14px;padding-right:14px" ng-if="!note.detail">{{ note.brief }}</pre>
-        <pre class="note-content" title="双击复制" ng-dblclick="copy(note.content)" style="margin:0px; font-size:16px;padding-left:14px;padding-right:14px" ng-if="note.detail">{{ note.content }}</pre>
+        <pre class="note-content" title="双击复制" ng-dblclick="copy(note.content)" style="margin:0px; font-size:16px;padding:60px 14px;" ng-if="note.detail">{{ note.content }}</pre>
         <div class="ui right aligned grid" ng-show="note.detail">
             <div class="sixteen wide column" style="margin:0px 20px 0px 0px;padding:20px 0px 0px 0px;">
                 <div class="extra content" ng-show="true" ng-mouseleave="note.edit=false;" style="height:50px;">

@@ -215,6 +215,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                             note.content = $scope.content;
                             note.tagName = tagName;
                             note.tag_id = $scope.currentTagId;
+                            toPos(note.id);
                         }
                     })
                     $scope.add = false;
@@ -270,10 +271,10 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             var detail = note.detail;
             $scope.notes.forEach((note) => {
                 note.detail = false;
-                $("#" + note.id).removeClass("secondary")
+                $("#" + note.id).removeClass("secondary");
             })
             note.detail = !detail;
-            note.detail && $("#" + note.id).addClass("secondary")
+            note.detail && $("#" + note.id).addClass("secondary") && toPos(note.id);
         }
         if (flag) {
             $event && $event.stopPropagation();
@@ -386,5 +387,11 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             animation: dataService.animation(),
             duration: 500,
         });
+    }
+
+    function toPos(id) {
+        setTimeout(function(){
+            $('html,body').animate({ scrollTop: $('#' + id).offset().top - 20 }, 100);
+        }, 36);
     }
 }]);

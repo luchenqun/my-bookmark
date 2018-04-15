@@ -1,4 +1,4 @@
-app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello noteCtr...", $stateParams);
 
     const perPageItems = 35;
@@ -37,7 +37,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             console.log('autoLogin err', err)
         });
 
-    $scope.changeCurrentPage = function(currentPage) {
+    $scope.changeCurrentPage = function (currentPage) {
         currentPage = parseInt(currentPage) || 0;
         console.log('currentPage = ', currentPage);
         if (currentPage <= $scope.totalPages && currentPage >= 1) {
@@ -50,8 +50,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     }
 
     // 快捷键a增加书签
-    $document.bind("keydown", function(event) {
-        $scope.$apply(function() {
+    $document.bind("keydown", function (event) {
+        $scope.$apply(function () {
             // a按键，显示
             var key = event.key.toUpperCase();
             if (key == 'A' && dataService.keyShortcuts() && (!$scope.add)) {
@@ -60,12 +60,12 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         })
     });
 
-    $scope.showAddNote = function() {
+    $scope.showAddNote = function () {
         $scope.add = (!$scope.add);
         $scope.edit = false;
         $scope.content = '';
         if ($scope.add) {
-            $timeout(function() {
+            $timeout(function () {
                 $("#noteedit")[0].focus();
             });
         }
@@ -82,7 +82,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         }
     }
 
-    $scope.addNote = function(close) {
+    $scope.addNote = function (close) {
         if ($scope.content == '') {
             toastr.error('不允许备忘录内容为空！', "提示");
             return;
@@ -130,11 +130,12 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             });
     }
 
-    $scope.copy = function(content) {
+    $scope.copy = function (content, $event) {
         dataService.clipboard(content);
+        $event && $event.stopPropagation();
     }
 
-    $scope.delNote = function(id, content) {
+    $scope.delNote = function (id, content) {
         $scope.currentNoteId = id;
         $scope.content = content;
         var width = content.length >= 500 ? "50%" : "30%";
@@ -146,7 +147,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         });
     }
 
-    $scope.confirmDelNote = function() {
+    $scope.confirmDelNote = function () {
         if ($scope.currentNoteId) {
             var params = {
                 id: $scope.currentNoteId
@@ -158,7 +159,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
                         $("#" + $scope.currentNoteId).transition({
                             animation: dataService.animation(),
                             duration: 500,
-                            onComplete: function() {
+                            onComplete: function () {
                                 $("#" + $scope.currentNoteId).remove();
                             }
                         });
@@ -176,7 +177,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         }
     }
 
-    $scope.editNote = function(id, content, tagId) {
+    $scope.editNote = function (id, content, tagId) {
         $scope.add = true;
         $scope.edit = true;
         $scope.content = content;
@@ -185,7 +186,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         updateSelectTag(tagId);
     }
 
-    $scope.updateNote = function() {
+    $scope.updateNote = function () {
         var tagName = '';
         $scope.tags.forEach((tag) => {
             if ($scope.currentTagId === tag.id) {
@@ -227,7 +228,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             });
     }
 
-    $scope.detailNote = function(content) {
+    $scope.detailNote = function (content) {
         $scope.content = content;
         var width = content.length >= 500 ? "50%" : "30%";
         dialog = ngDialog.open({
@@ -238,21 +239,21 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         });
     }
 
-    $scope.closeNote = function() {
+    $scope.closeNote = function () {
         $('.js-note').transition({
             animation: dataService.animation(),
             duration: '500ms',
-            onComplete: function() {
+            onComplete: function () {
                 $(".js-note").remove();
             }
         });
     }
 
-    $scope.setHoverNote = function(note) {
+    $scope.setHoverNote = function (note) {
         $scope.hoverNote = note;
     }
 
-    $scope.clickTag = function(id) {
+    $scope.clickTag = function (id) {
         $scope.currentTagId = id;
         $scope.totalItems = 0;
         updateSelectTag(id);
@@ -261,6 +262,21 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
         } else {
             getNotes($scope.currentTagId);
+        }
+    }
+
+    $scope.noteClick = function (note, flag, $event) {
+        if (!note.detail || flag) {
+            var detail = note.detail;
+            $scope.notes.forEach((note) => {
+                note.detail = false;
+                $("#" + note.id).css("background", "none");
+            })
+            note.detail = !detail;
+            $("#" + note.id).css("background", note.detail ? "#f8f8f8" : "none");
+        }
+        if (flag) {
+            $event && $event.stopPropagation();
         }
     }
 
@@ -275,8 +291,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     }
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
-    $document.bind("keydown", function(event) {
-        $scope.$apply(function() {
+    $document.bind("keydown", function (event) {
+        $scope.$apply(function () {
             var key = event.key.toUpperCase();
             if ($scope.hoverNote && dataService.keyShortcuts()) {
                 if (key == 'E') {
@@ -306,9 +322,16 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         bookmarkService.getNotes(params)
             .then((data) => {
                 $scope.notes = data.notes;
+                $scope.notes.forEach((note) => {
+                    note.brief = note.content;
+                    while (note.brief.indexOf("\n") > 0) {
+                        note.brief = note.brief.replace(/\n/g, "");
+                    }
+                    note.brief = "       " + note.brief.substring(0, 200) + (note.content.length > 200 ? " ......" : "");
+                })
                 $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
                 $scope.totalItems = data.totalItems;
-                $timeout(function() {
+                $timeout(function () {
                     timeagoInstance.cancel();
                     timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
                     // 如果需要增加书签

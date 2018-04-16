@@ -130,6 +130,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             'action': 'add'
         });
     }
+
     $scope.logout = function () {
         bookmarkService.logout({})
             .then((data) => {
@@ -138,6 +139,11 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                 $state.go('login', {})
             })
             .catch((err) => console.log('logout err', err));
+    }
+
+    $scope.star = function () {
+        var url = "https://github.com/luchenqun/my-bookmark";
+        $window.open(url, '_blank');
     }
 
     $scope.showUpdate = function () {

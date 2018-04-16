@@ -39,7 +39,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
     $scope.changeCurrentPage = function (currentPage) {
         currentPage = parseInt(currentPage) || 0;
-        console.log('currentPage = ', currentPage);
         if (currentPage <= $scope.totalPages && currentPage >= 1) {
             $scope.currentPage = currentPage;
             $scope.inputPage = '';
@@ -262,6 +261,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         if ($scope.add || $scope.edit) {
 
         } else {
+            $scope.currentPage = 1;
             getNotes($scope.currentTagId);
         }
     }
@@ -317,8 +317,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             perPageItems: perPageItems,
             searchWord: $scope.searchWord,
         };
-        if (tagId) {
-            params.tagId = tagId;
+        if (tagId || $scope.currentTagId) {
+            params.tagId = tagId || $scope.currentTagId;
         }
         bookmarkService.getNotes(params)
             .then((data) => {

@@ -1,5 +1,10 @@
 app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello noteCtr...", $stateParams);
+    var browser = dataService.browser();
+    if(browser.mobile && !browser.iPad){
+        $window.location = "http://m.mybookmark.cn/#/note";
+        return;
+    }
 
     const perPageItems = 35;
     var dialog = null;

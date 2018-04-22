@@ -1,5 +1,11 @@
 app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello searchCtr...", $stateParams);
+    var browser = dataService.browser();
+    if(browser.mobile && !browser.iPad){
+        $window.location = "http://m.mybookmark.cn/#/search";
+        return;
+    }
+
     const perPageItems = 20;
     var dialog = null;
     $scope.hoverBookmark = null;

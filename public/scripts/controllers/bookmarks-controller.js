@@ -1,5 +1,11 @@
 app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello bookmarksCtr...", $stateParams);
+    var browser = dataService.browser();
+    if(browser.mobile && !browser.iPad){
+        $window.location = "http://m.mybookmark.cn/#/tags";
+        return;
+    }
+
     $scope.bookmarks = []; // 书签数据
     $scope.showSearch = false; // 搜索对话框
     $scope.bookmarkNormalHover = false;

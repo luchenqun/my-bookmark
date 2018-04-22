@@ -1,6 +1,10 @@
 app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello hotCtr...");
-
+    var browser = dataService.browser();
+    if(browser.mobile && !browser.iPad){
+        $window.location = "http://m.mybookmark.cn/#/tags";
+        return;
+    }
     $scope.hoverBookmark = null;
     $scope.bookmarks = []; // 书签数据
     $scope.bookmarkNormalHover = false;

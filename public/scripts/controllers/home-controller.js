@@ -1,6 +1,12 @@
 app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $stateParams, $filter, $state, $window, bookmarkService, pubSubService, dataService) {
     console.log('Hello homeCtr......');
-
+    var browser = dataService.browser();
+    if(browser.mobile && !browser.iPad){
+        toastr.success(JSON.stringify(browser), "提示");
+        $window.location = "http://m.mybookmark.cn";
+        return;
+    }
+    toastr.success(12345678, "提示");
     bookmarkService.autoLogin()
         .then((data) => {
             if (data.logined) {

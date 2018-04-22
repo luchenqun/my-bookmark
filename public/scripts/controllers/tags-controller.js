@@ -1,5 +1,11 @@
 app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello tagsCtr...", $stateParams);
+    var browser = dataService.browser();
+    if(browser.mobile && !browser.iPad){
+        $window.location = "http://m.mybookmark.cn/#/tags";
+        return;
+    }
+
     getTags({});
 
     var perPageItems = 20;

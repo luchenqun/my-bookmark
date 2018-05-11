@@ -1095,12 +1095,22 @@ db.addNote = function(note) {
 db.getNotes = function(params) {
     var sql = "SELECT notes.id, notes.content, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name as tagName FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '" + params.user_id + "'";
 
+    if (params.dateCreate) {
+        var d = new Date();
+        d.setDate(d.getDate() - parseInt(params.dateCreate));
+        sql += " AND notes.created_at >= '" + d.format("yyyyMMdd") + "'"
+    }
+
     if (params.searchWord) {
         sql += " AND notes.content LIKE '%" + params.searchWord + "%'";
     }
 
     if (params.tagId) {
         sql += " AND notes.tag_id  = '" + params.tagId + "'";
+    }
+
+    if (params.tagIds) {
+        sql += "AND notes.tag_id IN (" + params.tagIds.toString() + ")"
     }
 
     sql += " ORDER BY `created_at` DESC"

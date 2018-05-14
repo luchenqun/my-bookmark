@@ -177,30 +177,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     }
 
     $scope.clickTag = function(id, clicked) {
-        var clickTag = null;
-        var currCntTag = 0;
         $scope.tags.forEach((tag) => {
-                if (tag.id == id) {
-                    clickTag = tag;
-                }
-                currCntTag += Number(tag.clicked);
-            })
-            // 如果是新增书签，而且是第一次点其他选项，那么取消默认选中的分类
-        if (cancelDefault && $scope.add && clicked && currCntTag == 1) {
-            $scope.tags[0].clicked = false;
-            currCntTag -= 1;
-            cancelDefault = false; // 后面在点就不取消默认的了
-        }
-
-        currCntTag += Number(clicked);
-        if (currCntTag <= 3 && currCntTag >= 1) {
-            if (clickTag) {
-                clickTag.clicked = clicked;
-            }
-        } else {
-            toastr.error('您至少要选择一个分类！最多选择三个分类！如果暂时没想到放到哪个分类，可以先选择未分类。', "错误");
-        }
-
+            tag.clicked = tag.id == id
+        })
     }
 
     pubSubService.subscribe('MenuCtr.showAddBookmarkMoadl', $scope, function(event, params) {

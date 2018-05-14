@@ -1146,6 +1146,10 @@ api.getSnapByTimer = function() {
     var timeout = 30000
     setInterval(function() {
         var today = new Date().getDate();
+        var hours = new Date().getHours();
+        if(hours >= 6 && hours <= 23){
+            return;
+        }
         db.getBookmarkWaitSnap(today)
             .then((bookmarks) => {
                 if (bookmarks.length == 1) {

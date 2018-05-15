@@ -35,15 +35,8 @@
                 </div>
             </div>
             <div class="field">
-                <label>描述</label>
-                <div
-                    style="border-radius:4px;border:1px solid #DEDEDE;min-height:88px;"
-                    name="text"
-                    ng-model="description"
-                    required
-                    medium-editor
-                    bind-options="{'placeholder': {text: '可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到'},
-                    'buttons': ['bold', 'italic', 'underline', 'header1', 'header2', 'quote', 'orderedlist', 'unorderedlist']}"></div>
+                <label>内容</label>
+                <textarea name="text" rows="6" placeholder="可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到" ng-model="description"></textarea>
             </div>
             <div class="field">
                 <div class="ui checkbox checked js-public">

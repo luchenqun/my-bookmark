@@ -27,7 +27,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
             .then((data) => {
                 $scope.content = data.content ? $sce.trustAsHtml(data.content) : $sce.trustAsHtml('<p>数据获取失败，可能是服务器不允许获取，或者是https网站！</p>');
                 setTimeout(function() {
-                    $('.ui.modal.js-bookmark-info').modal("refresh");
+                    $('.ui.modal.js-bookmark-info').modal && $('.ui.modal.js-bookmark-info').modal("refresh");
                 }, 100);
                 $scope.loading = false;
             })

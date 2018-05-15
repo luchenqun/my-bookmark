@@ -516,6 +516,8 @@ api.get('/bookmarksByTag', function(req, res) {
         bookmarks: [],
     }
 
+    // -1 获取自己定制的
+    // -2 获取全站定制的
     var fun = (params.tagId <= -1) ? (params.tagId == -1 ? db.getBookmarksCostomTag : db.getBookmarksCostomAllUsersTag) : (db.getBookmarksByTag);
 
     fun((params.tagId <= -1) ? (userId) : (params), params.perPageItems)
@@ -526,7 +528,7 @@ api.get('/bookmarksByTag', function(req, res) {
         })
         .then((tbs) => {
             tagsBookmarks = tbs;
-            return db.getTags(userId);
+            return db.getTags(params.tagId >= -1 ? userId : null);
         })
         .then((tags) => {
             // 获取每个书签的所有分类标签

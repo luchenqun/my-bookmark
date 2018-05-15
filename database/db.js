@@ -410,7 +410,11 @@ db.getUser = function(username) {
 };
 
 db.getTags = function(user_id) {
-    var sql = "SELECT t.id, t.user_id, t.name, DATE_FORMAT(t.last_use, '%Y-%m-%d %H:%i:%s') as last_use, t.sort, tb.cnt, tg.ncnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id  LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as ncnt FROM notes GROUP BY tag_id ) tg ON t.id = tg.tag_id WHERE t.user_id = '" + user_id + "' ORDER BY t.sort, t.last_use DESC";
+    var sql = "SELECT t.id, t.user_id, t.name, DATE_FORMAT(t.last_use, '%Y-%m-%d %H:%i:%s') as last_use, t.sort, tb.cnt, tg.ncnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id  LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as ncnt FROM notes GROUP BY tag_id ) tg ON t.id = tg.tag_id ";
+    if (user_id) {
+        sql += "WHERE t.user_id = '" + user_id + "' ";
+    }
+    sql += "ORDER BY t.sort, t.last_use DESC";
     console.log('getTags sql = ', sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

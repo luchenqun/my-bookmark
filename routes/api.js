@@ -801,7 +801,7 @@ api.post('/addBookmark', function(req, res) {
     }
     var bookmark = req.body.params;
     var userId = req.session.user.id;
-    var tags = [bookmark.tags[0]]; // 只允许添加一个分类
+    var tags = [bookmark.tags[bookmark.tags.length - 1]]; // 只允许添加一个分类
     var bookmarkId = -1;
     var ret = {};
     var update = false;

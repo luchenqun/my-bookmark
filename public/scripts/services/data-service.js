@@ -46,9 +46,6 @@ app.factory('dataService', [function() {
         }, {
             uiSref: 'hot',
             title: '热门'
-        }, {
-            uiSref: 'praise',
-            title: '咖啡'
         }],
         animationIndex: 0,
         animation: function() {

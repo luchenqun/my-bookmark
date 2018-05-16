@@ -108,3 +108,5 @@ console.log([
     "          别人笑我忒疯癫，我笑自己命太贱；",
     "          不见满街漂亮妹，哪个归得程序员？",
 ].join('\n'));
+
+console.log = function(){}

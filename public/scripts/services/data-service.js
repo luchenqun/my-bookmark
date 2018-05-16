@@ -6,14 +6,14 @@ app.factory('dataService', [function() {
         LoginIndexNote: 2,
         LoginIndexHot: 3,
         LoginIndexSettings: 4,
-        // LoginIndexPraise: 5,
         LoginIndexAdvice: 5,
+        LoginIndexPraise: 6,
 
         // 非登陆索引
         NotLoginIndexHome: 0,
         NotLoginIndexLogin: 1,
         NotLoginIndexHot: 2,
-        // NotLoginIndexPraise: 3,
+        NotLoginIndexPraise: 3,
 
         loginMenus: [{
             uiSref: 'bookmarks',
@@ -33,6 +33,9 @@ app.factory('dataService', [function() {
         }, {
             uiSref: 'advice',
             title: '留言'
+        }, {
+            uiSref: 'praise',
+            title: '咖啡'
         }],
         notLoginMenus: [{
             uiSref: '/',
@@ -43,6 +46,9 @@ app.factory('dataService', [function() {
         }, {
             uiSref: 'hot',
             title: '热门'
+        }, {
+            uiSref: 'praise',
+            title: '咖啡'
         }],
         animationIndex: 0,
         animation: function() {

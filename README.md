@@ -32,7 +32,7 @@
 - [x] 新增备忘录功能，有时候随手要做点纪录，就方便了。任意界面按快捷键A增加备忘录。双击备忘录可查看详情！
 - [x] 在设置的全局链接，可设置快捷键，用来在任何页面，快速打开设置的链接。
 - [x] 增加[Chrome插件](https://chrome.google.com/webstore/detail/%E4%B9%A6%E7%AD%BE%E5%BF%AB%E9%80%9F%E6%B7%BB%E5%8A%A0/paajmalhmjgdihaikmdfiplfmjlnkjgp)，可在任意界面快速添加书签至系统。
-- [ ] 适配手机平板（正在进行中......）。
+- [×] 适配手机平板，手机端请访问[m.mybookmark.cn](http://m.mybookmark.cn/)。
 
 
 4 主要用到的模块说明
@@ -89,16 +89,13 @@ my-bookmark/
 │   │   ├── externe/                          # 外部引入的JS文件
 |   |   |   ├── angular.min.js                # angular文件
 |   |   |   ├── angular-cookies.min.js        # angular前台cookies模块
-|   |   |   ├── angular-medium-editor.min.js  # 编辑器，书签编辑页面使用
 |   |   |   ├── angular-sortable-view.min.js  # 可以拖拽元素的控件，用于分类页面
 |   |   |   ├── angular-ui-router.min.js      # angular web客户端的路由
 |   |   |   ├── calendar.min.js               # 一个日历控件，用于搜索页面
-|   |   |   ├── canvas-nest.min.js            # 一个很赞的网页背景效果(装逼)
 |   |   |   ├── clipboard.min.js              # 用于复制粘贴库，不需要flash
 |   |   |   ├── jquery.form.js                # 表单异步提交(想不起哪里用了)
 |   |   |   ├── jquery.uploadfile.min.js      # 文件上传控件，用于上传浏览器导出书签
 |   |   |   ├── jquery-3.1.1.min.js           # jquery文件
-|   |   |   ├── medium-editor.min.js          # 编辑器，angular-medium-editor依赖
 |   |   |   ├── ngDialog.min.js               # 一个angular对话框控件
 |   |   |   ├── ng-infinite-scroll.min.js     # 一个angular无限滚动加载数据控件
 |   |   |   ├── semantic.min.js               # semantic文件
@@ -117,7 +114,6 @@ my-bookmark/
 |   |   ├── dialog-del-bookmark.html          # 书签删除确认页面
 |   |   ├── dialog-del-note.html              # 备忘录删除确认页面
 |   |   ├── dialog-del-tag.html               # 分类删除确认页面
-|   |   ├── dialog-detail-note.html           # 备忘录详情页面
 |   |   ├── edit.html                         # 书签添加修改页面
 |   |   ├── home.html                         # 未登录时首页页面
 |   |   ├── hot.html                          # 热门收藏页面

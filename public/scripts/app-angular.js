@@ -1,8 +1,6 @@
-var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies', 'infinite-scroll', 'angular-sortable-view', 'ngDialog', 'angular-medium-editor']);
+var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies', 'infinite-scroll', 'angular-sortable-view', 'ngDialog']);
 
 app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
-    $httpProvider.interceptors.push('httpInterceptor');
-
     $urlRouterProvider.otherwise("/");
 
     $stateProvider

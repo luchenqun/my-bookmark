@@ -461,28 +461,3 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
 
     return service;
 }]);
-
-app.factory('httpInterceptor', ['$q', '$injector', function($q, $injector) {
-    var defered = $q.defer();
-    var httpInterceptor = {
-        request: function(config) {
-            return config;
-        },
-        requestError: function(err) {
-            return $q.reject(err);
-        },
-        response: function(res) {
-            return $q.resolve(res);
-        },
-        responseError: function(err) {
-            if (401 === err.status) {
-                // toastr.warning("您需要先登录才能使用该功能", "警告");
-                $injector.get('$state').go('login', {})
-            } else {
-                toastr.error(JSON.stringify(err), "错误");
-            }
-            return $q.reject(err);
-        }
-    }
-    return httpInterceptor;
-}]);

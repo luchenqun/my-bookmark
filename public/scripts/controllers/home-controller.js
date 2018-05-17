@@ -6,17 +6,12 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
         $window.location = "http://m.mybookmark.cn";
         return;
     }
-    toastr.success(12345678, "提示");
     bookmarkService.autoLogin()
         .then((data) => {
             if (data.logined) {
                 pubSubService.publish('loginCtr.login', {
                     'login': data.logined,
                 });
-                // $state.go('bookmarks', {
-                //     showStyle: (data.user && data.user.show_style) || 'navigate',
-                // })
-                // toastr.success('自动登陆成功，系统将自动跳转到主页', "提示");
                 $state.go('tags');
                 toastr.success('自动登陆成功，系统将自动跳转到书签分类页面', "提示");
             } else {

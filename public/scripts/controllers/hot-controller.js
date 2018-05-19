@@ -1,7 +1,6 @@
 app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello hotCtr...");
-    var browser = dataService.browser();
-    if(browser.mobile && !browser.iPad){
+    if(dataService.smallDevice()){
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }

@@ -33,9 +33,6 @@ app.factory('dataService', [function() {
         }, {
             uiSref: 'advice',
             title: '留言'
-        }, {
-            uiSref: 'praise',
-            title: '咖啡'
         }],
         notLoginMenus: [{
             uiSref: '/',
@@ -133,10 +130,10 @@ app.factory('dataService', [function() {
             $("#clipboard").attr("data-clipboard-text", text);
             document.getElementById("clipboard").click();
         },
-        browser: function() {
-            var u = navigator.userAgent,
-                app = navigator.appVersion;
-            return { //移动终端浏览器版本信息
+        smallDevice: function() {
+            var u = navigator.userAgent;
+            var app = navigator.appVersion;
+            var device = { //移动终端浏览器版本信息
                 trident: u.indexOf('Trident') > -1, //IE内核
                 presto: u.indexOf('Presto') > -1, //opera内核
                 webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
@@ -148,6 +145,12 @@ app.factory('dataService', [function() {
                 iPad: u.indexOf('iPad') > -1, //是否iPad
                 webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
             };
+
+            if((device.mobile && !device.iPad) || (screen && screen.availWidth < 768)){
+                return true;
+            }
+
+            return false;
         }
     };
 

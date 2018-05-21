@@ -1147,12 +1147,11 @@ api.getSnapByTimer = function() {
     console.log('getSnapByTimer...........');
     var timeout = 30000
     setInterval(function() {
-        var today = new Date().getDate();
-        var hours = new Date().getHours();
-        if(hours >= 6 && hours <= 23){
-            return;
-        }
-        db.getBookmarkWaitSnap(today)
+        var date = new Date();
+        var today = date.getDate();
+        var hours = date.getHours();
+        if (hours >=2 && hours <= 5) {
+            db.getBookmarkWaitSnap(today)
             .then((bookmarks) => {
                 if (bookmarks.length == 1) {
                     var id = bookmarks[0].id;
@@ -1194,6 +1193,8 @@ api.getSnapByTimer = function() {
                 }
             })
             .catch((err) => console.log('getBookmarkWaitSnap err', err));
+        }
+
     }, timeout + 1000);
 }
 

@@ -14,7 +14,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
     var addBookmarkId = -1;
     $scope.hoverBookmark = null;
     $scope.order = [false, false, false];
-    $scope.order[($stateParams && $stateParams.orderIndex) || 0] = true;
+    $scope.order[($stateParams && $stateParams.orderIndex) || 1] = true;
     $scope.loadBookmarks = false;
     $scope.loadTags = false;
     $scope.tags = []; // 书签数据
@@ -481,12 +481,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                         find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
                     }
                 })
-                if (!find && $scope.currentTagId !== -1) $scope.currentTagId = null;
-                if (!$scope.currentTagId && $scope.tags.length > 0) {
-                    $scope.currentTagId = $scope.tags[0].id;
-                    $scope.tags[0].bookmarkClicked = true;
+                if (!find && $scope.currentTagId !== -1 && $scope.currentTagId !== -2) {
+                    $scope.currentTagId = -1;
+                    $scope.costomTag.bookmarkClicked = true;
                 }
-
+                
                 if ($scope.currentTagId) {
                     if (!$scope.editMode) {
                         $scope.getBookmarks($scope.currentTagId, $scope.currentPage);

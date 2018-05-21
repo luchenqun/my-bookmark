@@ -1,14 +1,14 @@
 <div class="ui segment js-tags">
     <div class="ui container" ng-show="!editMode" style="cursor:default;">
         <div class="ui grid">
-            <div class="two wide column  js-tag-label" ng-if="tag.cnt" ng-repeat="tag in tags">
-                <div class="ui small label" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
-                    {{ tag.name }} ({{ tag.cnt || 0 }})
-                </div>
-            </div>
             <div class="two wide column  js-tag-label">
                 <div class="ui small label" ng-class="{green:costomTag.bookmarkClicked}" ng-click="getBookmarks(-1, 1)">
                     {{ costomTag.name }} ({{ costomTag.cnt || 0 }})
+                </div>
+            </div>
+            <div class="two wide column  js-tag-label" ng-if="tag.cnt" ng-repeat="tag in tags">
+                <div class="ui small label" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
+                    {{ tag.name }} ({{ tag.cnt || 0 }})
                 </div>
             </div>
             <div class="two wide column  js-tag-label">
@@ -138,13 +138,13 @@
     <div class="ui grid">
         <div class="five wide column" style="margin-top:10px;">
             <div class="ui three column grid" style="cursor: default;">
-                <div class="column" ng-click="changeOrder(0)">
-                    <i class="sort numeric descending large icon" ng-class="{green: order[0]}" style="margin-bottom:4px;"></i>
-                    <span ng-class="{fontgreen: order[0]}" style="margin-left:-5px;">点击次数</span>
-                </div>
                 <div class="column" ng-click="changeOrder(1)">
                     <i class="add to calendar large icon" ng-class="{green: order[1]}" style="margin-bottom:4px;"></i>
                     <span ng-class="{fontgreen: order[1]}" style="margin-left:-5px;">添加日期</span>
+                </div>
+                <div class="column" ng-click="changeOrder(0)">
+                    <i class="sort numeric descending large icon" ng-class="{green: order[0]}" style="margin-bottom:4px;"></i>
+                    <span ng-class="{fontgreen: order[0]}" style="margin-left:-5px;">点击次数</span>
                 </div>
                 <div class="column" ng-click="changeOrder(2)">
                     <i class="sort alphabet descending large icon" ng-class="{green: order[2]}" style="margin-bottom:4px;"></i>

@@ -156,6 +156,16 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         });
     }
 
+    $scope.coffee = function () {
+        $state.go('settings', {
+            formIndex: 6,
+        });
+        pubSubService.publish('Common.menuActive', {
+            login: true,
+            index: dataService.LoginIndexSettings
+        });
+    }
+
     function updateMenuActive(index) {
         $('.ui.menu a.item').removeClass('selected');
         $('.ui.menu a.item:eq(' + index + ')').addClass('selected');

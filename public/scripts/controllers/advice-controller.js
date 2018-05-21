@@ -1,5 +1,9 @@
 app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $timeout, bookmarkService, pubSubService, dataService) {
     console.log("Hello adviceCtr");
+    if(dataService.smallDevice()){
+        $window.location = "http://m.mybookmark.cn/#/tags";
+        return;
+    }
     var maxSelections = 3;
 
     $scope.comment = '';

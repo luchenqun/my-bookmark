@@ -1,6 +1,9 @@
 app.controller('praiseCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello praiseCtr...", $stateParams);
-
+    if(dataService.smallDevice()){
+        $window.location = "http://m.mybookmark.cn/#/tags";
+        return;
+    }
     bookmarkService.autoLogin()
         .then((data) => {
             var login = data.logined;

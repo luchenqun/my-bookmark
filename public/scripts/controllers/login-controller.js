@@ -1,8 +1,7 @@
 app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', '$window', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $filter, $state, $cookieStore, $window, bookmarkService, pubSubService, dataService) {
     console.log("Hello loginCtr...", $cookieStore.get("username"));
-    var browser = dataService.browser();
-    if(browser.mobile && !browser.iPad){
-        $window.location = "http://m.mybookmark.cn/#/login";
+    if(dataService.smallDevice()){
+        $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
 

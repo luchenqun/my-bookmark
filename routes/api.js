@@ -54,6 +54,25 @@ api.post('/clickBookmark', function(req, res) {
         .catch((err) => console.log('clickBookmark error', err));
 });
 
+api.post('/jumpQuickUrl', function(req, res) {
+    console.log("jumpQuickUrl username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    db.getBookmarkbyUrl(req.session.user.id, req.body.params.url)
+        .then((bookmarkId) => {
+            res.json({id: bookmarkId});
+            if (bookmarkId) {
+                return db.clickBookmark(bookmarkId, req.session.user.id);
+            } else {
+                return Promise.reject(0);
+            }
+        })
+        .then((affectedRows) => {})
+        .catch((err) => console.log('jumpQuickUrl err', err)); // oops!
+});
+
 api.post('/login', function(req, res) {
     var params = req.body.params;
     var username = params.username;

@@ -229,6 +229,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
     $document.bind("keydown", function (event) {
+        console.info('keydown', event.key.toUpperCase(), $scope.quickUrl);
         $scope.$apply(function () {
             var key = event.key.toUpperCase();
             if (key == 'CONTROL' || key == 'SHIFT' || key == 'ALT') {
@@ -237,7 +238,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
             if (dataService.keyShortcuts()) {
                 // 全局处理添加备忘录
-                // console.log('keydown key = ', key);
                 if (key == 'A') {
                     if ($scope.selectLoginIndex !== dataService.LoginIndexNote) {
                         updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
@@ -271,6 +271,22 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                     var url = $scope.quickUrl[key];
                     if (url) {
                         $window.open(url, '_blank');
+                        var params = {
+                            url: url,
+                        }
+                        bookmarkService.jumpQuickUrl(params)
+                        .then((data) => {
+                            if(!data.id){
+                                toastr.info('网址：' + url + "还没添加到你的书签系统，请添加！", "警告");
+                                var bookmark = {
+                                    url: url
+                                }
+                                pubSubService.publish('TagCtr.storeBookmark', bookmark);
+                            }
+                        })
+                        .catch((err) => {
+                            
+                        });
                     }
                 }
             }

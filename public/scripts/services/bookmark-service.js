@@ -79,6 +79,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        jumpQuickUrl: function(params) {
+            var def = $q.defer();
+            $http.post('/api/jumpQuickUrl/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject('jumpQuickUrl error');
+                });
+            return def.promise;
+        },
         logout: function(params) {
             var def = $q.defer();
             $http.post('/api/logout/', {

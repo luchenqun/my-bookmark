@@ -59,7 +59,17 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
                         $scope.loadShowStyle = false;
                     }
                     if (index == 4) {
-                        $scope.quickUrl = JSON.parse($scope.user.quick_url || '{}');
+                        function objKeySort(obj) {
+                            var newkey = Object.keys(obj).sort();
+                            var newObj = {};
+                            for (var i = 0; i < newkey.length; i++) {
+                                newObj[newkey[i]] = obj[newkey[i]];
+                            }
+                            return newObj;//返回排好序的新对象
+                        }
+
+                        $scope.quickUrl = objKeySort(JSON.parse($scope.user.quick_url || '{}'));
+
                     }
                 })
                 .catch((err) => {

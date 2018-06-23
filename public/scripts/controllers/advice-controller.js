@@ -42,6 +42,9 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
                 if ($scope.advices.length == 0) {
                     transition();
                 }
+                data.forEach(element => {
+                    element.imgData = new Identicon(md5(element.username)).toString();
+                });
                 $scope.advices = data;
                 pubSubService.publish('Common.menuActive', {
                     login: true,

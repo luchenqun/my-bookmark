@@ -28,7 +28,7 @@
         <h3 class="ui header">最新100条留言</h3>
         <div class="comment" ng-repeat="advice in advices">
             <a class="avatar">
-                <img ng-src="/images/head{{advice.head_id}}.jpg">
+                <img ng-src="data:image/png;base64,{{advice.imgData}}">
             </a>
             <div class="content">
                 <a class="author">{{ advice.username }}</a>

@@ -480,7 +480,7 @@ db.getTagsByIds = function(tagIds) {
 
 db.getAdvices = function(params) {
     console.log('getAdvices');
-    var sql = "SELECT mod(CEIL(RAND()*100), 5) as head_id, a.id, a.user_id, u.username, a.comment, a.category, DATE_FORMAT(a.created_at, '%Y-%m-%d %H:%i:%s') as created_at, a.state  FROM `advices` as a LEFT OUTER JOIN users as u ON a.user_id = u.id ORDER BY a.created_at DESC LIMIT 0, 100";
+    var sql = "SELECT a.id, a.user_id, u.username, a.comment, a.category, DATE_FORMAT(a.created_at, '%Y-%m-%d %H:%i:%s') as created_at, a.state  FROM `advices` as a LEFT OUTER JOIN users as u ON a.user_id = u.id ORDER BY a.created_at DESC LIMIT 0, 100";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

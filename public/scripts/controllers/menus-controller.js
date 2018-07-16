@@ -229,11 +229,15 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
     $document.bind("keydown", function (event) {
-        console.info('keydown', event.key.toUpperCase(), $scope.quickUrl);
         $scope.$apply(function () {
             var key = event.key.toUpperCase();
             if (key == 'CONTROL' || key == 'SHIFT' || key == 'ALT') {
                 $scope.longPress = true;
+                // 有时候没有检测到keyup，会一直按无效，干脆过个3秒就认为你抬起来了
+                // 反正你按下我还是会给你标记为true的。
+                $timeout(function () {
+                  $scope.longPress = false;
+                }, 3000)
             }
 
             if (dataService.keyShortcuts()) {
@@ -260,6 +264,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                 // 数字键用来切换菜单
                 if (!isNaN(key)) {
                     var num = parseInt(key);
+                    if(num < 0 || num > 6) return;
                     pubSubService.publish('Common.menuActive', {
                         login: $scope.login,
                         index: num - 1

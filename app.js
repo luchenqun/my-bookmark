@@ -79,8 +79,9 @@ app.use(function (err, req, res, next) {
   //     error: {}
   // });
 });
-api.checkSnapFaviconState();
-api.getSnapByTimer();
+// 卡片这模式就没怎么用过，干掉了。
+// api.checkSnapFaviconState();
+// api.getSnapByTimer();
 api.getFaviconByTimer();
 api.getHotBookmarksByTimer();
 

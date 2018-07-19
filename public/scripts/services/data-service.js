@@ -52,7 +52,7 @@ app.factory('dataService', [function() {
             ];
 
             var t = data[parseInt(Math.random() * 1000) % data.length];
-            return t;
+            return 'fade' || t; // 去掉一些有攻击性的动画
         },
         transition: function(selector, params) {
             var data = {};

@@ -139,7 +139,7 @@ my-bookmark/
 --------------------
 ```
 "body-parser": bodyParser用于解析客户端请求的body中的内容,内部使用JSON编码处理
-"connect-mongo": 用于将session存入MongoDB
+"connect-redis": 用于将session存入Redis
 "cheerio": 用于后端的jQuery，解析从浏览器导出来上传到服务器的书签html文件
 "cookie-parser": 处理每一个请求的cookie
 "crypto": 加密模块，主要用来加密用户的密码
@@ -155,12 +155,11 @@ my-bookmark/
 "path": 路径处理模块。
 "request": http请求模块。主要用来获取热门书签数据。
 "supervisor": 文件改变监视文件，开发使用。
-"webshot": 网页截图模块。
 ```
 
 7 安装部署指南
 -------------
-1、安装MySQL数据库。如果不会，请戳教程[MySQL 数据库安装教程](http://let-me-teach-you-baidu.luchenqun.com/?mysql%20%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B "mysql 数据库安装教程")。有点需要注意的是，MySQL的版本至少要是5.6。否则执行schema.sql文件会出错。   
+1、安装MySQL数据库。如果不会，请戳教程[MySQL 数据库安装教程](http://baidu.luchenqun.com/?mysql%20%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B "mysql 数据库安装教程")。有点需要注意的是，MySQL的版本至少要是5.6。否则执行schema.sql文件会出错。   
 2、新建一个数据库名，使用MySQL将根目录下面的schema.sql文件执行一遍，创建数据库表格。有个问题尤其要注意：**数据库一定要使用UTF-8的编码**，否则执行一些汉字的sql语句会出错！如果是Ubuntu，大概过程如下。
 ```
 mysql -u root -p // 使用root账号进入mysql数据库。按回车之后输入安装时候root的密码。
@@ -170,7 +169,7 @@ GRANT ALL ON *.* TO 'test'@'%';  // 给刚创建的test用户数据库所有的�
 use mybookmarks; //选择刚创建的数据库。
 source /home/lcq/schema.sql; // 执行schema.sql文件创建数据库表格。注意，将路径换为你schema.sql所在路径。   
 ```
-3、安装MongoDB 安装教程。如果不会，请戳教程[MongoDB 安装教程](http://let-me-teach-you-baidu.luchenqun.com/?MongoDB%20%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B "MongoDB 安装教程")，安装完成之后如果MongoDB没有启动，请启动MongoDB。   
+3、安装Redis 安装教程。如果不会，请戳教程[Redis 安装教程](http://baidu.luchenqun.com/?redis%20%E5%AE%89%E8%A3%85 "Redis 安装教程")，安装完成之后如果Redis没有启动，请启动Redis。   
 4、安装Node.js。Node.js版本至少要求6.0以上。不会的话，请按照上面步骤1、3提供的方法自行解决。   
 5、克隆代码`git@github.com:luchenqun/my-bookmark.git`，切换到项目根目录下面，执行`npm install`安装package。   
 6、更新/database/db.js文件的dbConfig配置，将你mysql的数据信息更新上去。   

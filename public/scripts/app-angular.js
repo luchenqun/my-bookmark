@@ -107,4 +107,4 @@ console.log([
     "          不见满街漂亮妹，哪个归得程序员？",
 ].join('\n'));
 
-// console.log = function(){}
+console.log = function(){}

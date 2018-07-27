@@ -10,7 +10,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('getArticle error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -23,7 +23,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('getUpdateLog error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -36,7 +36,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('login error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -49,7 +49,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('register error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -62,7 +62,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('register error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -75,7 +75,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('clickBookmark error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -88,7 +88,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('jumpQuickUrl error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -101,7 +101,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('logout error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -112,7 +112,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('autoLogin error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -125,7 +125,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('userInfo error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -144,7 +144,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    def.reject('getBookmarks error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -158,7 +158,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    def.reject('bookmarksByTag error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -172,7 +172,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    def.reject('searchBookmarks error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -186,7 +186,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    def.reject('searchHotBookmarks error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -200,7 +200,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    def.reject('getBookmark error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -213,7 +213,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('addBookmark error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -226,7 +226,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('favorite error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -239,7 +239,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('updateBookmark error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -252,7 +252,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('delBookmark error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -270,7 +270,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('getTags error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -283,7 +283,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('addTags error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -296,7 +296,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('updateTagName error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -309,7 +309,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('updateTagsIndex error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -322,7 +322,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('delTag error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -335,7 +335,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('updateShowStyle error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -348,7 +348,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('updateSearchHistory error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -361,7 +361,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('updateQuickUrl error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -374,7 +374,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('getAdvices error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -387,7 +387,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('addAdvice error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -401,7 +401,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    def.reject('getHotBookmarks error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -414,7 +414,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data, status) {
-                    def.reject('addNote error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -427,7 +427,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('getNotes error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -440,7 +440,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('delNote error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -453,7 +453,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('updateNote error');
+                    def.reject(data);
                 });
             return def.promise;
         },
@@ -466,7 +466,7 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                     def.resolve(data);
                 })
                 .error(function(data) {
-                    def.reject('download error');
+                    def.reject(data);
                 });
             return def.promise;
         },

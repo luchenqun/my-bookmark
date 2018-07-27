@@ -38,7 +38,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             getNotes();
         })
         .catch((err) => {
-            console.log('autoLogin err', err)
+            dataService.netErrorHandle(err, $state)
         });
 
     $scope.changeCurrentPage = function (currentPage) {

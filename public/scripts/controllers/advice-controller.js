@@ -51,7 +51,7 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
                     index: dataService.LoginIndexAdvice
                 });
             })
-            .catch((err) => console.log('getAdvices err', err));
+            .catch((err) => dataService.netErrorHandle(err, $state));
     }
 
     setTimeout(function() {

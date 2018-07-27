@@ -285,9 +285,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     updateShowStyle();
                     getBookmarks(); // 拿到默认显示风格了，继续取获取书签
                 })
-                .catch((err) => {
-                    console.log('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
-                });
+                .catch((err) => dataService.netErrorHandle(err, $state));
         } else {
             $scope.loadBusy = true;
             if (params.showStyle == 'table' && (!$scope.forbidTransition)) {
@@ -342,8 +340,8 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
                     $scope.forbidTransition = false;
                     $scope.loadBusy = false;
                 })
-                .catch((err) => {
-                    console.log('getBookmarks err', err);
+                .catch((err) => { 
+                    dataService.netErrorHandle(err, $state);
                     $scope.loadBusy = false;
                 });
         }

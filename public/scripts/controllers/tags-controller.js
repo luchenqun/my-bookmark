@@ -1,4 +1,4 @@
-app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $state, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello tagsCtr...", $stateParams);
     if(dataService.smallDevice()){
         $window.location = "http://m.mybookmark.cn/#/tags";
@@ -493,16 +493,15 @@ app.controller('tagsCtr', ['$scope', '$filter', '$window', '$stateParams', '$tim
                     toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
                 }
                 $scope.loadTags = false;
+                pubSubService.publish('Common.menuActive', {
+                    login: true,
+                    index: dataService.LoginIndexTags
+                });
             })
             .catch((err) => {
-                console.log('getTags err', err);
+                dataService.netErrorHandle(err, $state);
                 $scope.loadTags = false;
             });
-
-        pubSubService.publish('Common.menuActive', {
-            login: true,
-            index: dataService.LoginIndexTags
-        });
     }
 
     pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function (event, data) {

@@ -1327,7 +1327,7 @@ api.getHotBookmarksByTimer = function() {
         }
         var url = "https://api.shouqu.me/api_service/api/v1/daily/dailyMark";
         var alterRex = "/mmbiz.qpic.cn|images.jianshu.io|zhimg.com/g";
-        var defaultSnap = "./images/snap/default.png";
+        var defaultSnap = "./images/default.jpg";
         var defaultFavicon = "./images/favicon/default.ico";
         request.post({
             url: url,

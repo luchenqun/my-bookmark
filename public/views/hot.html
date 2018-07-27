@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="image hot-image" href="{{ bookmark.url }}" style="cursor:pointer" ng-click="jumpToUrl(bookmark.url)">
-                <img ng-src="{{bookmark.snap_url}}" err-src="./images/snap/default.png"/>
+                <img ng-src="{{bookmark.snap_url}}"/>
             </div>
             <div class="extra content" ng-show="!bookmark.edit">
                 <img class="ui avatar image" style="width:16px;height:16px;" ng-src="{{bookmark.favicon_url}}">

@@ -191,8 +191,8 @@ app.controller('hotCtr', ['$scope', '$state', '$stateParams', '$filter', '$windo
                 // console.log('success............', json, JSON.stringify(json.data.list[0]) );
                 $scope.loadBusy = false;
                 var alterRex = "/mmbiz.qpic.cn|images.jianshu.io|zhimg.com/g";
-                var defaultSnap = "./images/snap/default.png"
-                var defaultFavicon = "./images/favicon/default.ico"
+                var defaultSnap = "./images/default.jpg"
+                var defaultFavicon = "./images/default.ico"
                 $timeout(function() {
                     if (json.code == 200) {
                         var bookmarkList = json.data.list;

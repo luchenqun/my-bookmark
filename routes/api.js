@@ -1433,10 +1433,16 @@ api.get('/notes', function(req, res) {
         return;
     }
     var params = req.query;
-    params.user_id = req.session.user.id;
-    db.getNotes(params)
-        .then((data) => res.json(data))
-        .catch((err) => console.log('notes', err));
+    if (params.shareNote) {
+      db.getNote(params.shareNote)
+      .then((data) => res.send(`<body style="margin:0px;background-color:RGB(243,244,245)"><div style="text-align:center;"><pre style="padding:50px 0px 50px 0px; display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;">${data}</pre></div></body>`))
+      .catch((err) => console.log('notes', err));
+    } else {
+      params.user_id = req.session.user.id;
+      db.getNotes(params)
+          .then((data) => res.json(data))
+          .catch((err) => console.log('notes', err));
+    }
 });
 
 api.delete('/delNote', function(req, res) {

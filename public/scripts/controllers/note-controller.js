@@ -285,6 +285,10 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         }
     }
 
+    $scope.share = function (noteId) {
+      dataService.clipboard(`https://mybookmark.cn/api/notes/?shareNote=${noteId}`);
+    }
+
     function updateSelectTag(tagId) {
         $scope.tags.forEach((tag) => {
             tag.clicked = false;

@@ -1165,4 +1165,18 @@ db.updateNote = function(id, content, tag_id) {
     });
 }
 
+db.getNote = function(id) {
+  var sql = "SELECT content FROM `notes` WHERE `id` = '"+ id +"' LIMIT 0, 1";
+  console.log(sql);
+  return new Promise(function(resolve, reject) {
+      client.query(sql, (err, result) => {
+          if (err) {
+              reject(err);
+          } else {
+              resolve(result.length > 0 ? result[0].content : "content not exist!");
+          }
+      });
+  });
+}
+
 module.exports = db;

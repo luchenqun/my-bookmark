@@ -52,6 +52,7 @@
                     </label>
                     <img class="ui mini spaced image" id="noteid{{note.id}}" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/copy.png"
                         id="url{{bookmark.id}}" ng-click="copy(note.content)" title="复制备忘">
+                    <i class="share alternate icon" title="复制分享地址" ng-click="share(note.id)"></i>
                     <i class="chevron up icon" title="收起详情" ng-click="noteClick(note, true, $event)"></i>
                 </div>
             </div>

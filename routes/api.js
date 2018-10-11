@@ -1435,7 +1435,7 @@ api.get('/notes', function(req, res) {
     var params = req.query;
     if (params.shareNote) {
       db.getNote(params.shareNote)
-      .then((data) => res.send(`<body style="margin:0px;background-color:RGB(243,244,245)"><div style="text-align:center;"><pre style="padding:50px 0px 50px 0px; display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;">${data}</pre></div></body>`))
+      .then((data) => res.send(`<body style="margin:0px;background-color:RGB(243,244,245)"><div style="text-align:center;"><pre style="padding:50px 10px; width:60%; display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">${data}</pre></div></body>`))
       .catch((err) => console.log('notes', err));
     } else {
       params.user_id = req.session.user.id;

@@ -1187,7 +1187,6 @@ db.getNote = function(id) {
           if (err) {
               reject(err);
           } else {
-              console.log(result[0].public);
               if(result.length > 0) {
                   result[0].public == 1 ? resolve(result[0].content) : resolve("提示：备忘处于私密状态！");
               } else {

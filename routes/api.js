@@ -1233,10 +1233,9 @@ api.getFaviconByTimer = function() {
                 if (bookmarks.length == 1) {
                     var id = bookmarks[0].id;
                     var faviconState = bookmarks[0].favicon_state;
-                    var url = bookmarks[0].url;
+                    var url = encodeURI(bookmarks[0].url);
                     var faviconPath = './public/images/favicon/' + id + '.ico';
                     var defaultFile = './public/images/favicon/default.ico';
-                    console.log("getBookmarkWaitFavicon url:" + url);
 
                     if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
                         copyFile(defaultFile, faviconPath);

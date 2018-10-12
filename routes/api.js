@@ -1428,14 +1428,14 @@ api.post('/addNote', function(req, res) {
 
 api.get('/notes', function(req, res) {
     console.log("getNotes username = ", req.session.username);
-    if (!req.session.user) {
+    var params = req.query;
+    if (!params.shareNote && !req.session.user) {
         res.send(401);
         return;
     }
-    var params = req.query;
     if (params.shareNote) {
       db.getNote(params.shareNote)
-      .then((data) => res.send(`<body style="margin:0px;background-color:RGB(243,244,245)"><div style="text-align:center;"><pre style="padding:50px 10px; width:60%; display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">${data}</pre></div></body>`))
+      .then((data) => res.send(`<body style="margin:0px;height:100%;"><div style="text-align:center;"><pre style="background-color:RGB(243,244,245); padding:10px; margin:0px; width:60%; height:100%; display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">${data}</pre></div></body>`))
       .catch((err) => console.log('notes', err));
     } else {
       params.user_id = req.session.user.id;
@@ -1478,12 +1478,34 @@ api.post('/updateNote', function(req, res) {
             result: affectedRows
         }))
         .catch((err) => {
-            console.log('updateBookmark err', err);
+            console.log('updateNote err', err);
             res.json({
                 result: -1
             })
         }); // oops!
 })
+
+api.post('/updateNotePublic', function(req, res) {
+  console.log("updateNotePublic username = ", req.session.username);
+  if (!req.session.user) {
+      res.send(401);
+      return;
+  }
+
+  var note = req.body.params;
+  console.log('hello updateNotePublic', JSON.stringify(note));
+  db.updateNotePublic(note.id, note.public)
+      .then((affectedRows) => res.json({
+          result: affectedRows
+      }))
+      .catch((err) => {
+          console.log('updateNote err', err);
+          res.json({
+              result: -1
+          })
+      }); // oops!
+})
+
 
 // 实现文件下载
 api.get('/download', function(req, res) {

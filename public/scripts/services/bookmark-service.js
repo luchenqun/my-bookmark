@@ -457,6 +457,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        updateNotePublic: function(params) {
+          var def = $q.defer();
+          $http.post('/api/updateNotePublic/', {
+                  params: params
+              })
+              .success(function(data) {
+                  def.resolve(data);
+              })
+              .error(function(data) {
+                  def.reject(data);
+              });
+          return def.promise;
+      },
         download: function(params) {
             var def = $q.defer();
             $http.get('/api/download/', {

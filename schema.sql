@@ -92,5 +92,6 @@ CREATE TABLE `notes` (
   `content` varchar(8092) DEFAULT NULL,     -- 备忘内容
   `tag_id` int(11) DEFAULT NULL,            -- 分类id
   `created_at` datetime DEFAULT now(),      -- 创建时间
+  `public` tinyint(4) DEFAULT '1',          -- 是否公开 1 公开，0 不公开
   PRIMARY KEY (`id`)
 );

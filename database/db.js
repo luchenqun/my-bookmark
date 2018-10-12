@@ -1098,7 +1098,7 @@ db.addNote = function(note) {
 };
 
 db.getNotes = function(params) {
-    var sql = "SELECT notes.id, notes.content, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name as tagName FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '" + params.user_id + "'";
+    var sql = "SELECT notes.id, notes.content, notes.public, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name as tagName FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '" + params.user_id + "'";
 
     if (params.dateCreate) {
         var d = new Date();
@@ -1165,15 +1165,34 @@ db.updateNote = function(id, content, tag_id) {
     });
 }
 
-db.getNote = function(id) {
-  var sql = "SELECT content FROM `notes` WHERE `id` = '"+ id +"' LIMIT 0, 1";
+db.updateNotePublic = function(id, public) {
+  var sql = "UPDATE `notes` SET `public`='"+ public +"' WHERE (`id`='"+ id +"')";
   console.log(sql);
   return new Promise(function(resolve, reject) {
       client.query(sql, (err, result) => {
           if (err) {
               reject(err);
           } else {
-              resolve(result.length > 0 ? result[0].content : "content not exist!");
+              resolve(result.affectedRows);
+          }
+      });
+  });
+}
+
+db.getNote = function(id) {
+  var sql = "SELECT * FROM `notes` WHERE `id` = '"+ id +"' LIMIT 0, 1";
+  console.log(sql);
+  return new Promise(function(resolve, reject) {
+      client.query(sql, (err, result) => {
+          if (err) {
+              reject(err);
+          } else {
+              console.log(result[0].public);
+              if(result.length > 0) {
+                  result[0].public == 1 ? resolve(result[0].content) : resolve("提示：备忘处于私密状态！");
+              } else {
+                  resolve("提示：备忘已删除或不存在！");
+              }
           }
       });
   });

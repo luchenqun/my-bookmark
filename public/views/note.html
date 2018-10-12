@@ -44,6 +44,8 @@
                         <span title="添加于{{note.created_at}}" class="need_to_be_rendered" data-timeago="{{ note.created_at }}"></span>
                         <span style="margin-left:-3px;">添加</span>
                     </span>
+                    <i ng-if="note.public == 0" class="black lock icon" title="点击公开备忘" ng-click="updatePublic(note, 1)"></i>
+                    <i ng-if="note.public == 1" class="black open lock icon" title="点击不公开备忘" ng-click="updatePublic(note, 0)"></i>
                     <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/delete.png" ng-click="delNote(note.id, note.content)"
                         title="删除备忘">
                     <label for="noteedit">
@@ -52,8 +54,8 @@
                     </label>
                     <img class="ui mini spaced image" id="noteid{{note.id}}" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/copy.png"
                         id="url{{bookmark.id}}" ng-click="copy(note.content)" title="复制备忘">
-                    <i class="share alternate icon" title="复制分享地址" ng-click="share(note.id)"></i>
-                    <i class="chevron up icon" title="收起详情" ng-click="noteClick(note, true, $event)"></i>
+                    <i class="black share alternate icon" title="复制分享地址" ng-click="share(note)"></i>
+                    <i class="black chevron up icon" title="收起详情" ng-click="noteClick(note, true, $event)"></i>
                 </div>
             </div>
         </div>

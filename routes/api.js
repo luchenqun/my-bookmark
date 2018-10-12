@@ -1442,12 +1442,14 @@ api.get('/notes', function(req, res) {
           <script>
             if(screen && screen.availWidth <= 1024) {
               setTimeout(() => {
-                document.getElementById("note").style.width = "100%";
+                document.getElementById("note-div").style.width = "100%";
+                document.getElementById("note-div").style["background-color"] = "#F3F4F5";
+                document.getElementById("note").style.width = "95%";
               }, 100);
             }
           </script>
         </head>
-        <div style="text-align:center;">
+        <div id="note-div" style="text-align:center;">
           <pre id="note" style="background-color:RGB(243,244,245); padding:0px 10px 0px 10px; margin:0px; width:60%; min-height:100%;display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">\n\n${data}</pre>
         </div>
       </body>`))

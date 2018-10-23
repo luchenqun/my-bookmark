@@ -86,7 +86,7 @@
         <tr ng-repeat="bookmark in bookmarksByTag" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
             <td>
                 <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;"
-                    ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://45.32.69.126:3000/?url={{bookmark.url}}">
+                    ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://47.75.89.228:3000/?url={{bookmark.url}}">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
                     {{ bookmark.title }}
                 </span>
@@ -130,7 +130,7 @@
             ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)" ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)"
             ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}" id="{{bookmark.id}}">
             <img class="ui ui middle aligned tiny image bookmarkInfo" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;"
-                ng-click="detailBookmark(bookmark);$event.stopPropagation()" favicon-err="http://45.32.69.126:3000/?url={{bookmark.url}}">
+                ng-click="detailBookmark(bookmark);$event.stopPropagation()" favicon-err="http://47.75.89.228:3000/?url={{bookmark.url}}">
             <span>{{ bookmark.title}}</span>
         </div>
     </div>

@@ -1219,80 +1219,59 @@ api.getSnapByTimer = function() {
 
 api.getFaviconByTimer = function() {
     console.log('getFaviconByTimer...........');
-    var timeout = 30000;
-    var busy = false;
-    setInterval(function() {
-        if (busy) {
-            console.log('getFaviconByTimer is busy')
-            return;
-        }
-        busy = true;
-        var today = new Date().getDate();
-        db.getBookmarkWaitFavicon(today)
-            .then((bookmarks) => {
-                if (bookmarks.length == 1) {
-                    var id = bookmarks[0].id;
-                    var faviconState = bookmarks[0].favicon_state;
-                    var url = encodeURI(bookmarks[0].url);
-                    var faviconPath = './public/images/favicon/' + id + '.ico';
-                    var defaultFile = './public/images/favicon/default.ico';
+    let timeout = 1000 * 60 * 30; // 半小时更新一次
+    let busy = false;
 
-                    if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
-                        copyFile(defaultFile, faviconPath);
-                        db.updateBookmarkFaviconState(id, today + 31)
-                            .then((affectedRows) => {
-                                busy = false
-                            })
-                            .catch((err) => {
-                                console.log('updateBookmarkFaviconState err', err);
-                                busy = false
-                            });
-                    } else {
-                        // http://www.cnblogs.com/zhangwei595806165/p/4984912.html 各种方法都试一遍
-                        var faviconUrl = "http://47.75.89.228:3000/?url=" + url; // 默认地址
-                        if (faviconState == 1) {
-                            faviconUrl = "https://api.statvoo.com/favicon/?url=" + url;
+    let downloadFavicon = async () => {
+        if(busy) return;
+        var today = new Date().getDate();
+        try {
+            busy = true;
+            let bookmarks = await db.getBookmarkWaitFavicon(today);
+            for (let bookmark of bookmarks) {
+                let id = bookmark.id;
+                let faviconState = bookmark.favicon_state;
+                let url = encodeURI(bookmark.url);
+                let faviconPath = './public/images/favicon/' + id + '.ico';
+                let defaultFile = './public/images/favicon/default.ico';
+
+                if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
+                    // http://www.cnblogs.com/zhangwei595806165/p/4984912.html 各种方法都试一遍
+                    var faviconUrl = "http://47.75.89.228:3000/?url=" + url; // 默认地址
+                    if (faviconState == 1) {
+                        faviconUrl = "https://api.statvoo.com/favicon/?url=" + url;
+                    } else if (faviconState == 2) {
+                        faviconUrl = "http://www.google.com/s2/favicons?domain=" + url;
+                    }
+
+                    try {
+                        let data = await download(faviconUrl);
+                        fs.writeFileSync(faviconPath, data);
+                        faviconState = -1;
+                    } catch (error) {
+                        console.log("boomarkid = " + id + ", url = " + url + ", download error")
+                        if (faviconState == 0 || faviconState == 1) {
+                          faviconState = faviconState + 1;
                         } else if (faviconState == 2) {
-                            faviconUrl = "http://www.google.com/s2/favicons?domain=" + url;
+                            faviconState = -1;
+                            copyFile(defaultFile, faviconPath);
                         }
-                        download(faviconUrl).then(data => {
-                            fs.writeFileSync(faviconPath, data);
-                            db.updateBookmarkFaviconState(id, -1)
-                                .then((affectedRows) => {
-                                    busy = false;
-                                })
-                                .catch((err) => {
-                                    console.log('updateBookmarkFaviconState err', err);
-                                    busy = false;
-                                });
-                        }).catch((err) => {
-                            var newFaviconState = -1;
-                            console.log("boomarkid = " + id + ", url = " + url + ", download over")
-                            if (faviconState == 0 || faviconState == 1) {
-                                newFaviconState = faviconState + 1;
-                            } else if (faviconState == 2) {
-                                newFaviconState = today + 31;
-                                copyFile(defaultFile, faviconPath);
-                            }
-                            db.updateBookmarkFaviconState(id, newFaviconState)
-                                .then((affectedRows) => {
-                                    busy = false;
-                                })
-                                .catch((err) => {
-                                    console.log('updateBookmarkFaviconState err', err);
-                                    busy = false;
-                                });
-                        });
                     }
                 } else {
-                    busy = false;
+                    console.log("error http url" + url);
+                    faviconState = -1;
+                    copyFile(defaultFile, faviconPath);
                 }
-            })
-            .catch((err) => {
-                console.log('getFaviconByTimer err', err);
-                busy = false;
-            });
-    }, timeout);
+                await db.updateBookmarkFaviconState(id, faviconState);
+            }
+        } catch (error) {
+            console.log('getFaviconByTimer err', err);
+        }
+        busy = false;
+    }
+
+    downloadFavicon(); // 一进来先调用一次
+    setInterval(downloadFavicon, timeout);
 }
 
 api.getHotBookmarksByTimer = function() {

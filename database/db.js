@@ -1015,7 +1015,7 @@ db.getBookmarkWaitSnap = function(today) {
 
 db.getBookmarkWaitFavicon = function(today) {
     var todayNotSnap = today + 31;
-    var sql = "SELECT id, url, favicon_state FROM `bookmarks` WHERE `favicon_state`>=0 AND `favicon_state` <= 64 AND favicon_state != " + todayNotSnap + " ORDER BY created_at DESC LIMIT 0, 1";
+    var sql = "SELECT id, url, favicon_state FROM `bookmarks` WHERE `favicon_state`>=0 AND `favicon_state` <= 64 AND favicon_state != " + todayNotSnap + " ORDER BY created_at DESC";
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {

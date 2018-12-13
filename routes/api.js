@@ -1407,37 +1407,47 @@ api.post('/addNote', function(req, res) {
 
 api.get('/notes', function(req, res) {
     console.log("getNotes username = ", req.session.username);
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Methods', '*');
+
     var params = req.query;
     if (!params.shareNote && !req.session.user) {
         res.send(401);
         return;
     }
     if (params.shareNote) {
-      db.getNote(params.shareNote)
-      .then((data) => res.send(`
-      <body style="margin:0px;height:100%;">
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-          <script>
-            if(screen && screen.availWidth <= 1024) {
-              setTimeout(() => {
-                document.getElementById("note-div").style.width = "100%";
-                document.getElementById("note-div").style["background-color"] = "#F3F4F5";
-                document.getElementById("note").style.width = "95%";
-              }, 100);
-            }
-          </script>
-        </head>
-        <div id="note-div" style="text-align:center;">
-          <pre id="note" style="background-color:RGB(243,244,245); padding:0px 10px 0px 10px; margin:0px; width:60%; min-height:100%;display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">\n\n${data}\n\n</pre>
-        </div>
-      </body>`))
-      .catch((err) => console.log('notes', err));
-    } else {
-      params.user_id = req.session.user.id;
-      db.getNotes(params)
-          .then((data) => res.json(data))
+      if(params.json) {
+        db.getNote(params.shareNote)
+        .then((data) => res.json(data))
+        .catch((err) => console.log('notes', err));
+      } else {
+          db.getNote(params.shareNote)
+          .then((data) => res.send(`
+          <body style="margin:0px;height:100%;">
+            <head>
+              <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+              <script>
+                if(screen && screen.availWidth <= 1024) {
+                  setTimeout(() => {
+                    document.getElementById("note-div").style.width = "100%";
+                    document.getElementById("note-div").style["background-color"] = "#F3F4F5";
+                    document.getElementById("note").style.width = "95%";
+                  }, 100);
+                }
+              </script>
+            </head>
+            <div id="note-div" style="text-align:center;">
+              <pre id="note" style="background-color:RGB(243,244,245); padding:0px 10px 0px 10px; margin:0px; width:60%; min-height:100%;display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">\n\n${data}\n\n</pre>
+            </div>
+          </body>`))
           .catch((err) => console.log('notes', err));
+      }
+    } else {
+        params.user_id = req.session.user.id;
+        db.getNotes(params)
+            .then((data) => res.json(data))
+            .catch((err) => console.log('notes', err));
     }
 });
 

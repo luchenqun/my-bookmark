@@ -89,7 +89,7 @@ drop table if exists notes;
 CREATE TABLE `notes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
   `user_id` int(11) NOT NULL,               -- 用户id
-  `content` varchar(8092) DEFAULT NULL,     -- 备忘内容
+  `content` text DEFAULT NULL,              -- 备忘内容
   `tag_id` int(11) DEFAULT NULL,            -- 分类id
   `created_at` datetime DEFAULT now(),      -- 创建时间
   `public` tinyint(4) DEFAULT '1',          -- 是否公开 1 公开，0 不公开

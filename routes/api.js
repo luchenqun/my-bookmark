@@ -1,5 +1,4 @@
 var api = require('express').Router();
-var mysql = require('mysql');
 var crypto = require('crypto');
 var read = require('node-readability');
 var db = require('../database/db.js');

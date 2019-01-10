@@ -190,6 +190,9 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     }
 
     $scope.updateNote = function () {
+        if(!$scope.content) {
+            toastr.error('更新失败，更新内容不能为空', "提示");
+        }
         var tagName = '';
         $scope.tags.forEach((tag) => {
             if ($scope.currentTagId === tag.id) {
@@ -363,7 +366,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
             .then((data) => {
                 $scope.notes = data.notes;
                 $scope.notes.forEach((note) => {
-                    note.brief = note.content;
+                    note.brief = note.content || "";
                     while (note.brief.indexOf("\n") > 0) {
                         note.brief = note.brief.replace(/\n/g, "");
                     }

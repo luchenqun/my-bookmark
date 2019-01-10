@@ -192,6 +192,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $scope.updateNote = function () {
         if(!$scope.content) {
             toastr.error('更新失败，更新内容不能为空', "提示");
+            return;
         }
         var tagName = '';
         $scope.tags.forEach((tag) => {

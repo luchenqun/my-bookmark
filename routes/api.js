@@ -1232,14 +1232,12 @@ api.getFaviconByTimer = function() {
                 let faviconState = bookmark.favicon_state;
                 let url = encodeURI(bookmark.url);
                 let faviconPath = './public/images/favicon/' + id + '.ico';
-                let defaultFile = './public/images/favicon/default.ico';
+                let defaultFile = './public/images/default.ico';
 
                 if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
                     // http://www.cnblogs.com/zhangwei595806165/p/4984912.html 各种方法都试一遍
                     var faviconUrl = "http://47.75.89.228:3000/?url=" + url; // 默认地址
                     if (faviconState == 1) {
-                        faviconUrl = "https://api.statvoo.com/favicon/?url=" + url;
-                    } else if (faviconState == 2) {
                         faviconUrl = "http://www.google.com/s2/favicons?domain=" + url;
                     }
 
@@ -1249,9 +1247,9 @@ api.getFaviconByTimer = function() {
                         faviconState = -1;
                     } catch (error) {
                         console.log("boomarkid = " + id + ", url = " + url + ", download error")
-                        if (faviconState == 0 || faviconState == 1) {
-                          faviconState = faviconState + 1;
-                        } else if (faviconState == 2) {
+                        if (faviconState == 0) {
+                            faviconState = faviconState + 1;
+                        } else if (faviconState == 1) {
                             faviconState = -1;
                             copyFile(defaultFile, faviconPath);
                         }

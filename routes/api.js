@@ -1236,7 +1236,7 @@ api.getFaviconByTimer = function() {
 
                 if (/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
                     // http://www.cnblogs.com/zhangwei595806165/p/4984912.html 各种方法都试一遍
-                    var faviconUrl = "http://47.75.89.228:3000/?url=" + url; // 默认地址
+                    var faviconUrl = "http://favicon.luchenqun.com/?url=" + url; // 默认地址
                     if (faviconState == 1) {
                         faviconUrl = "http://www.google.com/s2/favicons?domain=" + url;
                     }

@@ -33,7 +33,7 @@
                                 ng-src="./images/favicon/{{bookmark.id}}.ico"
                                 style="width:16px;height:16px;"
                                 ng-click="detailBookmark(bookmark);$event.stopPropagation()"
-                                favicon-err="http://47.75.89.228:3000/?url={{bookmark.url}}">
+                                favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}">
                             <span>{{ bookmark.title}}</span>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                 ng-src="./images/favicon/{{bookmark.id}}.ico"
                 style="width:16px;height:16px;"
                 ng-click="detailBookmark(bookmark);$event.stopPropagation()"
-                favicon-err="http://47.75.89.228:3000/?url={{bookmark.url}}">
+                favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}">
             <span>{{ bookmark.title}}</span>
         </div>
     </div>
@@ -89,7 +89,7 @@
     <tbody>
         <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
             <td>
-                <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://47.75.89.228:3000/?url={{bookmark.url}}">
+                <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
                     {{ bookmark.title }}
                 </span>
@@ -142,7 +142,7 @@
             </div>
             <div class="extra content" ng-show="!bookmark.edit" style="height:50px;padding-right:2px;padding-left:8px;">
                 <span class="left floated like" style="margin-top:6px;">
-                    <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://47.75.89.228:3000/?url={{bookmark.url}}">
+                    <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}">
                     创建于:
                     <span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
                     <!-- {{ bookmark.created_at }} -->

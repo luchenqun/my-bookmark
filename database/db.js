@@ -1,8 +1,8 @@
 var mysql = require('mysql');
 var dbConfig = {
     host: '127.0.0.1',
-    user: 'test', // mysql的账号
-    password: '123456', // mysql 的密码
+    user: 'lcq', // mysql的账号
+    password: 'fendoubuxi596320', // mysql 的密码
     database: 'mybookmarks',
     multipleStatements: true,
     useConnectionPooling: true,
@@ -92,14 +92,18 @@ db.delBookmark = function(id) {
 }
 
 db.updateBookmark = function(bookmark) {
-    var sql = "UPDATE `bookmarks` SET `title`='" + bookmark.title + "', `description`=" + client.escape(bookmark.description) + ", `url`='" + bookmark.url + "', `public`='" + bookmark.public + "' WHERE (`id`='" + bookmark.id + "')";
+    var sql = "UPDATE `bookmarks` SET `title`='" + bookmark.title + "', `description`=" + client.escape(bookmark.description) + ", `url`='" + bookmark.url + "', `public`='" + bookmark.public + "' WHERE (`id`='" + bookmark.id + "' AND `user_id`='" + bookmark.userId + "' )";
     console.log("sql updateBookmark = " + sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
-                resolve(result.affectedRows);
+                if(result.affectedRows === 1){
+                    resolve(1);
+                } else {
+                    reject(new Error("bookmark not found"));
+                }
             }
         });
     });

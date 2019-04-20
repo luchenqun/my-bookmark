@@ -330,7 +330,8 @@ api.post('/updateBookmark', function(req, res) {
     var bookmark = req.body.params;
     var userId = req.session.user.id;
     var tags = bookmark.tags;
-    var ret = {}
+    var ret = {};
+    bookmark.userId = userId;
     console.log('hello updateBookmark', JSON.stringify(bookmark));
     db.updateBookmark(bookmark) // 更新标签信息
         .then((affectedRows) => db.delBookmarkTags(bookmark.id)) // 将之前所有的书签分类信息删掉

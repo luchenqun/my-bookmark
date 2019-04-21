@@ -135,17 +135,15 @@
             <td>
                 <img
                     class="ui ui middle aligned mini image"
-                    ng-src="{{ bookmark.favicon_url }}"
+                    ng-src="http://favicon.luchenqun.com/?url={{bookmark.favicon_url}}"
                     style="width:16px;height:16px;cursor:pointer;"
                     ng-click="jumpToUrl(bookmark.url, bookmark.id)"
-                    favicon-err="./images/favicon/{{bookmark.id}}.ico"
                     ng-if="searchHotBookmarks">
                 <img
                     class="ui ui middle aligned mini image"
-                    ng-src="./images/favicon/{{bookmark.id}}.ico"
+                    ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}"
                     style="width:16px;height:16px;cursor:pointer;"
                     ng-click="jumpToUrl(bookmark.url, bookmark.id)"
-                    favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}"
                     ng-if="!searchHotBookmarks">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
                     {{ bookmark.title }}

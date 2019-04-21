@@ -30,10 +30,9 @@
                             id="{{bookmark.id}}">
                             <img
                                 class="ui ui middle aligned tiny image bookmarkInfo"
-                                ng-src="./images/favicon/{{bookmark.id}}.ico"
+                                ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}"
                                 style="width:16px;height:16px;"
-                                ng-click="detailBookmark(bookmark);$event.stopPropagation()"
-                                favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}">
+                                ng-click="detailBookmark(bookmark);$event.stopPropagation()">
                             <span>{{ bookmark.title}}</span>
                         </div>
                     </div>
@@ -66,10 +65,9 @@
             id="{{bookmark.id}}">
             <img
                 class="ui ui middle aligned tiny image bookmarkInfo"
-                ng-src="./images/favicon/{{bookmark.id}}.ico"
+                ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}"
                 style="width:16px;height:16px;"
-                ng-click="detailBookmark(bookmark);$event.stopPropagation()"
-                favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}">
+                ng-click="detailBookmark(bookmark);$event.stopPropagation()">
             <span>{{ bookmark.title}}</span>
         </div>
     </div>
@@ -89,7 +87,7 @@
     <tbody>
         <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
             <td>
-                <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}">
+                <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
                     {{ bookmark.title }}
                 </span>
@@ -142,7 +140,7 @@
             </div>
             <div class="extra content" ng-show="!bookmark.edit" style="height:50px;padding-right:2px;padding-left:8px;">
                 <span class="left floated like" style="margin-top:6px;">
-                    <img class="ui ui middle aligned tiny image" ng-src="./images/favicon/{{bookmark.id}}.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" favicon-err="http://favicon.luchenqun.com/?url={{bookmark.url}}">
+                    <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
                     创建于:
                     <span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
                     <!-- {{ bookmark.created_at }} -->

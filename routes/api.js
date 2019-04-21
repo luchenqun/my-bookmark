@@ -312,7 +312,18 @@ api.delete('/delBookmark', function(req, res) {
         return;
     }
     var bookmarkId = req.query.id;
-    db.delBookmarkTags(bookmarkId)
+    var userId = req.session.user.id;
+    db.getBookmark(bookmarkId)
+        .then((bookmark) => {
+            if(bookmark.user_id === userId) {
+                return db.delBookmarkTags(bookmarkId);
+            } else {
+                res.json({
+                    result: 0
+                });
+                return Promise.reject("can not del others bookmark");
+            }
+        })
         .then(() => db.delBookmark(bookmarkId))
         .then((affectedRows) => res.json({
             result: affectedRows

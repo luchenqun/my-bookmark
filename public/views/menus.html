@@ -62,17 +62,17 @@
                     <i class="add square icon"></i>
                 </span>
             </div>
-            <div class="item" style="padding:0 8px 0 13px;" ng-click="star()">
+            <div class="item" style="padding:0 8px 0 13px;" ng-click="star()" ng-show="user.username !== 'lcq'">
                 <span data-tooltip="如果你觉得我的系统对你有帮助，请点击跳转到 Github 为我 Star">
                     <i class="star icon"></i>
                 </span>
             </div>
-            <div class="item" style="padding:0 8px 0 13px;" ng-click="showUpdate()">
+            <div class="item" style="padding:0 8px 0 13px;" ng-click="showUpdate()" ng-show="user.username !== 'lcq'">
                 <span class="suggest">
                     <i class="info circle icon"></i>
                 </span>
             </div>
-            <div class="item" style="padding:0 8px 0 13px;" ng-click="coffee()">
+            <div class="item" style="padding:0 8px 0 13px;" ng-click="coffee()" ng-show="user.username !== 'lcq'">
                 <span data-tooltip="请我喝杯咖啡">
                     <i class="coffee icon"></i>
                 </span>

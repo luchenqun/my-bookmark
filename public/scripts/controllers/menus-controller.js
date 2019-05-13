@@ -9,6 +9,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.historyTypes = dataService.historyTypes;
     $scope.quickUrl = {};
     $scope.longPress = false;
+    $scope.user = {};
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function (event, params) {
@@ -25,6 +26,17 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
+    bookmarkService.userInfo({})
+    .then((data) => {
+        $scope.user = data;
+        if(data.username === 'lcq') {
+            $scope.loginMenus = $scope.loginMenus.filter(item => item.uiSref !== 'hot');
+        }
+    })
+    .catch((err) => {
+
+    });
+    
     /**
      * @func
      * @desc 点击搜索按钮搜索书签

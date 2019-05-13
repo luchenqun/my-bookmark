@@ -30,7 +30,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     .then((data) => {
         $scope.user = data;
         if(data.username === 'lcq') {
-            $scope.loginMenus = $scope.loginMenus.filter(item => item.uiSref !== 'hot');
+            $scope.loginMenus[dataService.LoginIndexHot].show = false;
+            console.info($scope.loginMenus)
         }
     })
     .catch((err) => {

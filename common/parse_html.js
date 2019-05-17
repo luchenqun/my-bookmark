@@ -1,7 +1,7 @@
 var cheerio = require("cheerio");
 var fs = require("fs");
 
-var parsehtml = function(file, callback) {
+var parsehtml = function (file, callback) {
     // var html = fs.readFileSync(file).toString();
     fs.readFile(file, (err, data) => {
         if (err) throw err;
@@ -14,23 +14,32 @@ var parsehtml = function(file, callback) {
         results = {};
 
         anchors = $("dl").find("a");
-        anchors.each(function(i, e) {
+        anchors.each(function (i, e) {
             var add_date, name, bookmark, tags, url;
             url = $(e).attr("href");
             name = $(e).text() || "无标题";
             add_date = $(e).attr("add_date");
+
+            // 只允许用一个标签
+            // 只允许用一个标签
             tags = new Array();
-            $(e).parents("dl").each(function(ii, ee) {
-                var folder, tag;
-                folder = $(ee).prev();
-                tag = folder.text().replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' ');
-                if (tag != "Bookmarks" && tag != "书签栏" && tag != "") {
-                    if (allTags.indexOf(tag) == -1) {
-                        allTags.push(tag);
-                    }
-                    return tags.push(tag);
+            var tag = "未分类";
+            $(e).parents("dl").each(function (ii, ee) {
+                var folder = $(ee).prev();
+                var temp = folder.text().replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' ');
+                if (temp != "Bookmarks" && temp != "书签栏" && temp != "" && temp != undefined) {
+                    tag = temp;
                 }
             });
+            if (allTags.indexOf(tag) == -1) {
+                allTags.push(tag);
+            }
+            tags.push(tag);
+
+            if (name.length > 255) {
+                name = name.substring(255);
+            }
+            name = name.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/gi, "");
             bookmark = {
                 url: url,
                 name: name,

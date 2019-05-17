@@ -22,6 +22,7 @@
     "node-readability": "^2.2.0",
     "path": "^0.12.7",
     "request": "^2.81.0",
-    "supervisor": "^0.11.0"
+    "supervisor": "^0.11.0",
+    "xss": "^1.0.6"
   }
 }

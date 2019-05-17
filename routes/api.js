@@ -11,6 +11,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var path = require('path');
 var beautify_html = require('js-beautify').html;
+var xss = require('xss');
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -1432,7 +1433,9 @@ api.get('/notes', function(req, res) {
         .catch((err) => console.log('notes', err));
       } else {
           db.getNote(params.shareNote)
-          .then((data) => res.send(`
+          .then((data) => {
+              data = xss(data);
+              res.send(`
           <body style="margin:0px;height:100%;">
             <head>
               <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
@@ -1449,7 +1452,8 @@ api.get('/notes', function(req, res) {
             <div id="note-div" style="text-align:center;">
               <pre id="note" style="background-color:RGB(243,244,245); padding:0px 10px 0px 10px; margin:0px; width:60%; min-height:100%;display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">\n\n${data}\n\n</pre>
             </div>
-          </body>`))
+          </body>`)
+            })
           .catch((err) => console.log('notes', err));
       }
     } else {

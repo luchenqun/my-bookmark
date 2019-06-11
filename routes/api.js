@@ -1275,7 +1275,7 @@ api.getFaviconByTimer = function() {
                 await db.updateBookmarkFaviconState(id, faviconState);
             }
         } catch (error) {
-            console.log('getFaviconByTimer err', err);
+            console.log('getFaviconByTimer err', error);
         }
         busy = false;
     }

@@ -1,4 +1,11 @@
 var mysql = require('mysql');
+var dbConfig = null;
+try {
+    dbConfig = require('../config.js').dbConfig;
+} catch (error) {
+    dbConfig = require('../config.default.js').dbConfig;
+}
+
 var dbConfig = {
     host: '127.0.0.1',
     user: 'test', // mysql的账号

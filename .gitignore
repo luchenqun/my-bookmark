@@ -42,3 +42,4 @@ uploads
 /public/images/favicon/
 .tags
 package-lock.json
+config.js

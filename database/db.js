@@ -1,8 +1,8 @@
 var mysql = require('mysql');
 var dbConfig = {
     host: '127.0.0.1',
-    user: 'lcq', // mysql的账号
-    password: 'fendoubuxi596320', // mysql 的密码
+    user: 'test', // mysql的账号
+    password: '123456', // mysql 的密码
     database: 'mybookmarks',
     multipleStatements: true,
     useConnectionPooling: true,

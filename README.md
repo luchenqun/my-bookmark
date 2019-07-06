@@ -1,5 +1,3 @@
-由于最近 GFW 的原因，您需要翻墙才能使用了。。。
-
 # 在线书签管理工具
 ![image](https://github.com/luchenqun/my-bookmark/blob/master/public/images/screenshot.gif)   
 

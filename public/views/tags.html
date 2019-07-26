@@ -85,7 +85,7 @@
     <tbody>
         <tr ng-repeat="bookmark in bookmarksByTag" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
             <td>
-                <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" style="width:16px;height:16px;cursor:pointer;"
+                <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;"
                     ng-click="jumpToUrl(bookmark.url, bookmark.id)">
                 <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
                     {{ bookmark.title }}
@@ -129,7 +129,7 @@
         <div ng-repeat="bookmark in bookmarksByTag" class="column js-costomTag-item" ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}"
             ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)" ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)"
             ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}" id="{{bookmark.id}}">
-            <img class="ui ui middle aligned tiny image bookmarkInfo" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" style="width:16px;height:16px;"
+            <img class="ui ui middle aligned tiny image bookmarkInfo" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;"
                 ng-click="detailBookmark(bookmark);$event.stopPropagation()">
             <span>{{ bookmark.title}}</span>
         </div>

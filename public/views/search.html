@@ -136,12 +136,14 @@
                 <img
                     class="ui ui middle aligned mini image"
                     ng-src="http://favicon.luchenqun.com/?url={{bookmark.favicon_url}}"
+                    err-src="./images/default.ico"
                     style="width:16px;height:16px;cursor:pointer;"
                     ng-click="jumpToUrl(bookmark.url, bookmark.id)"
                     ng-if="searchHotBookmarks">
                 <img
                     class="ui ui middle aligned mini image"
                     ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}"
+                    err-src="./images/default.ico"
                     style="width:16px;height:16px;cursor:pointer;"
                     ng-click="jumpToUrl(bookmark.url, bookmark.id)"
                     ng-if="!searchHotBookmarks">

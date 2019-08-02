@@ -1,6 +1,6 @@
 <div class="js-menu" ng-controller="menuCtr">
     <div class="ui huge menu js-login-in" ng-if="login">
-        <a class="item" ng-class="{selected:$index===selectLoginIndex}" style="cursor:default;" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" ui-sref="{{ menu.uiSref }}({searchWord:null})" ng-show="menu.show !== false" js-menu-init>
+        <a class="item js-single-menu" ng-class="{selected:$index===selectLoginIndex}" style="cursor:default;" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" ui-sref="{{ menu.uiSref }}({searchWord:null})" ng-show="menu.show !== false" js-menu-init>
             <div>{{ menu.title }}</div>
             <div class="ui floating simple dropdown icon js-bookmark-dropdown" ng-if="$index==0" ng-click="$event.stopPropagation();">
                 <i class="dropdown icon"></i>
@@ -29,34 +29,43 @@
                 </div>
             </div>
         </a>
-        <div class="right menu">
-            <div class="item">
-                <div class="ui transparent icon input">
-                    <label for="lcq">
-                        <div class="ui inline dropdown js-search-option" style="margin-top:3px;" js-search-option-init>
-                            <div class="text " style="color:#C9C9C9;font-weight:normal;">书签</div>
-                            <i class="angle down icon"></i>
-                            <div class="menu">
-                                <div class="item" data-value="{{$index}}" ng-class="{active:$index==0}" ng-repeat="historyType in historyTypes">{{historyType}}</div>
-                            </div>
+        <div id="js-search" style="width: 1500px;">
+            <div class="ui transparent fluid icon input" style="height: 100%;margin-left: 10px;">
+                <label for="lcq">
+                    <div class="ui inline dropdown js-search-option" style="margin-top:3px;height: 100%;" js-search-option-init>
+                        <!-- <div class="text " style="color:#C9C9C9;font-weight:normal;">书签</div> -->
+                        <!-- <i class="angle down icon"></i> -->
+                        <div class="menu">
+                            <div class="item" data-value="{{$index}}" ng-class="{active:$index==0}" ng-repeat="historyType in historyTypes">{{historyType}}</div>
                         </div>
-                    </label>
-                    <input class="prompt search-item" type="text" ng-model="searchWord" placeholder="" ng-keypress="($event.which === 13)?search(searchWord):0" data-position="bottom left" data-variation="large" id="lcq">
-                    <div class="ui fluid popup top left transition hidden" style="padding-left: 0px; padding-right: 0px;">
-                        <div class="ui selection list">
-                            <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)" style="height:30px;">
-                                <div class="right floated content">
-                                    <span style="margin-right:10px;">{{ historyTypes[item.t] }}</span>
-                                </div>
-                                <div class="content">
-                                    <span style="margin-left:10px;">{{ item.d}}</span>
-                                </div>
+                    </div>
+                </label>
+                <input style="padding-left: 0px;" class="prompt search-item js-search-input" type="text" ng-focus="readySearch()" ng-model="searchWord" placeholder="search..." ng-keypress="($event.which === 13)?search(searchWord, 0):0" data-position="bottom left" data-variation="large" id="lcq">
+                <div class="ui fluid popup top left transition hidden" style="padding-left: 0px; padding-right: -10px;">
+                    <div class="ui selection list">
+                        <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)" style="height:30px;">
+                            <div class="right floated content">
+                                <span style="margin-right:10px;">{{ historyTypes[item.t] }}</span>
+                            </div>
+                            <div class="content">
+                                <span style="margin-left:10px;">{{ item.d}}</span>
                             </div>
                         </div>
                     </div>
-                    <i class="search link icon" ng-click="search(searchWord)" style="cursor:default;"></i>
+                </div>
+                <div ng-if="searching">
+                    <span style="margin-left: -25px;"><i class="bookmark outline link icon" title="书签搜索" ng-click="search(searchWord, 0)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
+                    <span><i class="google link icon" title="谷歌搜索" ng-click="search(searchWord, 1)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
+                    <span><i class="bimobject link icon" title="百度搜索" ng-click="search(searchWord, 4)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
+                    <span><i class="github link icon" title="Github 搜索" ng-click="search(searchWord, 2)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
+                    <span><i class="stack overflow link icon" title="栈溢出搜索" ng-click="search(searchWord, 3)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
+                    <span>|</span>
+                    <span><i class="add square link icon" title="添加书签" ng-click="showAddBookmarkMoadl()" style="cursor:default;margin-top:16px;margin-right: 8px;margin-left: 8px;"></i></span>
+                    <span><i class="arrow right link icon" title="退出搜索" ng-click="exitSearch()" style="cursor:default;margin-top:16px;"></i></span>
                 </div>
             </div>
+        </div>
+        <div class="right menu" ng-if="!searching">
             <div class="item" style="padding:0 8px 0 13px;" title="添加书签" ng-click="showAddBookmarkMoadl()">
                 <span data-tooltip="添加书签，可按Insert快速打开添加页面">
                     <i class="add square icon"></i>

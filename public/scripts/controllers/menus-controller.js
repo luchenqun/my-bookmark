@@ -10,6 +10,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.quickUrl = {};
     $scope.longPress = false;
     $scope.user = {};
+    $scope.searching = true;
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function (event, params) {
@@ -42,11 +43,11 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
      * @func
      * @desc 点击搜索按钮搜索书签
      */
-    $scope.search = function (searchWord) {
+    $scope.search = function (searchWord, searchOption) {
         console.log('search......', searchWord);
 
         $scope.login = true;
-        var searchOption = $('.js-search-option').dropdown('get value') || 0;
+        // var searchOption = $('.js-search-option').dropdown('get value') || 0;
         if (searchOption == 0) {
             $state.go('search', {
                 searchWord: searchWord,
@@ -95,6 +96,16 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         if (searchWord.length <= 30) {
             saveHistory();
         }
+    }
+
+    $scope.readySearch = function () {
+        $scope.searching = true;
+    }
+
+    $scope.exitSearch = function () {
+        $scope.searching = false;
+        $scope.searchWord = "";
+        $(".search-item").val("");
     }
 
     $scope.searchByHistory = function (type, data) {
@@ -260,6 +271,21 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                         updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
                         $state.go('note', { key: key }, { reload: true })
                     }
+                    return;
+                }
+
+                if (key == 'S') {
+                    $scope.searching = true;
+                    $(".search-item").focus();
+                    var count = 1;
+                    var sId = setInterval(function() {
+                        $(".search-item").val("");
+                        count++;
+                        if(count>=5) {
+                            clearInterval(sId);
+                        }
+                    }, 3)
+                    return;
                 }
 
                 if (key == ',' || key == '.' || key == '/') {
@@ -321,5 +347,4 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             }
         })
     });
-
 }]);

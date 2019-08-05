@@ -177,3 +177,7 @@ img.operator {
 .fontred {
     color: #F00;
 }
+
+.js-history-word:hover {
+    background: #f0f0f0;
+}

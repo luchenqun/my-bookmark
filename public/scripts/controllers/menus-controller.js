@@ -10,7 +10,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.quickUrl = {};
     $scope.longPress = false;
     $scope.user = {};
-    $scope.searching = true;
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function (event, params) {
@@ -32,19 +31,38 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $scope.user = data;
         if(data.username === 'lcq') {
             $scope.loginMenus[dataService.LoginIndexHot].show = false;
-            console.info($scope.loginMenus)
         }
     })
     .catch((err) => {
 
     });
-    
+
+    $scope.searchIcon = function(item) {
+        if(item.t === 0) {
+            item.icon = "book link icon";
+        } else if(item.t === 1) {
+            item.icon = "google link icon";
+        } else if(item.t === 2) {
+            item.icon = "github link icon";
+        } else if(item.t === 3) {
+            item.icon = "stack overflow link icon";
+        } else if(item.t === 4) {
+            item.icon = "bimobject link icon";
+        } else if(item.t === 5) {
+            item.icon = "file alternate link icon";
+        }
+    }
+
     /**
      * @func
      * @desc 点击搜索按钮搜索书签
      */
     $scope.search = function (searchWord, searchOption) {
         console.log('search......', searchWord);
+        if (!searchWord) {
+            toastr.error('请输入搜索关键字', "错误");
+            return;
+        }
 
         $scope.login = true;
         // var searchOption = $('.js-search-option').dropdown('get value') || 0;
@@ -81,6 +99,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             t: searchOption,
             d: searchWord,
         }
+        $scope.searchIcon(newItem)
         var delIndex = -1;
         $scope.searchHistory.unshift(newItem);
         $scope.searchHistory.forEach((item, index) => {
@@ -98,17 +117,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         }
     }
 
-    $scope.readySearch = function () {
-        $scope.searching = true;
-    }
-
-    $scope.exitSearch = function () {
-        $scope.searching = false;
-        $scope.searchWord = "";
-        $(".search-item").val("");
-    }
-
-    $scope.searchByHistory = function (type, data) {
+    $scope.searchByHistory = function (type, data, $event) {
+        console.log("searchByHistory", type, data);
+        $event && $event.stopPropagation();
         $scope.searchWord = data;
         $('.search-item').val($scope.searchWord);
 
@@ -119,10 +130,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $('.js-search-option .menu .item').removeClass('active');
         $('.js-search-option .menu .item:eq(' + type + ')').addClass('active');
         $('.js-history-popup').removeClass('visible').addClass('hidden');
-        $scope.search(data);
+        $scope.search(data, type);
     }
 
-    $scope.delHistory = function (type, data) {
+    $scope.delHistory = function (type, data, $event) {
+        console.log("delHistory", type, data);
+        $event && $event.stopPropagation();
         var delIndex = -1;
         $scope.searchHistory.forEach((item, index) => {
             if (index >= 1 && item.t == type && item.d == data) {
@@ -132,9 +145,13 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         if (delIndex >= 0) {
             $scope.searchHistory.splice(delIndex, 1);
         }
+        if(!type && !data) {
+            $scope.searchHistory = [];
+        }
         saveHistory();
+        toastr.info("历史搜索已全部清空", "提示");
         $timeout(function () {
-            $('.js-history-popup').removeClass('hidden').addClass('visible');
+            type && data && $('.js-history-popup').removeClass('hidden').addClass('visible');
         }, 500)
     }
 
@@ -221,11 +238,15 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             });
     }
 
+
+
     bookmarkService.userInfo({})
         .then((user) => {
             $scope.searchHistory = JSON.parse(user.search_history || '[]');
             $scope.quickUrl = JSON.parse(user.quick_url || '{}');
-
+            $scope.searchHistory.forEach((item, index) => {
+                $scope.searchIcon(item)
+            })
             $timeout(function () {
                 var showStyle = (user && user.show_style) || 'navigate';
                 if (showStyle) {
@@ -275,7 +296,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                 }
 
                 if (key == 'S') {
-                    $scope.searching = true;
                     $(".search-item").focus();
                     var count = 1;
                     var sId = setInterval(function() {

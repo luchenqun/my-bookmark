@@ -1,6 +1,7 @@
 <div class="js-menu" ng-controller="menuCtr">
     <div class="ui huge menu js-login-in" ng-if="login">
-        <a class="item js-single-menu" ng-class="{selected:$index===selectLoginIndex}" style="cursor:default;" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus" ui-sref="{{ menu.uiSref }}({searchWord:null})" ng-show="menu.show !== false" js-menu-init>
+        <a class="item js-single-menu" ng-class="{selected:$index===selectLoginIndex}" style="cursor:default;" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus"
+            ui-sref="{{ menu.uiSref }}({searchWord:null})" ng-show="menu.show !== false" js-menu-init>
             <div>{{ menu.title }}</div>
             <div class="ui floating simple dropdown icon js-bookmark-dropdown" ng-if="$index==0" ng-click="$event.stopPropagation();">
                 <i class="dropdown icon"></i>
@@ -19,81 +20,61 @@
                             <label>表格</label>
                         </div>
                     </div>
-                    <!-- 卡片这个傻逼模式就没用过，干掉 -->
-                    <!-- <div class="field item js-field-card" ng-click="updateShowStyle('card')">
-                        <div class="ui radio checkbox js-radio-card">
-                            <input type="radio" name="show-style">
-                            <label>卡片</label>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </a>
         <div id="js-search" style="width: 1500px;">
             <div class="ui transparent fluid icon input" style="height: 100%;margin-left: 10px;">
-                <label for="lcq">
-                    <div class="ui inline dropdown js-search-option" style="margin-top:3px;height: 100%;" js-search-option-init>
-                        <!-- <div class="text " style="color:#C9C9C9;font-weight:normal;">书签</div> -->
-                        <!-- <i class="angle down icon"></i> -->
-                        <div class="menu">
-                            <div class="item" data-value="{{$index}}" ng-class="{active:$index==0}" ng-repeat="historyType in historyTypes">{{historyType}}</div>
-                        </div>
-                    </div>
-                </label>
-                <input style="padding-left: 0px;" class="prompt search-item js-search-input" type="text" ng-focus="readySearch()" ng-model="searchWord" placeholder="search..." ng-keypress="($event.which === 13)?search(searchWord, 0):0" data-position="bottom left" data-variation="large" id="lcq">
-                <div class="ui fluid popup top left transition hidden" style="padding-left: 0px; padding-right: -10px;">
-                    <div class="ui selection list">
-                        <div class="item" ng-repeat="item in searchHistory" ng-click="searchByHistory(item.t, item.d)" style="height:30px;">
-                            <div class="right floated content">
-                                <span style="margin-right:10px;">{{ historyTypes[item.t] }}</span>
+                <input style="padding-left: 0px;" class="prompt search-item js-search-input" type="text" ng-model="searchWord" placeholder="search..."
+                    ng-keypress="($event.which === 13)?search(searchWord, 1):0" data-position="bottom left" data-variation="large">
+                <div class="ui fluid popup top left transition hidden js-popup-search js-history-popup" ng-if="searchHistory.length > 0" style="margin-left: 2px; margin-top: -1px;">
+                    <div class="ui internally grid">
+                        <div class="row js-history-word" style="height: 20px;" ng-repeat="item in searchHistory">
+                            <div class="sixteen wide column js-search-again" style="margin: -10px 0px 0px -8px;cursor:default;"
+                                ng-click="searchByHistory(item.t, item.d)">
+                                <i class="{{ item.icon }}" style="cursor:default;"></i>
+                                <span style="color: #7B77C5">{{ item.d}}</span>
                             </div>
-                            <div class="content">
-                                <span style="margin-left:10px;">{{ item.d}}</span>
+                            <!-- <div class="center aligned two wide column" style="margin: -10px 0px 0px 0px;padding:0px;">
+                                <div style="cursor:default;float: right;" ng-click="delHistory(item.t, item.d)">删除</div>
+                            </div> -->
+                        </div>
+                        <div class="row" style="height: 20px;background: #f2f2f2" ng-click="delHistory()">
+                            <div class="center aligned sixteen wide column" style="margin: -10px 0px 0px 0px;padding:0px;">
+                                <div style="cursor:pointer;float: right;">清空全部</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div ng-if="searching">
-                    <span style="margin-left: -25px;"><i class="bookmark outline link icon" title="书签搜索" ng-click="search(searchWord, 0)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
-                    <span><i class="google link icon" title="谷歌搜索" ng-click="search(searchWord, 1)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
-                    <span><i class="bimobject link icon" title="百度搜索" ng-click="search(searchWord, 4)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
-                    <span><i class="github link icon" title="Github 搜索" ng-click="search(searchWord, 2)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
-                    <span><i class="stack overflow link icon" title="栈溢出搜索" ng-click="search(searchWord, 3)" style="cursor:default;margin-top:16px;margin-right: 8px;"></i></span>
-                    <span>|</span>
-                    <span><i class="add square link icon" title="添加书签" ng-click="showAddBookmarkMoadl()" style="cursor:default;margin-top:16px;margin-right: 8px;margin-left: 8px;"></i></span>
-                    <span><i class="arrow right link icon" title="退出搜索" ng-click="exitSearch()" style="cursor:default;margin-top:16px;"></i></span>
+                <div style="margin-top: 13px;">
+                    <span style="margin-left: -25px;"><i class="google link icon" title="谷歌搜索(输入关键字按回车键默认搜索引擎)" ng-click="search(searchWord, 1)" style="cursor:default;margin-right: 8px;"></i></span>
+                    <span><i class="bimobject link icon" title="百度搜索" ng-click="search(searchWord, 4)" style="cursor:default;margin-right: 8px;"></i></span>
+                    <span><i class="book link icon" title="书签搜索" ng-click="search(searchWord, 0)" style="cursor:default;margin-right: 8px;"></i></span>
+                    <span><i class="file alternate link icon" title="备忘录搜索" ng-click="search(searchWord, 5)" style="cursor:default;margin-right: 8px;"></i></span>
+                    <span><i class="github link icon" title="Github 搜索" ng-click="search(searchWord, 2)" style="cursor:default;margin-right: 8px;"></i></span>
+                    <span><i class="stack overflow link icon" title="栈溢出搜索" ng-click="search(searchWord, 3)" style="cursor:default;margin-right: 8px;"></i></span>
+                    <span style="margin: 0px 5px">▏</span>
+                    <span data-tooltip="添加书签，可按Insert快速打开添加页面" ng-click="showAddBookmarkMoadl()">
+                        <i class="add square link icon" style="cursor:default;margin-right: 8px;margin-left: 1px;"></i>
+                    </span>
+                    <span data-tooltip="如果你觉得我的系统对你有帮助，请点击跳转到 Github 为我 Star" ng-click="star()" ng-show="user.username !== 'lcq'">
+                        <i class="star link icon" style="cursor:default;margin-right: 8px;"></i>
+                    </span>
+                    <span class="suggest" ng-click="showUpdate()" ng-show="user.username !== 'lcq'">
+                        <i class="info circle link icon" style="cursor:default;margin-right: 8px;"></i>
+                    </span>
+                    <span data-tooltip="请我喝杯咖啡" ng-click="coffee()" ng-show="user.username !== 'lcq'">
+                        <i class="coffee link icon" style="cursor:default;margin-right: 8px;"></i>
+                    </span>
+                    <span data-tooltip="退出登陆" ng-click="logout()">
+                        <i class="sign out link icon" style="cursor:default;margin-right: 8px;"></i>
+                    </span>
                 </div>
-            </div>
-        </div>
-        <div class="right menu" ng-if="!searching">
-            <div class="item" style="padding:0 8px 0 13px;" title="添加书签" ng-click="showAddBookmarkMoadl()">
-                <span data-tooltip="添加书签，可按Insert快速打开添加页面">
-                    <i class="add square icon"></i>
-                </span>
-            </div>
-            <div class="item" style="padding:0 8px 0 13px;" ng-click="star()" ng-show="user.username !== 'lcq'">
-                <span data-tooltip="如果你觉得我的系统对你有帮助，请点击跳转到 Github 为我 Star">
-                    <i class="star icon"></i>
-                </span>
-            </div>
-            <div class="item" style="padding:0 8px 0 13px;" ng-click="showUpdate()" ng-show="user.username !== 'lcq'">
-                <span class="suggest">
-                    <i class="info circle icon"></i>
-                </span>
-            </div>
-            <div class="item" style="padding:0 8px 0 13px;" ng-click="coffee()" ng-show="user.username !== 'lcq'">
-                <span data-tooltip="请我喝杯咖啡">
-                    <i class="coffee icon"></i>
-                </span>
-            </div>
-            <div class="item" style="padding:0 8px 0 13px;">
-                <span data-tooltip="退出登陆">
-                    <i class="sign out icon" title="退出登陆" ng-click="logout()"></i>
-                </span>
             </div>
         </div>
     </div>
     <div class="ui huge menu js-not-login-in" ng-if="!login">
-        <a class="item" ng-class="{selected:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ui-sref-opts="{reload: true}" ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
+        <a class="item" ng-class="{selected:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ui-sref-opts="{reload: true}"
+            ng-repeat="menu in notLoginMenus">{{ menu.title}}</a>
     </div>
 </div>

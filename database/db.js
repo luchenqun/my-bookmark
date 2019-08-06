@@ -63,6 +63,9 @@ db.getBookmarkbyUrl = function(user_id, url) {
 
 db.addBookmark = function(user_id, bookmark) {
     var sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', " + client.escape(bookmark.title) + ", " + client.escape(bookmark.description) + ", " + client.escape(bookmark.url) + ", '" + bookmark.public + "', '1')";
+    if (bookmark.created_at) {
+        sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `created_at`, `click_count`) VALUES ('" + user_id + "', " + client.escape(bookmark.title) + ", " + client.escape(bookmark.description) + ", " + client.escape(bookmark.url) + ", '" + bookmark.public+ "', '" + bookmark.created_at + "', '1')";
+    }
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

@@ -18,7 +18,7 @@ var parsehtml = function (file, callback) {
             var add_date, name, bookmark, tags, url;
             url = $(e).attr("href");
             name = $(e).text() || "无标题";
-            add_date = $(e).attr("add_date");
+            add_date = parseInt($(e).attr("add_date")) * 1000;
 
             // 只允许用一个标签
             // 只允许用一个标签

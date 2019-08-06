@@ -785,6 +785,7 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
                         bookmark.description = "";
                         bookmark.url = item.url;
                         bookmark.public = '1';
+                        bookmark.created_at = new Date(item.add_date).format('yyyy-MM-dd hh:mm:ss')
                         if (item.tags.length == 0) {
                             item.tags.push("未分类")
                         }
@@ -1551,7 +1552,7 @@ api.get('/download', function(req, res) {
                     db.getExportBookmarksByTag(tag.id)
                         .then((bookmarks) => {
                             bookmarks.forEach((bookmark) => {
-                                $('#' + bookmark.tag_id).append('<DT><A HREF="' + bookmark.url + '">' + bookmark.title + '</A></DT>');
+                                $('#' + bookmark.tag_id).append('<DT><A HREF="' + bookmark.url + '" ADD_DATE="' + parseInt(new Date(bookmark.created_at).getTime() / 1000) + '">' + bookmark.title + '</A></DT>');
                             });
                             if (tagIndex == tags.length - 1) {
                                 console.log('export bookmarks document construct end...');

@@ -75,7 +75,7 @@ my-bookmark/
 │   │   │   ├── bookmarks-controller.js       # 书签页面控制器
 │   │   │   ├── edit-controller.js            # 编辑书签页面控制器
 │   │   │   ├── home-controller.js            # 未登录时首页页面控制器
-│   │   │   ├── hot-controller.js             # 热门收藏页面控制器
+│   │   │   ├── weixin-article-controller.js  # 热门收藏页面控制器
 │   │   │   ├── login-controller.js           # 登陆注册页面控制器
 │   │   │   ├── menus-controller.js           # 菜单栏控制器
 │   │   │   ├── note-controller.js            # 备忘录控制器
@@ -116,7 +116,7 @@ my-bookmark/
 |   |   ├── dialog-del-tag.html               # 分类删除确认页面
 |   |   ├── edit.html                         # 书签添加修改页面
 |   |   ├── home.html                         # 未登录时首页页面
-|   |   ├── hot.html                          # 热门收藏页面
+|   |   ├── weixin-article.html               # 热门收藏页面
 |   |   ├── login.html                        # 登陆注册页面
 |   |   ├── menus.html                        # 菜单组件
 |   |   ├── note.html                         # 备忘录页面

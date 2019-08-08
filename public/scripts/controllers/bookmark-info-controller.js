@@ -13,17 +13,18 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
         bookmark.snap_url = bookmark.snap_url || ('./images/snap/' + bookmark.id + '.png');
         $scope.bookmark = bookmark;
         $scope.bookmark.description = $sce.trustAsHtml(bookmark.description);
-        $scope.content = '';
+        $scope.content = $sce.trustAsHtml(bookmark.content) || '';
         var params = {
             url: bookmark.url,
             requestId: 1
         }
-        $scope.loading = true;
-        $timeout(function() {
-            $('.ui.modal.js-bookmark-info').modal("refresh");
-            $("p").css("word-wrap", "break-word");
-        }, 500);
-        bookmarkService.getArticle(params)
+        if (!$scope.content) {
+            $timeout(function() {
+                $('.ui.modal.js-bookmark-info').modal("refresh");
+                $("p").css("word-wrap", "break-word");
+            }, 500);
+            $scope.loading = true
+            bookmarkService.getArticle(params)
             .then((data) => {
                 $scope.content = data.content ? $sce.trustAsHtml(data.content) : $sce.trustAsHtml('<p>数据获取失败，可能是服务器不允许获取，或者是https网站！</p>');
                 setTimeout(function() {
@@ -35,6 +36,14 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
                 $scope.content = $sce.trustAsHtml('<p>数据获取失败:' + JSON.stringify(err) + '</p>');
                 $scope.loading = false;
             })
+        } else {
+            setTimeout(function() {
+                $('.ui.modal.js-bookmark-info').modal && $('.ui.modal.js-bookmark-info').modal("refresh");
+            }, 10);
+            setTimeout(function() {
+                $('.modals').animate({ scrollTop: 0 }, 100);
+            }, 500);
+        }
     });
 
     $scope.jumpToUrl = function(url, id) {

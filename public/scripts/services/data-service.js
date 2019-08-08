@@ -25,7 +25,7 @@ app.factory('dataService', [function() {
             uiSref: 'note',
             title: '备忘'
         }, {
-            uiSref: 'hot',
+            uiSref: 'weixin-article',
             title: '热门'
         }, {
             uiSref: 'settings',
@@ -41,7 +41,7 @@ app.factory('dataService', [function() {
             uiSref: 'login',
             title: '登录'
         }, {
-            uiSref: 'hot',
+            uiSref: 'weixin-article',
             title: '热门'
         }],
         animationIndex: 0,

@@ -1,22 +1,22 @@
 <div class="ui segment js-tags">
-    <div class="ui container" ng-show="!editMode" style="cursor:default;">
+    <div class="ui container" ng-show="!editMode" style="cursor:default;padding: 10px 0px">
         <div class="ui grid">
-            <div class="two wide column  js-tag-label">
+            <div class="two wide column  js-tag-label" style="padding: 10px;">
                 <div class="ui small label" ng-class="{green:costomTag.bookmarkClicked}" ng-click="getBookmarks(-1, 1)">
                     {{ costomTag.name }} ({{ costomTag.cnt || 0 }})
                 </div>
             </div>
-            <div class="two wide column  js-tag-label" ng-if="tag.cnt" ng-repeat="tag in tags">
+            <div class="two wide column  js-tag-label" ng-if="tag.cnt" style="padding: 10px;" ng-repeat="tag in tags">
                 <div class="ui small label" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
                     {{ tag.name }} ({{ tag.cnt || 0 }})
                 </div>
             </div>
-            <div class="two wide column  js-tag-label">
+            <div class="two wide column  js-tag-label" style="padding: 10px;">
                 <div class="ui small label" ng-class="{green:costomAllUsersTag.bookmarkClicked}" ng-click="getBookmarks(-2, 1)">
                     {{ costomAllUsersTag.name }} ({{ costomAllUsersTag.cnt || 0 }})
                 </div>
             </div>
-            <div class="two wide column js-tag-label">
+            <div class="two wide column js-tag-label" style="padding: 10px;">
                 <div class="ui small label">
                     <i class="plus icon" data-content="点击添加分类" data-position="top center" ng-click="showAddTag()"></i>
                     <i class="pencil alternate icon" data-content="点击进入分类编辑模式" data-position="top center" ng-click="toggleMode(true)"></i>

@@ -12,10 +12,10 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             },
             controller: 'bookmarksCtr'
         })
-        .state('hot', {
-            url: '/hot',
-            templateUrl: '/views/hot.html',
-            controller: 'hotCtr'
+        .state('weixin-article', {
+            url: '/weixin-article',
+            templateUrl: '/views/weixin-article.html',
+            controller: 'weixinArticleCtr'
         })
         .state('praise', {
             url: '/praise',

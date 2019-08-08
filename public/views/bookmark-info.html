@@ -49,20 +49,8 @@
         </div>
     </div>
     <div class="ui divider"></div>
-    <div class="content" style="padding:0 10px 0 20px">
-        <div class="description">
-            <div class="ui header">
-                描述信息
-            </div>
-            <pre style="word-break:break-all;white-space: pre-wrap;">{{ bookmark.description }}</pre>
-        </div>
-    </div>
-    <div class="ui divider"></div>
-    <div class="content" style="padding:0 0 0 20px">
-        <div class="description">
-            <div class="ui header">
-                内容摘抄
-            </div>
+    <div class="content" style="padding:0 20px">
+        <div class="description js-content">
             <p ng-bind-html="content"></p>
             <img class="ui centered medium image" src="/images/loading.gif" ng-show="loading">
         </div>

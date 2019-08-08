@@ -98,10 +98,13 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             $scope.jumpToUrl(b.url);
             return;
         }
+        // 假装等待一下。。。。。。
+        $scope.loadBusy = true;
         $scope.bookmark = b;
-        setTimeout(function() {
+        $timeout(function() {
             $('body,html').animate({scrollTop:0},100);
-        }, 100);
+            $scope.loadBusy = false;
+        }, 200)
     }
 
     // 快捷键r随机推荐

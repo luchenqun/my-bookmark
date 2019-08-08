@@ -12,7 +12,7 @@
         正在加载中...</div>
 
     <div class="ui divider" style="margin: 3px 0px 8px 0px;"></div>
-    <div class="ui five stackable cards" ng-if="!bookmark.content">
+    <div class="ui five stackable cards" ng-if="!bookmark.content && !loadBusy">
         <div class="card" ng-repeat="bookmark in bookmarks" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
             <div class="content" style="max-height:70px;cursor:pointer" ng-click="detailBookmark(bookmark)">
                 <div class="description bookmarkTitle" title="{{bookmark.title}}">
@@ -39,7 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="ui container" ng-if="bookmark.content">
+    <div class="ui container" ng-if="bookmark.content && !loadBusy">
         <div class="ui center aligned container" style="font-size:30px;">
             {{bookmark.title}}
         </div>
@@ -64,8 +64,8 @@
             </span>
         </div>
     </div>
-    <div class="ui divider"></div>
-    <div class="ui grid" ng-if="bookmark.content">
+    <div class="ui divider" ng-if="!loadBusy"></div>
+    <div class="ui grid" ng-if="bookmark.content && !loadBusy">
         <div class="eight wide column">
             <div style="float: left;cursor: pointer" ng-click="detailBookmark(bookmarks[bookmark.index-1])" ng-if="bookmarks[bookmark.index-1]"><i class="chevron left icon"></i>
                 {{ bookmarks[bookmark.index-1].title }}</div>
@@ -75,12 +75,12 @@
                 {{ bookmarks[bookmark.index+1].title }} <i class="chevron right icon"></i></div>
         </div>
     </div>
-    <div class="ui divider" ng-if="bookmark.content"></div>
+    <div class="ui divider" ng-if="bookmark.content && !loadBusy"></div>
     <div class="ui grid">
-        <div class="one wide column">
+        <div class="four wide column">
             <i title="返回文章列表。按 ESC 键亦可返回" class="reply icon black big" style="padding-top:10px;" ng-click="bookmark.content=''" ng-show="bookmark.content"></i>
         </div>
-        <div class="fifteen wide column">
+        <div class="twelve wide column">
             <pagination></pagination>
         </div>
     </div>

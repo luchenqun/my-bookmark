@@ -258,7 +258,8 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
                             b.created_at = $filter('date')(new Date(bookmark.createtime < bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
                             b.last_click = $filter('date')(new Date(bookmark.createtime > bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
                             b.id = bookmark.articleId;
-                            $scope.bookmarks.unshift(b);
+                            b.index = $scope.bookmarks.length - 1;
+                            $scope.bookmarks.push(b);
                         })
                     }
                 }, 10)
@@ -285,7 +286,8 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             .then((data) => {
                 data.forEach((bookmark) => {
                     bookmark.created_at = $filter('date')(new Date(bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
-                    $scope.bookmarks.unshift(bookmark);
+                    bookmark.index = $scope.bookmarks.length - 1;
+                    $scope.bookmarks.push(bookmark);
                 })
                 $scope.curDay--;
                 $scope.loadBusy = false;

@@ -116,6 +116,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             var blur = (menusScope && menusScope.blur) || false;
             // r按键，显示
             if (event.keyCode == 82 && login && (!blur)) {
+                $scope.bookmarks = [];
                 $scope.randomHotBookmarks();
             }
 
@@ -139,7 +140,6 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             var now = new Date();
             var dayGap = parseInt(Math.abs(now - beginDay) / (1000 * 60 * 60 * 24)) + 1;
             $scope.curDay = -(parseInt(Math.random() * 1000000) % dayGap);
-            $scope.bookmarks = [];
             getHotBookmarksbyCache();
         } else {
             $scope.toastrId = toastr.info('您只有先登录，才能使用查看随机热门标签', "提示");
@@ -185,6 +185,11 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
                     jsonp : "callback",
                     success: function(body) {
                         dealBody(body);
+                        if(channelId == 1 && page == 1) {
+                            getHotBookmarksbyAPI();
+                        } else {
+                            $scope.randomHotBookmarks();
+                        }
                     },
                     error: function(json) {
                         $scope.loadBusy = false;
@@ -203,6 +208,68 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
         }
     }
 
+    function getHotBookmarksbyAPI() {
+        $scope.loadBusy = true;
+        var requireData = {
+            userId: null,
+            lastupdataTime: new Date().getTime(),
+            pageNo: 1,
+            pageSize: 1000,
+            sort: 'desc',
+            renderType: 0,
+            date: curentDate($scope.curDay, "yyyy年M月d日"),
+            idfa: "d4995f8a0c9b2ad9182369016e376278",
+            os: "ios",
+            osv: "9.3.5"
+        }
+        var api = "https://api.shouqu.me/api_service/api/v1/daily/dailyMark";
+        $.ajax({
+            url: api,
+            type: 'post',
+            data: requireData,
+            success: function(json) {
+                $timeout(function() {
+                    $scope.loadBusy = false;
+                    var alterRex = "/mmbiz.qpic.cn|images.jianshu.io|zhimg.com/g";
+                    var defaultSnap = "./images/default.jpg"
+                    var defaultFavicon = "./images/default.ico"
+                    if (json.code == 200) {
+                        var bookmarkList = json.data.list;
+                        bookmarkList.forEach((bookmark) => {
+                            var b = {};
+                            b.title = bookmark.title;
+                            b.url = bookmark.url;
+                            b.favicon_url = bookmark.sourceLogo || defaultFavicon;
+                            b.created_by = bookmark.sourceName;
+                            b.snap_url = defaultSnap;
+                            if (bookmark.imageList.length >= 1) {
+                                if (bookmark.imageList[0].url) {
+                                    b.snap_url = (json.data.pageNo == 1 ? (bookmark.imageList[0].url.match(alterRex) != null ? defaultSnap : bookmark.imageList[0].url) : defaultSnap);
+                                } else {
+                                    for (var i = 0; i < bookmark.images.length; i++) {
+                                        if (bookmark.images[i]) {
+                                            b.snap_url = bookmark.images[i];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            b.fav_count = bookmark.favCount;
+                            b.created_at = $filter('date')(new Date(bookmark.createtime < bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
+                            b.last_click = $filter('date')(new Date(bookmark.createtime > bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
+                            b.id = bookmark.articleId;
+                            $scope.bookmarks.unshift(b);
+                        })
+                    }
+                }, 10)
+            },
+            error: function(json) {
+                $scope.loadBusy = false;
+                toastr.error('获取热门书签失败！失败原因：' + json.message + "。将尝试从缓存中获取！", "提示");
+            }
+        });
+    }
+
     function getHotBookmarksbyCache() {
         $scope.loadBusy = true;
         var date = curentDate($scope.curDay, "yyyyMMdd");
@@ -218,8 +285,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             .then((data) => {
                 data.forEach((bookmark) => {
                     bookmark.created_at = $filter('date')(new Date(bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
-                    bookmark.edit = false;
-                    $scope.bookmarks.push(bookmark);
+                    $scope.bookmarks.unshift(bookmark);
                 })
                 $scope.curDay--;
                 $scope.loadBusy = false;
@@ -253,9 +319,9 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     function dealBody(body) {
         console.log('success............', body);
         $scope.loadBusy = false;
-        var defaultSnap = "./images/default.jpg"
-        var defaultFavicon = "./images/weixin.ico"
         $timeout(function() {
+            var defaultSnap = "./images/default.jpg"
+            var defaultFavicon = "./images/weixin.ico"
             if (body.status == 0) {
                 var weixinArticles = body.result.list;
                 var id = body.result.channelid;
@@ -292,7 +358,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             } else {
                 toastr.error('获取热门失败！失败原因：' + body.msg, "提示");
             }
-        }, 100);
+        }, 10);
     }
 
     $document.bind("keydown", function(event) {

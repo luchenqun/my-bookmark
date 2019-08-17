@@ -98,13 +98,16 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             $scope.jumpToUrl(b.url);
             return;
         }
-        // 假装等待一下。。。。。。
-        $scope.loadBusy = true;
         $scope.bookmark = b;
+        $('.js-weixin-content').modal({ blurring: true }).modal('setting', 'transition', dataService.animation()).modal('show')
         $timeout(function() {
-            $('body,html').animate({scrollTop:0},100);
-            $scope.loadBusy = false;
-        }, 200)
+            $('.js-main-content').animate({scrollTop:0},100);
+            $('.js-weixin-content').modal("refresh");
+        }, 10)
+    }
+
+    $scope.read = function() {
+        $('.js-weixin-content').modal('setting', 'transition', dataService.animation()).modal('hide');
     }
 
     // 快捷键r随机推荐
@@ -209,7 +212,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     }
 
     function getHotBookmarksbyAPI() {
-        $scope.loadBusy = true;
+        // $scope.loadBusy = true;
         var requireData = {
             userId: null,
             lastupdataTime: new Date().getTime(),
@@ -362,15 +365,6 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             }
         }, 10);
     }
-
-    $document.bind("keydown", function(event) {
-        $scope.$apply(function() {
-            // Esc按键，退出
-            if (event.keyCode == 27) {
-                $scope.bookmark = {};
-            }
-        })
-    });
 
     $scope.getWeixinArticles($scope.channelId, $scope.currentPage);
 }]);

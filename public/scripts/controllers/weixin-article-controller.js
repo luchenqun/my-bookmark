@@ -106,7 +106,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
         }, 10)
     }
 
-    $scope.read = function() {
+    $scope.close = function() {
         $('.js-weixin-content').modal('setting', 'transition', dataService.animation()).modal('hide');
     }
 

@@ -40,7 +40,7 @@
         </div>
     </div>
     <div class="ui longer modal js-weixin-content">
-        <i class="close icon"></i>
+        <i class="close icon" ng-click="close()"></i>
         <div class="header">{{ bookmark.title }}</div>
         <div class="scrolling content js-main-content">
             <div class="ui center aligned container" style="margin: 10px 0px">
@@ -73,7 +73,7 @@
             </div>
         </div>
         <div class="actions">
-            <div class="ui green button" ng-click="read()">已阅</div>
+            <div class="ui green button" ng-click="close()">已阅</div>
         </div>
     </div>
     <div class="ui grid">

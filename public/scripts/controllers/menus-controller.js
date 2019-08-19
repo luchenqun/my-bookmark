@@ -37,6 +37,16 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
     });
 
+    $scope.toggleReady = function(ready) {
+        if(ready) {
+            $(".searchIcon").show();
+        } else {
+            $timeout(function(){
+                !$("#sInput").val() && $(".searchIcon").hide();
+            }, 500)
+        }
+    }
+
     $scope.searchIcon = function(item) {
         if(item.t === 0) {
             item.icon = "book link icon";

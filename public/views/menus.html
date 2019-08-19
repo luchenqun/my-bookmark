@@ -25,8 +25,8 @@
         </a>
         <div id="js-search" style="width: 1500px;">
             <div class="ui transparent fluid icon input" style="height: 100%;margin-left: 10px;">
-                <input style="padding-left: 0px;" class="prompt search-item js-search-input" type="text" ng-model="searchWord" placeholder="search..."
-                    ng-keypress="($event.which === 13)?search(searchWord, 1):0" data-position="bottom left" data-variation="large">
+                <input id="sInput" style="padding-left: 0px;" class="prompt search-item js-search-input" type="text" ng-model="searchWord" placeholder="search..."
+                    ng-keypress="($event.which === 13)?search(searchWord, 1):0" ng-focus="toggleReady(true)" ng-blur="toggleReady(false)" data-position="bottom left" data-variation="large">
                 <div class="ui fluid popup top left transition hidden js-popup-search js-history-popup" ng-if="searchHistory.length > 0" style="margin-left: 2px; margin-top: -1px;">
                     <div class="ui internally grid">
                         <div class="row js-history-word" style="height: 20px;" ng-repeat="item in searchHistory">
@@ -47,13 +47,15 @@
                     </div>
                 </div>
                 <div style="margin-top: 13px;">
-                    <span style="margin-left: -25px;"><i class="google link icon" title="谷歌搜索(输入关键字按回车键默认搜索引擎)" ng-click="search(searchWord, 1)" style="cursor:default;margin-right: 8px;"></i></span>
-                    <span><i class="bimobject link icon" title="百度搜索" ng-click="search(searchWord, 4)" style="cursor:default;margin-right: 8px;"></i></span>
-                    <span><i class="book link icon" title="书签搜索" ng-click="search(searchWord, 0)" style="cursor:default;margin-right: 8px;"></i></span>
-                    <span><i class="file alternate link icon" title="备忘录搜索" ng-click="search(searchWord, 5)" style="cursor:default;margin-right: 8px;"></i></span>
-                    <span><i class="github link icon" title="Github 搜索" ng-click="search(searchWord, 2)" style="cursor:default;margin-right: 8px;"></i></span>
-                    <span><i class="stack overflow link icon" title="栈溢出搜索" ng-click="search(searchWord, 3)" style="cursor:default;margin-right: 8px;"></i></span>
-                    <span style="margin: 0px 5px">▏</span>
+                    <span style="display: none" class="searchIcon">
+                        <span style="margin-left: -25px;"><i class="google link icon" title="谷歌搜索(输入关键字按回车键默认搜索引擎)" ng-click="search(searchWord, 1)" style="cursor:default;margin-right: 8px;"></i></span>
+                        <span><i class="bimobject link icon" title="百度搜索" ng-click="search(searchWord, 4)" style="cursor:default;margin-right: 8px;"></i></span>
+                        <span><i class="book link icon" title="书签搜索" ng-click="search(searchWord, 0)" style="cursor:default;margin-right: 8px;"></i></span>
+                        <span><i class="file alternate link icon" title="备忘录搜索" ng-click="search(searchWord, 5)" style="cursor:default;margin-right: 8px;"></i></span>
+                        <span><i class="github link icon" title="Github 搜索" ng-click="search(searchWord, 2)" style="cursor:default;margin-right: 8px;"></i></span>
+                        <span><i class="stack overflow link icon" title="栈溢出搜索" ng-click="search(searchWord, 3)" style="cursor:default;margin-right: 8px;"></i></span>
+                        <span style="margin: 0px 5px">▏</span>
+                    </span>
                     <span data-tooltip="添加书签，可按Insert快速打开添加页面" ng-click="showAddBookmarkMoadl()">
                         <i class="add square link icon" style="cursor:default;margin-right: 8px;margin-left: 1px;"></i>
                     </span>

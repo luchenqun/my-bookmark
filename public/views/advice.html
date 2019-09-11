@@ -28,7 +28,8 @@
         <h3 class="ui header">最新100条留言</h3>
         <div class="comment" ng-repeat="advice in advices">
             <a class="avatar">
-                <img ng-src="data:image/png;base64,{{advice.imgData}}">
+                <img ng-if="advice.username == 'lcq'" src="./images/admin.jpg">
+                <img ng-if="advice.username != 'lcq'" ng-src="data:image/png;base64,{{advice.imgData}}">
             </a>
             <div class="content">
                 <a class="author">{{ advice.username }}</a>

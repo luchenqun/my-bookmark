@@ -12,7 +12,7 @@
                         <input type="text" placeholder="输粘贴网页地址，如：http://mybookmark.cn/" ng-model="url">
                     </div>
                     <div class="required eight wide field" ng-class="{error:titleError}">
-                        <label>书签标题</label>
+                        <label ng-click="restoreTitle()">书签标题</label>
                         <div class="ui icon input" ng-class="{loading:loadTitle}">
                             <input type="text" ng-attr-placeholder="{{loadTitle ? '正在获取书签标题。。。' : '在书签链接处粘贴正确的网站会自动获取'}}" ng-model="title">
                             <i class="search icon" ng-show="loadTitle && title.length==0"></i>

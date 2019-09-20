@@ -20,9 +20,13 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                 bookmarkService.getArticle(params)
                     .then((data) => {
                         $scope.loadTitle = false;
+                        $scope.originTitle = data.title;
                         $scope.title = data.title;
+                        
                         if (!$scope.title) {
                             toastr.error('获取书签标题失败，请手动填入', "提示");
+                        } else {
+                            $scope.title = data.title.split('-')[0].trim();
                         }
                     })
                     .catch((err) => {
@@ -45,6 +49,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
             $scope.titleError = $scope.title == '' && $('.ui.modal.js-add-bookmark').modal('is active');
         });
     });
+
+    $scope.restoreTitle = function() {
+        $scope.title = $scope.originTitle;
+    }
 
     $scope.cancel = function() {
         $('.ui.modal.js-add-bookmark').modal('hide');

@@ -195,7 +195,10 @@
                     <tbody>
                         <tr ng-repeat="(key, value) in quickUrl">
                             <td>{{key}}</td>
-                            <td>{{value}}</td>
+                            <td>
+                                <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{value}}" err-src="./images/default.ico" style="width:16px;height:16px;">
+                                <span >{{value}}</span>
+                            </td>
                             <td>
                                 <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delUrl(key)" title="删除书签">
                             </td>

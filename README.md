@@ -1,4 +1,4 @@
-# 在线书签管理工具[为了迎接祖国七十周年生日，&*&……%￥#，估计又要国庆以后才能正常使用了。。。]
+# 在线书签管理工具
 ![image](https://github.com/luchenqun/my-bookmark/blob/master/public/images/screenshot.gif)   
 
 1 在线体验(demo)

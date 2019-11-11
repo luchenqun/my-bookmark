@@ -82,7 +82,7 @@ app.use(function (err, req, res, next) {
 // 卡片这模式就没怎么用过，干掉了。
 // api.checkSnapFaviconState();
 // api.getSnapByTimer();
-api.getFaviconByTimer();
+// api.getFaviconByTimer();
 api.getHotBookmarksByTimer();
 
 module.exports = app;

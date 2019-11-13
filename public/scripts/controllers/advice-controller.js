@@ -8,11 +8,24 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
 
     $scope.comment = '';
     $scope.advices = [];
-    $scope.category = ["功能", "BUG", "其他"]
+    $scope.category = ["功能", "BUG", "其他"];
+    $scope.user = {};
 
+    bookmarkService.userInfo({})
+    .then((data) => {
+        $scope.user = data;
+    })
+    .catch((err) => {
+
+    });
+    
     $scope.ok = function() {
         if ($scope.comment == '') {
             toastr.error('留言失败内容不能为空', "错误");
+            return;
+        }
+        if ($scope.user.username == 'test') {
+            toastr.error('test用户不允许留言!', "错误");
             return;
         }
         var advice = {

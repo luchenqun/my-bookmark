@@ -545,7 +545,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     });
 
     setTimeout(() => {
-        $('.js-tag-label .ui.label .icon').popup();
+        $('.js-tag-label .icon').popup();
     }, 3000);
 
     function clickCmp(a, b) {

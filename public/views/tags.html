@@ -106,7 +106,7 @@
             </td>
         </tr>
     </tbody>
-    <tfoot>
+    <tfoot ng-if="costomTag.bookmarkClicked || costomAllUsersTag.bookmarkClicked">
         <tr>
             <th colspan="7">
                 <pagination></pagination>
@@ -143,7 +143,7 @@
             </div>
         </div>
         <div class="eleven wide column">
-            <pagination></pagination>
+            <pagination ng-if="costomTag.bookmarkClicked || costomAllUsersTag.bookmarkClicked"></pagination>
         </div>
     </div>
 </div>

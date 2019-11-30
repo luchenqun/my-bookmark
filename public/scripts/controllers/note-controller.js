@@ -100,6 +100,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         $scope.tags.forEach((tag) => {
             if ($scope.currentTagId === tag.id) {
                 tagName = tag.name;
+                tag.ncnt += 1;
             }
             if (!$scope.currentTagId) {
                 if (tag.name == '未分类') {

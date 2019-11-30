@@ -41,6 +41,7 @@ CREATE TABLE `tags` (
   `name` varchar(32) NOT NULL,              -- 标签
   `last_use` datetime DEFAULT now(),        -- 最后使用标签的时间
   `sort` tinyint(8) DEFAULT 0,             -- 书签排序
+  `show` tinyint(8) DEFAULT 1,             -- 书签是否显示
   PRIMARY KEY (`id`),
   KEY `userIdIdx` (`user_id`)
 );

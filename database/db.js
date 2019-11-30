@@ -414,7 +414,7 @@ db.getUser = function(username) {
 };
 
 db.getTags = function(user_id) {
-    var sql = "SELECT t.id, t.user_id, t.name, DATE_FORMAT(t.last_use, '%Y-%m-%d %H:%i:%s') as last_use, t.sort, tb.cnt, tg.ncnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id  LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as ncnt FROM notes GROUP BY tag_id ) tg ON t.id = tg.tag_id ";
+    var sql = "SELECT t.id, t.user_id, t.name, DATE_FORMAT(t.last_use, '%Y-%m-%d %H:%i:%s') as last_use, t.sort, t.show, tb.cnt, tg.ncnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id  LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as ncnt FROM notes GROUP BY tag_id ) tg ON t.id = tg.tag_id ";
     if (user_id) {
         sql += "WHERE t.user_id = '" + user_id + "' ";
     }
@@ -434,6 +434,21 @@ db.getTags = function(user_id) {
 db.updateTagName = function(tag) {
     console.log('updateTagName');
     var sql = "UPDATE `tags` SET `name`='" + tag.name + "' WHERE (`id`='" + tag.id + "')";
+    console.log(sql);
+    return new Promise(function(resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+};
+
+db.updateTagShow = function(tag) {
+    console.log('updateTagShow');
+    var sql = "UPDATE `tags` SET `show`='" + tag.show + "' WHERE (`id`='" + tag.id + "')";
     console.log(sql);
     return new Promise(function(resolve, reject) {
         client.query(sql, (err, result) => {

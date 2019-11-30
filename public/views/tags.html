@@ -3,7 +3,7 @@
         <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:costomTag.bookmarkClicked}" ng-click="getBookmarks(-1, 1)">
             {{ costomTag.name }} ({{ costomTag.cnt || 0 }})
         </div>
-        <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.cnt" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
+        <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.cnt && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
             {{ tag.name }} ({{ tag.cnt || 0 }})
         </div>
         <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:costomAllUsersTag.bookmarkClicked}" ng-click="getBookmarks(-2, 1)">
@@ -51,6 +51,8 @@
                         <img class="ui mini spaced image right floated" style="width:16px;height:16px;margin:0 5px" ng-src="./images/edit-bookmark.png"
                             ng-click="editTag(tag)" title="编辑分类">
                     </label>
+                    <i class="eye black icon right floated" style="cursor:pointer;" ng-if="tag.show" ng-click="updateTagShow(tag, 0)" title="点击隐藏分类"></i>
+                    <i class="eye black slash icon right floated" style="cursor:pointer;" ng-if="!tag.show" ng-click="updateTagShow(tag, 1)" title="点击显示分类"></i>
                 </div>
             </div>
         </div>

@@ -273,6 +273,26 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         tag.oldName = tag.name;
         tag.edit = true;
     }
+    
+    $scope.updateTagShow = function (tag, show) {
+        var params = {
+            id: tag.id,
+            show: show,
+        }
+        bookmarkService.updateTagShow(params)
+            .then((data) => {
+                if (data.retCode == 0) {
+                    toastr.success(tag.name + ' 更新成功！', "提示");
+                    tag.show = show;
+                } else {
+                    toastr.error(tag.name + ' 更新失败！错误提示：' + data.msg, "提示");
+                }
+            })
+            .catch((err) => {
+                toastr.error(tag.name + ' 更新失败！错误提示：' + err, "提示");
+            });
+    }
+
     $scope.updateTag = function (tag) {
         if (tag.name == tag.oldName) {
             toastr.warning('您没有编辑分类', "警告");

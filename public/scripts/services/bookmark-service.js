@@ -300,6 +300,19 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        updateTagShow: function(params) {
+            var def = $q.defer();
+            $http.post('/api/updateTagShow/', {
+                    params: params
+                })
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject(data);
+                });
+            return def.promise;
+        },
         updateTagsIndex: function(params) {
             var def = $q.defer();
             $http.post('/api/updateTagsIndex/', {

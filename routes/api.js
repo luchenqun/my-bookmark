@@ -538,10 +538,7 @@ api.get('/bookmarksByTag', function(req, res) {
     var userId = req.session.user.id;
     var params = req.query;
 
-    var bookmarks = [];
     var tagsBookmarks = [];
-    var totalItems = 0;
-    var totalItems = 0;
     var sendData = {
         totalItems: 0,
         bookmarks: [],
@@ -990,6 +987,49 @@ api.post('/updateTagName', function(req, res) {
         })
         .catch((err) => {
             console.log('addTags err', err);
+            res.json({
+                retCode: 1,
+                msg: tag.name + " 更新失败: " + JSON.stringify(err),
+            })
+        });
+});
+
+api.post('/updateTagShow', function(req, res) {
+    console.log("updateTagShow username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+    var tag = req.body.params;
+    var userId = req.session.user.id;
+
+    db.getTags(userId)
+        .then((tags) => {
+            for (var i = 0; i < tags.length; i++) {
+                if (tags[i].id != tag.id && tags[i].name == tag.name) {
+                    return Promise.resolve(-1);
+                }
+            }
+            return db.updateTagShow(tag);
+        })
+        .then((affectedRows) => {
+            var msg = "";
+            if (affectedRows == -1) {
+                msg += " 您已经有这个分类了，不允许更新";
+            } else if (affectedRows == 0) {
+                msg += " 更新失败";
+            } else if (affectedRows == 1) {
+                msg = " 更新成功";
+            } else {
+                msg += " 更新失败";
+            }
+            res.json({
+                retCode: (affectedRows == 1) ? 0 : 1,
+                msg: msg,
+            })
+        })
+        .catch((err) => {
+            console.log('updateTagShow err', err);
             res.json({
                 retCode: 1,
                 msg: tag.name + " 更新失败: " + JSON.stringify(err),

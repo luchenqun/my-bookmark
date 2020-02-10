@@ -242,6 +242,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         bookmarkService.logout({})
             .then((data) => {
                 console.log('logout..........', data)
+                toastr.success('权限注销成功!', "提示");
                 $scope.logined = false;
                 bookmarkService.autoLogin()
                 .then((data) => {

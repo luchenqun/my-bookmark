@@ -60,11 +60,11 @@
                     <span class="suggest" ng-click="showUpdate()" ng-show="user.username !== 'lcq'">
                         <i class="info circle link icon" style="cursor:default;margin-right: 8px;"></i>
                     </span>
-                    <span data-tooltip="登录" ng-if="!logined" ng-click="openLoginDialog()">
-                        <i class="sign in link icon" style="cursor:default;margin-right: 8px;"></i>
+                    <span data-tooltip="登陆解锁更多权限" ng-if="!logined" ng-click="openLoginDialog()">
+                        <i class="red lock link icon" style="cursor:default;margin-right: 8px;"></i>
                     </span>
-                    <span data-tooltip="退出" ng-if="logined" ng-click="logout()">
-                        <i class="sign out link icon" style="cursor:default;margin-right: 8px;"></i>
+                    <span data-tooltip="注销权限" ng-if="logined" ng-click="logout()">
+                        <i class="green lock open link icon" style="cursor:default;margin-right: 8px;"></i>
                     </span>
                 </div>
             </div>

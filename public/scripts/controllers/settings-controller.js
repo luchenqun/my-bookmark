@@ -1,7 +1,7 @@
 app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $stateParams, $filter, $state, $window, $timeout, bookmarkService, pubSubService, dataService) {
     console.log('Hello settingsCtr......', $stateParams);
     if(dataService.smallDevice()){
-        $window.location = "http://m.mybookmark.cn/#/tags";
+        $window.location = "http://m.xusony.com/#/tags";
         return;
     }
 

@@ -32,7 +32,7 @@
 - [x] 新增备忘录功能，有时候随手要做点纪录，就方便了。任意界面按快捷键A增加备忘录。双击备忘录可查看详情！亦可分享备忘。
 - [x] 在设置的全局链接，可设置快捷键，用来在任何页面，快速打开设置的链接。
 - [x] 增加[Chrome插件](https://chrome.google.com/webstore/detail/%E4%B9%A6%E7%AD%BE%E5%BF%AB%E9%80%9F%E6%B7%BB%E5%8A%A0/lmmobgephofdffmaednjooplcpbgbjle)，可在任意界面快速添加书签至系统。   
-- [x] 适配手机平板，手机端请访问[m.mybookmark.cn](http://m.mybookmark.cn/)。   
+- [x] 适配手机平板，手机端请访问[m.mybookmark.cn](http://m.xusony.com/)。   
 
 
 4 主要用到的软件与模块说明

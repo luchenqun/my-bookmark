@@ -1,7 +1,7 @@
 app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $state, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello tagsCtr...", $stateParams);
     if(dataService.smallDevice()){
-        $window.location = "http://m.mybookmark.cn/#/tags";
+        $window.location = "http://m.xusony.com/#/tags";
         return;
     }
 

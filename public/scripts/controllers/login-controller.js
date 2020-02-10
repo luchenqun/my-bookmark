@@ -1,7 +1,7 @@
 app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', '$window', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $filter, $state, $cookieStore, $window, bookmarkService, pubSubService, dataService) {
     console.log("Hello loginCtr...", $cookieStore.get("username"));
     if(dataService.smallDevice()){
-        $window.location = "http://m.mybookmark.cn/#/tags";
+        $window.location = "http://m.xusony.com/#/tags";
         return;
     }
 

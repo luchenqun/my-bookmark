@@ -283,27 +283,22 @@ api.post('/updateQuickUrl', function(req, res) {
 
 api.get('/autoLogin', function(req, res) {
     console.log("autoLogin username = ", req.session.username);
-    var ret = {
-        logined: false,
-        user: {},
-    }
-    if (req.session.user) {
-        db.getUser(req.session.user.username)
-            .then((user) => {
-                if (user) {
-                    user.password = "*";
-                    ret.logined = true;
-                    ret.user = user;
-                }
-                res.json(ret);
-                return ret.logined ? db.updateUserLastLogin(ret.user.id) : Promise.resolve(0);
-            })
-            .catch((err) => {
-                res.json(ret);
-            })
-    } else {
+    var username = "xusony";
+    db.getUser(username)
+    .then((user) => {
+        var ret = {
+            logined: false,
+            user: {},
+        }
+        ret.logined = true;
+        ret.user = user;
+        req.session.user = user;
+        req.session.username = ret.user.username;
+        req.session.userId = ret.user.id;
+        ret.user.password = "*";
         res.json(ret);
-    }
+    })
+    .catch((err) => console.log('login error', err));
 });
 
 api.delete('/delBookmark', function(req, res) {

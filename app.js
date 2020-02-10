@@ -15,9 +15,9 @@ var folders = ['./uploads', './public/images/favicon', './public/images/snap'];
 folders.forEach((folder) => {
   fs.exists(folder, function (exists) {
     if (!exists) {
-      fs.mkdir(folder, function (err) {
-        if (err) console.error(err);
-      });
+    //   fs.mkdir(folder, function (err) {
+    //     if (err) console.error(err);
+    //   });
     } else {
       console.log(folder + "is exists!");
     }

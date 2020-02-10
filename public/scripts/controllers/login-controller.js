@@ -5,6 +5,8 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', '$win
         return;
     }
 
+    $state.go('tags');
+
     pubSubService.publish('Common.menuActive', {
         login: false,
         index: dataService.NotLoginIndexLogin

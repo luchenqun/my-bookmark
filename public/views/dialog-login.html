@@ -1,0 +1,14 @@
+<div class="ngdialog-message">
+    <h3>登录</h3>
+</div>
+<hr color=#987cb9 SIZE=1>
+<div class="dialog-contents">
+    <span style="width: 20%;">账号：</span><input type="text" ng-model="username" style="width: 80%;">
+    <br /><br />
+    <span style="width: 20%;">密码：</span><input type="password" ng-model="password" style="width: 80%;">
+</div>
+<p></p>
+<div class="ngdialog-buttons">
+    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="userLogin(username, password)">确定</button>
+    <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog('button')">取消</button>
+</div>

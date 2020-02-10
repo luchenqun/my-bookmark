@@ -40,6 +40,17 @@ app.factory('bookmarkService', ['$http', '$q', function($http, $q) {
                 });
             return def.promise;
         },
+        logined: function() {
+            var def = $q.defer();
+            $http.get('/api/logined/', {})
+                .success(function(data) {
+                    def.resolve(data);
+                })
+                .error(function(data) {
+                    def.reject(data);
+                });
+            return def.promise;
+        },
         register: function(params) {
             var def = $q.defer();
             $http.post('/api/register/', {

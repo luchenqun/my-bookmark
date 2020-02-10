@@ -156,7 +156,7 @@ app.factory('dataService', [function() {
         netErrorHandle(err, $state) {
             if(err == "Unauthorized") {
                 // $state.go("login");
-                // toastr.error('您好像没有登陆，或者登陆session过期了，请重新登陆！', "提示");
+                toastr.error('您没有权限做此操作，请先登录！', "提示");
             }
         }
     };

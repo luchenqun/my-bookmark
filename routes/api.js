@@ -73,6 +73,10 @@ api.post('/jumpQuickUrl', function(req, res) {
         .catch((err) => console.log('jumpQuickUrl err', err)); // oops!
 });
 
+api.get('/logined', function(req, res) {
+    res.json({ logined: req.session.logined ? true : false });
+});
+
 api.post('/login', function(req, res) {
     var params = req.body.params;
     var username = params.username;
@@ -90,6 +94,7 @@ api.post('/login', function(req, res) {
                 req.session.user = user;
                 req.session.username = ret.user.username;
                 req.session.userId = ret.user.id;
+                req.session.logined = true;
             }
             ret.user.password = "*";
             res.json(ret);
@@ -126,24 +131,28 @@ api.get('/userInfo', function(req, res) {
 });
 
 api.post('/register', function(req, res) {
-    var params = req.body.params;
-    params.password = md5(params.password); // 进行密码加密
+    res.json({
+        retCode: 1,
+        msg: "不支持注册！",
+    })
+    // var params = req.body.params;
+    // params.password = md5(params.password); // 进行密码加密
 
-    db.register(params)
-        .then((affectedRows) => {
-            res.json({
-                retCode: 0,
-                msg: params.username + " 注册成功 ",
-            })
-            console.log('register affectedRows ', affectedRows)
-        })
-        .catch((err) => {
-            console.log('login error', err);
-            res.json({
-                retCode: 1,
-                msg: params.username + " 注册失败: " + JSON.stringify(err),
-            })
-        });
+    // db.register(params)
+    //     .then((affectedRows) => {
+    //         res.json({
+    //             retCode: 0,
+    //             msg: params.username + " 注册成功 ",
+    //         })
+    //         console.log('register affectedRows ', affectedRows)
+    //     })
+    //     .catch((err) => {
+    //         console.log('login error', err);
+    //         res.json({
+    //             retCode: 1,
+    //             msg: params.username + " 注册失败: " + JSON.stringify(err),
+    //         })
+    //     });
 });
 
 api.post('/resetPassword', function(req, res) {
@@ -186,7 +195,7 @@ api.post('/resetPassword', function(req, res) {
 
 api.post('/updateShowStyle', function(req, res) {
     console.log("updateShowStyle username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -252,7 +261,7 @@ api.post('/updateSearchHistory', function(req, res) {
 
 api.post('/updateQuickUrl', function(req, res) {
     console.log("updateQuickUrl username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -303,7 +312,7 @@ api.get('/autoLogin', function(req, res) {
 
 api.delete('/delBookmark', function(req, res) {
     console.log("delBookmark username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -329,7 +338,7 @@ api.delete('/delBookmark', function(req, res) {
 
 api.post('/updateBookmark', function(req, res) {
     console.log("updateBookmark username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -704,7 +713,7 @@ api.get('/advices', function(req, res) {
 
 api.post('/addAdvice', function(req, res) {
     console.log("addAdvice username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -732,7 +741,7 @@ api.post('/addAdvice', function(req, res) {
 // 发现使用node启动没问题，forever启动有问题。
 api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
     console.log("uploadBookmarkFile username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -819,7 +828,7 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
 api.post('/addBookmark', function(req, res) {
     console.log("addBookmark username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -863,7 +872,7 @@ api.post('/addBookmark', function(req, res) {
 
 api.post('/favoriteBookmark', function(req, res) {
     console.log("favoriteBookmark username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -919,7 +928,7 @@ api.post('/favoriteBookmark', function(req, res) {
 
 api.post('/addTags', function(req, res) {
     console.log("addTags username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -948,7 +957,7 @@ api.post('/addTags', function(req, res) {
 
 api.post('/updateTagName', function(req, res) {
     console.log("updateTagName username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -991,7 +1000,7 @@ api.post('/updateTagName', function(req, res) {
 
 api.post('/updateTagShow', function(req, res) {
     console.log("updateTagShow username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -1034,7 +1043,7 @@ api.post('/updateTagShow', function(req, res) {
 
 api.post('/updateTagsIndex', function(req, res) {
     console.log("updateTagsIndex username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -1071,7 +1080,7 @@ api.post('/delTag', function(req, res) {
         })
         return;
     }
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -1425,7 +1434,7 @@ api.getHotBookmarksByTimer = function() {
 
 api.post('/addNote', function(req, res) {
     console.log("addNote username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -1502,7 +1511,7 @@ api.get('/notes', function(req, res) {
 
 api.delete('/delNote', function(req, res) {
     console.log("delBookmark username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -1521,7 +1530,7 @@ api.delete('/delNote', function(req, res) {
 
 api.post('/updateNote', function(req, res) {
     console.log("updateNote username = ", req.session.username);
-    if (!req.session.user) {
+    if (!req.session.logined) {
         res.send(401);
         return;
     }
@@ -1542,7 +1551,7 @@ api.post('/updateNote', function(req, res) {
 
 api.post('/updateNotePublic', function(req, res) {
   console.log("updateNotePublic username = ", req.session.username);
-  if (!req.session.user) {
+  if (!req.session.logined) {
       res.send(401);
       return;
   }

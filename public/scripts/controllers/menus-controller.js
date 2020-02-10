@@ -1,6 +1,7 @@
-app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'pubSubService', 'bookmarkService', 'dataService', function ($scope, $stateParams, $state, $window, $timeout, $document, pubSubService, bookmarkService, dataService) {
+app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'ngDialog', 'pubSubService', 'bookmarkService', 'dataService', function ($scope, $stateParams, $state, $window, $timeout, $document, ngDialog, pubSubService, bookmarkService, dataService) {
     console.log("Hello menuCtr")
-    $scope.login = false; /**< 是否登陆 */
+    $scope.login = true; /**< 是否登陆 */
+    $scope.logined = false; // 是不是授权了
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.searchWord = ''; /**< 搜索关键字 */
@@ -9,12 +10,16 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.historyTypes = dataService.historyTypes;
     $scope.quickUrl = {};
     $scope.longPress = false;
+    $scope.username = "";
+    $scope.password = "";
     $scope.user = {};
+
+    var dialog = null;
 
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function (event, params) {
         console.log("subscribe Common.menuActive, login = " + params.login + ", index = " + params.index);
-        $scope.login = (params && params.login) || false;
+        $scope.login = true;
         var index = $scope.login ? ($scope.selectLoginIndex = (params && params.index) || 0) : ($scope.selectNotLoginIndex = (params && params.index) || 0);
         updateMenuActive(index);
     });
@@ -26,39 +31,90 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
+    bookmarkService.autoLogin()
+        .then((data) => {
+            pubSubService.publish('loginCtr.login', {
+                'login': data.logined,
+            });
+        })
+        .catch((err) => {
+            pubSubService.publish('loginCtr.login', {
+                'login': data.logined,
+            });
+        });
+
     bookmarkService.userInfo({})
-    .then((data) => {
-        $scope.user = data;
-        if(data.username === 'lcq') {
-            $scope.loginMenus[dataService.LoginIndexHot].show = false;
-        }
-    })
-    .catch((err) => {
+        .then((data) => {
+            $scope.user = data;
+            if (data.username === 'lcq') {
+                $scope.loginMenus[dataService.LoginIndexHot].show = false;
+            }
+        })
+        .catch((err) => {
 
-    });
+        });
 
-    $scope.toggleReady = function(ready) {
-        if(ready) {
+    bookmarkService.logined({})
+        .then((data) => {
+            $scope.logined = data.logined;
+        })
+        .catch((err) => {
+
+        });
+
+    $scope.openLoginDialog = function () {
+        dialog = ngDialog.open({
+            template: './views/dialog-login.html',
+            className: 'ngdialog-theme-default',
+            scope: $scope
+        });
+    }
+
+    $scope.userLogin = function (username, password) {
+        var params = {
+            username: username,
+            password: password,
+            autoLogin: true,
+        };
+        $scope.logined = false;
+        bookmarkService.login(params)
+            .then((data) => {
+                if (data.logined) {
+                    pubSubService.publish('loginCtr.login', {
+                        'login': data.logined,
+                    });
+                    ngDialog.close(dialog);
+                    $scope.logined = true;
+                    toastr.success("登陆成功")
+                } else {
+                    toastr.error('账号或者密码错误', "错误");
+                }
+            })
+            .catch((err) => console.log('login err', err));
+    }
+
+    $scope.toggleReady = function (ready) {
+        if (ready) {
             $(".searchIcon").show();
         } else {
-            $timeout(function(){
+            $timeout(function () {
                 !$("#sInput").val() && $(".searchIcon").hide();
             }, 500)
         }
     }
 
-    $scope.searchIcon = function(item) {
-        if(item.t === 0) {
+    $scope.searchIcon = function (item) {
+        if (item.t === 0) {
             item.icon = "book link icon";
-        } else if(item.t === 1) {
+        } else if (item.t === 1) {
             item.icon = "google link icon";
-        } else if(item.t === 2) {
+        } else if (item.t === 2) {
             item.icon = "github link icon";
-        } else if(item.t === 3) {
+        } else if (item.t === 3) {
             item.icon = "stack overflow link icon";
-        } else if(item.t === 4) {
+        } else if (item.t === 4) {
             item.icon = "bimobject link icon";
-        } else if(item.t === 5) {
+        } else if (item.t === 5) {
             item.icon = "file alternate link icon";
         }
     }
@@ -76,14 +132,14 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
         $scope.login = true;
         // var searchOption = $('.js-search-option').dropdown('get value') || 0;
-        if (searchOption == 0) {
+        if (searchOption == 1) {
             $state.go('search', {
                 searchWord: searchWord,
             }, {
-                    reload: true,
-                })
+                reload: true,
+            })
             updateMenuActive($scope.selectLoginIndex = 0);
-        } else if (searchOption == 1) {
+        } else if (searchOption == 0) {
             $window.open('https://www.google.com.hk/#newwindow=1&safe=strict&q=' + encodeURIComponent(searchWord), '_blank');
         } else if (searchOption == 2) {
             $window.open('https://github.com/search?utf8=%E2%9C%93&q=' + encodeURIComponent(searchWord) + '&type=', '_blank');
@@ -96,8 +152,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $state.go('note', {
                 searchWord: searchWord,
             }, {
-                    reload: true,
-                })
+                reload: true,
+            })
             updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
         }
 
@@ -155,7 +211,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         if (delIndex >= 0) {
             $scope.searchHistory.splice(delIndex, 1);
         }
-        if(!type && !data) {
+        if (!type && !data) {
             $scope.searchHistory = [];
         }
         saveHistory();
@@ -172,8 +228,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $state.go('bookmarks', {
             showStyle: showStyle,
         }, {
-                reload: true,
-            })
+            reload: true,
+        })
     }
 
     $scope.showAddBookmarkMoadl = function () {
@@ -186,8 +242,18 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         bookmarkService.logout({})
             .then((data) => {
                 console.log('logout..........', data)
-                $scope.login = false;
-                $state.go('login', {})
+                $scope.logined = false;
+                bookmarkService.autoLogin()
+                .then((data) => {
+                    pubSubService.publish('loginCtr.login', {
+                        'login': data.logined,
+                    });
+                })
+                .catch((err) => {
+                    pubSubService.publish('loginCtr.login', {
+                        'login': data.logined,
+                    });
+                });
             })
             .catch((err) => console.log('logout err', err));
     }
@@ -291,7 +357,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                 // 有时候没有检测到keyup，会一直按无效，干脆过个3秒就认为你抬起来了
                 // 反正你按下我还是会给你标记为true的。
                 $timeout(function () {
-                  $scope.longPress = false;
+                    $scope.longPress = false;
                 }, 3000)
             }
 
@@ -308,10 +374,10 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                 if (key == 'S') {
                     $(".search-item").focus();
                     var count = 1;
-                    var sId = setInterval(function() {
+                    var sId = setInterval(function () {
                         $(".search-item").val("");
                         count++;
-                        if(count>=5) {
+                        if (count >= 5) {
                             clearInterval(sId);
                         }
                     }, 3)
@@ -320,7 +386,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
 
                 if (key == ',' || key == '.' || key == '/') {
                     pubSubService.publish('Common.menuActive', {
-                        login: $scope.login,
+                        login: true,
                         index: dataService.LoginIndexTags
                     });
                     var stateParams = {
@@ -333,7 +399,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                 // 数字键用来切换菜单
                 if (!isNaN(key)) {
                     var num = parseInt(key);
-                    if(num < 0 || num > 6) return;
+                    if (num < 0 || num > 6) return;
                     pubSubService.publish('Common.menuActive', {
                         login: $scope.login,
                         index: num - 1
@@ -349,18 +415,18 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
                             url: url,
                         }
                         bookmarkService.jumpQuickUrl(params)
-                        .then((data) => {
-                            if(!data.id){
-                                toastr.info('网址：' + url + "还没添加到你的书签系统，请添加！", "警告");
-                                var bookmark = {
-                                    url: url
+                            .then((data) => {
+                                if (!data.id) {
+                                    toastr.info('网址：' + url + "还没添加到你的书签系统，请添加！", "警告");
+                                    var bookmark = {
+                                        url: url
+                                    }
+                                    pubSubService.publish('TagCtr.storeBookmark', bookmark);
                                 }
-                                pubSubService.publish('TagCtr.storeBookmark', bookmark);
-                            }
-                        })
-                        .catch((err) => {
-                            
-                        });
+                            })
+                            .catch((err) => {
+
+                            });
                     }
                 }
             }

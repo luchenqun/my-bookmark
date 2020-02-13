@@ -17,22 +17,25 @@ app.factory('dataService', [function() {
 
         loginMenus: [{
             uiSref: 'bookmarks',
-            title: '书签'
+            title: '显示模式'
         }, {
             uiSref: 'tags',
             title: '分类'
         }, {
             uiSref: 'note',
-            title: '备忘'
+            title: '备忘',
+            show: false
         }, {
             uiSref: 'weixin-article',
-            title: '热门'
+            title: '热门',
+            show: false
         }, {
             uiSref: 'settings',
             title: '设置'
         }, {
             uiSref: 'advice',
-            title: '留言'
+            title: '留言',
+            show: false
         }],
         notLoginMenus: [{
             uiSref: '/',

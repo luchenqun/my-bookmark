@@ -1,6 +1,6 @@
-app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $stateParams, $filter, $state, $window, $timeout, bookmarkService, pubSubService, dataService) {
+app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $stateParams, $filter, $state, $window, $timeout, bookmarkService, pubSubService, dataService) {
     console.log('Hello settingsCtr......', $stateParams);
-    if(dataService.smallDevice()){
+    if (dataService.smallDevice()) {
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
@@ -22,7 +22,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.logsUrl = 'https://github.com/luchenqun/my-bookmark/commits/master';
     $scope.loadingLogs = false;
 
-    $scope.getUpdateLog = function(url) {
+    $scope.getUpdateLog = function (url) {
         if ($scope.updateLogs.length > 0 && url == 'https://github.com/luchenqun/my-bookmark/commits/master') {
             toastr.warning('没有更早的日志可供您查看了！', "错误");
             return;
@@ -30,8 +30,8 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
 
         $scope.loadingLogs = true;
         bookmarkService.getUpdateLog({
-                url: url
-            })
+            url: url
+        })
             .then((data) => {
                 Array.prototype.push.apply($scope.updateLogs, data.updateLogs);
                 $scope.logsUrl = data.oldUrl;
@@ -43,7 +43,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
             });
     }
 
-    $scope.changeForm = function(index) {
+    $scope.changeForm = function (index) {
         console.log("changeForm = ", index);
         $scope.form = $scope.form.map(() => false);
         $scope.form[index] = true;
@@ -100,7 +100,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
 
     $scope.changeForm($scope.form.indexOf(true)); // 马上调用一次
 
-    $scope.resetPassword = function() {
+    $scope.resetPassword = function () {
         if (!$scope.passwordOrgin || !$scope.passwordNew1 || !$scope.passwordNew2) {
             toastr.error('原密码跟新密码不能为空', "错误");
             return;
@@ -139,7 +139,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         }
     }
 
-    $scope.updateDefaultShowStyle = function(showStyle) {
+    $scope.updateDefaultShowStyle = function (showStyle) {
         console.log(showStyle)
         var parmes = {
             showStyle: showStyle,
@@ -158,19 +158,19 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     }
 
 
-    $scope.quickKey = function(key) {
+    $scope.quickKey = function (key) {
         key = key.toUpperCase();
         console.log('key = ', key);
         if (!(key >= 'A' && key <= 'Z')) {
             key = '';
             toastr.warning('快捷键只能是字母a ~ z，字母不区分大小写。', "警告");
         }
-        $timeout(function() {
+        $timeout(function () {
             $scope.key = key;
         });
     }
 
-    $scope.addQuickUrl = function() {
+    $scope.addQuickUrl = function () {
         if ($scope.url == '' || $scope.key == '') {
             toastr.warning('快捷键或者网站地址为空！', "警告");
         }
@@ -208,16 +208,16 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         $scope.key = '';
     }
 
-    $scope.delUrl = function(key) {
+    $scope.delUrl = function (key) {
         delete $scope.quickUrl[key];
         saveQuickUrl();
     }
 
-    $scope.jumpCommit = function(url) {
+    $scope.jumpCommit = function (url) {
         $window.open(url, '_blank');
     }
 
-    $scope.exportBookmark = function() {
+    $scope.exportBookmark = function () {
         var userId = $scope.user && $scope.user.id;
         if (userId) {
             // toastr.warning('功能正在开发中，敬请期待......', '提示');
@@ -229,7 +229,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     }
 
     function updateShowStyle(showStyle) {
-        setTimeout(function() {
+        setTimeout(function () {
             if (showStyle) {
                 $('.js-default-show-style' + ' .radio.checkbox').checkbox('set unchecked');
                 $('.js-radio-default-' + showStyle).checkbox('set checked');
@@ -237,7 +237,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         }, 100)
     }
 
-    setTimeout(function() {
+    setTimeout(function () {
         $("#fileuploader").uploadFile({
             url: "/api/uploadBookmarkFile",
             multiple: false,
@@ -246,9 +246,9 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
             acceptFiles: "text/html",
             maxFileSize: 10 * 1024 * 1024, // 最大10M
             dragdropWidth: "100%",
-            onSuccess: function(files, response, xhr, pd) {
+            onSuccess: function (files, response, xhr, pd) {
                 toastr.success('文件上传成功，3秒钟自动跳转到书签页面', "提示");
-                setTimeout(function() {
+                setTimeout(function () {
                     pubSubService.publish('Common.menuActive', {
                         login: true,
                         index: dataService.LoginIndexBookmarks

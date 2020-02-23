@@ -1,6 +1,6 @@
 app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello noteCtr...", $stateParams);
-    if(dataService.smallDevice()){
+    if (dataService.smallDevice()) {
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
@@ -191,7 +191,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     }
 
     $scope.updateNote = function () {
-        if(!$scope.content) {
+        if (!$scope.content) {
             toastr.error('更新失败，更新内容不能为空', "提示");
             return;
         }
@@ -292,7 +292,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
     $scope.share = function (note) {
         var time = 100;
-        if(note.public == '0') {
+        if (note.public == '0') {
             toastr.info('由于打算分享备忘，系统会自动将备忘的私密状态转为公开状态');
             $scope.updatePublic(note, '1');
             time = 1000;
@@ -304,7 +304,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
     }
 
-    $scope.updatePublic = function(note, public) {
+    $scope.updatePublic = function (note, public) {
         var params = {
             id: note.id,
             public: public,
@@ -434,7 +434,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     }
 
     function toPos(id) {
-        setTimeout(function(){
+        setTimeout(function () {
             $('html,body').animate({ scrollTop: $('#' + id).offset().top - 20 }, 100);
         }, 36);
     }

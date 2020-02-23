@@ -1,6 +1,6 @@
-app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $sce, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $sce, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello weixinArticleCtr...");
-    if(dataService.smallDevice()){
+    if (dataService.smallDevice()) {
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
@@ -27,7 +27,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     $scope.maxCallCount = 100;
     $scope.user = {};
     var timeagoInstance = timeago();
-    
+
     bookmarkService.autoLogin()
         .then((data) => {
             var login = data.logined;
@@ -42,11 +42,11 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             console.log('autoLogin err', err)
         });
 
-    $scope.jumpToUrl = function(url) {
+    $scope.jumpToUrl = function (url) {
         $window.open(url, '_blank');
     }
 
-    $scope.favoriteBookmark = function(b) {
+    $scope.favoriteBookmark = function (b) {
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         var login = (menusScope && menusScope.login) || false;
         if (!login) {
@@ -75,7 +75,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             });
     }
 
-    $scope.storeBookmark = function(bookmark) {
+    $scope.storeBookmark = function (bookmark) {
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         var login = (menusScope && menusScope.login) || false;
         if (!login) {
@@ -89,30 +89,30 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
         }
     }
 
-    $scope.copy = function(url) {
+    $scope.copy = function (url) {
         dataService.clipboard(url);
     }
 
-    $scope.detailBookmark = function(b) {
-        if(!b.content) {
+    $scope.detailBookmark = function (b) {
+        if (!b.content) {
             $scope.jumpToUrl(b.url);
             return;
         }
         $scope.bookmark = b;
         $('.js-weixin-content').modal({ blurring: true }).modal('setting', 'transition', dataService.animation()).modal('show')
-        $timeout(function() {
-            $('.js-main-content').animate({scrollTop:0},100);
+        $timeout(function () {
+            $('.js-main-content').animate({ scrollTop: 0 }, 100);
             $('.js-weixin-content').modal("refresh");
         }, 10)
     }
 
-    $scope.close = function() {
+    $scope.close = function () {
         $('.js-weixin-content').modal('setting', 'transition', dataService.animation()).modal('hide');
     }
 
     // 快捷键r随机推荐
-    $document.bind("keydown", function(event) {
-        $scope.$apply(function() {
+    $document.bind("keydown", function (event) {
+        $scope.$apply(function () {
             // console.log(event.keyCode);
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
             var login = (menusScope && menusScope.login) || false;
@@ -134,7 +134,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
         })
     });
 
-    $scope.randomHotBookmarks = function() {
+    $scope.randomHotBookmarks = function () {
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         var login = (menusScope && menusScope.login) || false;
         if (login) {
@@ -149,7 +149,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
         }
     }
 
-    $scope.setHoverBookmark = function(bookmark) {
+    $scope.setHoverBookmark = function (bookmark) {
         $scope.hoverBookmark = bookmark;
     }
 
@@ -162,7 +162,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
         }
     }
 
-    $scope.getWeixinArticles = function(channelId, page) {
+    $scope.getWeixinArticles = function (channelId, page) {
         var menusScope = $('div[ng-controller="menuCtr"]').scope();
         var login = (menusScope && menusScope.login) || false;
         var index = login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot;
@@ -178,30 +178,30 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
         $scope.totalPages = 0;
         var start = (page - 1) * perPageItems;
         var api = `https://api.jisuapi.com/weixinarticle/get?channelid=${channelId}&start=${start}&num=${perPageItems}&appkey=e95887468ab87d69`;
-        if(localStorage) {
+        if (localStorage) {
             var count = parseInt(localStorage.getItem('weixin' + key) || 1);
             if (count <= $scope.maxCallCount || $scope.user.username === 'lcq') {
                 $.ajax({
                     url: api,
                     type: 'get',
-                    dataType : "jsonp",
-                    jsonp : "callback",
-                    success: function(body) {
+                    dataType: "jsonp",
+                    jsonp: "callback",
+                    success: function (body) {
                         dealBody(body);
-                        if(channelId == 1 && page == 1) {
+                        if (channelId == 1 && page == 1) {
                             getHotBookmarksbyAPI();
                         } else {
                             $scope.randomHotBookmarks();
                         }
                     },
-                    error: function(json) {
+                    error: function (json) {
                         $scope.loadBusy = false;
                         toastr.error('获取热门失败！失败原因：' + json.msg, "提示");
                         getHotBookmarksbyCache();
                     }
                 });
-                localStorage.setItem('weixin' + key, count+1)
-                $scope.callCount = count+1;
+                localStorage.setItem('weixin' + key, count + 1)
+                $scope.callCount = count + 1;
             } else {
                 getHotBookmarksbyCache();
                 toastr.warning('每天只允许实时调用 100 次剩下的只从缓存中获取', "提示");
@@ -230,8 +230,8 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
             url: api,
             type: 'post',
             data: requireData,
-            success: function(json) {
-                $timeout(function() {
+            success: function (json) {
+                $timeout(function () {
                     $scope.loadBusy = false;
                     var alterRex = "/mmbiz.qpic.cn|images.jianshu.io|zhimg.com/g";
                     var defaultSnap = "./images/default.jpg"
@@ -267,7 +267,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
                     }
                 }, 10)
             },
-            error: function(json) {
+            error: function (json) {
                 $scope.loadBusy = false;
                 toastr.error('获取热门书签失败！失败原因：' + json.message + "。将尝试从缓存中获取！", "提示");
             }
@@ -324,7 +324,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     function dealBody(body) {
         console.log('success............', body);
         $scope.loadBusy = false;
-        $timeout(function() {
+        $timeout(function () {
             var defaultSnap = "./images/default.jpg"
             var defaultFavicon = "./images/weixin.ico"
             if (body.status == 0) {
@@ -349,7 +349,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
                     b.account = articl.weixinaccount;
                     b.snap_url = articl.pic || defaultSnap;
                     b.fav_count = articl.likenum;
-                    b.created_at = timeagoInstance.format(cdate,'zh_CN');
+                    b.created_at = timeagoInstance.format(cdate, 'zh_CN');
                     b.content = articl.content
                     b.content = b.content.replace(/https:\/\/mmbiz.qpic.cn/gi, "http://img01.store.sogou.com/net/a/04/link?appid=100520029&url=https://mmbiz.qpic.cn")
                     b.content = b.content.replace(/http:\/\/mmbiz.qpic.cn/gi, "http://img01.store.sogou.com/net/a/04/link?appid=100520029&url=https://mmbiz.qpic.cn")

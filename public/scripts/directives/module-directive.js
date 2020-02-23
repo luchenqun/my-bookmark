@@ -1,4 +1,4 @@
-app.directive('bookmarkinfo', function() {
+app.directive('bookmarkinfo', function () {
     return {
         restrict: 'EAC',
         templateUrl: '/views/bookmark-info.html',
@@ -6,7 +6,7 @@ app.directive('bookmarkinfo', function() {
     }
 });
 
-app.directive('edit', function() {
+app.directive('edit', function () {
     return {
         restrict: 'EAC',
         templateUrl: '/views/edit.html',
@@ -15,7 +15,7 @@ app.directive('edit', function() {
 });
 
 // 不要使用已有的html作为指令，如menu，否则angular会陷入死循环
-app.directive('menus', function() {
+app.directive('menus', function () {
     return {
         restrict: 'EAC',
         templateUrl: '/views/menus.html',
@@ -23,11 +23,11 @@ app.directive('menus', function() {
     }
 });
 
-app.directive('pagination', function() {
+app.directive('pagination', function () {
     return {
         restrict: 'EA',
         templateUrl: '/views/pagination.html',
         replace: true,
-        link: function(scope, element, attrs) {}
+        link: function (scope, element, attrs) { }
     }
 });

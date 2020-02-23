@@ -1,15 +1,33 @@
-<div class="ui hidden info message js-msg" ng-if="showStyle === 'navigate' && bookmarks.length <= 2">
-	<i class="close icon" ng-click="closeMsg()"></i>
-	<div class="content">
-		<div class="header">系统检测到您好像还没添加过书签哦！</div>
-		<ul class="list">
-			<li>您可以将您的IE浏览器或者谷歌浏览器上面的书签导入系统！<a style="cursor:pointer;" ng-click="addBookmarkbyFile()">现在就去</a></li>
-			<li>您也可以点击菜单栏上面的<i class="add square icon"></i>图标进行添加。也可以使用快捷键：Insert键打开添加页面，再次按Insert键保存书签，Esc取消添加。</li>
-		</ul>
-	</div>
-</div>
 <div class="ui segment js-segment-navigate" ng-show="!loadBusy">
-	<div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
+	<div class="ui divided grid">
+		<div class="two wide column">
+			<div class="ui link list">
+				<a class="item" style="margin: 5px 0px;text-align: center;" ng-repeat="tag in bookmarks">{{ tag.name }}</a>
+			</div>
+		</div>
+		<div class="fourteen wide column">
+			<div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
+				<div class="ui grid container">
+					<div
+						class="four wide column js-navigate-bookmark"
+						ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmarkEditHover:bookmarkEditHover, bookmark:(!bookmarkNormalHover && !bookmarkEditHover)}"
+						ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)"
+						ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)"
+						ng-repeat="bookmark in tag.bookmarks"
+						ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+						title="{{ bookmark.title }}"
+						id="{{bookmark.id}}"
+					>
+						<img class="ui ui middle aligned tiny image bookmarkInfo" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" />
+						<span>{{ bookmark.title}}</span>
+					</div>
+				</div>
+				<div class="ui divider"></div>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
 		<div class="ui grid">
 			<div class="row">
 				<div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;">
@@ -35,7 +53,7 @@
 			</div>
 		</div>
 		<div class="ui divider"></div>
-	</div>
+	</div> -->
 </div>
 <div class="ui massive text centered inline loader" ng-class="{active:loadBusy, disabled:!loadBusy}">
 	正在加载中...

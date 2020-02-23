@@ -1,6 +1,6 @@
-app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', '$window', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $filter, $state, $cookieStore, $window, bookmarkService, pubSubService, dataService) {
+app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', '$window', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $state, $cookieStore, $window, bookmarkService, pubSubService, dataService) {
     console.log("Hello loginCtr...", $cookieStore.get("username"));
-    if(dataService.smallDevice()){
+    if (dataService.smallDevice()) {
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
@@ -20,7 +20,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', '$win
     $scope.passwordRegister1 = "";
     $scope.passwordRegister2 = "";
 
-    $scope.login = function() {
+    $scope.login = function () {
         var autoLogin = $('.ui.checkbox.js-auto-login').checkbox('is checked');
         if (!$scope.username || !$scope.password) {
             $scope.showErr = true;
@@ -52,7 +52,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', '$win
         }
     }
 
-    $scope.showRegister = function() {
+    $scope.showRegister = function () {
         $('.ui.modal.js-register').modal({
             closable: false,
         }).modal('setting', 'transition', dataService.animation()).modal('show');
@@ -64,7 +64,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$cookieStore', '$win
 
     }
 
-    $scope.register = function() {
+    $scope.register = function () {
         if (!$scope.emailRegister || !$scope.usernameRegister || !$scope.passwordRegister1 || !$scope.passwordRegister2) {
             toastr.error('有必填项为空', "错误");
             return;

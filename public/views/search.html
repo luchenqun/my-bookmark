@@ -1,196 +1,185 @@
 <div class="ui huge text centered inline loader" ng-class="{active:loading, disabled: !loading}">
-    加载中，请稍候...</div>
+	加载中，请稍候...
+</div>
 <div class="ui grid" style="height:45px" ng-show="!loading">
-    <div class="fourteen wide column" ng-show="!showSearch">
-        共为您找到相关书签约{{bookmarkCount}}个
-    </div>
-    <div class="left floated right aligned two wide column" ng-show="!showSearch">
-        <img class="ui ui middle aligned tiny image" ng-src="./images/cocktail.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch">
-        <span ng-click="showSearch = !showSearch">搜索工具</span>
-    </div>
-    <div class="two wide column" ng-show="showSearch">
-        <div class="ui dropdown js-user-range" js-dropdown-user-range-init>
-            <div class="text">搜索范围</div>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-                <div class="active item" data-value="1">自己书签</div>
-                <div class="item" data-value="2">全站书签</div>
-                <div class="item" data-value="3">热门收藏</div>
-            </div>
-        </div>
-    </div>
-    <div class="four wide column" ng-show="showSearch">
-        <div class="ui dropdown item js-create-date" js-data-create-init>
-            <div class="text">创建时间不限</div>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-                <div class="active item" data-value='-1'>创建时间不限</div>
-                <div class="item" data-value='0'>今天</div>
-                <div class="item" data-value='7'>一周内</div>
-                <div class="item" data-value='31'>一月内</div>
-                <div class="item" data-value='365'>一年内</div>
-                <div class="divider"></div>
-                <div class="header">自定义</div>
-                <div class="ui transparent input">
-                    <div class="ui calendar js-date-create-begin">
-                        <div class="ui transparent input left icon">
-                            <i class="calendar icon"></i>
-                            <input type="text" placeholder="开始日期" ng-model="dateCreateBegin">
-                        </div>
-                    </div>
-                </div>
-                <div class="ui transparent input">
-                    <div class="ui calendar js-date-create-end">
-                        <div class="ui transparent input left icon">
-                            <i class="calendar icon"></i>
-                            <input type="text" placeholder="结束日期" ng-model="dateCreateEnd">
-                        </div>
-                    </div>
-                </div>
-                <div class="ui transparent input">
-                    <div class="ui basic button" ng-click="updateCreateDate()">确定</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="four wide column" ng-show="showSearch">
-        <div class="ui dropdown item js-click-date" js-data-click-init>
-            <div class="text">点击时间不限</div>
-            <i class="dropdown icon"></i>
-            <div class="menu">
-                <div class="active item" data-value='-1'>点击时间不限</div>
-                <div class="item" data-value='0'>今天</div>
-                <div class="item" data-value='7'>一周内</div>
-                <div class="item" data-value='31'>一月内</div>
-                <div class="item" data-value='365'>一年内</div>
-                <div class="divider"></div>
-                <div class="header">自定义</div>
-                <div class="ui transparent input">
-                    <div class="ui calendar js-date-click-begin">
-                        <div class="ui transparent input left icon">
-                            <i class="calendar icon"></i>
-                            <input type="text" placeholder="开始日期" ng-model="dateClickBegin">
-                        </div>
-                    </div>
-                </div>
-                <div class="ui transparent input">
-                    <div class="ui calendar js-date-click-end">
-                        <div class="ui transparent input left icon">
-                            <i class="calendar icon"></i>
-                            <input type="text" placeholder="结束日期" ng-model="dateClickEnd">
-                        </div>
-                    </div>
-                </div>
-                <div class="ui transparent input">
-                    <div class="ui basic button" ng-click="updateClickDate()">确定</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="two wide column" ng-show="showSearch">
-        <div class="ui transparent icon input" ng-show="(!showTags) && (!searchHotBookmarks)">
-            <input class="prompt" type="text" placeholder="用户账号" ng-model="username" ng-keypress="($event.which === 13)?search(1):0">
-        </div>
-        <div class="ui grid container" style="padding-top: 8px;">
-            <div class="ui multiple dropdown js-search-tags" style="padding:0;" ng-show="showTags" js-dropdown-tags-init>
-                <div class="default text">分类选择</div>
-                <i class="dropdown icon"></i>
-                <div class="menu" ng-click="updateTagsSelect()">
-                    <div class="item" data-value='{{tag.id}}' ng-repeat="tag in tags">{{tag.name}}</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="two wide column" ng-show="showSearch">
-        <div class="ui transparent input">
-            <input type="text" placeholder="标题，链接..." ng-model="searchWord" ng-keypress="($event.which === 13)?search(1):0">
-        </div>
-    </div>
-    <div class=" left floated right aligned two wide column" ng-show=" showSearch">
-        <div class="ui grid">
-            <div class="four wide column">
-                <i class="search icon" title="搜索" ng-click="currentPage=1;search()"></i>
-            </div>
-            <div class="twelve wide column">
-                <img class="ui ui middle aligned tiny image" ng-src="./images/hide.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch">
-                <span ng-click="showSearch = !showSearch">收起</span>
-            </div>
-        </div>
-    </div>
+	<div class="fourteen wide column" ng-show="!showSearch">
+		共为您找到相关书签约{{bookmarkCount}}个
+	</div>
+	<div class="left floated right aligned two wide column" ng-show="!showSearch">
+		<img class="ui ui middle aligned tiny image" ng-src="./images/cocktail.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch" />
+		<span ng-click="showSearch = !showSearch">搜索工具</span>
+	</div>
+	<div class="two wide column" ng-show="showSearch">
+		<div class="ui dropdown js-user-range" js-dropdown-user-range-init>
+			<div class="text">搜索范围</div>
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				<div class="active item" data-value="1">自己书签</div>
+				<div class="item" data-value="2">全站书签</div>
+				<div class="item" data-value="3">热门收藏</div>
+			</div>
+		</div>
+	</div>
+	<div class="four wide column" ng-show="showSearch">
+		<div class="ui dropdown item js-create-date" js-data-create-init>
+			<div class="text">创建时间不限</div>
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				<div class="active item" data-value="-1">创建时间不限</div>
+				<div class="item" data-value="0">今天</div>
+				<div class="item" data-value="7">一周内</div>
+				<div class="item" data-value="31">一月内</div>
+				<div class="item" data-value="365">一年内</div>
+				<div class="divider"></div>
+				<div class="header">自定义</div>
+				<div class="ui transparent input">
+					<div class="ui calendar js-date-create-begin">
+						<div class="ui transparent input left icon">
+							<i class="calendar icon"></i>
+							<input type="text" placeholder="开始日期" ng-model="dateCreateBegin" />
+						</div>
+					</div>
+				</div>
+				<div class="ui transparent input">
+					<div class="ui calendar js-date-create-end">
+						<div class="ui transparent input left icon">
+							<i class="calendar icon"></i>
+							<input type="text" placeholder="结束日期" ng-model="dateCreateEnd" />
+						</div>
+					</div>
+				</div>
+				<div class="ui transparent input">
+					<div class="ui basic button" ng-click="updateCreateDate()">确定</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="four wide column" ng-show="showSearch">
+		<div class="ui dropdown item js-click-date" js-data-click-init>
+			<div class="text">点击时间不限</div>
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				<div class="active item" data-value="-1">点击时间不限</div>
+				<div class="item" data-value="0">今天</div>
+				<div class="item" data-value="7">一周内</div>
+				<div class="item" data-value="31">一月内</div>
+				<div class="item" data-value="365">一年内</div>
+				<div class="divider"></div>
+				<div class="header">自定义</div>
+				<div class="ui transparent input">
+					<div class="ui calendar js-date-click-begin">
+						<div class="ui transparent input left icon">
+							<i class="calendar icon"></i>
+							<input type="text" placeholder="开始日期" ng-model="dateClickBegin" />
+						</div>
+					</div>
+				</div>
+				<div class="ui transparent input">
+					<div class="ui calendar js-date-click-end">
+						<div class="ui transparent input left icon">
+							<i class="calendar icon"></i>
+							<input type="text" placeholder="结束日期" ng-model="dateClickEnd" />
+						</div>
+					</div>
+				</div>
+				<div class="ui transparent input">
+					<div class="ui basic button" ng-click="updateClickDate()">确定</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="two wide column" ng-show="showSearch">
+		<div class="ui transparent icon input" ng-show="(!showTags) && (!searchHotBookmarks)">
+			<input class="prompt" type="text" placeholder="用户账号" ng-model="username" ng-keypress="($event.which === 13)?search(1):0" />
+		</div>
+		<div class="ui grid container" style="padding-top: 8px;">
+			<div class="ui multiple dropdown js-search-tags" style="padding:0;" ng-show="showTags" js-dropdown-tags-init>
+				<div class="default text">分类选择</div>
+				<i class="dropdown icon"></i>
+				<div class="menu" ng-click="updateTagsSelect()">
+					<div class="item" data-value="{{tag.id}}" ng-repeat="tag in tags">{{tag.name}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="two wide column" ng-show="showSearch">
+		<div class="ui transparent input">
+			<input type="text" placeholder="标题，链接..." ng-model="searchWord" ng-keypress="($event.which === 13)?search(1):0" />
+		</div>
+	</div>
+	<div class=" left floated right aligned two wide column" ng-show=" showSearch">
+		<div class="ui grid">
+			<div class="four wide column">
+				<i class="search icon" title="搜索" ng-click="currentPage=1;search()"></i>
+			</div>
+			<div class="twelve wide column">
+				<img class="ui ui middle aligned tiny image" ng-src="./images/hide.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch" />
+				<span ng-click="showSearch = !showSearch">收起</span>
+			</div>
+		</div>
+	</div>
 </div>
 <table class="ui selectable celled table js-table-search" ng-show="!loading">
-    <thead>
-        <tr>
-            <th>标题</th>
-            <th>链接</th>
-            <th style="width:90px;">{{ searchHotBookmarks ? '收藏人数' : '点击次数'}}</th>
-            <th style="width:100px;">创建日期</th>
-            <th style="width:100px;">最后点击</th>
-            <th style="width:150px;">{{ searchHotBookmarks ? '来源信息' : '分类'}}</th>
-            <th style="width:88px;">操作</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="bookmark in searchBookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
-            <td>
-                <img
-                    class="ui ui middle aligned mini image"
-                    ng-src="http://favicon.luchenqun.com/?url={{bookmark.favicon_url}}"
-                    err-src="./images/default.ico"
-                    style="width:16px;height:16px;cursor:pointer;"
-                    ng-click="jumpToUrl(bookmark.url, bookmark.id)"
-                    ng-if="searchHotBookmarks">
-                <img
-                    class="ui ui middle aligned mini image"
-                    ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}"
-                    err-src="./images/default.ico"
-                    style="width:16px;height:16px;cursor:pointer;"
-                    ng-click="jumpToUrl(bookmark.url, bookmark.id)"
-                    ng-if="!searchHotBookmarks">
-                <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
-                    {{ bookmark.title }}
-                </span>
-            </td>
-            <td>
-                <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor:default;">{{ bookmark.url }}</span>
-            </td>
-            <td>{{ bookmark.click_count || bookmark.fav_count }}</td>
-            <td>
-                <span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
-            </td>
-            <td>
-                <span id="time{{bookmark.id}}" title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
-            </td>
-            <td>
-                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-if="!searchHotBookmarks">
-                    {{ tag.name }}
-                </div>
-                <span ng-if="searchHotBookmarks">
-                    {{ bookmark.created_by }}
-                </span>
-            </td>
-            <td>
-                <span ng-show="bookmark.own">
-                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签">
-                </span>
-                <span ng-show="bookmark.own">
-                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
-                </span>
-                <span ng-show="!bookmark.own">
-                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏">
-                </span>
-                <span ng-show="!bookmark.own">
-                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签">
-                </span>
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
-            </td>
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <th colspan="7">
-                <pagination></pagination>
-            </th>
-        </tr>
-    </tfoot>
+	<thead>
+		<tr>
+			<th>标题</th>
+			<th>链接</th>
+			<th style="width:90px;">{{ searchHotBookmarks ? '收藏人数' : '点击次数'}}</th>
+			<th style="width:100px;">创建日期</th>
+			<th style="width:100px;">最后点击</th>
+			<th style="width:150px;">{{ searchHotBookmarks ? '来源信息' : '分类'}}</th>
+			<th style="width:88px;">操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="bookmark in searchBookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
+			<td>
+				<img class="ui ui middle aligned mini image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.favicon_url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="searchHotBookmarks" />
+				<img class="ui ui middle aligned mini image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="!searchHotBookmarks" />
+				<span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
+					{{ bookmark.title }}
+				</span>
+			</td>
+			<td>
+				<span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor:default;">{{ bookmark.url }}</span>
+			</td>
+			<td>{{ bookmark.click_count || bookmark.fav_count }}</td>
+			<td>
+				<span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
+			</td>
+			<td>
+				<span id="time{{bookmark.id}}" title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
+			</td>
+			<td>
+				<div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-if="!searchHotBookmarks">
+					{{ tag.name }}
+				</div>
+				<span ng-if="searchHotBookmarks">
+					{{ bookmark.created_by }}
+				</span>
+			</td>
+			<td>
+				<span ng-show="bookmark.own">
+					<img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签" />
+				</span>
+				<span ng-show="bookmark.own">
+					<img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签" />
+				</span>
+				<span ng-show="!bookmark.own">
+					<img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏" />
+				</span>
+				<span ng-show="!bookmark.own">
+					<img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签" />
+				</span>
+				<img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情" />
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<th colspan="7">
+				<pagination></pagination>
+			</th>
+		</tr>
+	</tfoot>
 </table>

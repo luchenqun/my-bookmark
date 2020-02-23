@@ -1,4 +1,4 @@
-app.factory('dataService', [function() {
+app.factory('dataService', [function () {
     const service = {
         // 登陆索引
         LoginIndexBookmarks: 0,
@@ -20,7 +20,7 @@ app.factory('dataService', [function() {
             title: '导航'
         }, {
             uiSref: 'tags',
-            title: '分类'
+            title: '我的书签'
         }, {
             uiSref: 'note',
             title: '备忘'
@@ -45,7 +45,7 @@ app.factory('dataService', [function() {
             title: '热门'
         }],
         animationIndex: 0,
-        animation: function() {
+        animation: function () {
             var data = ['scale', 'fade', 'fade up', 'fade down', 'fade left', 'fade right', 'horizontal flip',
                 'vertical flip', 'drop', 'fly left', 'fly right', 'fly up', 'fly down', 'swing left', 'swing right', 'swing up', 'swing down',
                 'browse', 'browse right', 'slide down', 'slide up', 'slide left', 'slide right', 'jiggle', 'shake', 'pulse', 'tada', 'bounce'
@@ -54,11 +54,11 @@ app.factory('dataService', [function() {
             var t = data[parseInt(Math.random() * 1000) % data.length];
             return 'fade' || t; // 去掉一些有攻击性的动画
         },
-        transition: function(selector, params) {
+        transition: function (selector, params) {
             var data = {};
             data.animation = (params && params.animation) ? params.animation : service.animation();
             data.duration = (params && params.duration) ? params.duration : 500;
-            data.onComplete = function() {
+            data.onComplete = function () {
                 if (params) {
                     if (params.state == 'hide') {
                         $(selector).hide();
@@ -96,7 +96,7 @@ app.factory('dataService', [function() {
             '.': '跳转到分类定制添加日期',
             '/': '跳转到分类定制最后点击',
         },
-        keyShortcuts: function() { // 判断快捷方式是否生效
+        keyShortcuts: function () { // 判断快捷方式是否生效
             var ret = true;
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
             var login = (menusScope && menusScope.login);
@@ -127,11 +127,11 @@ app.factory('dataService', [function() {
 
             return ret;
         },
-        clipboard: function(text) {
+        clipboard: function (text) {
             $("#clipboard").attr("data-clipboard-text", text);
             document.getElementById("clipboard").click();
         },
-        smallDevice: function() {
+        smallDevice: function () {
             var u = navigator.userAgent;
             var app = navigator.appVersion;
             var device = { //移动终端浏览器版本信息
@@ -147,14 +147,14 @@ app.factory('dataService', [function() {
                 webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
             };
 
-            if((device.mobile && !device.iPad) || (screen && screen.availWidth < 768)){
+            if ((device.mobile && !device.iPad) || (screen && screen.availWidth < 768)) {
                 return true;
             }
 
             return false;
         },
         netErrorHandle(err, $state) {
-            if(err == "Unauthorized") {
+            if (err == "Unauthorized") {
                 $state.go("login");
                 toastr.error('您好像没有登陆，或者登陆session过期了，请重新登陆！', "提示");
             }

@@ -1,12 +1,12 @@
-app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello editCtr");
     var maxSelections = 3;
     var dialog = null;
     var cancelDefault = false;
     init();
 
-    $scope.$watch('url', function(newUrl, oldUrl, scope) {
-        $timeout(function() {
+    $scope.$watch('url', function (newUrl, oldUrl, scope) {
+        $timeout(function () {
             $scope.urlError = $scope.url == '' && $('.ui.modal.js-add-bookmark').modal('is active');
         });
         if ($scope.autoGettitle) {
@@ -22,7 +22,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                         $scope.loadTitle = false;
                         $scope.originTitle = data.title;
                         $scope.title = data.title;
-                        
+
                         if (!$scope.title) {
                             toastr.error('获取书签标题失败，请手动填入', "提示");
                         } else {
@@ -38,28 +38,28 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         }
     });
 
-    $scope.$watch('description', function(newDescription, oldDescription, scope) {
-        setTimeout(function() {
+    $scope.$watch('description', function (newDescription, oldDescription, scope) {
+        setTimeout(function () {
             $('.ui.modal.js-add-bookmark').modal("refresh");
         }, 500);
     });
 
-    $scope.$watch('title', function(newValue, oldValue, scope) {
-        $timeout(function() {
+    $scope.$watch('title', function (newValue, oldValue, scope) {
+        $timeout(function () {
             $scope.titleError = $scope.title == '' && $('.ui.modal.js-add-bookmark').modal('is active');
         });
     });
 
-    $scope.restoreTitle = function() {
+    $scope.restoreTitle = function () {
         $scope.title = $scope.originTitle;
     }
 
-    $scope.cancel = function() {
+    $scope.cancel = function () {
         $('.ui.modal.js-add-bookmark').modal('hide');
 
         init();
     }
-    $scope.ok = function() {
+    $scope.ok = function () {
         var selectedTags = [];
         $scope.tags.forEach((tag) => {
             if (tag.clicked) {
@@ -120,7 +120,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         }
     }
 
-    $scope.showAddTag = function() {
+    $scope.showAddTag = function () {
         if ($scope.tags.length < 30) {
             console.log('showAddTag..........')
             $scope.newTag = "";
@@ -134,7 +134,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         }
     }
 
-    $scope.addTag = function(tag) {
+    $scope.addTag = function (tag) {
         console.log(tag);
         if ($scope.tags.length >= 30) {
             toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
@@ -184,13 +184,13 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         }
     }
 
-    $scope.clickTag = function(id, clicked) {
+    $scope.clickTag = function (id, clicked) {
         $scope.tags.forEach((tag) => {
             tag.clicked = tag.id == id
         })
     }
 
-    pubSubService.subscribe('MenuCtr.showAddBookmarkMoadl', $scope, function(event, params) {
+    pubSubService.subscribe('MenuCtr.showAddBookmarkMoadl', $scope, function (event, params) {
         console.log('subscribe MenuCtr.showAddBookmarkMoadl', params);
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
@@ -201,12 +201,12 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         getTags({});
     });
 
-    pubSubService.subscribe('bookmarksCtr.editBookmark', $scope, function(event, params) {
+    pubSubService.subscribe('bookmarksCtr.editBookmark', $scope, function (event, params) {
         console.log('subscribe bookmarksCtr.editBookmark', params);
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
         }).modal('setting', 'transition', dataService.animation()).modal('show');
-        setTimeout(function() {
+        setTimeout(function () {
             $('.ui.modal.js-add-bookmark').modal("refresh");
         }, 500);
         $scope.add = false;
@@ -229,7 +229,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                 $scope.public = (bookmark && bookmark.id) || '1';
                 $('.ui.checkbox.js-public').checkbox((bookmark && bookmark.public && bookmark.public == '1') ? 'set checked' : 'set unchecked')
 
-                $timeout(function() {
+                $timeout(function () {
                     data.bookmarkTags.forEach((tagId) => {
                         $scope.tags.forEach((tag) => {
                             if (tag.id == tagId) {
@@ -243,7 +243,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
             .catch((err) => console.log('updateBookmark err', err));
     });
 
-    pubSubService.subscribe('TagCtr.storeBookmark', $scope, function(event, bookmark) {
+    pubSubService.subscribe('TagCtr.storeBookmark', $scope, function (event, bookmark) {
         console.log('TagCtr.storeBookmark', bookmark);
         $('.ui.modal.js-add-bookmark').modal({
             closable: false,
@@ -258,8 +258,8 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     });
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
-    $document.bind("keydown", function(event) {
-        $scope.$apply(function() {
+    $document.bind("keydown", function (event) {
+        $scope.$apply(function () {
             var menusScope = $('div[ng-controller="menuCtr"]').scope();
             var key = event.key.toUpperCase();
             // console.log(key);
@@ -292,9 +292,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
                     return 1;
                 })
                 data.forEach((tag) => {
-                        tag.clicked = false;
-                    })
-                    // 只有在新增的时候，才默认最近使用书签分类(编辑，转存不默认)
+                    tag.clicked = false;
+                })
+                // 只有在新增的时候，才默认最近使用书签分类(编辑，转存不默认)
                 if ($scope.add && data.length >= 1 && $scope.url == '' && $scope.title == '') {
                     data[0].clicked = true;
                 }

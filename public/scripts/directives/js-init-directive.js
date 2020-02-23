@@ -12,7 +12,7 @@ function date(date, settings) {
     return year + '-' + month + '-' + day;
 };
 
-Date.prototype.format = function(fmt) { //author: meizz
+Date.prototype.format = function (fmt) { //author: meizz
     var o = {
         "M+": this.getMonth() + 1, //月份
         "d+": this.getDate(), //日
@@ -28,16 +28,16 @@ Date.prototype.format = function(fmt) { //author: meizz
     return fmt;
 }
 
-app.directive('jsDataCreateInit', function($compile) {
+app.directive('jsDataCreateInit', function ($compile) {
     return {
         restrict: 'A',
-        link: function($scope, $element, $attrs) {
+        link: function ($scope, $element, $attrs) {
             $('.ui.calendar.js-date-create-begin').calendar({
                 type: 'date',
                 formatter: {
                     date: date
                 },
-                onChange: function(date, text) {
+                onChange: function (date, text) {
                     console.log($scope.username);
                     $('.ui.calendar.js-date-create-begin :input').val(text).trigger("change");
                 },
@@ -49,7 +49,7 @@ app.directive('jsDataCreateInit', function($compile) {
                 formatter: {
                     date: date
                 },
-                onChange: function(date, text) {
+                onChange: function (date, text) {
                     $('.ui.calendar.js-date-create-end :input').val(text).trigger("change");
                 },
                 startCalendar: $('.ui.calendar.js-date-create-begin')
@@ -60,16 +60,16 @@ app.directive('jsDataCreateInit', function($compile) {
     };
 });
 
-app.directive('jsDataClickInit', function($compile) {
+app.directive('jsDataClickInit', function ($compile) {
     return {
         restrict: 'A',
-        link: function($scope, $element, $attrs) {
+        link: function ($scope, $element, $attrs) {
             $('.ui.calendar.js-date-click-begin').calendar({
                 type: 'date',
                 formatter: {
                     date: date
                 },
-                onChange: function(date, text) {
+                onChange: function (date, text) {
                     $('.ui.calendar.js-date-click-begin :input').val(text).trigger("change");
                 },
                 endCalendar: $('.ui.calendar.js-date-click-end')
@@ -79,7 +79,7 @@ app.directive('jsDataClickInit', function($compile) {
                 formatter: {
                     date: date
                 },
-                onChange: function(date, text) {
+                onChange: function (date, text) {
                     $('.ui.calendar.js-date-click-end :input').val(text).trigger("change");
                 },
                 startCalendar: $('.ui.calendar.js-date-click-begin')
@@ -89,13 +89,13 @@ app.directive('jsDataClickInit', function($compile) {
     };
 });
 
-app.directive('jsDropdownUserRangeInit', function($compile, $timeout) {
+app.directive('jsDropdownUserRangeInit', function ($compile, $timeout) {
     return {
         restrict: 'A',
-        link: function($scope, $element, $attrs) {
+        link: function ($scope, $element, $attrs) {
             $('.ui.dropdown.js-user-range').dropdown({
-                onChange: function(value, text, $choice) {
-                    $timeout(function() {
+                onChange: function (value, text, $choice) {
+                    $timeout(function () {
                         $scope.showTags = (value == '1');
                         $scope.searchHotBookmarks = (value == '3');
                         $scope.bookmarks = [];
@@ -108,10 +108,10 @@ app.directive('jsDropdownUserRangeInit', function($compile, $timeout) {
     };
 });
 
-app.directive('jsDropdownTagsInit', function($compile) {
+app.directive('jsDropdownTagsInit', function ($compile) {
     return {
         restrict: 'A',
-        link: function($scope, $element, $attrs) {
+        link: function ($scope, $element, $attrs) {
             $('.ui.dropdown.js-search-tags').dropdown({
                 useLabels: false
             });
@@ -121,10 +121,10 @@ app.directive('jsDropdownTagsInit', function($compile) {
     };
 });
 
-app.directive('jsEditTagsInit', function($compile) {
+app.directive('jsEditTagsInit', function ($compile) {
     return {
         restrict: 'A',
-        link: function($scope, $element, $attrs) {
+        link: function ($scope, $element, $attrs) {
             if ($scope.$last === true) {
                 console.log('jsEditTagsInit.....................')
                 $('.ui.modal.js-add-bookmark .ui.dropdown').removeClass('loading');
@@ -132,9 +132,9 @@ app.directive('jsEditTagsInit', function($compile) {
                     forceSelection: false,
                     maxSelections: 3,
                     action: 'combo',
-                    onChange: function(value, text, $choice) {
+                    onChange: function (value, text, $choice) {
                         var selectedTags = $('.ui.modal.js-add-bookmark .ui.dropdown').dropdown('get value');
-                        $timeout(function() {
+                        $timeout(function () {
                             $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > 3) && ($('.ui.modal.js-add-bookmark').modal('is active'));
                         });
                     }
@@ -144,10 +144,10 @@ app.directive('jsEditTagsInit', function($compile) {
     };
 });
 
-app.directive('jsMenuInit', function($compile) {
+app.directive('jsMenuInit', function ($compile) {
     return {
         restrict: 'A',
-        link: function($scope, $element, $attrs) {
+        link: function ($scope, $element, $attrs) {
             if ($scope.$last === true) {
                 console.log('jsMenuInit......')
                 $('.js-bookmark-dropdown').dropdown({
@@ -157,15 +157,15 @@ app.directive('jsMenuInit', function($compile) {
 
                 $('.js-bookmark-dropdown .ui.checkbox').checkbox();
                 $('.ui.checkbox.js-radio-navigate').checkbox('check');
-                $('.ui.menu a.item').on('click', function() {
+                $('.ui.menu a.item').on('click', function () {
                     $(this).addClass('selected').siblings().removeClass('selected');
                 });
 
                 $(".ui.menu a.item:first").hover(
-                    function() {
+                    function () {
                         $('.js-bookmark-dropdown').dropdown('show');
                     },
-                    function() {
+                    function () {
                         setTimeout(() => {
                             if ($('.js-menu-option:hover').length === 0) {
                                 $('.js-bookmark-dropdown').dropdown('hide');
@@ -174,7 +174,7 @@ app.directive('jsMenuInit', function($compile) {
                     }
                 );
 
-                $('.ui.menu a.item').on('click', function() {
+                $('.ui.menu a.item').on('click', function () {
                     $(this).addClass('selected').siblings().removeClass('selected');
                 });
 
@@ -187,10 +187,10 @@ app.directive('jsMenuInit', function($compile) {
     };
 });
 
-app.directive('jsSearchOptionInit', function($compile) {
+app.directive('jsSearchOptionInit', function ($compile) {
     return {
         restrict: 'A',
-        link: function($scope, $element, $attrs) {
+        link: function ($scope, $element, $attrs) {
             console.log('jsSearchOptionInit......')
             $('.js-search-option').dropdown({
                 // on: 'hover',
@@ -199,10 +199,10 @@ app.directive('jsSearchOptionInit', function($compile) {
     };
 });
 
-app.directive('errSrc', function() {
+app.directive('errSrc', function () {
     return {
-        link: function(scope, element, attrs) {
-            element.bind('error', function() {
+        link: function (scope, element, attrs) {
+            element.bind('error', function () {
                 if (attrs.src != attrs.errSrc) {
                     attrs.$set('src', attrs.errSrc);
                 }
@@ -211,10 +211,10 @@ app.directive('errSrc', function() {
     }
 });
 
-app.directive('faviconErr', function() {
+app.directive('faviconErr', function () {
     return {
-        link: function(scope, element, attrs) {
-            element.bind('error', function() {
+        link: function (scope, element, attrs) {
+            element.bind('error', function () {
                 if (attrs.src != attrs.faviconErr) {
                     attrs.$set('src', attrs.faviconErr);
                 }
@@ -223,31 +223,31 @@ app.directive('faviconErr', function() {
     }
 });
 
-app.filter('characters', function() {
-        return function(input, chars, breakOnWord) {
-            if (isNaN(chars)) return input;
-            if (chars <= 0) return '';
-            if (input && input.length > chars) {
-                input = input.substring(0, chars);
+app.filter('characters', function () {
+    return function (input, chars, breakOnWord) {
+        if (isNaN(chars)) return input;
+        if (chars <= 0) return '';
+        if (input && input.length > chars) {
+            input = input.substring(0, chars);
 
-                if (!breakOnWord) {
-                    var lastspace = input.lastIndexOf(' ');
-                    //get last space
-                    if (lastspace !== -1) {
-                        input = input.substr(0, lastspace);
-                    }
-                } else {
-                    while (input.charAt(input.length - 1) === ' ') {
-                        input = input.substr(0, input.length - 1);
-                    }
+            if (!breakOnWord) {
+                var lastspace = input.lastIndexOf(' ');
+                //get last space
+                if (lastspace !== -1) {
+                    input = input.substr(0, lastspace);
                 }
-                return input + '…';
+            } else {
+                while (input.charAt(input.length - 1) === ' ') {
+                    input = input.substr(0, input.length - 1);
+                }
             }
-            return input;
-        };
-    })
-    .filter('splitcharacters', function() {
-        return function(input, chars) {
+            return input + '…';
+        }
+        return input;
+    };
+})
+    .filter('splitcharacters', function () {
+        return function (input, chars) {
             if (isNaN(chars)) return input;
             if (chars <= 0) return '';
             if (input && input.length > chars) {
@@ -258,8 +258,8 @@ app.filter('characters', function() {
             return input;
         };
     })
-    .filter('words', function() {
-        return function(input, words) {
+    .filter('words', function () {
+        return function (input, words) {
             if (isNaN(words)) return input;
             if (words <= 0) return '';
             if (input) {

@@ -1,6 +1,6 @@
 app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $state, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello tagsCtr...", $stateParams);
-    if(dataService.smallDevice()){
+    if (dataService.smallDevice()) {
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
@@ -273,7 +273,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         tag.oldName = tag.name;
         tag.edit = true;
     }
-    
+
     $scope.updateTagShow = function (tag, show) {
         var params = {
             id: tag.id,
@@ -504,7 +504,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
                     $scope.currentTagId = -1;
                     $scope.costomTag.bookmarkClicked = true;
                 }
-                
+
                 if ($scope.currentTagId) {
                     if (!$scope.editMode) {
                         $scope.getBookmarks($scope.currentTagId, $scope.currentPage);

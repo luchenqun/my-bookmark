@@ -8,7 +8,7 @@ try {
 
 var client = mysql.createConnection(dbConfig);
 
-Date.prototype.format = function(fmt) { //author: meizz
+Date.prototype.format = function (fmt) { //author: meizz
     var o = {
         "M+": this.getMonth() + 1, //月份
         "d+": this.getDate(), //日
@@ -32,7 +32,7 @@ var db = {
 }
 
 // 每隔10秒查询一下，出现问题直接挂掉nodejs,让forever将其重启！
-setInterval(function() {
+setInterval(function () {
     var sql = "SELECT * FROM `users` WHERE `id` = '1'";
     client.query(sql, (err, result) => {
         if (err) {
@@ -44,9 +44,9 @@ setInterval(function() {
 }, 60000);
 
 
-db.getBookmarkbyUrl = function(user_id, url) {
+db.getBookmarkbyUrl = function (user_id, url) {
     var sql = "SELECT * FROM `bookmarks` WHERE `user_id` = '" + user_id + "' AND `url` = '" + url + "'"
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -61,13 +61,13 @@ db.getBookmarkbyUrl = function(user_id, url) {
     });
 };
 
-db.addBookmark = function(user_id, bookmark) {
+db.addBookmark = function (user_id, bookmark) {
     var sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `click_count`) VALUES ('" + user_id + "', " + client.escape(bookmark.title) + ", " + client.escape(bookmark.description) + ", " + client.escape(bookmark.url) + ", '" + bookmark.public + "', '1')";
     if (bookmark.created_at) {
-        sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `created_at`, `click_count`) VALUES ('" + user_id + "', " + client.escape(bookmark.title) + ", " + client.escape(bookmark.description) + ", " + client.escape(bookmark.url) + ", '" + bookmark.public+ "', '" + bookmark.created_at + "', '1')";
+        sql = "INSERT INTO `bookmarks` (`user_id`, `title`, `description`, `url`, `public`, `created_at`, `click_count`) VALUES ('" + user_id + "', " + client.escape(bookmark.title) + ", " + client.escape(bookmark.description) + ", " + client.escape(bookmark.url) + ", '" + bookmark.public + "', '" + bookmark.created_at + "', '1')";
     }
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -78,9 +78,9 @@ db.addBookmark = function(user_id, bookmark) {
     });
 };
 
-db.delBookmark = function(id) {
+db.delBookmark = function (id) {
     var sql = "DELETE FROM `bookmarks` WHERE (`id`='" + id + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -91,15 +91,15 @@ db.delBookmark = function(id) {
     });
 }
 
-db.updateBookmark = function(bookmark) {
+db.updateBookmark = function (bookmark) {
     var sql = "UPDATE `bookmarks` SET `title`='" + bookmark.title + "', `description`=" + client.escape(bookmark.description) + ", `url`='" + bookmark.url + "', `public`='" + bookmark.public + "' WHERE (`id`='" + bookmark.id + "' AND `user_id`='" + bookmark.userId + "' )";
     console.log("sql updateBookmark = " + sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
             } else {
-                if(result.affectedRows === 1){
+                if (result.affectedRows === 1) {
                     resolve(1);
                 } else {
                     reject(new Error("bookmark not found"));
@@ -109,9 +109,9 @@ db.updateBookmark = function(bookmark) {
     });
 }
 
-db.getBookmark = function(id) {
+db.getBookmark = function (id) {
     var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `id` = '" + id + "'";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -122,9 +122,9 @@ db.getBookmark = function(id) {
     });
 }
 
-db.getBookmarkTags = function(bookmard_id) {
+db.getBookmarkTags = function (bookmard_id) {
     var sql = "SELECT tag_id FROM `tags_bookmarks` WHERE `bookmark_id` = '" + bookmard_id + "'";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -136,9 +136,9 @@ db.getBookmarkTags = function(bookmard_id) {
     });
 }
 
-db.getBookmarkTagsNames = function(bookmard_id) {
+db.getBookmarkTagsNames = function (bookmard_id) {
     var sql = "SELECT tags_bookmarks.tag_id as id,  tags.name FROM tags_bookmarks LEFT JOIN tags ON  tags.id = tags_bookmarks.tag_id WHERE bookmark_id = '" + bookmard_id + "'";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -149,9 +149,9 @@ db.getBookmarkTagsNames = function(bookmard_id) {
     });
 }
 
-db.delBookmarkTags = function(bookmard_id) {
+db.delBookmarkTags = function (bookmard_id) {
     var sql = "DELETE FROM `tags_bookmarks` WHERE (`bookmark_id`='" + bookmard_id + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -162,9 +162,9 @@ db.delBookmarkTags = function(bookmard_id) {
     });
 }
 
-db.getBookmarkIdsByTagId = function(tagId) {
+db.getBookmarkIdsByTagId = function (tagId) {
     var sql = "SELECT bookmark_id FROM `tags_bookmarks` WHERE `tag_id` = '" + tagId + "'";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -175,9 +175,9 @@ db.getBookmarkIdsByTagId = function(tagId) {
     });
 }
 
-db.delTag = function(tagId) {
+db.delTag = function (tagId) {
     var sql = "DELETE FROM `tags` WHERE (`id`='" + tagId + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -188,9 +188,9 @@ db.delTag = function(tagId) {
     });
 }
 
-db.delTagBookmarks = function(tagId) {
+db.delTagBookmarks = function (tagId) {
     var sql = "DELETE FROM `tags_bookmarks` WHERE (`tag_id`='" + tagId + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -201,9 +201,9 @@ db.delTagBookmarks = function(tagId) {
     });
 }
 
-db.delBookmarks = function(bookmarkIds) {
+db.delBookmarks = function (bookmarkIds) {
     var sql = "DELETE FROM `bookmarks` WHERE id IN (" + (bookmarkIds.toString() || ("-1")) + ")";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -214,9 +214,9 @@ db.delBookmarks = function(bookmarkIds) {
     });
 }
 
-db.delTagsBookmarks = function(bookmarkIds) {
+db.delTagsBookmarks = function (bookmarkIds) {
     var sql = "DELETE FROM `tags_bookmarks` WHERE bookmark_id IN (" + (bookmarkIds.toString() || ("-1")) + ")";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -227,7 +227,7 @@ db.delTagsBookmarks = function(bookmarkIds) {
     });
 }
 
-db.addTagsBookmarks = function(tags, bookmard_id) {
+db.addTagsBookmarks = function (tags, bookmard_id) {
     sql = "INSERT INTO `tags_bookmarks` (`tag_id`, `bookmark_id`) VALUES";
     for (var i = 0; i < tags.length; i++) {
         if (i >= 1) {
@@ -235,7 +235,7 @@ db.addTagsBookmarks = function(tags, bookmard_id) {
         }
         sql += "('" + tags[i] + "', '" + bookmard_id + "')";
     }
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -246,9 +246,9 @@ db.addTagsBookmarks = function(tags, bookmard_id) {
     });
 }
 
-db.updateLastUseTags = function(user_id, tags) {
+db.updateLastUseTags = function (user_id, tags) {
     sql = "UPDATE tags SET last_use = NOW() WHERE user_id = '" + user_id + "' AND id in (" + tags.toString() + ")";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -259,9 +259,9 @@ db.updateLastUseTags = function(user_id, tags) {
     });
 }
 
-db.clickBookmark = function(id, user_id) {
+db.clickBookmark = function (id, user_id) {
     var sql = "UPDATE `bookmarks` SET `click_count`=`click_count`+1, `last_click`=now() WHERE (`id`='" + id + "') AND (`user_id`='" + user_id + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -272,10 +272,10 @@ db.clickBookmark = function(id, user_id) {
     });
 };
 
-db.updateUserLastLogin = function(id) {
+db.updateUserLastLogin = function (id) {
     console.log('updateUserLastLogin');
     var sql = "UPDATE `users` SET `last_login`=now() WHERE (`id`='" + id + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -286,10 +286,10 @@ db.updateUserLastLogin = function(id) {
     });
 };
 
-db.resetPassword = function(userId, password) {
+db.resetPassword = function (userId, password) {
     console.log('updateUserLastLogin');
     var sql = "UPDATE `users` SET `password` = '" + password + "' WHERE(`id` = '" + userId + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -300,10 +300,10 @@ db.resetPassword = function(userId, password) {
     });
 }
 
-db.updateShowStyle = function(userId, show_style) {
+db.updateShowStyle = function (userId, show_style) {
     console.log('updateUserLastLogin');
     var sql = "UPDATE `users` SET `show_style` = '" + show_style + "' WHERE(`id` = '" + userId + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -314,10 +314,10 @@ db.updateShowStyle = function(userId, show_style) {
     });
 }
 
-db.updateSearchHistory = function(userId, search_history) {
+db.updateSearchHistory = function (userId, search_history) {
     var sql = "UPDATE `users` SET `search_history`=" + client.escape(search_history) + " WHERE (`id`='" + userId + "')";
     console.log('updateSearchHistory', sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -328,10 +328,10 @@ db.updateSearchHistory = function(userId, search_history) {
     });
 };
 
-db.updateQuickUrl = function(userId, quick_url) {
+db.updateQuickUrl = function (userId, quick_url) {
     var sql = "UPDATE `users` SET `quick_url`=" + client.escape(quick_url) + " WHERE (`id`='" + userId + "')";
     console.log('updateQuickUrl', sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -342,10 +342,10 @@ db.updateQuickUrl = function(userId, quick_url) {
     });
 };
 
-db.register = function(user) {
+db.register = function (user) {
     console.log('register');
     var sql = "INSERT INTO `users` (`username`, `password`, `email`) VALUES ('" + user.username + "', '" + user.password + "', '" + user.email + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -357,7 +357,7 @@ db.register = function(user) {
     });
 };
 
-db.insertDefaultBookmarks = function(userId) {
+db.insertDefaultBookmarks = function (userId) {
     var tags_name = ["常用", "未分类", "收藏"];
 
     db.addTags(userId, tags_name)
@@ -399,10 +399,10 @@ db.insertDefaultBookmarks = function(userId) {
         .catch((err) => console.log('insertDefaultBookmarks err1', err)); // oops!
 }
 
-db.getUser = function(username) {
+db.getUser = function (username) {
     console.log('getUser');
     var sql = "SELECT * FROM `users` WHERE `username` = '" + username + "'";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -413,14 +413,14 @@ db.getUser = function(username) {
     });
 };
 
-db.getTags = function(user_id) {
+db.getTags = function (user_id) {
     var sql = "SELECT t.id, t.user_id, t.name, DATE_FORMAT(t.last_use, '%Y-%m-%d %H:%i:%s') as last_use, t.sort, t.show, tb.cnt, tg.ncnt FROM `tags` as t LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as cnt FROM tags_bookmarks GROUP BY tag_id ) tb ON t.id = tb.tag_id  LEFT OUTER JOIN ( SELECT `tag_id`, COUNT(tag_id) as ncnt FROM notes GROUP BY tag_id ) tg ON t.id = tg.tag_id ";
     if (user_id) {
         sql += "WHERE t.user_id = '" + user_id + "' ";
     }
     sql += "ORDER BY t.sort, t.last_use DESC";
     console.log('getTags sql = ', sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -431,11 +431,11 @@ db.getTags = function(user_id) {
     });
 };
 
-db.updateTagName = function(tag) {
+db.updateTagName = function (tag) {
     console.log('updateTagName');
     var sql = "UPDATE `tags` SET `name`='" + tag.name + "' WHERE (`id`='" + tag.id + "')";
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -446,11 +446,11 @@ db.updateTagName = function(tag) {
     });
 };
 
-db.updateTagShow = function(tag) {
+db.updateTagShow = function (tag) {
     console.log('updateTagShow');
     var sql = "UPDATE `tags` SET `show`='" + tag.show + "' WHERE (`id`='" + tag.id + "')";
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -461,7 +461,7 @@ db.updateTagShow = function(tag) {
     });
 };
 
-db.updateTagsIndex = function(tagsIndex) {
+db.updateTagsIndex = function (tagsIndex) {
     console.log('updateTagsIndex');
     var sql = "UPDATE tags SET sort =  CASE id ";
     tagsIndex.forEach((tagIndex) => {
@@ -471,7 +471,7 @@ db.updateTagsIndex = function(tagsIndex) {
     sql += "END WHERE id IN (" + tagsId.toString() + ")";
 
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -482,11 +482,11 @@ db.updateTagsIndex = function(tagsIndex) {
     });
 };
 
-db.getTagsByIds = function(tagIds) {
+db.getTagsByIds = function (tagIds) {
     var sql = "SELECT * FROM `tags` WHERE id in(" + (tagIds.toString() || ("-1")) + ") GROUP BY id"; // 如果是空的，那查一个不存在的就行了。
     console.log('db getTagsByIds = ', sql);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -497,10 +497,10 @@ db.getTagsByIds = function(tagIds) {
     });
 }
 
-db.getAdvices = function(params) {
+db.getAdvices = function (params) {
     console.log('getAdvices');
     var sql = "SELECT a.id, a.user_id, u.username, a.comment, a.category, DATE_FORMAT(a.created_at, '%Y-%m-%d %H:%i:%s') as created_at, a.state  FROM `advices` as a LEFT OUTER JOIN users as u ON a.user_id = u.id ORDER BY a.created_at DESC LIMIT 0, 100";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -511,10 +511,10 @@ db.getAdvices = function(params) {
     });
 };
 
-db.addAdvice = function(params) {
+db.addAdvice = function (params) {
     console.log('addAdvice');
     var sql = "INSERT INTO `advices` (`user_id`, `comment`, `category`) VALUES ('" + params.user_id + "', '" + params.comment + "', '" + params.category + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -525,10 +525,10 @@ db.addAdvice = function(params) {
     });
 };
 
-db.getTagsByNames = function(user_id, tags_name) {
+db.getTagsByNames = function (user_id, tags_name) {
     console.log('getTagsByNames');
     var sql = "SELECT * FROM `tags` WHERE `user_id` = '" + user_id + "' AND `name` in (" + tags_name.toString() + ")";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -539,7 +539,7 @@ db.getTagsByNames = function(user_id, tags_name) {
     });
 };
 
-db.addTags = function(user_id, tags_name) {
+db.addTags = function (user_id, tags_name) {
     console.log('addTags', tags_name);
     var sql = "INSERT INTO `tags` (`user_id`, `name`, `sort`) VALUES";
     tags_name.forEach((name, i) => {
@@ -548,7 +548,7 @@ db.addTags = function(user_id, tags_name) {
         }
         sql += "('" + user_id + "', '" + name + "', '88')"; // sort默认一个比较大的值，默认在后面
     });
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         if (tags_name.length == 0) {
             reject("tags_name is empty");
         } else {
@@ -563,7 +563,7 @@ db.addTags = function(user_id, tags_name) {
     });
 };
 
-db.getBookmarksNavigate = function(tags) {
+db.getBookmarksNavigate = function (tags) {
     // console.log('getBookmarksNavigate');
     // var sql = "SELECT t.id as tag_id, t.name as tag_name, b.* FROM `tags` as t LEFT OUTER JOIN tags_bookmarks as tb ON t.id = tb.tag_id LEFT OUTER JOIN bookmarks as b ON tb.bookmark_id = b.id WHERE t.user_id='" + user_id + "' ORDER BY t.id ASC, b.click_count DESC";
     var sql = "";
@@ -572,11 +572,11 @@ db.getBookmarksNavigate = function(tags) {
         if (index >= 1) {
             sql += " UNION "
         }
-        sql += "(SELECT * FROM ((SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.click_count DESC LIMIT 0, 16) UNION (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC LIMIT 0, 16)) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
+        sql += "(SELECT * FROM (SELECT t.id AS tag_id, t.`name` as tag_name, t.sort, b.* FROM `tags` as t, `bookmarks`as b, `tags_bookmarks` as tb WHERE t.id = tb.tag_id AND b.id = tb.bookmark_id AND t.id = " + tag.id + " ORDER BY b.created_at DESC) as " + t + " ORDER BY " + t + ".click_count DESC, " + t + ".created_at DESC)";
     })
     // console.log('getBookmarksNavigate ', sql);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -587,7 +587,7 @@ db.getBookmarksNavigate = function(tags) {
     });
 };
 
-db.getBookmarksCostomTag = function(user_id, perPageItems) {
+db.getBookmarksCostomTag = function (user_id, perPageItems) {
     console.log('getBookmarksCostomTag', user_id, perPageItems);
     perPageItems = perPageItems || 50;
     var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `click_count` DESC LIMIT 0, " + perPageItems + ")";
@@ -595,7 +595,7 @@ db.getBookmarksCostomTag = function(user_id, perPageItems) {
     var sql3 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` = '" + user_id + "' ORDER BY `last_click` DESC LIMIT 0, " + perPageItems + ")";
 
     var sql = sql1 + " UNION " + sql2 + " UNION " + sql3;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -605,16 +605,16 @@ db.getBookmarksCostomTag = function(user_id, perPageItems) {
                 var end = perPageItems;
 
                 result.sort((a, b) => {
-                        var click1 = parseInt(a.click_count);
-                        var click2 = parseInt(b.click_count);
-                        if (click1 > click2) {
-                            return -1;
-                        } else if (click1 == click2) {
-                            return a.created_at >= b.created_at ? -1 : 1;
-                        } else {
-                            return 1;
-                        }
-                    })
+                    var click1 = parseInt(a.click_count);
+                    var click2 = parseInt(b.click_count);
+                    if (click1 > click2) {
+                        return -1;
+                    } else if (click1 == click2) {
+                        return a.created_at >= b.created_at ? -1 : 1;
+                    } else {
+                        return 1;
+                    }
+                })
                     .slice(begin, end)
                     .forEach((b) => {
                         var bookmark = JSON.parse(JSON.stringify(b)); // 执行深度复制
@@ -649,7 +649,7 @@ db.getBookmarksCostomTag = function(user_id, perPageItems) {
     });
 };
 
-db.getBookmarksCostomAllUsersTag = function(user_id, perPageItems) {
+db.getBookmarksCostomAllUsersTag = function (user_id, perPageItems) {
     console.log('getBookmarksCostomAllUsersTag', user_id, perPageItems);
     perPageItems = perPageItems || 50;
     var sql1 = "(SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE `user_id` != '" + user_id + "' AND public != 0 AND user_id != 120 ORDER BY `click_count` DESC LIMIT 0, " + perPageItems + ")";
@@ -658,7 +658,7 @@ db.getBookmarksCostomAllUsersTag = function(user_id, perPageItems) {
 
     var sql = sql1 + " UNION " + sql2 + " UNION " + sql3;
     // console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -668,16 +668,16 @@ db.getBookmarksCostomAllUsersTag = function(user_id, perPageItems) {
                 var end = perPageItems;
 
                 result.sort((a, b) => {
-                        var click1 = parseInt(a.click_count);
-                        var click2 = parseInt(b.click_count);
-                        if (click1 > click2) {
-                            return -1;
-                        } else if (click1 == click2) {
-                            return a.created_at >= b.created_at ? -1 : 1;
-                        } else {
-                            return 1;
-                        }
-                    })
+                    var click1 = parseInt(a.click_count);
+                    var click2 = parseInt(b.click_count);
+                    if (click1 > click2) {
+                        return -1;
+                    } else if (click1 == click2) {
+                        return a.created_at >= b.created_at ? -1 : 1;
+                    } else {
+                        return 1;
+                    }
+                })
                     .slice(begin, end)
                     .forEach((b) => {
                         var bookmark = JSON.parse(JSON.stringify(b)); // 执行深度复制
@@ -713,7 +713,7 @@ db.getBookmarksCostomAllUsersTag = function(user_id, perPageItems) {
 };
 
 
-db.getBookmarksTable = function(params) {
+db.getBookmarksTable = function (params) {
     var user_id = params.userId;
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
@@ -722,7 +722,7 @@ db.getBookmarksTable = function(params) {
     if (user_id) {
         sql += " AND `user_id` = '" + user_id + "'";
     }
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -732,16 +732,16 @@ db.getBookmarksTable = function(params) {
                 var end = params.currentPage * params.perPageItems;
 
                 result.sort((a, b) => {
-                        var click1 = parseInt(a.click_count);
-                        var click2 = parseInt(b.click_count);
-                        if (click1 > click2) {
-                            return -1;
-                        } else if (click1 == click2) {
-                            return a.created_at >= b.created_at ? -1 : 1;
-                        } else {
-                            return 1;
-                        }
-                    })
+                    var click1 = parseInt(a.click_count);
+                    var click2 = parseInt(b.click_count);
+                    if (click1 > click2) {
+                        return -1;
+                    } else if (click1 == click2) {
+                        return a.created_at >= b.created_at ? -1 : 1;
+                    } else {
+                        return 1;
+                    }
+                })
                     .slice(begin, end)
                     .forEach((b) => {
                         var bookmark = JSON.parse(JSON.stringify(b)); // 执行深度复制
@@ -776,14 +776,14 @@ db.getBookmarksTable = function(params) {
     })
 }
 
-db.getBookmarksByTag = function(params) {
+db.getBookmarksByTag = function (params) {
     var tag_id = params.tagId;
     params.currentPage = params.currentPage || 1;
     params.perPageItems = params.perPageItems || 20;
 
     var sql = "SELECT bookmarks.id, bookmarks.user_id, bookmarks.title, bookmarks.description, bookmarks.url, bookmarks.public, bookmarks.click_count, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id";
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -793,16 +793,16 @@ db.getBookmarksByTag = function(params) {
                 var end = params.currentPage * params.perPageItems;
 
                 result.sort((a, b) => {
-                        var click1 = parseInt(a.click_count);
-                        var click2 = parseInt(b.click_count);
-                        if (click1 > click2) {
-                            return -1;
-                        } else if (click1 == click2) {
-                            return a.created_at >= b.created_at ? -1 : 1;
-                        } else {
-                            return 1;
-                        }
-                    })
+                    var click1 = parseInt(a.click_count);
+                    var click2 = parseInt(b.click_count);
+                    if (click1 > click2) {
+                        return -1;
+                    } else if (click1 == click2) {
+                        return a.created_at >= b.created_at ? -1 : 1;
+                    } else {
+                        return 1;
+                    }
+                })
                     .slice(begin, end)
                     .forEach((b) => {
                         var bookmark = JSON.parse(JSON.stringify(b)); // 执行深度复制
@@ -837,10 +837,10 @@ db.getBookmarksByTag = function(params) {
     })
 }
 
-db.getExportBookmarksByTag = function(tag_id) {
+db.getExportBookmarksByTag = function (tag_id) {
     var sql = "SELECT tags_bookmarks.tag_id, bookmarks.title, bookmarks.url, DATE_FORMAT(bookmarks.created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(bookmarks.last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `tags_bookmarks`, `bookmarks` WHERE tags_bookmarks.tag_id = '" + tag_id + "' AND tags_bookmarks.bookmark_id = bookmarks.id ORDER BY bookmarks.click_count DESC";
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -851,7 +851,7 @@ db.getExportBookmarksByTag = function(tag_id) {
     })
 }
 
-db.getBookmarksSearch = function(params) {
+db.getBookmarksSearch = function (params) {
     var sql = "SELECT id, user_id, title, description, url, public, click_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at,  DATE_FORMAT(last_click, '%Y-%m-%d %H:%i:%s') as last_click FROM `bookmarks` WHERE 1=1";
 
     if (params.dateCreate) {
@@ -892,7 +892,7 @@ db.getBookmarksSearch = function(params) {
     params.perPageItems = params.perPageItems || 20;
     sql += " ORDER BY click_count DESC, created_at DESC";
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -926,7 +926,7 @@ db.getBookmarksSearch = function(params) {
     })
 }
 
-db.getHotBookmarksSearch = function(params) {
+db.getHotBookmarksSearch = function (params) {
     var sql = "SELECT id, title, description, url, fav_count, created_by, created_at, last_click, snap_url, favicon_url FROM `hot_bookmarks` WHERE status=0";
 
     if (params.dateCreate) {
@@ -953,7 +953,7 @@ db.getHotBookmarksSearch = function(params) {
     }
     sql += " ORDER BY fav_count DESC";
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -970,15 +970,15 @@ db.getHotBookmarksSearch = function(params) {
     })
 }
 
-db.getBookmarksCard = function(user_id) {
+db.getBookmarksCard = function (user_id) {
     return db.getBookmarksTable(user_id);
 }
 
-db.getTagsBookmarks = function(bookmark_ids) {
+db.getTagsBookmarks = function (bookmark_ids) {
     var sql = "SELECT * FROM `tags_bookmarks` WHERE bookmark_id in(" + (bookmark_ids.toString() || ("-1")) + ")"; // 如果是空的，那查一个不存在的就行了。
     console.log('getTagsBookmarks', sql);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -989,11 +989,11 @@ db.getTagsBookmarks = function(bookmark_ids) {
     });
 }
 
-db.getActiveUsers = function() {
+db.getActiveUsers = function () {
     var sql = " (SELECT username, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at, DATE_FORMAT(last_login, '%Y-%m-%d %H:%i:%s') as last_login, email FROM users ORDER BY last_login DESC LIMIT 0, 5) UNION (SELECT username, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at, DATE_FORMAT(last_login, '%Y-%m-%d %H:%i:%s') as last_login, email FROM users ORDER BY created_at DESC LIMIT 0, 5)";
     console.log('getActiveUsers', sql);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1003,11 +1003,11 @@ db.getActiveUsers = function() {
         });
     });
 }
-db.getBookmarks = function() {
+db.getBookmarks = function () {
     var sql = "SELECT id, snap_state FROM `bookmarks`"; // 如果是空的，那查一个不存在的就行了。
     console.log('getBookmarks', sql);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1018,10 +1018,10 @@ db.getBookmarks = function() {
     });
 }
 
-db.getBookmarkWaitSnap = function(today) {
+db.getBookmarkWaitSnap = function (today) {
     var todayNotSnap = today + 31;
     var sql = "SELECT id, url, snap_state FROM `bookmarks` WHERE `snap_state`>=0 AND `snap_state` <= 64 AND snap_state != " + todayNotSnap + " ORDER BY created_at DESC LIMIT 0, 1";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1032,10 +1032,10 @@ db.getBookmarkWaitSnap = function(today) {
     });
 }
 
-db.getBookmarkWaitFavicon = function(today) {
+db.getBookmarkWaitFavicon = function (today) {
     var todayNotSnap = today + 31;
     var sql = "SELECT id, url, favicon_state FROM `bookmarks` WHERE `favicon_state`>=0 AND `favicon_state` <= 64 AND favicon_state != " + todayNotSnap + " ORDER BY created_at DESC";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1046,10 +1046,10 @@ db.getBookmarkWaitFavicon = function(today) {
     });
 }
 
-db.updateBookmarkSnapState = function(id, snapState) {
+db.updateBookmarkSnapState = function (id, snapState) {
     console.log("updateBookmarkSnapState id = " + id + ", snapState = " + snapState);
     var sql = "UPDATE `bookmarks` SET `snap_state`='" + snapState + "' WHERE (`id`='" + id + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1060,10 +1060,10 @@ db.updateBookmarkSnapState = function(id, snapState) {
     });
 }
 
-db.updateBookmarkFaviconState = function(id, faviconState) {
+db.updateBookmarkFaviconState = function (id, faviconState) {
     console.log("updateBookmarkFaviconState id = " + id + ", faviconState = " + faviconState);
     var sql = "UPDATE `bookmarks` SET `favicon_state`='" + faviconState + "' WHERE (`id`='" + id + "')";
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1074,10 +1074,10 @@ db.updateBookmarkFaviconState = function(id, faviconState) {
     });
 }
 
-db.addHotBookmark = function(bookmark) {
+db.addHotBookmark = function (bookmark) {
     var sql = "REPLACE INTO `hot_bookmarks` (`id`, `date`, `title`, `url`, `fav_count`, `created_by`, `created_at`, `last_click`, `snap_url`, `favicon_url`) VALUES ('" + bookmark.id + "', '" + bookmark.date + "', " + client.escape(bookmark.title) + ", " + client.escape(bookmark.url) + ", '" + bookmark.fav_count + "', " + client.escape(bookmark.created_by) + ", '" + bookmark.created_at + "', '" + bookmark.last_click + "', " + client.escape(bookmark.snap_url) + ", " + client.escape(bookmark.favicon_url) + ")";
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1088,9 +1088,9 @@ db.addHotBookmark = function(bookmark) {
     });
 };
 
-db.hotBookmarks = function(date) {
+db.hotBookmarks = function (date) {
     var sql = "SELECT * FROM `hot_bookmarks` WHERE `date` = " + date + " AND `status` = 0"
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1101,11 +1101,11 @@ db.hotBookmarks = function(date) {
     });
 };
 
-db.addNote = function(note) {
+db.addNote = function (note) {
     var sql = "INSERT INTO `notes` (`user_id`, `content`, `tag_id`) VALUES ('" + note.user_id + "', " + client.escape(note.content) + ", '" + note.tag_id + "')";
     console.log(sql);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1116,7 +1116,7 @@ db.addNote = function(note) {
     });
 };
 
-db.getNotes = function(params) {
+db.getNotes = function (params) {
     var sql = "SELECT notes.id, notes.content, notes.public, notes.tag_id, DATE_FORMAT(notes.created_at, '%Y-%m-%d %H:%i:%s') as created_at, tags.name as tagName FROM `notes` LEFT JOIN tags ON  tags.id = notes.tag_id  WHERE notes.user_id = '" + params.user_id + "'";
 
     if (params.dateCreate) {
@@ -1139,7 +1139,7 @@ db.getNotes = function(params) {
 
     sql += " ORDER BY `created_at` DESC"
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1156,10 +1156,10 @@ db.getNotes = function(params) {
     })
 };
 
-db.delNote = function(id) {
+db.delNote = function (id) {
     var sql = "DELETE FROM `notes` WHERE (`id`='" + id + "')";
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1170,10 +1170,10 @@ db.delNote = function(id) {
     });
 }
 
-db.updateNote = function(id, content, tag_id) {
+db.updateNote = function (id, content, tag_id) {
     var sql = "UPDATE `notes` SET `content`=" + client.escape(content) + ", `tag_id`='" + tag_id + "' WHERE (`id`='" + id + "')";
     console.log(sql);
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         client.query(sql, (err, result) => {
             if (err) {
                 reject(err);
@@ -1184,36 +1184,36 @@ db.updateNote = function(id, content, tag_id) {
     });
 }
 
-db.updateNotePublic = function(id, public) {
-  var sql = "UPDATE `notes` SET `public`='"+ public +"' WHERE (`id`='"+ id +"')";
-  console.log(sql);
-  return new Promise(function(resolve, reject) {
-      client.query(sql, (err, result) => {
-          if (err) {
-              reject(err);
-          } else {
-              resolve(result.affectedRows);
-          }
-      });
-  });
+db.updateNotePublic = function (id, public) {
+    var sql = "UPDATE `notes` SET `public`='" + public + "' WHERE (`id`='" + id + "')";
+    console.log(sql);
+    return new Promise(function (resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
 }
 
-db.getNote = function(id) {
-  var sql = "SELECT * FROM `notes` WHERE `id` = '"+ id +"' LIMIT 0, 1";
-  console.log(sql);
-  return new Promise(function(resolve, reject) {
-      client.query(sql, (err, result) => {
-          if (err) {
-              reject(err);
-          } else {
-              if(result.length > 0) {
-                  result[0].public == 1 ? resolve(result[0].content) : resolve("提示：备忘处于私密状态！");
-              } else {
-                  resolve("提示：备忘已删除或不存在！");
-              }
-          }
-      });
-  });
+db.getNote = function (id) {
+    var sql = "SELECT * FROM `notes` WHERE `id` = '" + id + "' LIMIT 0, 1";
+    console.log(sql);
+    return new Promise(function (resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (result.length > 0) {
+                    result[0].public == 1 ? resolve(result[0].content) : resolve("提示：备忘处于私密状态！");
+                } else {
+                    resolve("提示：备忘已删除或不存在！");
+                }
+            }
+        });
+    });
 }
 
 module.exports = db;

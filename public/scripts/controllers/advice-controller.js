@@ -1,6 +1,6 @@
-app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $timeout, bookmarkService, pubSubService, dataService) {
+app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $timeout, bookmarkService, pubSubService, dataService) {
     console.log("Hello adviceCtr");
-    if(dataService.smallDevice()){
+    if (dataService.smallDevice()) {
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
@@ -12,14 +12,14 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
     $scope.user = {};
 
     bookmarkService.userInfo({})
-    .then((data) => {
-        $scope.user = data;
-    })
-    .catch((err) => {
+        .then((data) => {
+            $scope.user = data;
+        })
+        .catch((err) => {
 
-    });
-    
-    $scope.ok = function() {
+        });
+
+    $scope.ok = function () {
         if ($scope.comment == '') {
             toastr.error('留言失败内容不能为空', "错误");
             return;
@@ -67,9 +67,9 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
             .catch((err) => dataService.netErrorHandle(err, $state));
     }
 
-    setTimeout(function() {
+    setTimeout(function () {
         $('.ui.dropdown.js-categorys').dropdown({
-            onChange: function(value, text, $choice) {}
+            onChange: function (value, text, $choice) { }
         });
         getAdvices({});
     }, 100)

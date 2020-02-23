@@ -1,6 +1,6 @@
 var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies', 'infinite-scroll', 'angular-sortable-view', 'ngDialog']);
 
-app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
     $urlRouterProvider.otherwise("/");
 
     $stateProvider
@@ -27,7 +27,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: '/views/note.html',
             params: {
                 searchWord: null,
-                key:null,
+                key: null,
             },
             controller: 'noteCtr'
         })

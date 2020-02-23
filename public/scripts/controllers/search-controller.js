@@ -1,6 +1,6 @@
-app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
     console.log("Hello searchCtr...", $stateParams);
-    if(dataService.smallDevice()){
+    if (dataService.smallDevice()) {
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
@@ -29,7 +29,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     $scope.searchHotBookmarks = false;
     var timeagoInstance = timeago();
 
-    $scope.changeCurrentPage = function(currentPage) {
+    $scope.changeCurrentPage = function (currentPage) {
         currentPage = parseInt(currentPage) || 0;
         console.log(currentPage);
         if (currentPage <= $scope.totalPages && currentPage >= 1) {
@@ -62,26 +62,26 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         toastr.warning("请输入搜索关键字再进行查询！", "提示");
     }
 
-    $scope.jumpToUrl = function(url, id) {
+    $scope.jumpToUrl = function (url, id) {
         if (!$scope.edit) {
             $window.open(url);
             bookmarkService.clickBookmark({
                 id: id
             });
-            $scope.searchBookmarks.forEach(function(bookmark) {
+            $scope.searchBookmarks.forEach(function (bookmark) {
                 if (bookmark.id == id && bookmark.own) {
                     bookmark.click_count += 1;
                     bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
                 }
             })
-            $timeout(function() {
+            $timeout(function () {
                 timeagoInstance.cancel();
                 timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
             }, 100)
         }
     }
 
-    $scope.delBookmark = function(bookmark) {
+    $scope.delBookmark = function (bookmark) {
         $scope.waitDelBookmark = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
         dialog = ngDialog.open({
             template: './views/dialog-del-bookmark.html',
@@ -90,7 +90,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         });
     }
 
-    $scope.confirmDelBookmark = function(bookmarkId) {
+    $scope.confirmDelBookmark = function (bookmarkId) {
         var params = {
             id: bookmarkId
         }
@@ -100,7 +100,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
                 $("#" + bookmarkId).transition({
                     animation: dataService.animation(),
                     duration: 500,
-                    onComplete: function() {
+                    onComplete: function () {
                         $("#" + bookmarkId).remove();
                     }
                 });
@@ -111,22 +111,22 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             });
     }
 
-    $scope.editBookmark = function(bookmarkId) {
+    $scope.editBookmark = function (bookmarkId) {
         pubSubService.publish('bookmarksCtr.editBookmark', {
             'bookmarkId': bookmarkId
         });
     }
 
-    $scope.detailBookmark = function(bookmark) {
+    $scope.detailBookmark = function (bookmark) {
         pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
     }
 
-    $scope.storeBookmark = function(bookmark) {
+    $scope.storeBookmark = function (bookmark) {
         var b = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
         pubSubService.publish('TagCtr.storeBookmark', b);
     }
 
-    $scope.favoriteBookmark = function(b) {
+    $scope.favoriteBookmark = function (b) {
         var bookmark = {}
         bookmark.description = '';
         bookmark.title = b.title;
@@ -148,11 +148,11 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
             });
     }
 
-    $scope.copy = function(url) {
+    $scope.copy = function (url) {
         dataService.clipboard(url);
     }
 
-    $scope.search = function(page) {
+    $scope.search = function (page) {
         var params = {}
         params.userRange = $('.js-user-range').dropdown('get value');
         if (params.userRange == '1') {
@@ -195,7 +195,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         searchBookmarks(params)
         console.log('search..', page, 'params = ', params)
     }
-    $scope.updateCreateDate = function() {
+    $scope.updateCreateDate = function () {
         console.log($scope.dateCreateBegin, $scope.dateCreateEnd);
         if ($scope.dateCreateBegin && $scope.dateCreateEnd) {
             $('.js-create-date').dropdown('hide');
@@ -204,7 +204,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         }
     }
 
-    $scope.updateClickDate = function() {
+    $scope.updateClickDate = function () {
         console.log($scope.dateClickBegin, $scope.dateClickEnd);
         if ($scope.dateClickBegin && $scope.dateClickEnd) {
             $('.js-click-date').dropdown('hide');
@@ -213,19 +213,19 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         }
     }
 
-    $scope.updateTagsSelect = function() {
+    $scope.updateTagsSelect = function () {
         $('.ui.dropdown.js-search-tags .text').removeClass('default');
         var text = $('.ui.dropdown.js-search-tags .text').text().replace('selected', '个已选');
         $('.ui.dropdown.js-search-tags .text').text(text);
     }
 
-    $scope.setHoverBookmark = function(bookmark) {
+    $scope.setHoverBookmark = function (bookmark) {
         $scope.hoverBookmark = bookmark;
     }
 
     // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
-    $document.bind("keydown", function(event) {
-        $scope.$apply(function() {
+    $document.bind("keydown", function (event) {
+        $scope.$apply(function () {
             var key = event.key.toUpperCase();
             console.log($scope.hoverBookmark);
             if ($scope.hoverBookmark && dataService.keyShortcuts()) {
@@ -242,7 +242,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
         })
     });
 
-    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function(event, data) {
+    pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function (event, data) {
         console.log('subscribe EditCtr.inserBookmarsSuccess', JSON.stringify(data));
         $scope.searchBookmarks.forEach((bookmark) => {
             if (bookmark.id == data.id) {
@@ -297,7 +297,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     function transition() {
-        $timeout(function() {
+        $timeout(function () {
             timeagoInstance.cancel();
             timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
         }, 100)

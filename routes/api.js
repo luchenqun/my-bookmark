@@ -14,10 +14,10 @@ var beautify_html = require('js-beautify').html;
 var xss = require('xss');
 
 var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, 'uploads/')
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         var now = new Date().format('yyyyMMddhhmmss')
         if (req.session.user) {
             cb(null, 'importbookmark-' + req.session.username + '-' + now + '.html')
@@ -32,12 +32,12 @@ var upload = multer({
     limits: {
         fileSize: 10 * 1024 * 2014, // 最大值接受10M
     },
-    fileFilter: function(req, file, cb) {
+    fileFilter: function (req, file, cb) {
         cb(null, file.mimetype == "text/html");
     },
 })
 
-api.post('/logout', function(req, res) {
+api.post('/logout', function (req, res) {
     var params = req.body.params;
     console.log('logout......', params);
     req.session.destroy();
@@ -46,7 +46,7 @@ api.post('/logout', function(req, res) {
     });
 });
 
-api.post('/clickBookmark', function(req, res) {
+api.post('/clickBookmark', function (req, res) {
     console.log("clickBookmark username = ", req.session.username);
     db.getUser(req.session.username)
         .then((user) => { return user.id == req.session.userId ? db.clickBookmark(req.body.params.id, req.session.userId) : Promise.resolve(0); })
@@ -54,7 +54,7 @@ api.post('/clickBookmark', function(req, res) {
         .catch((err) => console.log('clickBookmark error', err));
 });
 
-api.post('/jumpQuickUrl', function(req, res) {
+api.post('/jumpQuickUrl', function (req, res) {
     console.log("jumpQuickUrl username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -62,18 +62,18 @@ api.post('/jumpQuickUrl', function(req, res) {
     }
     db.getBookmarkbyUrl(req.session.user.id, req.body.params.url)
         .then((bookmarkId) => {
-            res.json({id: bookmarkId});
+            res.json({ id: bookmarkId });
             if (bookmarkId) {
                 return db.clickBookmark(bookmarkId, req.session.user.id);
             } else {
                 return Promise.reject(0);
             }
         })
-        .then((affectedRows) => {})
+        .then((affectedRows) => { })
         .catch((err) => console.log('jumpQuickUrl err', err)); // oops!
 });
 
-api.post('/login', function(req, res) {
+api.post('/login', function (req, res) {
     var params = req.body.params;
     var username = params.username;
     var password = md5(params.password);
@@ -101,7 +101,7 @@ api.post('/login', function(req, res) {
         .catch((err) => console.log('login error', err));
 });
 
-api.get('/userInfo', function(req, res) {
+api.get('/userInfo', function (req, res) {
     console.log("userInfo username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -125,7 +125,7 @@ api.get('/userInfo', function(req, res) {
         .catch((err) => console.log('userInfo error', err));
 });
 
-api.post('/register', function(req, res) {
+api.post('/register', function (req, res) {
     var params = req.body.params;
     params.password = md5(params.password); // 进行密码加密
 
@@ -146,7 +146,7 @@ api.post('/register', function(req, res) {
         });
 });
 
-api.post('/resetPassword', function(req, res) {
+api.post('/resetPassword', function (req, res) {
     console.log("resetPassword username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -184,7 +184,7 @@ api.post('/resetPassword', function(req, res) {
         });
 });
 
-api.post('/updateShowStyle', function(req, res) {
+api.post('/updateShowStyle', function (req, res) {
     console.log("updateShowStyle username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -219,7 +219,7 @@ api.post('/updateShowStyle', function(req, res) {
         });
 });
 
-api.post('/updateSearchHistory', function(req, res) {
+api.post('/updateSearchHistory', function (req, res) {
     console.log("updateSearchHistory username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -250,7 +250,7 @@ api.post('/updateSearchHistory', function(req, res) {
         });
 });
 
-api.post('/updateQuickUrl', function(req, res) {
+api.post('/updateQuickUrl', function (req, res) {
     console.log("updateQuickUrl username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -281,7 +281,7 @@ api.post('/updateQuickUrl', function(req, res) {
         });
 });
 
-api.get('/autoLogin', function(req, res) {
+api.get('/autoLogin', function (req, res) {
     console.log("autoLogin username = ", req.session.username);
     var ret = {
         logined: false,
@@ -306,7 +306,7 @@ api.get('/autoLogin', function(req, res) {
     }
 });
 
-api.delete('/delBookmark', function(req, res) {
+api.delete('/delBookmark', function (req, res) {
     console.log("delBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -316,7 +316,7 @@ api.delete('/delBookmark', function(req, res) {
     var userId = req.session.user.id;
     db.getBookmark(bookmarkId)
         .then((bookmark) => {
-            if(bookmark.user_id === userId) {
+            if (bookmark.user_id === userId) {
                 return db.delBookmarkTags(bookmarkId);
             } else {
                 res.json({
@@ -332,7 +332,7 @@ api.delete('/delBookmark', function(req, res) {
         .catch((err) => console.log('delBookmark err', err));
 })
 
-api.post('/updateBookmark', function(req, res) {
+api.post('/updateBookmark', function (req, res) {
     console.log("updateBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -361,7 +361,7 @@ api.post('/updateBookmark', function(req, res) {
         .catch((err) => console.log('updateBookmark err', err)); // oops!
 })
 
-api.get('/bookmark', function(req, res) {
+api.get('/bookmark', function (req, res) {
     console.log("bookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -391,133 +391,57 @@ api.get('/bookmark', function(req, res) {
         .catch((err) => console.log('bookmark err', err));
 })
 
-api.get('/bookmarks', function(req, res) {
+api.get('/bookmarks', function (req, res) {
     console.log("bookmarks username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
         return;
     }
     var userId = 226; //req.session.user.id;
-    var params = req.query;
-    params.showStyle = params.showStyle || req.session.user.show_style; // 如果没有指定风格，那么用系统风格
-    if (params.showStyle === 'navigate') {
-        db.getTags(userId)
-            .then((tags) => db.getBookmarksNavigate(tags))
-            .then((result) => {
-                var data = [];
-                var tag = {
-                    id: result && result[0] && result[0].tag_id,
-                    name: result && result[0] && result[0].tag_name,
-                    sort: result && result[0] && result[0].sort,
-                    click: 0,
-                    bookmarks: []
-                };
-                result.forEach(function(bookmark) {
-                    if (tag.id !== bookmark.tag_id) {
-                        data.push({
-                            id: tag.id,
-                            name: tag.name,
-                            sort: tag.sort,
-                            click: tag.click,
-                            bookmarks: tag.bookmarks
-                        });
-                        tag.id = bookmark.tag_id;
-                        tag.name = bookmark.tag_name;
-                        tag.sort = bookmark.sort;
-                        tag.click = 0;
-                        tag.bookmarks = [];
-                    }
-                    tag.click += bookmark.click_count;
-                    bookmark.created_at = new Date(bookmark.created_at).format("yyyy-MM-dd hh:mm:ss");
-                    bookmark.last_click = new Date(bookmark.last_click).format("yyyy-MM-dd hh:mm:ss");
-                    tag.bookmarks.push(bookmark);
-                });
-                if (result && result.length > 0) {
-                    data.push(tag);
+    db.getTags(userId)
+        .then((tags) => db.getBookmarksNavigate(tags))
+        .then((result) => {
+            var data = [];
+            var tag = {
+                id: result && result[0] && result[0].tag_id,
+                name: result && result[0] && result[0].tag_name,
+                sort: result && result[0] && result[0].sort,
+                click: 0,
+                bookmarks: []
+            };
+            result.forEach(function (bookmark) {
+                if (tag.id !== bookmark.tag_id) {
+                    data.push({
+                        id: tag.id,
+                        name: tag.name,
+                        sort: tag.sort,
+                        click: tag.click,
+                        bookmarks: tag.bookmarks
+                    });
+                    tag.id = bookmark.tag_id;
+                    tag.name = bookmark.tag_name;
+                    tag.sort = bookmark.sort;
+                    tag.click = 0;
+                    tag.bookmarks = [];
                 }
-                data.sort((a, b) => {
-                    if (a.sort == b.sort) return b.click - a.click;
-                    return a.sort - b.sort;
-                });
-                var temp = data.map(item => {
-                    return {
-                        name: item.name,
-                        sort: item.sort,
-                        click: item.click,
-                    }
-                })
-                res.json(data);
-            })
-            .catch((err) => console.log('bookmarks navigate err', err));
-    } else if (params.showStyle === 'costomTag') {
-        var bookmarks = []
-        db.getBookmarksCostomTag(userId)
-            .then((bookmarksData) => {
-                bookmarks = bookmarksData.bookmarks;
-                var bookmarkIds = bookmarks.map((bookmark) => bookmark.id)
-                return db.getTagsBookmarks(bookmarkIds);
-            })
-            .then((tbs) => {
-                tagsBookmarks = tbs;
-                return db.getTags(userId);
-            })
-            .then((tags) => {
-                bookmarks.forEach(function(bookmark, index) {
-                    var bookmarkTags = [];
-                    tagsBookmarks.forEach(function(tb) {
-                        if (tb.bookmark_id == bookmark.id) {
-                            tags.forEach(function(tag) {
-                                if (tb.tag_id == tag.id) {
-                                    bookmarkTags.push(tag)
-                                }
-                            })
-                        }
-                    });
-                    bookmarks[index].tags = bookmarkTags;
-                })
-                res.json(bookmarks);
-            })
-            .catch((err) => console.log('bookmarks costomTag err', err))
-    } else {
-        var tagsBookmarks = [];
-        var sendData = {
-            totalItems: 0,
-            bookmarks: [],
-        }
-
-        params.userId = userId;
-        db.getBookmarksTable(params)
-            .then((bookmarksData) => {
-                sendData = bookmarksData;
-                var bookmarkIds = sendData.bookmarks.map((bookmark) => bookmark.id)
-                return db.getTagsBookmarks(bookmarkIds);
-            })
-            .then((tbs) => {
-                tagsBookmarks = tbs;
-                return db.getTags(userId);
-            })
-            .then((tags) => {
-                sendData.bookmarks.forEach(function(bookmark, index) {
-                    var bookmarkTags = [];
-                    tagsBookmarks.forEach(function(tb) {
-                        if (tb.bookmark_id == bookmark.id) {
-                            tags.forEach(function(tag) {
-                                if (tb.tag_id == tag.id) {
-                                    bookmarkTags.push(tag)
-                                }
-                            })
-                        }
-                    });
-                    sendData.bookmarks[index].tags = bookmarkTags;
-                })
-
-                res.json(sendData);
-            })
-            .catch((err) => console.log('bookmarks table or card err', err))
-    }
+                tag.click += bookmark.click_count;
+                bookmark.created_at = new Date(bookmark.created_at).format("yyyy-MM-dd hh:mm:ss");
+                bookmark.last_click = new Date(bookmark.last_click).format("yyyy-MM-dd hh:mm:ss");
+                tag.bookmarks.push(bookmark);
+            });
+            if (result && result.length > 0) {
+                data.push(tag);
+            }
+            data.sort((a, b) => {
+                if (a.sort == b.sort) return b.click - a.click;
+                return a.sort - b.sort;
+            });
+            res.json(data);
+        })
+        .catch((err) => console.log('bookmarks navigate err', err));
 });
 
-api.get('/hotBookmarks', function(req, res) {
+api.get('/hotBookmarks', function (req, res) {
     console.log("hotBookmarks username = ", req.session.username);
     var userId = req.session.user.id;
     var params = req.query;
@@ -529,7 +453,7 @@ api.get('/hotBookmarks', function(req, res) {
         .catch((err) => console.log('hotBookmarks err', err))
 });
 
-api.get('/bookmarksByTag', function(req, res) {
+api.get('/bookmarksByTag', function (req, res) {
     console.log("bookmarksByTag username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -560,11 +484,11 @@ api.get('/bookmarksByTag', function(req, res) {
         })
         .then((tags) => {
             // 获取每个书签的所有分类标签
-            sendData.bookmarks.forEach(function(bookmark, index) {
+            sendData.bookmarks.forEach(function (bookmark, index) {
                 var bookmarkTags = [];
-                tagsBookmarks.forEach(function(tb) {
+                tagsBookmarks.forEach(function (tb) {
                     if (tb.bookmark_id == bookmark.id) {
-                        tags.forEach(function(tag) {
+                        tags.forEach(function (tag) {
                             if (tb.tag_id == tag.id) {
                                 bookmarkTags.push(tag)
                             }
@@ -579,7 +503,7 @@ api.get('/bookmarksByTag', function(req, res) {
 
 });
 
-api.get('/searchBookmarks', function(req, res) {
+api.get('/searchBookmarks', function (req, res) {
     console.log("searchBookmarks username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -626,11 +550,11 @@ api.get('/searchBookmarks', function(req, res) {
         .then((tags) => {
             var data = [];
             // 获取每个书签的所有分类标签
-            bookmarks.forEach(function(bookmark) {
+            bookmarks.forEach(function (bookmark) {
                 var bookmarkTags = [];
-                tagsBookmarks.forEach(function(tb) {
+                tagsBookmarks.forEach(function (tb) {
                     if (tb.bookmark_id == bookmark.id) {
-                        tags.forEach(function(tag) {
+                        tags.forEach(function (tag) {
                             if (tb.tag_id == tag.id) {
                                 bookmarkTags.push(tag)
                             }
@@ -647,7 +571,7 @@ api.get('/searchBookmarks', function(req, res) {
         .catch((err) => console.log('bookmarks table or card err', err))
 });
 
-api.get('/searchHotBookmarks', function(req, res) {
+api.get('/searchHotBookmarks', function (req, res) {
     console.log("searchHotBookmarks username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -661,7 +585,7 @@ api.get('/searchHotBookmarks', function(req, res) {
         .catch((err) => console.log('getHotBookmarksSearch err', err))
 });
 
-api.get('/tags', function(req, res) {
+api.get('/tags', function (req, res) {
     console.log("tags username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -695,7 +619,7 @@ api.get('/tags', function(req, res) {
         .catch((err) => console.log('tags', err));
 });
 
-api.get('/advices', function(req, res) {
+api.get('/advices', function (req, res) {
     console.log("advices username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -707,7 +631,7 @@ api.get('/advices', function(req, res) {
         .catch((err) => console.log('tags', err));
 });
 
-api.post('/addAdvice', function(req, res) {
+api.post('/addAdvice', function (req, res) {
     console.log("addAdvice username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -735,7 +659,7 @@ api.post('/addAdvice', function(req, res) {
 });
 
 // 发现使用node启动没问题，forever启动有问题。
-api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
+api.post('/uploadBookmarkFile', upload.single('bookmark'), function (req, res) {
     console.log("uploadBookmarkFile username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -744,7 +668,7 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
 
     var file = req.file;
     res.json(file);
-    parseHtml(file.path, function(data) {
+    parseHtml(file.path, function (data) {
         var bookmarks = data.bookmarks;
         var tagsName = data.tags;
 
@@ -822,7 +746,7 @@ api.post('/uploadBookmarkFile', upload.single('bookmark'), function(req, res) {
     })
 });
 
-api.post('/addBookmark', function(req, res) {
+api.post('/addBookmark', function (req, res) {
     console.log("addBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -866,7 +790,7 @@ api.post('/addBookmark', function(req, res) {
         .catch((err) => console.log('addBookmark err', err)); // oops!
 });
 
-api.post('/favoriteBookmark', function(req, res) {
+api.post('/favoriteBookmark', function (req, res) {
     console.log("favoriteBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -922,7 +846,7 @@ api.post('/favoriteBookmark', function(req, res) {
         .catch((err) => console.log('addBookmark err', err)); // oops!
 });
 
-api.post('/addTags', function(req, res) {
+api.post('/addTags', function (req, res) {
     console.log("addTags username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -951,7 +875,7 @@ api.post('/addTags', function(req, res) {
         .catch((err) => console.log('addTags err', err));
 });
 
-api.post('/updateTagName', function(req, res) {
+api.post('/updateTagName', function (req, res) {
     console.log("updateTagName username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -994,7 +918,7 @@ api.post('/updateTagName', function(req, res) {
         });
 });
 
-api.post('/updateTagShow', function(req, res) {
+api.post('/updateTagShow', function (req, res) {
     console.log("updateTagShow username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -1037,7 +961,7 @@ api.post('/updateTagShow', function(req, res) {
         });
 });
 
-api.post('/updateTagsIndex', function(req, res) {
+api.post('/updateTagsIndex', function (req, res) {
     console.log("updateTagsIndex username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -1067,9 +991,9 @@ api.post('/updateTagsIndex', function(req, res) {
         });
 });
 
-api.post('/delTag', function(req, res) {
+api.post('/delTag', function (req, res) {
     console.log("delTag username = ", req.session.username);
-    if(req.session.username === "test") {
+    if (req.session.username === "test") {
         res.json({
             retCode: 100,
             msg: "test用户不允许删除分类！",
@@ -1110,12 +1034,12 @@ api.post('/delTag', function(req, res) {
         });
 });
 
-api.post('/getArticle', function(req, res) {
+api.post('/getArticle', function (req, res) {
     console.log("getArticle username = ", req.session.username);
     var params = req.body.params;
     var url = params.url;
     var requestId = params.requestId || 0;
-    read(url, function(err, article, meta) {
+    read(url, function (err, article, meta) {
         if (err) {
             res.json({
                 title: '',
@@ -1136,18 +1060,18 @@ api.post('/getArticle', function(req, res) {
     });
 })
 
-api.post('/getUpdateLog', function(req, res) {
+api.post('/getUpdateLog', function (req, res) {
     console.log("getArticle username = ", req.session.username);
     var params = req.body.params;
     var defaultUrl = 'https://github.com/luchenqun/my-bookmark/commits/master'
     var url = params.url || defaultUrl;
 
-    request(url, function(error, response, body) {
+    request(url, function (error, response, body) {
         console.log("HotBookmarks request ", error, response && response.statusCode);
         if (response && response.statusCode == 200) {
             const $ = cheerio.load(body);
             var data = [];
-            $('.commit-group-title').each(function() {
+            $('.commit-group-title').each(function () {
                 var updateLogs = {};
 
                 var dateMap = {
@@ -1170,7 +1094,7 @@ api.post('/getUpdateLog', function(req, res) {
                 updateLogs.date = dateArray[2] + '-' + (dateMap[dateArray[0]] || dateArray[0]) + '-' + dateArray[1];
                 updateLogs.logs = [];
 
-                $(this).next().children('li').each(function() {
+                $(this).next().children('li').each(function () {
                     var $log = $(this).children('.table-list-cell').eq(0).children('p').children('a');
                     var commit = $log.text()
                     var href = 'https://github.com' + $log.attr('href');
@@ -1198,14 +1122,14 @@ api.post('/getUpdateLog', function(req, res) {
     });
 })
 
-api.checkSnapFaviconState = function() {
+api.checkSnapFaviconState = function () {
     db.getBookmarks()
         .then((bookmarks) => {
             bookmarks.forEach(bookmark => {
                 var id = bookmark.id;
                 var snap_state = bookmark.snap_state;
                 var finePath = './public/images/snap/' + id + '.png'
-                fs.exists(finePath, function(exists) {
+                fs.exists(finePath, function (exists) {
                     if (!exists && snap_state == -1) {
                         db.updateBookmarkSnapState(id, 0);
                     }
@@ -1215,68 +1139,68 @@ api.checkSnapFaviconState = function() {
         .catch((err) => console.log('getBookmarks err', err));
 }
 
-api.getSnapByTimer = function() {
+api.getSnapByTimer = function () {
     console.log('getSnapByTimer...........');
     var timeout = 30000
-    setInterval(function() {
+    setInterval(function () {
         var date = new Date();
         var today = date.getDate();
         var hours = date.getHours();
-        if (hours >=2 && hours <= 5) {
+        if (hours >= 2 && hours <= 5) {
             db.getBookmarkWaitSnap(today)
-            .then((bookmarks) => {
-                if (bookmarks.length == 1) {
-                    var id = bookmarks[0].id;
-                    var snapState = bookmarks[0].snap_state;
-                    var url = bookmarks[0].url;
-                    var filePath = './public/images/snap/' + id + '.png';
-                    // 获取截图
-                    fs.exists(filePath, function(exists) {
-                        if (exists) {
-                            if (snapState != -1) {
-                                db.updateBookmarkSnapState(id, -1);
-                            }
-                        } else {
-                            if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
-                                db.updateBookmarkSnapState(id, today + 31);
-                                return;
-                            }
-                            var webshotOptions = {
-                                shotSize: {
-                                    width: 320,
-                                    height: 160
-                                },
-                                timeout: timeout,
-                            };
-                            webshot(url, filePath, webshotOptions, function(err) {
-                                var newSnapState = -1;
-                                if (err) {
-                                    console.log("boomarkid = " + id + ", url = " + url + ", webshot over")
-                                    if (snapState == 0 || snapState == 1) {
-                                        newSnapState = snapState + 1;
-                                    } else if (snapState == 2) {
-                                        newSnapState = today + 31;
-                                    }
+                .then((bookmarks) => {
+                    if (bookmarks.length == 1) {
+                        var id = bookmarks[0].id;
+                        var snapState = bookmarks[0].snap_state;
+                        var url = bookmarks[0].url;
+                        var filePath = './public/images/snap/' + id + '.png';
+                        // 获取截图
+                        fs.exists(filePath, function (exists) {
+                            if (exists) {
+                                if (snapState != -1) {
+                                    db.updateBookmarkSnapState(id, -1);
                                 }
-                                db.updateBookmarkSnapState(id, newSnapState);
-                            });
-                        }
-                    });
-                }
-            })
-            .catch((err) => console.log('getBookmarkWaitSnap err', err));
+                            } else {
+                                if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(url)) {
+                                    db.updateBookmarkSnapState(id, today + 31);
+                                    return;
+                                }
+                                var webshotOptions = {
+                                    shotSize: {
+                                        width: 320,
+                                        height: 160
+                                    },
+                                    timeout: timeout,
+                                };
+                                webshot(url, filePath, webshotOptions, function (err) {
+                                    var newSnapState = -1;
+                                    if (err) {
+                                        console.log("boomarkid = " + id + ", url = " + url + ", webshot over")
+                                        if (snapState == 0 || snapState == 1) {
+                                            newSnapState = snapState + 1;
+                                        } else if (snapState == 2) {
+                                            newSnapState = today + 31;
+                                        }
+                                    }
+                                    db.updateBookmarkSnapState(id, newSnapState);
+                                });
+                            }
+                        });
+                    }
+                })
+                .catch((err) => console.log('getBookmarkWaitSnap err', err));
         }
 
     }, timeout + 1000);
 }
 
-api.getFaviconByTimer = function() {
+api.getFaviconByTimer = function () {
     console.log('getFaviconByTimer...........');
     let timeout = 1000 * 60 * 30; // 半小时更新一次
     let busy = false;
 
     let downloadFavicon = async () => {
-        if(busy) return;
+        if (busy) return;
         var today = new Date().getDate();
         try {
             busy = true;
@@ -1325,7 +1249,7 @@ api.getFaviconByTimer = function() {
     setInterval(downloadFavicon, timeout);
 }
 
-api.getHotBookmarksByTimer = function() {
+api.getHotBookmarksByTimer = function () {
     var timeout = 1000 * 60 * 10; // 10分钟更新一遍
     var busy = false;
     var dayIndex = 0;
@@ -1333,7 +1257,7 @@ api.getHotBookmarksByTimer = function() {
 
     console.log('getHotBookmarks...........', date.format("yyyy-MM-dd hh:mm:ss"));
 
-    setInterval(function() {
+    setInterval(function () {
         if (busy) {
             console.log('getHotBookmarks is busy')
             return;
@@ -1362,7 +1286,7 @@ api.getHotBookmarksByTimer = function() {
         request.post({
             url: url,
             form: requireData
-        }, function(error, response, body) {
+        }, function (error, response, body) {
             console.log("HotBookmarks request ", error, response && response.statusCode);
             if (response && response.statusCode == 200) {
                 var inserCnt = 0;
@@ -1428,7 +1352,7 @@ api.getHotBookmarksByTimer = function() {
 
 
 
-api.post('/addNote', function(req, res) {
+api.post('/addNote', function (req, res) {
     console.log("addNote username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -1456,7 +1380,7 @@ api.post('/addNote', function(req, res) {
         });
 });
 
-api.get('/notes', function(req, res) {
+api.get('/notes', function (req, res) {
     console.log("getNotes username = ", req.session.username);
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -1468,15 +1392,15 @@ api.get('/notes', function(req, res) {
         return;
     }
     if (params.shareNote) {
-      if(params.json) {
-        db.getNote(params.shareNote)
-        .then((data) => res.json(data))
-        .catch((err) => console.log('notes', err));
-      } else {
-          db.getNote(params.shareNote)
-          .then((data) => {
-              data = xss(data);
-              res.send(`
+        if (params.json) {
+            db.getNote(params.shareNote)
+                .then((data) => res.json(data))
+                .catch((err) => console.log('notes', err));
+        } else {
+            db.getNote(params.shareNote)
+                .then((data) => {
+                    data = xss(data);
+                    res.send(`
           <body style="margin:0px;height:100%;">
             <head>
               <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
@@ -1494,9 +1418,9 @@ api.get('/notes', function(req, res) {
               <pre id="note" style="background-color:RGB(243,244,245); padding:0px 10px 0px 10px; margin:0px; width:60%; min-height:100%;display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">\n\n${data}\n\n</pre>
             </div>
           </body>`)
-            })
-          .catch((err) => console.log('notes', err));
-      }
+                })
+                .catch((err) => console.log('notes', err));
+        }
     } else {
         params.user_id = req.session.user.id;
         db.getNotes(params)
@@ -1505,7 +1429,7 @@ api.get('/notes', function(req, res) {
     }
 });
 
-api.delete('/delNote', function(req, res) {
+api.delete('/delNote', function (req, res) {
     console.log("delBookmark username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -1524,7 +1448,7 @@ api.delete('/delNote', function(req, res) {
         });
 })
 
-api.post('/updateNote', function(req, res) {
+api.post('/updateNote', function (req, res) {
     console.log("updateNote username = ", req.session.username);
     if (!req.session.user) {
         res.send(401);
@@ -1545,30 +1469,30 @@ api.post('/updateNote', function(req, res) {
         }); // oops!
 })
 
-api.post('/updateNotePublic', function(req, res) {
-  console.log("updateNotePublic username = ", req.session.username);
-  if (!req.session.user) {
-      res.send(401);
-      return;
-  }
+api.post('/updateNotePublic', function (req, res) {
+    console.log("updateNotePublic username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
 
-  var note = req.body.params;
-  console.log('hello updateNotePublic', JSON.stringify(note));
-  db.updateNotePublic(note.id, note.public)
-      .then((affectedRows) => res.json({
-          result: affectedRows
-      }))
-      .catch((err) => {
-          console.log('updateNote err', err);
-          res.json({
-              result: -1
-          })
-      }); // oops!
+    var note = req.body.params;
+    console.log('hello updateNotePublic', JSON.stringify(note));
+    db.updateNotePublic(note.id, note.public)
+        .then((affectedRows) => res.json({
+            result: affectedRows
+        }))
+        .catch((err) => {
+            console.log('updateNote err', err);
+            res.json({
+                result: -1
+            })
+        }); // oops!
 })
 
 
 // 实现文件下载
-api.get('/download', function(req, res) {
+api.get('/download', function (req, res) {
     console.log("download username = ", req.session.username);
 
     var userId = req.query.userId;
@@ -1601,11 +1525,11 @@ api.get('/download', function(req, res) {
                                 var filePath = path.join(path.resolve(__dirname, '..'), 'uploads', fileName);
                                 fs.writeFile(filePath, beautify_html($.xml(), {
                                     indent_size: 4,
-                                }), function(err) {
+                                }), function (err) {
                                     if (err) {
                                         console.log(err);
                                     } else {
-                                        res.download(filePath, function(err) {
+                                        res.download(filePath, function (err) {
                                             if (err) {
                                                 console.log(err);
                                             } else {
@@ -1634,7 +1558,7 @@ function md5(str) {
 };
 
 function copyFile(sourceFile, destFile) {
-    fs.exists(sourceFile, function(exists) {
+    fs.exists(sourceFile, function (exists) {
         if (exists) {
             var readStream = fs.createReadStream(sourceFile);
             var writeStream = fs.createWriteStream(destFile);

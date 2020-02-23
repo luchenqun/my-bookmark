@@ -20,7 +20,13 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.order = [false, false, false];
     $scope.order[($stateParams && $stateParams.orderIndex) || 0] = true;
     $scope.bookmarkData = {};
-    var timeagoInstance = timeago();
+
+    var menusScope = $('div[ng-controller="menuCtr"]').scope();
+    var login = (menusScope && menusScope.login) || false;
+    pubSubService.publish('Common.menuActive', {
+        login: login,
+        index: login ? dataService.LoginIndexBookmarks : dataService.NotLoginIndexBookmarks
+    });
 
     getBookmarks();
 
@@ -91,66 +97,26 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
 
     function getBookmarks() {
         var params = {}
-        params.showStyle = $scope.showStyle
+        params.showStyle = 'navigate';
         params.currentPage = $scope.currentPage;
         params.perPageItems = perPageItems;
 
-        if (!params.showStyle) {
-            bookmarkService.userInfo({})
-                .then((user) => {
-                    $scope.showStyle = (user && user.show_style) || 'navigate';
-                    updateShowStyle();
-                    getBookmarks(); // 拿到默认显示风格了，继续取获取书签
-                })
-                .catch((err) => dataService.netErrorHandle(err, $state));
-        } else {
-            $scope.loadBusy = true;
-            if (params.showStyle == 'table' && (!$scope.forbidTransition)) {
-                $('.js-table-bookmarks').transition('hide');
-            }
-            bookmarkService.getBookmarks(params)
-                .then((data) => {
-                    $scope.bookmarks = data;
-                    if ($scope.bookmarks.length <= 2) {
-                        $(".js-msg").removeClass("hidden");
-                    }
-                    if ($scope.bookmarks.length == 0) {
-                        toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
-                    }
+        $scope.loadBusy = true;
+        bookmarkService.getBookmarks(params)
+            .then((data) => {
+                $scope.bookmarks = data;
+                if ($scope.bookmarks.length <= 2) {
+                    $(".js-msg").removeClass("hidden");
+                }
+                if ($scope.bookmarks.length == 0) {
+                    toastr.info('您还没有书签，请点击菜单栏的添加按钮进行添加', "提示");
+                }
+                $scope.loadBusy = false;
+            })
+            .catch((err) => {
+                dataService.netErrorHandle(err, $state);
+                $scope.loadBusy = false;
+            });
 
-                    pubSubService.publish('Common.menuActive', {
-                        login: true,
-                        index: dataService.LoginIndexBookmarks
-                    });
-                    if (!$scope.forbidTransition) {
-                        transition();
-                    }
-                    $scope.forbidTransition = false;
-                    $scope.loadBusy = false;
-                })
-                .catch((err) => {
-                    dataService.netErrorHandle(err, $state);
-                    $scope.loadBusy = false;
-                });
-        }
-    }
-
-    function transition() {
-        if ($scope.showStyle == 'card' && $scope.currentPage > 1) {
-            return;
-        }
-        var className = 'js-segment-navigate';
-        if ($scope.showStyle == 'card') {
-            className = 'js-segment-card'
-        } else if ($scope.showStyle == 'table') {
-            className = 'js-table-bookmarks'
-        } else if ($scope.showStyle == 'costomTag') {
-            className = 'js-segment-costomTag'
-        }
-        $('.' + className).transition('hide');
-        $('.' + className).transition({
-            animation: dataService.animation(),
-            duration: 500,
-        });
     }
 }]);

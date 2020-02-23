@@ -1170,6 +1170,20 @@ db.delNote = function (id) {
     });
 }
 
+db.delCommit = function (id, user_id) {
+    var sql = "DELETE FROM `advices` WHERE `id` = '" + id + "' AND `user_id` = '" + user_id + "'";
+    console.log(sql);
+    return new Promise(function (resolve, reject) {
+        client.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.affectedRows);
+            }
+        });
+    });
+}
+
 db.updateNote = function (id, content, tag_id) {
     var sql = "UPDATE `notes` SET `content`=" + client.escape(content) + ", `tag_id`='" + tag_id + "' WHERE (`id`='" + id + "')";
     console.log(sql);

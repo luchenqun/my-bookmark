@@ -10,10 +10,9 @@ app.factory('dataService', [function () {
         LoginIndexPraise: 6,
 
         // 非登陆索引
-        NotLoginIndexHome: 0,
+        NotLoginIndexBookmarks: 0,
         NotLoginIndexLogin: 1,
         NotLoginIndexHot: 2,
-        NotLoginIndexPraise: 3,
 
         loginMenus: [{
             uiSref: 'bookmarks',

@@ -332,6 +332,25 @@ api.delete('/delBookmark', function (req, res) {
         .catch((err) => console.log('delBookmark err', err));
 })
 
+api.delete('/delComment', function (req, res) {
+    console.log("delComment username = ", req.session.username);
+    if (!req.session.user) {
+        res.send(401);
+        return;
+    }
+
+    var userId = req.session.username === 'admin' ? req.query.user_id : req.session.user.id;
+    db.delCommit(req.query.id, userId)
+        .then((affectedRows) => {
+            res.json({
+                code: 0,
+                result: affectedRows
+            });
+        })
+        .catch((err) => console.log('delComment err', err));
+})
+
+
 api.post('/updateBookmark', function (req, res) {
     console.log("updateBookmark username = ", req.session.username);
     if (!req.session.user) {
@@ -393,10 +412,6 @@ api.get('/bookmark', function (req, res) {
 
 api.get('/bookmarks', function (req, res) {
     console.log("bookmarks username = ", req.session.username);
-    if (!req.session.user) {
-        res.send(401);
-        return;
-    }
     var userId = 226; //req.session.user.id;
     db.getTags(userId)
         .then((tags) => db.getBookmarksNavigate(tags))

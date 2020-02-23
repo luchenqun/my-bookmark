@@ -4,16 +4,17 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
         $window.location = "http://m.mybookmark.cn/#/tags";
         return;
     }
-    var maxSelections = 3;
 
     $scope.comment = '';
     $scope.advices = [];
+    $scope.curAdvice = {};
     $scope.category = ["功能", "BUG", "其他"];
     $scope.user = {};
 
     bookmarkService.userInfo({})
         .then((data) => {
             $scope.user = data;
+            console.log(data);
         })
         .catch((err) => {
 
@@ -47,6 +48,28 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
             .catch((err) => {
                 toastr.error('留言失败：' + JSON.stringify(err), "错误");
             });
+    }
+
+    $scope.showDelComment = function (advice) {
+        $scope.curAdvice = advice;
+        $('.js-comment-del').modal('show');
+    }
+
+    $scope.delComment = function () {
+        // console.log($scope.curAdvice);
+        bookmarkService.delComment($scope.curAdvice)
+            .then((data) => {
+                if (data.result == 1) {
+                    toastr.success('删除成功', "提示");
+                    getAdvices({});
+                } else {
+                    toastr.error('删除失败', "错误");
+                }
+            })
+            .catch((err) => {
+                toastr.error('删除失败', "错误");
+            });
+        $('.js-comment-del').modal('hide');
     }
 
     function getAdvices(params) {

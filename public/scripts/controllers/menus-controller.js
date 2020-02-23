@@ -1,6 +1,6 @@
 app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'ngDialog', 'pubSubService', 'bookmarkService', 'dataService', function ($scope, $stateParams, $state, $window, $timeout, $document, ngDialog, pubSubService, bookmarkService, dataService) {
     console.log("Hello menuCtr")
-    $scope.login = true; /**< 是否登陆 */
+    $scope.login = false; /**< 是否登陆 */
     $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
     $scope.searchWord = ''; /**< 搜索关键字 */
@@ -14,6 +14,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $scope.showSearchBtn = true;
     $scope.user = {};
 
+    
+
     // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
     pubSubService.subscribe('Common.menuActive', $scope, function (event, params) {
         console.log("subscribe Common.menuActive, login = " + params.login + ", index = " + params.index);
@@ -26,6 +28,10 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $scope.quickUrl = params.quickUrl;
     });
 
+    pubSubService.subscribe('loginCtr.login', $scope, function (event, params) {
+        $scope.login = params.login;
+    });
+
     $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
     $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
@@ -34,11 +40,13 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             pubSubService.publish('loginCtr.login', {
                 'login': data.logined,
             });
+            $scope.login = data.logined;
         })
         .catch((err) => {
             pubSubService.publish('loginCtr.login', {
                 'login': data.logined,
             });
+            $scope.login = false;
         });
 
     bookmarkService.userInfo({})

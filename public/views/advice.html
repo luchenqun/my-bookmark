@@ -28,8 +28,8 @@
 		<h3 class="ui header">最新100条留言</h3>
 		<div class="comment" ng-repeat="advice in advices">
 			<a class="avatar">
-				<img ng-if="advice.username == 'lcq'" src="./images/admin.jpg" />
-				<img ng-if="advice.username != 'lcq'" ng-src="data:image/png;base64,{{advice.imgData}}" />
+				<img ng-if="advice.username == 'admin'" src="./images/admin.png" />
+				<img ng-if="advice.username != 'admin'" ng-src="data:image/png;base64,{{advice.imgData}}" />
 			</a>
 			<div class="content">
 				<a class="author">{{ advice.username }}</a>
@@ -39,8 +39,21 @@
 				<div class="metadata">
 					<span class="category">{{ category[advice.category] }}</span>
 				</div>
+				<div class="metadata" ng-if="user.username === 'admin' || user.username === advice.username">
+					<i class="red trash alternate outline icon" ng-click="showDelComment(advice)"></i>
+				</div>
 				<div class="text">{{ advice.comment }}</div>
 			</div>
+		</div>
+	</div>
+	<div class="ui mini js-comment-del modal">
+		<div class="header">删除留言</div>
+		<div class="content">
+			<p>您确认要删除留言 {{ curAdvice.comment }} 吗？删除之后再也无法恢复了！</p>
+		</div>
+		<div class="actions">
+			<div class="ui negative button">不删除</div>
+			<div class="ui positive button" ng-click="delComment(advice)">删除</div>
 		</div>
 	</div>
 </div>

@@ -256,6 +256,19 @@ app.factory('bookmarkService', ['$http', '$q', function ($http, $q) {
                 });
             return def.promise;
         },
+        delComment: function (params) {
+            var def = $q.defer();
+            $http.delete('/api/delComment/', {
+                params: params
+            })
+                .success(function (data) {
+                    def.resolve(data);
+                })
+                .error(function (data) {
+                    def.reject(data);
+                });
+            return def.promise;
+        },
         /**
          * @func
          * @desc 根据显示页数的索引，获取书签的数据

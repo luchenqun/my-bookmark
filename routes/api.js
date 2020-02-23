@@ -397,7 +397,7 @@ api.get('/bookmarks', function(req, res) {
         res.send(401);
         return;
     }
-    var userId = req.session.user.id;
+    var userId = 226; //req.session.user.id;
     var params = req.query;
     params.showStyle = params.showStyle || req.session.user.show_style; // 如果没有指定风格，那么用系统风格
     if (params.showStyle === 'navigate') {

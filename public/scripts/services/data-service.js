@@ -17,7 +17,7 @@ app.factory('dataService', [function() {
 
         loginMenus: [{
             uiSref: 'bookmarks',
-            title: '书签'
+            title: '导航'
         }, {
             uiSref: 'tags',
             title: '分类'
@@ -35,8 +35,8 @@ app.factory('dataService', [function() {
             title: '留言'
         }],
         notLoginMenus: [{
-            uiSref: '/',
-            title: '首页'
+            uiSref: 'bookmarks',
+            title: '导航'
         }, {
             uiSref: 'login',
             title: '登录'

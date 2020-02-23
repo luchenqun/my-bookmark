@@ -11,7 +11,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $scope.bookmarkEditHover = false;
     $scope.hoverBookmark = null;
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
-    $scope.showStyle = ($stateParams && $stateParams.showStyle) || (menusScope && menusScope.showStyle); // 显示风格'navigate', 'costomTag', 'card', 'table'
+    $scope.showStyle = 'navigate';
     const perPageItems = 20;
     var dialog = null;
     $scope.totalPages = 0;

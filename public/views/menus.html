@@ -3,25 +3,6 @@
         <a class="item js-single-menu" ng-class="{selected:$index===selectLoginIndex}" style="cursor:default;" ui-sref-opts="{reload: true}" ng-repeat="menu in loginMenus"
             ui-sref="{{ menu.uiSref }}({searchWord:null})" ng-show="menu.show !== false" js-menu-init>
             <div>{{ menu.title }}</div>
-            <div class="ui floating simple dropdown icon js-bookmark-dropdown" ng-if="$index==0" ng-click="$event.stopPropagation();">
-                <i class="dropdown icon"></i>
-                <div class="menu js-menu-option">
-                    <div class="header">显示方式</div>
-                    <div class="divider"></div>
-                    <div class="field item js-field-navigate" ng-click="updateShowStyle('navigate')">
-                        <div class="ui radio checkbox js-radio-navigate">
-                            <input type="radio" name="show-style" checked="">
-                            <label>导航</label>
-                        </div>
-                    </div>
-                    <div class="field item js-field-table" ng-click="updateShowStyle('table')">
-                        <div class="ui radio checkbox js-radio-table">
-                            <input type="radio" name="show-style">
-                            <label>表格</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </a>
         <div id="js-search" style="width: 1500px;">
             <div class="ui transparent fluid icon input" style="height: 100%;margin-left: 10px;">

@@ -412,8 +412,8 @@ api.get('/bookmark', function (req, res) {
 
 api.get('/bookmarks', function (req, res) {
     console.log("bookmarks username = ", req.session.username);
-    var userId = 226; //req.session.user.id;
-    db.getTags(userId)
+    db.getUser('admin')
+        .then((user) => db.getTags(user.id))
         .then((tags) => db.getBookmarksNavigate(tags))
         .then((result) => {
             var data = [];

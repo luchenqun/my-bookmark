@@ -49,17 +49,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
             $scope.login = false;
         });
 
-    bookmarkService.userInfo({})
-        .then((data) => {
-            $scope.user = data;
-            if (data.username === 'lcq') {
-                $scope.loginMenus[dataService.LoginIndexHot].show = false;
-            }
-        })
-        .catch((err) => {
-
-        });
-
     $scope.userLogin = function (username, password) {
         var params = {
             username: username,

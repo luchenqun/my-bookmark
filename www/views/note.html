@@ -1,0 +1,74 @@
+<div class="ui segment js-note-card" style="padding:14px 0px 0px 0px;">
+    <div class="ui container" style="padding-left:14px">
+        <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags"
+            ng-click="clickTag(tag.id)" ng-show="tag.ncnt || add">{{ tag.name }} ({{ tag.ncnt || 0 }})</div>
+        <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-click="showAddNote()" data-tooltip="点击添加备忘。你也可以在任意界面按快捷键A(不区分大小写)增加备忘录。">
+            <i class="plus icon" style="margin-right:0px;"></i>
+        </div>
+    </div>
+    <div class="ui container" style="padding-left:14px;padding-bottom:14px">
+        <div class="ui form" ng-show="add">
+            <div class="required field">
+                <label>内容</label>
+                <textarea rows="12" placeholder="" ng-model="content" id="noteedit"></textarea>
+            </div>
+            <div class="field">
+                <div class="actions">
+                    <div class="ui cancel button" ng-click="add=false;">取消</div>
+                    <div class="ui green button" ng-click="addNote(false)" ng-show="!edit">提交关闭</div>
+                    <div class="ui green button" ng-click="addNote(true)" ng-show="!edit">提交继续</div>
+                    <div class="ui green button" ng-click="updateNote()" ng-show="edit">更新</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider" ng-show="notes.length > 0" style="margin:0px;"></div>
+    <div class="ui hidden info message js-note" ng-if="(!add) && notes.length == 0" style="margin-left:14px;margin-right:14px">
+        <i class="close icon" ng-click="closeNote()"></i>
+        <div class="content">
+            <div class="header">系统提示！
+            </div>
+            <ul class="list">
+                <li>您可以在任意界面按快捷键A(不区分大小写)增加备忘录。双击备忘录可查看详情！</li>
+            </ul>
+        </div>
+    </div>
+    <div class="ui vertical segment" ng-repeat="note in notes" ng-click="noteClick(note)" ng-mouseover="setHoverNote(note)" ng-mouseleave="setHoverNote(null)" id="{{note.id}}" style="margin:0px;padding-top:10px;padding-bottom: 10px;">
+        <pre class="note-content" title="单击查看详情，C复制，D删除，E编辑" style="margin:0px;padding-left:14px;padding-right:14px" ng-if="!note.detail">{{ note.brief }}</pre>
+        <pre class="note-content" title="双击复制" ng-dblclick="copy(note.content)" style="margin:0px; font-size:16px;padding:60px 14px;" ng-if="note.detail">{{ note.content }}</pre>
+        <div class="ui right aligned grid" ng-show="note.detail">
+            <div class="sixteen wide column" style="margin:0px 20px 0px 0px;padding:20px 0px 0px 0px;">
+                <div class="extra content" ng-show="true" ng-mouseleave="note.edit=false;" style="height:50px;">
+                    <div class="ui mini label" ng-click="clickTag(note.tag_id)" style="margin:3px 0px 0px 10px;cursor:default;">{{ note.tagName || "未分类" }}</div>
+                    <span style="margin:0 8px;">
+                        <span title="添加于{{note.created_at}}" class="need_to_be_rendered" data-timeago="{{ note.created_at }}"></span>
+                        <span style="margin-left:-3px;">添加</span>
+                    </span>
+                    <i ng-if="note.public == 0" class="black lock icon" title="点击公开备忘" ng-click="updatePublic(note, 1)"></i>
+                    <i ng-if="note.public == 1" class="black open lock icon" title="点击不公开备忘" ng-click="updatePublic(note, 0)"></i>
+                    <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/delete.png" ng-click="delNote(note.id, note.content)"
+                        title="删除备忘">
+                    <label for="noteedit">
+                        <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id, note.content, note.tag_id)"
+                            title="编辑备忘">
+                    </label>
+                    <img class="ui mini spaced image" id="noteid{{note.id}}" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/copy.png"
+                        id="url{{bookmark.id}}" ng-click="copy(note.content)" title="复制备忘">
+                    <i class="black share alternate icon" title="复制分享地址" ng-click="share(note)"></i>
+                    <i class="black chevron up icon" title="收起详情" ng-click="noteClick(note, true, $event)"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height:20px;" ng-show="notes.length === 0"></div>
+    <div class="ui grid" ng-show="totalItems>0" style="margin:0px;padding:0px 14px">
+        <div class="eight wide column" style="padding-top:26px;">
+            <span ng-show="searchWord">通过搜索关键字"{{searchWord}}"(点击菜单"备忘录"重新查看所有)，</span>共找到备忘一共约{{totalItems}}个
+        </div>
+        <div class="eight wide column">
+            <pagination></pagination>
+        </div>
+    </div>
+</div>
+<div class="ui massive text centered inline loader js-hot-loader" ng-class="{active:loadBusy, disabled:!loadBusy}">
+    正在加载中...</div>

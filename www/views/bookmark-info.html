@@ -1,0 +1,62 @@
+<div class="ui long modal js-bookmark-info" ng-controller="bookmarkInfoCtr" ng-keydown="close()">
+    <i class="close icon"></i>
+    <div class="header">
+        {{bookmark.title}}
+    </div>
+    <div class="content">
+        <div class="ui grid">
+            <div class="sixteen wide column">
+                <div class="ui  vertically divided grid">
+                    <div class="one column row">
+                        <div class="column">
+                            <img class="ui middle aligned mini image" ng-src="{{bookmark.favicon_url}}" style="width:16px;height:16px;padding:0;cursor:pointer;"
+                                ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+                                title="点击跳转到原页面">
+                            <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="cursor:pointer;" title="点击跳转到原页面">网页地址</span>：
+                            <span title="点击复制链接" ng-click="copy(bookmark.url)" class="urlSpan">{{bookmark.url}}
+                                <span>
+                        </div>
+                    </div>
+                    <div class="two column row">
+                        <div class="column">
+                            <i class="add to calendar icon"></i>创建日期：
+                            <span>{{bookmark.created_at}}</span>
+                        </div>
+                        <div class="column">
+                            <i class="calendar icon"></i>最后点击：
+                            <span>{{bookmark.last_click}}</span>
+                        </div>
+                    </div>
+                    <div class="two column row">
+                        <div class="column" ng-if="bookmark.click_count">
+                            <i class="hand pointer icon"></i>点击次数：{{bookmark.click_count}}
+                        </div>
+                        <div class="column" ng-if="bookmark.fav_count">
+                            <i class="heart icon"></i>收藏人数：{{bookmark.fav_count}}
+                        </div>
+                        <div class="column" ng-if="!bookmark.created_by">
+                            <i class="tags icon"></i>书签分类：
+                            <div class="ui label" ng-repeat="tag in bookmark.tags">
+                                {{ tag.name }}
+                            </div>
+                        </div>
+                        <div class="column" ng-if="bookmark.created_by">
+                            <i class="info circle icon"></i>来源信息：{{bookmark.created_by}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="content" style="padding:0 20px">
+        <div class="description js-content">
+            <p ng-bind-html="content"></p>
+            <img class="ui centered medium image" src="/images/loading.gif" ng-show="loading">
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui right button" ng-click="jumpToUrl(bookmark.url, bookmark.id)">跳转到原页面</div>
+        <button class="positive ui right button">关闭页面</button>
+    </div>
+</div>

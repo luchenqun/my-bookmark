@@ -1,48 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<!-- 百度统计 -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?01351b0343ccf42968923cff21a4a851";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
 <head>
-<meta charset="UTF-8">
-<title>New ThinkJS Application</title>
-<style>
-*{padding: 0;margin: 0;font-size: 16px;line-height: 20px;font-family: arial;}
-a, a:visited{color:#337ab7;text-decoration: none;}
-header{padding: 70px 0 70px 0;background-color: #4A6495}
-h1{font-size: 36px;color:#fff;font-weight: normal;}
-code{  padding: 2px 4px;font-size: 90%;color: #c7254e;background-color: #f9f2f4;border-radius: 4px;}
-.content{width: 1000px;margin: auto}
-.wrap{width: 1000px;margin: auto}
-.content{margin-top: 80px;}
-.list{width: 800px;}
-.list .item{position: relative;padding-left: 70px;margin-top: 50px;}
-.list .item .step{position: absolute;width: 36px;height: 36px;top:-3px;left:0;border: 5px solid #4A6495;border-radius: 23px;text-align: center;line-height: 36px;}
-.list .item h2{font-size: 24px;font-weight: normal;}
-.list .item p{line-height: 30px;margin-top: 10px}
-</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="bookmark">
+    <meta name="author" content="luchenqun">
+    <title>在线书签管理工具-我的书签</title>
+    <link href="css/externe/semantic.min.css " rel="stylesheet" />
+    <link href="css/externe/calendar.min.css" rel="stylesheet" />
+    <link href="css/externe/toastr.min.css" rel="stylesheet" />
+    <link href="css/style.css " rel="stylesheet" />
+    <link href="css/externe/uploadfile.css" rel="stylesheet">
+    <link href="css/externe/ngDialog.css" rel="stylesheet">
+    <link href="css/externe/ngDialog-theme-default.css" rel="stylesheet">
+    <link href="css/externe/ngDialog-theme-plain.css" rel="stylesheet">
+    <script type="text/javascript">
+        window.onload = function () {
+            var clipboard = new ClipboardJS(document.getElementById('clipboard'));
+            clipboard.on('success', function (e) {
+                var text = e.text.length >= 180 ? e.text.substr(0, 180) + '...' : e.text;
+                toastr.success(text + '<br/>已复制到您的剪切板', "提示");
+                e.clearSelection();
+            });
+            clipboard.on('error', function (e) {
+                var text = e.text.length >= 180 ? e.text.substr(0, 180) + '...' : e.text;
+                toastr.error(text + '<br/>复制失败', "提示");
+            });
+        }
+    </script>
 </head>
-<body>
-  <header>
-    <div class="wrap">
-      <h1>A New App Created By ThinkJS</h1>
+
+<body ng-app="bookmarkApp">
+    <div class="ui container">
+        <!-- directive：菜单 -->
+        <menus></menus>
+        <div class="ui container" style="width:100%;height:2px"></div>
+        <div class="ui container">
+            <div ui-view></div>
+        </div>
+        <div class="ui container" style="width:100%;height:10px"></div>
+        <div class="foot" style="margin-bottom:10px;">
+            <div class="ui segment container">
+                我爱佳佳与这个世界&nbsp;&nbsp;|&nbsp;&nbsp;Copyleft ©All Rights Reserved LCQ&nbsp;&nbsp;|&nbsp;&nbsp;<a
+                    href="http://m.mybookmark.cn/">移动设备访问</a>&nbsp;&nbsp;|&nbsp;&nbsp;联系我(QQ:530485521)&nbsp;&nbsp;|&nbsp;&nbsp;<a
+                    href="https://github.com/luchenqun/my-bookmark"
+                    target="_blank">网站源码</a>&nbsp;&nbsp;|&nbsp;&nbsp;V1.5.0&nbsp;&nbsp;|&nbsp;&nbsp;<span>加载失败，请按F5！(●'◡'●)</span><br />
+            </div>
+            <!-- 主要用来配合clipboard.min.js复制文本的 -->
+            <div id="clipboard" data-clipboard-text="i love this world and jiajia!" style="opacity:0;cursor:default">
+                <span>Copy</span>
+            </div>
+        </div>
+        <!-- directive：书签编辑 -->
+        <edit></edit>
+        <!-- directive：书签信息 -->
+        <bookmarkinfo></bookmarkinfo>
     </div>
-  </header>
-  <div class="content">
-    <div class="list">
-      <div class="item">
-        <div class="step">1</div>
-        <h2>Generate Files</h2>
-        <p>Run <code>thinkjs</code> command to create module, controler, model, service and so on. </p>
-      </div>
-      <div class="item">
-        <div class="step">2</div>
-        <h2>Documentation</h2>
-        <p>ThinkJS has online html documents. visit <a href="https://thinkjs.org/doc.html">https://thinkjs.org/doc.html</a>.</p>
-      </div>
-      <div class="item">
-        <div class="step">3</div>
-        <h2>GitHub</h2>
-        <p>If you have some questions, please <a href="https://github.com/thinkjs/thinkjs/issues">new a issue</a>.</p>
-      </div>
-    </div>
-  </div>
+    <script src="scripts/externe/jquery-3.1.1.min.js"></script>
+    <script src="scripts/externe/jquery.form.js"></script>
+    <script src="scripts/externe/toastr.min.js"></script>
+    <script src="scripts/externe/angular.min.js"></script>
+    <script src="scripts/externe/angular-ui-router.min.js"></script>
+    <script src="scripts/externe/angular-cookies.min.js"></script>
+    <script src="scripts/app-angular.js"></script>
+    <script src="scripts/services/bookmark-service.js"></script>
+    <script src="scripts/services/data-service.js"></script>
+    <script src="scripts/services/pub-sub-service.js"></script>
+    <script src="scripts/directives/module-directive.js"></script>
+    <script src="scripts/directives/js-init-directive.js"></script>
+    <script src="scripts/controllers/bookmarks-controller.js"></script>
+    <script src="scripts/controllers/home-controller.js"></script>
+    <script src="scripts/controllers/settings-controller.js"></script>
+    <script src="scripts/controllers/login-controller.js"></script>
+    <script src="scripts/controllers/tags-controller.js"></script>
+    <script src="scripts/controllers/advice-controller.js"></script>
+    <script src="scripts/controllers/menus-controller.js"></script>
+    <script src="scripts/controllers/edit-controller.js"></script>
+    <script src="scripts/controllers/bookmark-info-controller.js"></script>
+    <script src="scripts/controllers/search-controller.js"></script>
+    <script src="scripts/controllers/weixin-article-controller.js"></script>
+    <script src="scripts/controllers/praise-controller.js"></script>
+    <script src="scripts/controllers/note-controller.js"></script>
+    <script src="scripts/externe/semantic.min.js"></script>
+    <script src="scripts/externe/calendar.min.js"></script>
+    <script src="scripts/externe/jquery.uploadfile.min.js"></script>
+    <script src="scripts/externe/ng-infinite-scroll.min.js"></script>
+    <script src="scripts/externe/angular-sortable-view.min.js"></script>
+    <script src="scripts/externe/ngDialog.min.js"></script>
+    <script src="scripts/externe/clipboard.min.js"></script>
+    <script src="scripts/externe/timeago.min.js"></script>
+    <script src="scripts/externe/md5.js"></script>
+    <script src="scripts/externe/pnglib.js"></script>
+    <script src="scripts/externe/identicon.js"></script>
 </body>
+
 </html>

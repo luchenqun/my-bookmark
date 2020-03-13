@@ -1,0 +1,12 @@
+<div class="ngdialog-message">
+    <h3>删除提示</h3>
+    <div class="ui divider"></div>
+    <p ng-show="ngDialogId">您确认要删除书签:
+        <code>{{ waitDelBookmark.title }}</code>吗？
+    </p>
+    <p style="color:#F00">如果删除该书签，那么再也无法查看到。</p>
+</div>
+<div class="ngdialog-buttons">
+    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirmDelBookmark(waitDelBookmark.id)">确定删除</button>
+    <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog('button')">取消</button>
+</div>

@@ -1,0 +1,162 @@
+<div class="ui hidden info message js-msg" ng-if="showStyle === 'navigate' && bookmarks.length <= 2">
+    <i class="close icon" ng-click="closeMsg()"></i>
+    <div class="content">
+        <div class="header">系统检测到您好像还没添加过书签哦！
+        </div>
+        <ul class="list">
+            <li>您可以将您的IE浏览器或者谷歌浏览器上面的书签导入系统！<a style="cursor:pointer;" ng-click="addBookmarkbyFile()">现在就去</a>
+            </li>
+            <li>您也可以点击菜单栏上面的<i class="add square icon"></i>图标进行添加。也可以使用快捷键：Insert键打开添加页面，再次按Insert键保存书签，Esc取消添加。</li>
+        </ul>
+    </div>
+</div>
+<div class="ui segment js-segment-navigate" ng-if="showStyle === 'navigate'" ng-show="!loadBusy">
+    <div class="ui container" ng-repeat="tag in bookmarks" ng-init="tagIndex=$index">
+        <div class="ui grid">
+            <div class="row">
+                <div class="wrap" style="width:88px;color:#0aa770;text-align:left;margin-left:20px;">
+                    <span title="{{ tag.name }} - 点击查看该分类所有书签" ng-click="jumpToTags(tag.id)" style="cursor:pointer;">{{ tag.name }}</span>
+                </div>
+                <div class="fourteen wide column" ng-if="tag.bookmarks.length">
+                    <div class="ui grid container">
+                        <div
+                            class="four wide column js-navigate-bookmark"
+                            ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmarkEditHover:bookmarkEditHover, bookmark:(!bookmarkNormalHover && !bookmarkEditHover)}"
+                            ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)"
+                            ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)"
+                            ng-repeat="bookmark in tag.bookmarks"
+                            ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+                            title="{{ bookmark.title }}"
+                            id="{{bookmark.id}}">
+                            <img
+                                class="ui ui middle aligned tiny image bookmarkInfo"
+                                ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}"
+                                err-src="./images/default.ico"
+                                style="width:16px;height:16px;"
+                                ng-click="detailBookmark(bookmark);$event.stopPropagation()">
+                            <span>{{ bookmark.title}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui divider"></div>
+    </div>
+</div>
+<div class="ui segment js-segment-costomTag" ng-if="showStyle === 'costomTag'" ng-show="!loadBusy">
+    <div class="ui container">
+        <div class="ui grid">
+            <div class="two wide column js-costomTag-label" ng-repeat="tag in costomTags">
+                <div class="ui small label" ng-class="{green:tag.clicked}" ng-click="updateCostomTagBookmarks(tag.index)">
+                    {{ tag.name }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui divider"></div>
+    <div class="ui five column grid">
+        <div
+            class="column js-costomTag-item"
+            ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}"
+            ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)"
+            ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)"
+            ng-repeat="bookmark in bookmarks"
+            ng-click="jumpToUrl(bookmark.url, bookmark.id)"
+            title="{{ bookmark.title }}"
+            id="{{bookmark.id}}">
+            <img
+                class="ui ui middle aligned tiny image bookmarkInfo"
+                ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}"
+                err-src="./images/default.ico"
+                style="width:16px;height:16px;"
+                ng-click="detailBookmark(bookmark);$event.stopPropagation()">
+            <span>{{ bookmark.title}}</span>
+        </div>
+    </div>
+</div>
+<table class="ui selectable sortable celled table js-table-bookmarks" ng-if="showStyle === 'table'" ng-show="!loadBusy">
+    <thead>
+        <tr>
+            <th class="forbid_sorted">标题</th>
+            <th class="forbid_sorted">链接</th>
+            <th style="width:90px;" ng-class="{descending: order[0], sorted:order[0]}" ng-click="changeOrder(0)" title="点击可对表格进行排序">点击次数</th>
+            <th style="width:100px;" ng-class="{descending: order[1], sorted:order[1]}" ng-click="changeOrder(1)" title="点击可对表格进行排序">创建日期</th>
+            <th style="width:100px;" ng-class="{descending: order[2], sorted:order[2]}" ng-click="changeOrder(2)" title="点击可对表格进行排序">最后点击</th>
+            <th style="width:150px;" class="forbid_sorted">分类</th>
+            <th style="width:88px;" class="forbid_sorted">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
+            <td>
+                <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+                <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
+                    {{ bookmark.title }}
+                </span>
+            </td>
+            <td>
+                <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor:default;">{{ bookmark.url }}</span>
+            </td>
+            <td>{{ bookmark.click_count }}</td>
+            <td>
+                <span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
+            </td>
+            <td>
+                <span id="time{{bookmark.id}}" title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
+            </td>
+            <td>
+                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="jumpToTags(tag.id)">
+                    {{ tag.name }}
+                </div>
+            </td>
+            <td>
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="7">
+                <pagination></pagination>
+            </th>
+        </tr>
+    </tfoot>
+</table>
+<div class="ui segment js-segment-card" ng-if="showStyle === 'card'" ng-show="!loadBusy || currentPage>1">
+    <div class="ui five stackable cards" infinite-scroll='loadCardData()' infinite-scroll-immediate-check="false">
+        <div class="card" ng-repeat="bookmark in bookmarks" id="{{bookmark.id}}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
+            <div class="content" ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="max-height:70px;cursor:pointer">
+                <div class="description bookmarkTitle">
+                    {{bookmark.title}}
+                </div>
+            </div>
+            <div class="image" href="{{ bookmark.url }}" ng-click="jumpToUrl(bookmark.url, bookmark.id)" style="cursor:pointer">
+                <img ng-src="./images/snap/{{bookmark.id}}.png" err-src="./images/default.jpg"/>
+            </div>
+            <div class="extra content tags" style="height:50px;">
+                <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="jumpToTags(tag.id)">
+                    {{ tag.name }}
+                </div>
+            </div>
+            <div class="extra content" ng-show="!bookmark.edit" style="height:50px;padding-right:2px;padding-left:8px;">
+                <span class="left floated like" style="margin-top:6px;">
+                    <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)">
+                    创建于:
+                    <span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
+                    <!-- {{ bookmark.created_at }} -->
+                </span>
+                <i class="ellipsis horizontal icon right floated" style="margin-top:8px;" ng-mouseover="bookmark.edit=true;"></i>
+            </div>
+            <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;" style="height:50px;">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/copy.png" ng-click="copy(bookmark.url)" title="复制链接">
+                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;margin-top:8px;" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui massive text centered inline loader" ng-class="{active:loadBusy, disabled:!loadBusy}">
+    正在加载中...</div>

@@ -1,0 +1,10 @@
+<div class="ngdialog-message">
+    <h3>删除提示</h3>
+    <div class="ui divider"></div>
+    <pre ng-show="ngDialogId" class="note-content" style="margin-top:0px;">{{ content | characters:600:false  }}</pre>
+    <p style="color:#F00">如果删除该备忘，那么再也无法查看到。</p>
+</div>
+<div class="ngdialog-buttons">
+    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirmDelNote()">确定删除</button>
+    <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog('button')">取消</button>
+</div>

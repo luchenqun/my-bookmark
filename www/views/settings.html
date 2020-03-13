@@ -1,0 +1,239 @@
+<div class="ui segment js-segment-settings">
+    <div class="ui grid">
+        <div class="four wide stretched column">
+            <div class="ui secondary vertical pointing menu">
+                <a class="item" ng-class="{active:form[0]}" ng-click="changeForm(0)">系统设置
+                </a>
+                <a class="item" ng-class="{active:form[1]}" ng-click="changeForm(1)">我的信息
+                </a>
+                <a class="item" ng-class="{active:form[2]}" ng-click="changeForm(2)">上传导出
+                </a>
+                <a class="item" ng-class="{active:form[3]}" ng-click="changeForm(3)">网站说明
+                </a>
+                <a class="item" ng-class="{active:form[4]}" ng-click="changeForm(4)">全局链接
+                </a>
+                <a class="item" ng-class="{active:form[5]}" ng-click="changeForm(5)">更新日志
+                </a>
+                <a class="item" ng-class="{active:form[6]}" ng-click="changeForm(6)">请喝咖啡
+                </a>
+            </div>
+        </div>
+        <div class="twelve wide stretched column">
+            <form class="ui form" ng-show="form[0]">
+                <h4 class="ui horizontal divider header">
+                    重置密码
+                </h4>
+                <div class="required field">
+                    <label>原密码</label>
+                    <input type="password" placeholder="" ng-model="passwordOrgin">
+                </div>
+                <div class="required field">
+                    <label>新密码</label>
+                    <input type="password" placeholder="" ng-model="passwordNew1">
+                </div>
+                <div class="required field">
+                    <label>确认密码</label>
+                    <input type="password" placeholder="" ng-model="passwordNew2">
+                </div>
+                <button class="ui button" type="submit" ng-click="resetPassword()">重置密码</button>
+                <h4 class="ui horizontal divider header">
+                    书签默认显示方式配置
+                </h4>
+                <div class="inline fields js-default-show-style" ng-show="!loadShowStyle">
+                    <div class="field" ng-click="updateDefaultShowStyle('navigate')">
+                        <div class="ui radio checkbox js-radio-default-navigate">
+                            <input type="radio" name="default-show-style" checked="checked">
+                            <label>导航</label>
+                        </div>
+                    </div>
+                    <div class="field" ng-click="updateDefaultShowStyle('table')">
+                        <div class="ui radio checkbox js-radio-default-table">
+                            <input type="radio" name="default-show-style">
+                            <label>表格</label>
+                        </div>
+                    </div>
+                    <!-- <div class="field" ng-click="updateDefaultShowStyle('card')">
+                        <div class="ui radio checkbox js-radio-default-card">
+                            <input type="radio" name="default-show-style">
+                            <label>卡片</label>
+                        </div>
+                    </div> -->
+                </div>
+            </form>
+            <div class="ui four statistics" style="margin-top:30px;" ng-show="form[1]">
+                <div class="statistic">
+                    <div class="text value">{{user.created_at.substring(0, 4)}}<br>
+                        {{user.created_at.substring(5, 10)}}
+                    </div>
+                    <div class="label">注册时间
+                    </div>
+                </div>
+                <div class="statistic">
+                    <div class="text value">{{user.last_login.substring(0, 4)}}<br>
+                        {{user.last_login.substring(5, 10)}}
+                    </div>
+                    <div class="label">最近登陆
+                    </div>
+                </div>
+                <div class="statistic">
+                    <div class="value">
+                        <i class="tags icon"></i>
+                        {{ tagCnt }}
+                    </div>
+                    <div class="label">分类数目</div>
+                </div>
+                <div class="statistic">
+                    <div class="value">
+                        <i class="bookmark icon"></i>
+                        {{ bookmarkCnt }}
+                    </div>
+                    <div class="label">书签数目</div>
+                </div>
+            </div>
+            <table class="ui celled table" ng-if="form[1]" ng-show="user.activeUsers.length > 0">
+                <thead>
+                    <tr>
+                        <th colspan="4">
+                            用户活跃度排名
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>注册时间</th>
+                        <th>最后登陆</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="activeUser in user.activeUsers">
+                        <td>{{ activeUser.username }}</td>
+                        <td>{{ activeUser.email }}</td>
+                        <td>{{ activeUser.created_at }}</td>
+                        <td>{{ activeUser.last_login }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <form class="ui form" ng-show="form[2]">
+                <h2 class="ui dividing header">上传浏览器书签到系统</h2>
+                <div id="fileuploader" style="min-width:100px">点我上传</div>
+                <div class="ui container js-p-info">
+                    <p>注意事项</p>
+                    <p>1、导入的方法是将浏览器里面收藏的网站导出HTML文件。然后将导出的HTML文件点击上面的<code>Upload</code>按钮上传到服务器。目前只测试过谷歌浏览器跟IE浏览器的书签导入。但是因为浏览器的标签是可以支持互相导入的，我觉得应该是没问题的。如果不成功，可以先将其他浏览器的书签导入谷歌浏览器再导出。</p>
+                    <p>2、谷歌浏览器书签导出文件方法：<a href="http://jingyan.baidu.com/article/0bc808fc2d3b841bd485b9fb.html" target="_blank">chrome浏览器书签导出</a>
+                    </p>
+                    <p>3、IE浏览器书签导出文件方法(里面含有导入的方法，请无视)：<a href="http://jingyan.baidu.com/article/0bc808fc6a5bc31bd485b91b.html" target="_blank">IE浏览器收藏夹的导入</a>
+                    </p>
+                    <p>4、导入的文件不能超过10M</p>
+                    <p>5、如果重复导入，新的会覆盖旧的信息。</p>
+                    <p>6、注意：从浏览器导入进系统的书签，没有浏览器目录的树形结构，在浏览器没有目录的标签，统统转入系统未分类目录下面。</p>
+                </div>
+                <h2 class="ui dividing header">导出为浏览器书签</h2>
+                <button class="fluid ui button" ng-click="exportBookmark()">导出书签</button>
+            </form>
+            <div class="ui container js-p-info" ng-show="form[3]">
+                <h3 class="ui dividing header">为什么要做个网络书签</h3>
+                <p>每个浏览器上面都会有个书签可以供你收藏你以后可能还要用到的网址。但是你可能还是会遇到下列问题：</p>
+                <p>1、如果你重装系统，或者换浏览器怎么办？</p>
+                <p>2、如果你有多个浏览器书签该如何整合？</p>
+                <p>3、如何快速搜索保存的书签？比如我只想搜索某个时间段保存的书签？</p>
+                <p>4、如果一个分类下面书签过多，如何方便快速查看？</p>
+                <p>5、我能不能查看别人收藏的书签？</p>
+                <p>6、在其他地方上网的时候能不能查看我自己的书签？</p>
+                <p>7、如果公用一台电脑，如何区分我收藏的跟别人收藏的书签？</p>
+                <p>在线书签管理工具，帮助你快速记录你喜欢的网站，并可以随时随地查看这些站点，而不必拘泥于使用的浏览器。无论在什么地方，只要能接入网络，就能打开属于你自己的网络书签，看到自己收藏的页面网址。</p>
+                <h3 class="ui dividing header">主要功能</h3>
+                <p>1、需要注册账号用户。(完成)</p>
+                <p>2、网站展示有三种展示方式：导航，标签，列表，卡片。其中导航以分类展示，分类顺序可以在书签分类下面拖动编辑。按照点击的次数从高到低在每个分类里面提取16个书签，再按照最近添加的书签提取前面的16个书签，然后合并起来。标签是一个快捷方式。列表以表格展示，显示书签详细类容，按照点击次数优先显示，点击次数相同，则按添加顺序优先。卡片以卡片方式显示，按照最近添加优先显示。这几种展示方式，可以在设置里面默认一种你常用的方式。(完成)</p>
+                <p>3、在书签分类里面，可以更新分类，删除分类，新增分类，对分类显示进行排序。分类的标签默认按照添加日期展示，但是可以点击表格的标题，按照点击次数，添加日期，最后点击从大到小进行排序。(完成)</p>
+                <p>4、可以按照指定添加时间段，指定分类目录，指定网址关键字等进行查询。(完成)</p>
+                <p>5、添加书签的时候，会自动获取title，供用户编辑。其中：Insert键打开添加页面，再次按Insert键保存书签，Esc取消添加。(完成)</p>
+                <p>6、可以导入Chrome的书签导出文件，暂时做在设置里面。(完成)</p>
+                <p>7、书签可以作为公有或者私有，公有可供所有人搜索。(完成)</p>
+                <p>8、可以将搜索到其他用户的书签转存为自己的书签。(完成)</p>
+                <p>9、可以将书签导出来，然后导入到浏览器。(完成)</p>
+                <p>10、在热门标签里面，有在网上找的热门书签。可以转存收藏到自己书签里面。快捷键R随机查看热门书签。(完成)</p>
+                <p>11、新增备忘录功能，有时候随手要做点纪录，就方便了。任意界面按快捷键A增加备忘录。双击备忘录可查看详情！(完成)</p>
+                <p>12、在设置的全局链接，可设置快捷键，用来在任何页面，快速打开设置的链接。(完成)</p>
+                <p>13、安装<a href="https://chrome.google.com/webstore/detail/%E4%B9%A6%E7%AD%BE%E5%BF%AB%E9%80%9F%E6%B7%BB%E5%8A%A0/lmmobgephofdffmaednjooplcpbgbjle" target="_blank">Chrome插件</a>(需科学上网)，可在任意界面快速添加书签。(完成)</p>
+                <h3 class="ui dividing header">联系方式</h3>
+                <p>QQ：530485521，记得备注加：书签。</p>
+                <h3 class="ui dividing header">开发备忘(非开发人员请无视)</h3>
+                <p>1、该代码我托管在Github上<a href="https://github.com/luchenqun/my-bookmark" target="_blank">my-bookmark</a>。该地址有文件夹详细说明以及部署步骤。git地址：git@github.com:luchenqun/my-bookmark.git。如果你需要源码，你尽可随意使用此项目无需通知我。</p>
+                <img class="ui centered fluid image" src="./images/screenshot.gif">
+            </div>
+            <div class="ui container js-p-info" ng-show="form[4]">
+                <p>功能说明：可在该页面，设置全局快速打开的链接。快捷键只能是字母a ~ z，字母不区分大小写。</p>
+                <p>以下几个系统默认使用的按键无法使用：<br/>
+                    <span ng-repeat="(key, value) in forbidQuickKey">{{key}}：{{value}}<br/></span>
+                </p>
+                <p>如果你想更换快捷链接，你需要先删除再添加。</p>
+                <div class="ui divider"></div>
+                <div class="ui form">
+                    <div class="inline fields">
+                        <div class="five wide field">
+                            <label style="min-width:55px;">快捷键：</label>
+                            <input type="text" placeholder="请按相应的快捷键" ng-model="key" ng-keypress="quickKey($event.key)">
+                        </div>
+                        <div class="nine wide field">
+                            <label style="min-width:66px;">网站地址：</label>
+                            <input type="text" placeholder="请输入你需要快捷打开的网站地址" ng-model="url">
+                        </div>
+                        <div class="two wide field">
+                            <div class="ui green button" ng-click="addQuickUrl()">确定</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <table class="ui selectable sortable celled table js-quick-url-table">
+                    <thead>
+                        <tr>
+                            <th style="width:80px;">快捷键</th>
+                            <th>网站地址</th>
+                            <th style="width:45px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(key, value) in quickUrl">
+                            <td>{{key}}</td>
+                            <td>
+                                <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{value}}" err-src="./images/default.ico" style="width:16px;height:16px;">
+                                <span >{{value}}</span>
+                            </td>
+                            <td>
+                                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delUrl(key)" title="删除书签">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ui container js-p-info" ng-show="form[5]">
+                <div class="ui message" ng-repeat="updateLog in updateLogs">
+                    <div class="header">{{ updateLog.date }}</div>
+                    <ul class="list" style="cursor: default;">
+                        <li ng-repeat="log in updateLog.logs">
+                            <span title="点击可查看代码变化" ng-click="jumpCommit(log.href)">{{log.commit}}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-show="loadingLogs"><img class="ui centered medium image" src="/images/loading.gif"></div>
+                <button class="fluid ui button" ng-click='getUpdateLog(logsUrl)' ng-show="!loadingLogs">
+                    更早日志
+                </button>
+            </div>
+            <div class="ui container js-p-info" ng-show="form[6]">
+                <h3 class="ui dividing header">赞赏说明</h3>
+                <p>赞赏金额主要用于服务器的租用与域名的费用，对于赞赏有以下几点说明：</p>
+                <p>1、目前租用的服务器每年大概六七百。域名mybookmark.cn我花151元买了五年，2021年11月份到期。域名mybookmark.cn我花151元买了五年，2021年11月份到期。</p>
+                <p>2、赞赏转账的时候，请留言添加“账号 + 书签赞赏”这四个汉字。供我区分。</p>
+                <h3 class="ui dividing header">赞赏二维码</h3>
+                <div class="ui grid">
+                    <div class="one wide column"></div>
+                    <div class="five wide column">微信<img class="ui rounded left floated medium image" src="./images/wx.png"></div>
+                    <div class="two wide column"></div>
+                    <div class="five wide column">支付宝<img class="ui rounded right floated medium image" src="./images/zfb.png"></div>
+                    <div class="one wide column"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

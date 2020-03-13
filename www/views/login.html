@@ -1,0 +1,67 @@
+<form class="ui form segment js-form-login" ng-class={error:showErr}>
+    <div class="ui error message">
+        <div class="header">错误提示</div>
+        <p>
+            {{ errInfo }}</p>
+    </div>
+    <div class="required field">
+        <label>用户名</label>
+        <div class="ui icon input">
+            <input type="text" ng-model="username" ng-keypress="($event.which === 13)?login():0">
+            <i class="user icon"></i>
+        </div>
+    </div>
+    <div class="required field">
+        <label>密码</label>
+        <div class="ui icon input">
+            <input type="password" ng-model="password" ng-keypress="($event.which === 13)?login():0">
+            <i class="lock icon"></i>
+        </div>
+    </div>
+    <div class="field" ng-show="false">
+        <div class="ui checkbox js-auto-login">
+            <input type="checkbox" name="auto-login" checked="true">
+            <label>30天内自动登陆</label>
+        </div>
+    </div>
+    <div class="field">
+        <div class="ui submit button" ng-click="login()">登陆</div>
+        <span>
+            <div style="margin-top:8px;float:right;">跳转到<a href="http://m.mybookmark.cn" target="_blank">移动设备</a>。没有账号？<a style="cursor:pointer;" ng-click="showRegister()">注册一个！</a>(体验账号：test。密码：123456)。
+                <a href="https://chrome.google.com/webstore/detail/%E4%B9%A6%E7%AD%BE%E5%BF%AB%E9%80%9F%E6%B7%BB%E5%8A%A0/lmmobgephofdffmaednjooplcpbgbjle" target="_blank">Chrome插件</a>安装(需科学上网)</p>
+            </div>
+        </span>
+    </div>
+    <div class="ui divider"></div>
+    <img class="ui centered fluid image" src="./images/screenshot.gif">
+</form>
+
+<div class="ui modal js-register">
+    <div class="header">
+        账号注册
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="required field">
+                <label>邮箱</label>
+                <input type="text" placeholder="" ng-model="emailRegister">
+            </div>
+            <div class="required field">
+                <label>用户名</label>
+                <input type="text" placeholder="只允许大小写字母数字，至少3位" ng-model="usernameRegister">
+            </div>
+            <div class="required field">
+                <label>密码</label>
+                <input type="password" placeholder="" ng-model="passwordRegister1">
+            </div>
+            <div class="required field">
+                <label>确认密码</label>
+                <input type="password" placeholder="" ng-model="passwordRegister2">
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">取消</div>
+        <div class="ui green button" ng-click="register()">注册</div>
+    </div>
+</div>

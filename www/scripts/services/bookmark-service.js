@@ -42,9 +42,7 @@ app.factory('bookmarkService', ['$http', '$q', function ($http, $q) {
         },
         register: function (params) {
             var def = $q.defer();
-            $http.post('/api/register/', {
-                params: params
-            })
+            $http.post('/api/register/', params)
                 .success(function (data) {
                     def.resolve(data);
                 })

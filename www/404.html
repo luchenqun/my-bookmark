@@ -1,86 +1,84 @@
 <!DOCTYPE html>
 <html lang="zh">
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>提示-404</title>
     <style type="text/css">
-        html {
-            background: none;
-            background-color: #f0eeee;
-        }
+      html {
+        background: none;
+        background-color: #f0eeee;
+      }
 
-        body {
-            padding: 0;
-        }
+      body {
+        padding: 0;
+      }
 
-        #header {
-            width: 952px;
-            margin: 0 auto;
-            height: 120px;
-            background: none;
-            box-shadow: none;
-            position: static;
-        }
+      #header {
+        width: 952px;
+        margin: 0 auto;
+        height: 120px;
+        background: none;
+        box-shadow: none;
+        position: static;
+      }
 
-        #content {
-            font-family: "微软雅黑";
-            background: url("images/404.png") no-repeat 122px 0px;
-            width: 952px;
-            margin: 0 auto;
-            font-size: 18px;
-            color: #999;
-        }
+      #content {
+        font-family: "微软雅黑";
+        background: url("images/404.png") no-repeat 122px 0px;
+        width: 952px;
+        margin: 0 auto;
+        font-size: 18px;
+        color: #999;
+      }
 
-        #content p {
-            padding: 180px 0 0 426px;
-            line-height: 38px;
-        }
+      #content p {
+        padding: 180px 0 0 426px;
+        line-height: 38px;
+      }
 
-        #content p a.backhome {
-            font-size: 18px;
-        }
+      #content p a.backhome {
+        font-size: 18px;
+      }
 
-        #content p a.backhome span {
-            width: 80px;
-        }
+      #content p a.backhome span {
+        width: 80px;
+      }
 
-        #totalSecond {
-            color: #f00;
-        }
+      #totalSecond {
+        color: #f00;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div>
-        <div id="content" style="height: 530px;">
-            <p>
-                对不起，您的风筝已掉线，请时光倒流回前一秒。<br>
-                <span id="totalSecond">5</span>秒后自动
-                <a href="http://mybookmark.cn" class="backhome"><span>返回首页</span></a>
-            </p>
-        </div>
+      <div id="content" style="height: 530px;">
+        <p>
+          对不起，您的风筝已掉线，请时光倒流回前一秒。<br />
+          <span id="totalSecond">5</span>秒后自动
+          <a href="http://mybookmark.cn" class="backhome"><span>返回首页</span></a>
+        </p>
+      </div>
     </div>
-</body>
-<script language="javascript" type="text/javascript">
-    var second = document.getElementById('totalSecond').textContent;
+  </body>
+  <script language="javascript" type="text/javascript">
+    var second = document.getElementById("totalSecond").textContent;
     // 判断是IE浏览器还是Firefox浏览器，采用相应措施取得秒数
     if (navigator.appName.indexOf("Explorer") > -1) {
-        second = document.getElementById('totalSecond').innerText;
+      second = document.getElementById("totalSecond").innerText;
     } else {
-        second = document.getElementById('totalSecond').textContent;
+      second = document.getElementById("totalSecond").textContent;
     }
-    setInterval(function () {
-        if (second < 0) {
-            location.href = 'http://mybookmark.cn';
+    setInterval(function() {
+      if (second < 0) {
+        location.href = "http://mybookmark.cn";
+      } else {
+        if (navigator.appName.indexOf("Explorer") > -1) {
+          document.getElementById("totalSecond").innerText = second--;
         } else {
-            if (navigator.appName.indexOf("Explorer") > -1) {
-                document.getElementById('totalSecond').innerText = second--;
-            } else {
-                document.getElementById('totalSecond').textContent = second--;
-            }
+          document.getElementById("totalSecond").textContent = second--;
         }
+      }
     }, 1000);
-</script>
-
+  </script>
 </html>

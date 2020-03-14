@@ -1,53 +1,54 @@
 <div class="ui long modal js-add-bookmark" ng-controller="editCtr">
-    <!-- <i class="close icon"></i> -->
-    <div class="header">
-        {{ add ? '添加书签' : '编辑书签'}}
-    </div>
-    <div class="content">
-        <div class="ui form">
-            <div class="required field">
-                <div class="fields">
-                    <div class="required eight wide field" ng-class="{error:urlError}">
-                        <label>书签链接</label>
-                        <input type="text" placeholder="输粘贴网页地址，如：http://mybookmark.cn/" ng-model="url">
-                    </div>
-                    <div class="required eight wide field" ng-class="{error:titleError}">
-                        <label ng-click="restoreTitle()">书签标题</label>
-                        <div class="ui icon input" ng-class="{loading:loadTitle}">
-                            <input type="text" ng-attr-placeholder="{{loadTitle ? '正在获取书签标题。。。' : '在书签链接处粘贴正确的网站会自动获取'}}" ng-model="title">
-                            <i class="search icon" ng-show="loadTitle && title.length==0"></i>
-                        </div>
-                    </div>
-                </div>
+  <!-- <i class="close icon"></i> -->
+  <div class="header">
+    {{ add ? '添加书签' : '编辑书签'}}
+  </div>
+  <div class="content">
+    <div class="ui form">
+      <div class="required field">
+        <div class="fields">
+          <div class="required eight wide field" ng-class="{error:urlError}">
+            <label>书签链接</label>
+            <input type="text" placeholder="输粘贴网页地址，如：http://mybookmark.cn/" ng-model="url" />
+          </div>
+          <div class="required eight wide field" ng-class="{error:titleError}">
+            <label ng-click="restoreTitle()">书签标题</label>
+            <div class="ui icon input" ng-class="{loading:loadTitle}">
+              <input type="text" ng-attr-placeholder="{{loadTitle ? '正在获取书签标题。。。' : '在书签链接处粘贴正确的网站会自动获取'}}" ng-model="title" />
+              <i class="search icon" ng-show="loadTitle && title.length==0"></i>
             </div>
-            <div class="required field">
-                <label>已有书签分类选择
-                    <span title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;友情提示：&#10;1、添加新书签，根据使用经验，默认会选择最后一次使用分类。&#10;2、如果不是的，直接去选择其他的就好，系统会自动取消。&#10;3、如果你想同时选默认与其他的分类，你选了其他分类之后，再来选中取消的默认分类即可。&#10;4、若想对当前分类进行编辑，请前往分类页面！">
-                        <i class="info circle icon"></i>
-                    </span>
-                </label>
-                <div class="ui active inverted dimmer" ng-class="{active:loadTags, disabled: !loadTags}">
-                    <div class="ui text loader">正在获取分类...</div>
-                </div>
-                <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id, !tag.clicked)" ng-show="!loadTags">{{ tag.name }}</div>
-                <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" title="添加新分类" ng-click="showAddTag()" ng-show="!loadTags">
-                    <i style="margin-left:10px;" class="plus icon"></i>
-                </div>
-            </div>
-            <div class="field">
-                <label>内容</label>
-                <textarea name="text" rows="6" placeholder="可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到" ng-model="description"></textarea>
-            </div>
-            <div class="field">
-                <div class="ui checkbox checked js-public">
-                    <input type="checkbox" name="example" checked="">
-                    <label>我要公开此收藏的链接供别人搜索</label>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+      <div class="required field">
+        <label
+          >已有书签分类选择
+          <span title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;友情提示：&#10;1、添加新书签，根据使用经验，默认会选择最后一次使用分类。&#10;2、如果不是的，直接去选择其他的就好，系统会自动取消。&#10;3、如果你想同时选默认与其他的分类，你选了其他分类之后，再来选中取消的默认分类即可。&#10;4、若想对当前分类进行编辑，请前往分类页面！">
+            <i class="info circle icon"></i>
+          </span>
+        </label>
+        <div class="ui active inverted dimmer" ng-class="{active:loadTags, disabled: !loadTags}">
+          <div class="ui text loader">正在获取分类...</div>
+        </div>
+        <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id, !tag.clicked)" ng-show="!loadTags">{{ tag.name }}</div>
+        <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" title="添加新分类" ng-click="showAddTag()" ng-show="!loadTags">
+          <i style="margin-left:10px;" class="plus icon"></i>
+        </div>
+      </div>
+      <div class="field">
+        <label>内容</label>
+        <textarea name="text" rows="6" placeholder="可以是网站的说明，也可以备忘一下账号或者摘抄内容，就算公开你的链接，这个也只有自己能在详情里面看到" ng-model="description"></textarea>
+      </div>
+      <div class="field">
+        <div class="ui checkbox checked js-public">
+          <input type="checkbox" name="example" checked="" />
+          <label>我要公开此收藏的链接供别人搜索</label>
+        </div>
+      </div>
     </div>
-    <div class="actions">
-        <div class="ui cancel button" ng-click="cancel()" style="cursor:default;">取消</div>
-        <div class="ui green button" ng-click="ok()" style="cursor:default;">发送</div>
-    </div>
+  </div>
+  <div class="actions">
+    <div class="ui cancel button" ng-click="cancel()" style="cursor:default;">取消</div>
+    <div class="ui green button" ng-click="ok()" style="cursor:default;">发送</div>
+  </div>
 </div>

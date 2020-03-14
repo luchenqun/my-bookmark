@@ -1,5 +1,23 @@
 var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies', 'infinite-scroll', 'angular-sortable-view', 'ngDialog']);
 
+axios.defaults.baseURL = '/api/';
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+  let data = response.data;
+  if (data.code === 0) {
+    if (data.msg) {
+      toastr.success(data.msg, "提示");
+    }
+    return Promise.resolve(data.data);
+  } else {
+    toastr.error(`错误信息：${data.msg}(错误码：${data.code})`, '请求错误');
+    return Promise.reject(data);
+  }
+}, function (error) {
+  toastr.error(`错误信息：${error.toString()}`, '网络错误');
+  return Promise.reject(error);
+});
+
 app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
   $urlRouterProvider.otherwise("/");
 

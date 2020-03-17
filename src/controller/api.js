@@ -7,19 +7,25 @@ function md5(str) {
 
 module.exports = class extends Base {
   async __before() {
-    const user = await this.session('user');
+    let user = await this.session('user');
+    user = {}
     console.log("session user", user);
 
-    //获取用户的 session 信息，如果为空，返回 false 阻止后续的行为继续执行
-    // if (think.isEmpty(user)) {
-    //   return false;
-    // }
+    if (['register', 'login'].indexOf(this.ctx.action) >= 0) {
+      return;
+    }
+
+    // 获取用户的 session 信息，如果为空，返回 false 阻止后续的行为继续执行
+    if (think.isEmpty(user)) {
+      return this.fail('NOT_LOGIN');
+    }
   }
 
   indexAction() {
     return this.display();
   }
 
+  // 注册
   async registerAction() {
     try {
       let post = this.post();
@@ -32,6 +38,7 @@ module.exports = class extends Base {
     }
   }
 
+  // 登陆
   async loginAction() {
     try {
       let post = this.post();

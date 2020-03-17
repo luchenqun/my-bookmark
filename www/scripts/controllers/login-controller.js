@@ -39,6 +39,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStor
     $cookieStore.put("username", $scope.username);
 
     await axios.post('login', params);
+    return;
     pubSubService.publish('loginCtr.login', { login: true });
     $state.go('bookmarks', {})
   }

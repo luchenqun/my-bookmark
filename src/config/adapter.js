@@ -70,7 +70,7 @@ exports.session = {
     verify: {
       // verify options is not required
     },
-    verifyCallback: (error) => { throw new Error("token verify error"); }, // default verify fail callback
+    verifyCallback: any => any, // default verify fail callback
   }
 }
 

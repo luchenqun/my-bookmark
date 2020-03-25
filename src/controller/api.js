@@ -12,8 +12,7 @@ module.exports = class extends Base {
     }
     try {
       let user = await this.session('user');
-      console.log(".......session user", this.ctx.action,  Object.keys(user));
-      if (think.isEmpty(user)) {
+      if (think.isEmpty(user.id)) {
         return this.fail(401, '请先登录');
       }
       this.ctx.state.user = user;
@@ -57,7 +56,6 @@ module.exports = class extends Base {
         });
         data.token = token;
         this.json({ code: 0, data, msg: "登陆成功" });
-
       }
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });

@@ -1,5 +1,6 @@
 const Base = require('./base.js');
 const crypto = require('crypto');
+const fs = require('fs-extra');
 
 function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
@@ -77,14 +78,14 @@ module.exports = class extends Base {
   // 获取分类信息
   async tagsAction() {
     let param = this.get();
-    let tags = await this.model('tags').where({ user_id: this.ctx.state.user.id }).order('sort ASC, last_use DESC').select();
+    let tags = await this.model('tags').where({ userId: this.ctx.state.user.id }).order('sort ASC, lastUse DESC').select();
     // 这个分类包含的书签与备忘录的个数
     for (let tag of tags) {
       if (param.bookmarkCount) {
-        tag.bookmarkCount = await this.model('bookmarks').where({ tag_id: tag.id }).count();
+        tag.bookmarkCount = await this.model('bookmarks').where({ tagId: tag.id }).count();
       }
       if (param.notes) {
-        tag.bookmarkCount = await this.model('notes').where({ tag_id: tag.id }).count();
+        tag.bookmarkCount = await this.model('notes').where({ tagId: tag.id }).count();
       }
     }
     this.json({ code: 0, data: tags, msg: '' });
@@ -94,7 +95,7 @@ module.exports = class extends Base {
     let name = this.post().name;
     try {
       let res = await this.model("tags").add({
-        user_id: this.ctx.state.user.id,
+        userId: this.ctx.state.user.id,
         name
       });
       this.json({ code: 0, data: res, msg: `分类 ${name} 添加成功` });
@@ -105,12 +106,44 @@ module.exports = class extends Base {
 
   async addBookmarkAction() {
     let bookmark = this.post();
-    bookmark.user_id = this.ctx.state.user.id;
+    bookmark.userId = this.ctx.state.user.id;
     try {
       let res = await this.model("bookmarks").add(bookmark);
       this.json({ code: 0, data: res, msg: `书签 ${bookmark.title} 添加成功` });
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });
+    }
+  }
+
+  // 根据书签id获取书签
+  async getBookmarksByTagAction() {
+    let tagId = this.get("tagId");
+    // tagId = -1 个人定制 从自己里面取
+    // tagId = -2 全局定制 从非个人里面取
+    let where = {};
+    let order = 'createdAt DESC';
+
+    if (tagId == -1) {
+      where = { userId: this.ctx.state.user.id };
+    } else if (tagId == -2) {
+      where = { userId: ['!=', this.ctx.state.user.id] };
+    } else {
+      where = { tagId };
+    }
+
+    if (this.get('createdAt')) {
+      order = 'createdAt DESC';
+    } else if (this.get('clickCount')) {
+      order = 'clickCount DESC';
+    } else if (this.get('lastClick')) {
+      order = 'lastClick DESC';
+    }
+
+    try {
+      let data = await this.model('bookmarks').where(where).order(order).page(this.get('page'), this.get('pageSize')).countSelect();
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
     }
   }
 

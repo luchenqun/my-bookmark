@@ -11,7 +11,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
   // getTags({});
 
-  var perPageItems = 20;
+  var pageSize = 20;
   var dialog = null;
   var forbidTransition = false;
   var addBookmarkId = -1;
@@ -93,18 +93,18 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     }, 100)
   }
 
-  $scope.getBookmarks = function (tagId, currentPage) {
-    console.log(tagId, currentPage)
+  $scope.getBookmarks = async function (tagId, page) {
+    console.log(tagId, page)
     $scope.bookmarkClicked = true;
     $scope.currentTagId = tagId;
-    $scope.currentPage = currentPage;
+    $scope.currentPage = page;
     if (!forbidTransition) {
       $scope.loadBookmarks = true;
     }
     $scope.costomTag.bookmarkClicked = false;
     $scope.costomAllUsersTag.bookmarkClicked = false;
 
-    perPageItems = ($scope.showMode == 'item') ? 50 : 20;
+    pageSize = ($scope.showMode == 'item') ? 50 : 20;
 
     $scope.tags.forEach(function (tag) {
       tag.bookmarkClicked = false;
@@ -122,19 +122,25 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     }
 
     var params = {
-      tagId: tagId,
-      currentPage: currentPage,
-      perPageItems: perPageItems,
+      tagId,
+      page,
+      pageSize,
+      createdAt: true
     };
     if (!forbidTransition) {
       $($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table').transition('hide');
     }
+
+    let data = await get('getBookmarksByTag', params);
+    console.log(data);
+    return;
+
     bookmarkService.getBookmarksByTag(params)
       .then((data) => {
         $scope.bookmarkData = data;
         $scope.changeOrder($scope.order.indexOf(true));
         $scope.bookmarkCount = $scope.bookmarkData.totalItems;
-        $scope.totalPages = tagId <= -1 ? 1 : Math.ceil($scope.bookmarkCount / perPageItems);
+        $scope.totalPages = tagId <= -1 ? 1 : Math.ceil($scope.bookmarkCount / pageSize);
 
         $scope.inputPage = '';
         $scope.loadBookmarks = false;
@@ -490,8 +496,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     })
   });
 
-  async function getTags(params) {
+  async function getTags() {
     $scope.loadTags = true;
+    $scope.tags = [];
+
     let tags = await get('tags', { bookmarkCount: true });
     let find = false;
     for (let tag of tags) {
@@ -510,8 +518,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
     if ($scope.currentTagId) {
       if (!$scope.editMode) {
-        // @todo
-        // $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
+        await $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
       }
     } else {
       toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");

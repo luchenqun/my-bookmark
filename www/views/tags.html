@@ -1,13 +1,13 @@
 <div class="ui segment js-tags">
   <div class="ui container" ng-show="!editMode" style="cursor:default">
     <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:costomTag.bookmarkClicked}" ng-click="getBookmarks(-1, 1)">
-      {{ costomTag.name }} ({{ costomTag.cnt || 0 }})
+      {{ costomTag.name }} ({{ costomTag.bookmarkCount || 0 }})
     </div>
-    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.cnt && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
-      {{ tag.name }} ({{ tag.cnt || 0 }})
+    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.bookmarkCount && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
+      {{ tag.name }} ({{ tag.bookmarkCount || 0 }})
     </div>
     <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:costomAllUsersTag.bookmarkClicked}" ng-click="getBookmarks(-2, 1)">
-      {{ costomAllUsersTag.name }} ({{ costomAllUsersTag.cnt || 0 }})
+      {{ costomAllUsersTag.name }} ({{ costomAllUsersTag.bookmarkCount || 0 }})
     </div>
     <div class="ui label js-tag-label" style="margin:3px 15px 8px 0px;cursor:default;">
       <i class="plus icon" data-content="点击添加分类" data-position="top center" ng-click="showAddTag()"></i>
@@ -40,7 +40,7 @@
         </div>
         <div class="content" style="cursor: move" sv-handle>
           <div class="description">
-            <p>书签：{{ tag.cnt || 0 }}个</p>
+            <p>书签：{{ tag.bookmarkCount || 0 }}个</p>
             <p>{{ tag.last_use }}</p>
           </div>
         </div>

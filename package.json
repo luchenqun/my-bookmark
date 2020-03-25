@@ -10,6 +10,8 @@
     "lint-fix": "eslint --fix src/"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "fs-extra": "^9.0.0",
     "think-cache": "^1.0.0",
     "think-cache-file": "^1.0.8",
     "think-logger3": "^1.0.0",

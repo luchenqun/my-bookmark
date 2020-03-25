@@ -60,22 +60,21 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     init();
   }
   $scope.ok = async function () {
-    var tag_id = -1;
-    var selectedTags = [];
+    var tagId = -1;
     $scope.tags.forEach((tag) => {
       if (tag.clicked) {
-        tag_id = tag.id;
+        tagId = tag.id;
       }
     });
     // console.log('Hello ok clicked', $scope.url, $scope.title, $scope.description, $scope.public, selectedTags, $scope.tags);
     $scope.urlError = $scope.url == '';
     $scope.titleError = $scope.title == '';
-    $scope.tagsError = tag_id == -1;
+    $scope.tagsError = tagId == -1;
 
     var params = {
       id: $scope.id,
       url: $scope.url,
-      tag_id,
+      tagId,
       title: $scope.title,
       description: $scope.description,
       public: $('.ui.checkbox.js-public').checkbox('is checked') ? '1' : '0',

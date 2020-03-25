@@ -5,7 +5,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     return;
   }
 
-  getTags({});
+  (async () => {
+    await getTags();
+  })()
+
+  // getTags({});
 
   var perPageItems = 20;
   var dialog = null;
@@ -486,8 +490,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     })
   });
 
-  function getTags(params) {
+  async function getTags(params) {
     $scope.loadTags = true;
+    $scope.tags = await axios.get('tags');
+    return;
     bookmarkService.getTags(params)
       .then((data) => {
         $scope.tags = []

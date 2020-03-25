@@ -26,16 +26,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
   $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
-  bookmarkService.userInfo({})
-    .then((data) => {
-      $scope.user = data;
-      if (data.username === 'lcq') {
-        $scope.loginMenus[dataService.LoginIndexHot].show = false;
-      }
-    })
-    .catch((err) => {
-
-    });
+  (async () => {
+    $scope.user = await axios.get('own', {});
+    if (data.username === 'lcq') {
+      $scope.loginMenus[dataService.LoginIndexHot].show = false;
+    }
+  })();
 
   $scope.toggleReady = function (ready) {
     if (ready) {
@@ -248,29 +244,23 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
       });
   }
 
-
-
-  bookmarkService.userInfo({})
-    .then((user) => {
-      $scope.searchHistory = JSON.parse(user.search_history || '[]');
-      $scope.quickUrl = JSON.parse(user.quick_url || '{}');
-      $scope.searchHistory.forEach((item, index) => {
-        $scope.searchIcon(item)
-      })
-      $timeout(function () {
-        var showStyle = (user && user.show_style) || 'navigate';
-        if (showStyle) {
-          $('.js-bookmark-dropdown' + ' .radio.checkbox').checkbox('set unchecked');
-          $('.js-radio-' + showStyle).checkbox('set checked');
-          $('.js-bookmark-dropdown' + ' .field.item').removeClass('active selected');
-          $('.js-field-' + showStyle).addClass('active selected');
-        }
-      }, 1000)
+  (async () => {
+    let user = await axios.get('own', { full: true });
+    $scope.searchHistory = JSON.parse(user.search_history || '[]');
+    $scope.quickUrl = JSON.parse(user.quick_url || '{}');
+    $scope.searchHistory.forEach((item, index) => {
+      $scope.searchIcon(item)
     })
-    .catch((err) => {
-      console.log(err);
-      // toastr.error('获取信息失败。错误信息：' + JSON.stringify(err), "错误");
-    });
+    $timeout(function () {
+      var showStyle = (user && user.show_style) || 'navigate';
+      if (showStyle) {
+        $('.js-bookmark-dropdown' + ' .radio.checkbox').checkbox('set unchecked');
+        $('.js-radio-' + showStyle).checkbox('set checked');
+        $('.js-bookmark-dropdown' + ' .field.item').removeClass('active selected');
+        $('.js-field-' + showStyle).addClass('active selected');
+      }
+    }, 1000)
+  })();
 
   $timeout(function () {
     $('.suggest')

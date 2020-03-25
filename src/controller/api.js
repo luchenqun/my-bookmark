@@ -7,17 +7,19 @@ function md5(str) {
 
 module.exports = class extends Base {
   async __before() {
-    let user = await this.session('user');
-    user = {}
-    console.log("session user", user);
-
     if (['register', 'login'].indexOf(this.ctx.action) >= 0) {
       return;
     }
-
-    // 获取用户的 session 信息，如果为空，返回 false 阻止后续的行为继续执行
-    if (think.isEmpty(user)) {
-      return this.fail('NOT_LOGIN');
+    try {
+      let user = await this.session('user');
+      console.log(".......session user", this.ctx.action,  Object.keys(user));
+      if (think.isEmpty(user)) {
+        return this.fail(401, '请先登录');
+      }
+      this.ctx.state.user = user;
+    } catch (error) {
+      // 获取用户的 session 信息，如果为空，返回 false 阻止后续的行为继续执行
+      return this.fail(401, '请先登录:' + error.toString());
     }
   }
 
@@ -48,20 +50,40 @@ module.exports = class extends Base {
       if (think.isEmpty(data)) {
         this.json({ code: 2, msg: "账号或者密码错误" });
       } else {
+        delete data.password;
+        const token = await this.session('user', {
+          id: data.id,
+          username: data.username
+        });
+        data.token = token;
         this.json({ code: 0, data, msg: "登陆成功" });
-        data.password = "******";
-        await this.session('user', data); // @todo 对session的maxAge进行操作(目前默认永久不过期)
+
       }
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });
     }
   }
 
-  async userInfoAction() {
-    this.json({ code: 1, data: '', msg: '' });
+  // 通过session获取自己信息
+  async ownAction() {
+    let full = this.post().full;
+    if (full) {
+      let data = await this.model('users').where({ id: this.ctx.state.user.id }).find();
+      delete data.password;
+      this.json({ code: 0, data, msg: '' });
+    } else {
+      this.json({ code: 0, data: this.ctx.state.user, msg: '' });
+    }
   }
 
-  autoLoginAction() {
-    this.json({ "succ": true });
+  async tagsAction() {
+    let tags = await this.model('tags').where({ user_id: this.ctx.state.user.id }).order('sort ASC, last_use DESC').select();
+    for (let tag of tags) {
+      let cnt = await this.model('tags_bookmarks').where({ tag_id: tag.id }).count();
+      let ncnt = await this.model('notes').where({ tag_id: tag.id }).count();
+      tag.cnt = cnt;
+      tag.ncnt = ncnt;
+    }
+    this.json({ code: 0, data: tags, msg: '' });
   }
 };

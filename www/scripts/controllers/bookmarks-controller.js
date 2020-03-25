@@ -272,7 +272,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     })
   });
 
-  function getBookmarks() {
+  async function getBookmarks() {
     var params = {}
     params.showStyle = $scope.showStyle
     params.currentPage = $scope.currentPage;

@@ -1,17 +1,26 @@
 var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies', 'infinite-scroll', 'angular-sortable-view', 'ngDialog']);
 
 axios.defaults.baseURL = '/api/';
+axios.defaults.headers.common['Authorization'] = localStorage.getItem("authorization");
+
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
-  let data = response.data;
-  if (data.code === 0) {
-    if (data.msg) {
-      toastr.success(data.msg, "提示");
+  let reply = response.data;
+  if (reply.code === 0) {
+    if (reply.msg) {
+      toastr.success(reply.msg, "提示");
     }
-    return Promise.resolve(data.data);
+    return Promise.resolve(reply.data);
   } else {
-    toastr.error(`错误信息：${data.msg}(错误码：${data.code})`, '请求错误');
-    return Promise.reject(data);
+    toastr.error(`错误信息：${reply.msg}(错误码：${reply.code})`, '请求错误');
+    if (reply.code == 401) {
+      let hash = document.location.hash;
+      let origin = document.location.origin;
+      if (!(hash == "#/login" || hash == "#/")) {
+        window.location.href = `${origin}/#/login`;
+      }
+    }
+    return Promise.reject(reply);
   }
 }, function (error) {
   toastr.error(`错误信息：${error.toString()}`, '网络错误');

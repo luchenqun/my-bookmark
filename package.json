@@ -11,14 +11,15 @@
   },
   "dependencies": {
     "think-cache": "^1.0.0",
-    "think-session": "^1.0.0",
     "think-cache-file": "^1.0.8",
+    "think-logger3": "^1.0.0",
     "think-model": "^1.0.0",
+    "think-model-mysql": "^1.0.0",
+    "think-session": "^1.0.0",
     "think-session-file": "^1.0.5",
+    "think-session-jwt": "^1.1.1",
     "think-view": "^1.0.0",
     "think-view-nunjucks": "^1.0.1",
-    "think-model-mysql": "^1.0.0",
-    "think-logger3": "^1.0.0",
     "thinkjs": "^3.0.0"
   },
   "devDependencies": {

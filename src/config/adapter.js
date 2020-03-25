@@ -1,6 +1,6 @@
 const fileCache = require('think-cache-file');
 const nunjucks = require('think-view-nunjucks');
-const fileSession = require('think-session-file');
+const JWTSession = require('think-session-jwt');
 const mysql = require('think-model-mysql');
 const {Console, File, DateFile} = require('think-logger3');
 const path = require('path');
@@ -52,19 +52,27 @@ exports.model = {
  * @type {Object}
  */
 exports.session = {
-  type: 'file',
+  type: 'jwt',
   common: {
     cookie: {
-      name: 'mybookmark'
-      // keys: ['werwer', 'werwer'],
-      // signed: true
+      name: 'thinkjs',
     }
   },
-  file: {
-    handle: fileSession,
-    sessionPath: path.join(think.ROOT_PATH, 'runtime/session')
+  jwt: {
+    handle: JWTSession,
+    secret: 'secret', // secret is reqired
+    tokenType: 'header', // ['query', 'body', 'header', 'cookie'], 'cookie' is default
+    tokenName: 'authorization', // if tokenType not 'cookie', this will be token name, 'jwt' is default 后端字母要小写
+    sign: {
+      // sign options is not required
+      expiresIn: '604800s' // 7天过期
+    },
+    verify: {
+      // verify options is not required
+    },
+    verifyCallback: (error) => { throw new Error("token verify error"); }, // default verify fail callback
   }
-};
+}
 
 /**
  * view adapter config

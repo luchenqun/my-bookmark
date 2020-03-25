@@ -38,10 +38,12 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStor
     };
     $cookieStore.put("username", $scope.username);
 
-    await axios.post('login', params);
-    return;
+    let data = await axios.post('login', params);
+    axios.defaults.headers.common['Authorization'] = data.token;
+    localStorage.setItem("authorization", data.token);
+
     pubSubService.publish('loginCtr.login', { login: true });
-    $state.go('bookmarks', {})
+    $state.go('tags')
   }
 
   $scope.showRegister = async function () {

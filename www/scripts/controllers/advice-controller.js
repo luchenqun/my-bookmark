@@ -11,13 +11,7 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 
   $scope.category = ["功能", "BUG", "其他"];
   $scope.user = {};
 
-  bookmarkService.userInfo({})
-    .then((data) => {
-      $scope.user = data;
-    })
-    .catch((err) => {
-
-    });
+  axios.get('own', {}).then(user => $scope.user = user);
 
   $scope.ok = function () {
     if ($scope.comment == '') {

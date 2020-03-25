@@ -42,7 +42,8 @@ CREATE TABLE `tags` (
   `sort` tinyint(8) DEFAULT 0,             -- 书签排序
   `show` tinyint(8) DEFAULT 1,             -- 书签是否显示
   PRIMARY KEY (`id`),
-  KEY `userIdIdx` (`user_id`)
+  KEY `userIdIdx` (`user_id`),
+  UNIQUE KEY `tag` (`user_id`,`name`)
 );
 
 -- 建议留言
@@ -57,7 +58,7 @@ CREATE TABLE `advices` (
   KEY `userIdIdx` (`user_id`)
 );
 
--- 书签表
+-- 热门表
 drop table if exists hot_bookmarks;
 CREATE TABLE `hot_bookmarks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id(articleId)

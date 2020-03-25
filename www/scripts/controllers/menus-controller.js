@@ -27,7 +27,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
   (async () => {
-    $scope.user = await axios.get('own', {});
+    $scope.user = await get('own');
     if (data.username === 'lcq') {
       $scope.loginMenus[dataService.LoginIndexHot].show = false;
     }
@@ -245,7 +245,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   }
 
   (async () => {
-    let user = await axios.get('own', { full: true });
+    let user = await get('own', { full: true });
     $scope.searchHistory = JSON.parse(user.search_history || '[]');
     $scope.quickUrl = JSON.parse(user.quick_url || '{}');
     $scope.searchHistory.forEach((item, index) => {

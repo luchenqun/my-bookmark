@@ -3,6 +3,30 @@ var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies', 'infinite-scr
 axios.defaults.baseURL = '/api/';
 axios.defaults.headers.common['Authorization'] = localStorage.getItem("authorization");
 
+function get(url, params) {
+  return new Promise((resolve, reject) => {
+    axios.get(url, {
+      params: params || {}
+    }).then(res => {
+      resolve(res);
+    }).catch(err => {
+      reject(err)
+    })
+  });
+}
+
+function post(url, params) {
+  return new Promise((resolve, reject) => {
+    axios.post(url, params)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        reject(err)
+      })
+  });
+}
+
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
   let reply = response.data;

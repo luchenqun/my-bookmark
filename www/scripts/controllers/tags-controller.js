@@ -53,7 +53,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
   pubSubService.subscribe('MenuCtr.tags', $scope, function (event, data) {
     console.log('subscribe MenuCtr.tags', data);
-    getTags({});
+    getTags();
   });
 
   $scope.changeOrder = function (index) {
@@ -251,7 +251,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.toggleMode = function (mode) {
     $scope.editMode = mode;
     if (!$scope.editMode) {
-      getTags({});
+      getTags();
     } else {
       $('.js-tags-table').transition('hide');
       $('.js-tag-costomTag').transition('hide');
@@ -359,16 +359,16 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
               }
             });
           } else {
-            getTags({});
+            getTags();
           }
         } else {
           toastr.error('[ ' + tagName + ' ]分类删除失败！' + data.msg, "提示");
-          getTags({});
+          getTags();
         }
       })
       .catch((err) => {
         toastr.error('分类删除失败！错误提示：' + JSON.stringify(err), "提示");
-        getTags({});
+        getTags();
       });
   }
 
@@ -410,7 +410,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       bookmarkService.addTags(tags)
         .then((data) => {
           toastr.success('[ ' + tag + ' ]插入分类成功！将自动更新分类信息<br />注意：分类页面只有分类下面有书签才显示分类', "提示");
-          getTags({});
+          getTags();
         })
         .catch((err) => {
           toastr.warning('[ ' + tag + ' ]插入分类失败：' + JSON.stringify(err), "提示");
@@ -456,12 +456,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
               toastr.success('分类排序更新成功！', "提示");
             } else {
               toastr.error('分类排序更新失败！', "提示");
-              getTags({});
+              getTags();
             }
           })
           .catch((err) => {
             toastr.error('分类排序更新失败！错误提示：' + JSON.stringify(err), "提示");
-            getTags({});
+            getTags();
           });
       }
       console.log('updateTagIndex needUpdate = ' + needUpdate)
@@ -492,42 +492,35 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
   async function getTags(params) {
     $scope.loadTags = true;
-    $scope.tags = await axios.get('tags');
-    return;
-    bookmarkService.getTags(params)
-      .then((data) => {
-        $scope.tags = []
-        var find = false;
-        data.forEach((tag) => {
-          tag.edit = false;
-          tag.oldName = tag.name;
-          $scope.tags.push(tag);
-          if (tag.id == $scope.currentTagId) {
-            find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
-          }
-        })
-        if (!find && $scope.currentTagId !== -1 && $scope.currentTagId !== -2) {
-          $scope.currentTagId = -1;
-          $scope.costomTag.bookmarkClicked = true;
-        }
+    let tags = await get('tags', { bookmarkCount: true });
+    let find = false;
+    for (let tag of tags) {
+      tag.edit = false;
+      tag.oldName = tag.name;
+      $scope.tags.push(tag);
+      if (tag.id == $scope.currentTagId) {
+        find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
+      }
+    }
 
-        if ($scope.currentTagId) {
-          if (!$scope.editMode) {
-            $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
-          }
-        } else {
-          toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
-        }
-        $scope.loadTags = false;
-        pubSubService.publish('Common.menuActive', {
-          login: true,
-          index: dataService.LoginIndexTags
-        });
-      })
-      .catch((err) => {
-        dataService.netErrorHandle(err, $state);
-        $scope.loadTags = false;
-      });
+    if (!find && $scope.currentTagId !== -1 && $scope.currentTagId !== -2) {
+      $scope.currentTagId = -1;
+      $scope.costomTag.bookmarkClicked = true;
+    }
+
+    if ($scope.currentTagId) {
+      if (!$scope.editMode) {
+        // @todo
+        // $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
+      }
+    } else {
+      toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
+    }
+    $scope.loadTags = false;
+    pubSubService.publish('Common.menuActive', {
+      login: true,
+      index: dataService.LoginIndexTags
+    });
   }
 
   pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function (event, data) {
@@ -566,7 +559,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
     if (menusScope.login && menusScope.selectLoginIndex == 1) {
-      getTags({});
+      getTags();
     }
   });
 

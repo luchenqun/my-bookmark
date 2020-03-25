@@ -59,30 +59,32 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
 
     init();
   }
-  $scope.ok = function () {
+  $scope.ok = async function () {
+    var tag_id = -1;
     var selectedTags = [];
     $scope.tags.forEach((tag) => {
       if (tag.clicked) {
-        selectedTags.push(tag.id);
+        tag_id = tag.id;
       }
     });
     // console.log('Hello ok clicked', $scope.url, $scope.title, $scope.description, $scope.public, selectedTags, $scope.tags);
     $scope.urlError = $scope.url == '';
     $scope.titleError = $scope.title == '';
-    $scope.tagsError = (selectedTags.length == 0 || selectedTags.length > maxSelections);
+    $scope.tagsError = tag_id == -1;
+
     var params = {
       id: $scope.id,
       url: $scope.url,
+      tag_id,
       title: $scope.title,
+      description: $scope.description,
       public: $('.ui.checkbox.js-public').checkbox('is checked') ? '1' : '0',
-      tags: selectedTags,
-      description: $scope.description
     }
     if (!/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test($scope.url)) {
       toastr.error('检撤到您的书签链接非法，是否忘记加http或者https了？建议直接从打开浏览器地址栏复制出来直接粘贴到输入框。', "错误");
       return;
     }
-    if (selectedTags.length < 1 || $scope.tagsError) {
+    if ($scope.tagsError) {
       toastr.error('您至少要选择一个分类！最多选择三个分类！如果暂时没想到放到哪个分类，可以先选择未分类', "错误");
       return;
     }
@@ -91,21 +93,11 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
       return;
     }
     console.log("add bookmark", params);
+
     if ($scope.add) {
-      bookmarkService.addBookmark(params)
-        .then((data) => {
-          $('.ui.modal.js-add-bookmark').modal('hide');
-          pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
-          if (data.title) {
-            toastr.success('[ ' + data.title + ' ] 添加成功，将自动重新更新书签！</br>' + (data.update ? '系统检测到该书签之前添加过，只更新链接，描述，标题，分类。创建日期与最后点击日期不更新！' : ''), "提示");
-          } else {
-            toastr.error('[ ' + params.title + ' ] 添加失败', "提示");
-          }
-        })
-        .catch((err) => {
-          console.log('addBookmark err', err);
-          toastr.error('[ ' + params.title + ' ] 添加失败' + JSON.stringify(err), "提示");
-        });
+      await post('addBookmark', params);
+      $('.ui.modal.js-add-bookmark').modal('hide');
+      pubSubService.publish('EditCtr.inserBookmarsSuccess', params);
     } else {
       bookmarkService.updateBookmark(params)
         .then((data) => {
@@ -134,7 +126,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     }
   }
 
-  $scope.addTag = function (tag) {
+  $scope.addTag = async function (tag) {
     console.log(tag);
     if ($scope.tags.length >= 30) {
       toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
@@ -153,32 +145,8 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
 
     if (tag) {
       ngDialog.close(dialog);
-
-      var tags = [];
-      tags.push(tag);
-      bookmarkService.addTags(tags)
-        .then((data) => {
-
-          // 获取已经选择的个数
-          var clickedCount = $scope.tags.filter((item) => {
-            return item.clicked;
-          }).length
-
-          // 获取新增的tag(由于这里只增加一个，所以弹出数组最后一个即可)
-          var newTag = data.filter((item) => {
-            return item.name == tag;
-          }).pop();
-
-          if (newTag) {
-            newTag.clicked = clickedCount <= 2;
-            $scope.tags.push(newTag);
-          }
-
-          toastr.success('[ ' + tag + ' ]插入分类成功！', "提示");
-        })
-        .catch((err) => {
-          toastr.warning('[ ' + tag + ' ]插入分类失败：' + JSON.stringify(err), "提示");
-        });
+      await post('addTag', { name: tag });
+      await getTags();
     } else {
       toastr.warning('您可能没有输入分类或者输入的分类有误', "提示");
     }
@@ -198,7 +166,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     $('.ui.checkbox.js-public').checkbox('set checked');
     cancelDefault = true;
     init();
-    getTags({});
+    getTags();
   });
 
   pubSubService.subscribe('bookmarksCtr.editBookmark', $scope, function (event, params) {
@@ -251,7 +219,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     $('.ui.checkbox.js-public').checkbox('set checked');
     cancelDefault = true;
     init();
-    getTags({});
+    getTags();
     $scope.autoGettitle = false;
     $scope.url = bookmark.url;
     $scope.title = bookmark.title;
@@ -273,7 +241,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
           $('.ui.checkbox.js-public').checkbox('set checked');
           cancelDefault = true;
           init();
-          getTags({});
+          getTags();
         }
       }
 
@@ -284,24 +252,24 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     })
   });
 
-  function getTags(params) {
-    bookmarkService.getTags(params)
-      .then((data) => {
-        data.sort((a, b) => {
-          if (a.last_use > b.last_use) return -1;
-          return 1;
-        })
-        data.forEach((tag) => {
-          tag.clicked = false;
-        })
-        // 只有在新增的时候，才默认最近使用书签分类(编辑，转存不默认)
-        if ($scope.add && data.length >= 1 && $scope.url == '' && $scope.title == '') {
-          data[0].clicked = true;
-        }
-        $scope.tags = data;
-        $scope.loadTags = false;
-      })
-      .catch((err) => console.log('getTags err', err));
+  async function getTags() {
+    let tags = await get('tags');
+    tags.sort((a, b) => {
+      if (a.last_use > b.last_use) return -1;
+      return 1;
+    })
+    tags.forEach((tag) => {
+      tag.clicked = false;
+    })
+    // 只有在新增的时候，才默认最近使用书签分类(编辑，转存不默认)
+    if ($scope.add && tags.length >= 1 && $scope.url == '' && $scope.title == '') {
+      tags[0].clicked = true;
+    }
+
+    $timeout(function () {
+      $scope.tags = tags;
+      $scope.loadTags = false;
+    });
   }
 
   function init() {

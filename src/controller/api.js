@@ -64,7 +64,7 @@ module.exports = class extends Base {
 
   // 通过session获取自己信息
   async ownAction() {
-    let full = this.post().full;
+    let full = this.get().full;
     if (full) {
       let data = await this.model('users').where({ id: this.ctx.state.user.id }).find();
       delete data.password;
@@ -74,14 +74,44 @@ module.exports = class extends Base {
     }
   }
 
+  // 获取分类信息
   async tagsAction() {
+    let param = this.get();
     let tags = await this.model('tags').where({ user_id: this.ctx.state.user.id }).order('sort ASC, last_use DESC').select();
+    // 这个分类包含的书签与备忘录的个数
     for (let tag of tags) {
-      let cnt = await this.model('tags_bookmarks').where({ tag_id: tag.id }).count();
-      let ncnt = await this.model('notes').where({ tag_id: tag.id }).count();
-      tag.cnt = cnt;
-      tag.ncnt = ncnt;
+      if (param.bookmarkCount) {
+        tag.bookmarkCount = await this.model('bookmarks').where({ tag_id: tag.id }).count();
+      }
+      if (param.notes) {
+        tag.bookmarkCount = await this.model('notes').where({ tag_id: tag.id }).count();
+      }
     }
     this.json({ code: 0, data: tags, msg: '' });
   }
+
+  async addTagAction() {
+    let name = this.post().name;
+    try {
+      let res = await this.model("tags").add({
+        user_id: this.ctx.state.user.id,
+        name
+      });
+      this.json({ code: 0, data: res, msg: `分类 ${name} 添加成功` });
+    } catch (error) {
+      this.json({ code: 1, data: '', msg: error.toString() });
+    }
+  }
+
+  async addBookmarkAction() {
+    let bookmark = this.post();
+    bookmark.user_id = this.ctx.state.user.id;
+    try {
+      let res = await this.model("bookmarks").add(bookmark);
+      this.json({ code: 0, data: res, msg: `书签 ${bookmark.title} 添加成功` });
+    } catch (error) {
+      this.json({ code: 1, data: '', msg: error.toString() });
+    }
+  }
+
 };

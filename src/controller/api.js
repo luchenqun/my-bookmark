@@ -140,4 +140,25 @@ module.exports = class extends Base {
     }
   }
 
+  // 新增留言
+  async addAdviceAction() {
+    let advice = this.post();
+    advice.userId = this.ctx.state.user.id;
+    try {
+      let res = await this.model("advices").add(advice);
+      this.json({ code: 0, data: res, msg: `留言 添加成功` });
+    } catch (error) {
+      this.json({ code: 1, data: '', msg: error.toString() });
+    }
+  }
+
+  // 获取所有留言
+  async getAdvicesAction() {
+    try {
+      let data = await this.model("advices").order("createdAt DESC").select();
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, data: '', msg: error.toString() });
+    }
+  }
 };

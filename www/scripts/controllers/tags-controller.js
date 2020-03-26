@@ -9,20 +9,15 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     await getTags();
   })()
 
-  // getTags({});
   var dialog = null;
-  var forbidTransition = false;
   var addBookmarkId = -1;
   $scope.hoverBookmark = null;
   $scope.showType = "createdAt";
-  $scope.loadBookmarks = false;
+  $scope.loading = false;
   $scope.loadTags = false;
   $scope.tags = []; // 书签数据
   $scope.tagsIndex = []; // 书签索引
-  $scope.bookmarkClicked = false;
-  $scope.bookmarksByTag = [];
   $scope.bookmarks = [];
-  $scope.bookmarkCount = 0;
   $scope.totalPages = 0;
   $scope.currentPage = 1;
   $scope.inputPage = '';
@@ -32,21 +27,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.newTag = '';
   $scope.waitDelTag = {};
   $scope.waitDelBookmark = {};
-  $scope.bookmarkData = {};
   $scope.bookmarkNormalHover = false;
-  $scope.costomTag = {
-    id: -1,
-    bookmarkCount: 50,
-    bookmarkClicked: false,
-    name: '个人定制',
-  }
-  $scope.costomAllUsersTag = {
-    id: -1,
-    bookmarkCount: 50,
-    bookmarkClicked: false,
-    name: '全站定制',
-  }
-
   var timeagoInstance = timeago();
 
   pubSubService.subscribe('MenuCtr.tags', $scope, function (event, data) {
@@ -57,27 +38,17 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.getBookmarks = async function (tagId, page, showType) {
     console.log(tagId, page, showType);
 
-    $scope.bookmarkClicked = true;
-
+    $scope.bookmarks = [];
     tagId && ($scope.currentTagId = tagId);
     page && ($scope.currentPage = page);
     showType && ($scope.showType = showType);
-
-    if (!forbidTransition) {
-      $scope.loadBookmarks = true;
-    }
-
-    $scope.costomTag.bookmarkClicked = false;
-    $scope.costomAllUsersTag.bookmarkClicked = false;
+    $scope.loading = true;
 
     let pageSize = ($scope.showMode == 'item') ? 50 : 20;
 
-    $scope.tags.forEach(function (tag) {
-      tag.bookmarkClicked = false;
-      if (tag.id == $scope.currentTagId) {
-        tag.bookmarkClicked = true;
-      }
-    });
+    for (let tag of $scope.tags) {
+      tag.bookmarkClicked = (tag.id == $scope.currentTagId);
+    }
 
     var params = {
       tagId: $scope.currentTagId,
@@ -85,24 +56,23 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       pageSize,
       showType: $scope.showType
     };
-    if (!forbidTransition) {
-      $($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table').transition('hide');
-    }
 
     let reply = await get('getBookmarksByTag', params);
     $scope.bookmarks = reply.data;
     $scope.totalPages = reply.totalPages;
     $scope.inputPage = '';
-    $scope.loadBookmarks = false;
-    $scope.bookmarkCount = reply.count;
+    $scope.loading = false;
+
+    for (let tag of $scope.tags) {
+      if (tag.id == $scope.currentTagId) {
+        tag.bookmarkCount = reply.count;
+      }
+    }
 
     pubSubService.publish('Common.menuActive', {
       login: true,
       index: dataService.LoginIndexTags
     });
-    if (!forbidTransition) {
-      dataService.transition($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table');
-    }
 
     $timeout(function () {
       dataService.transition('#' + addBookmarkId, {
@@ -110,7 +80,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       });
       addBookmarkId = -1;
     }, 1000);
-    forbidTransition = false;
   };
 
   $scope.changeCurrentPage = function (currentPage) {
@@ -128,7 +97,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       bookmarkService.clickBookmark({
         id: id
       });
-      $scope.bookmarkData.bookmarks.forEach(function (bookmark, index) {
+      $scope.bookmarks.forEach(function (bookmark, index) {
         if (bookmark.id == id) {
           bookmark.click_count += 1;
           bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -485,7 +454,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
     if (menusScope.login && menusScope.selectLoginIndex == 1) {
       var find = false;
-      $scope.bookmarkData.bookmarks.forEach((bookmark) => {
+      $scope.bookmarks.forEach((bookmark) => {
         if (bookmark.id == data.id) {
           bookmark.title = data.title;
           bookmark.url = data.url;
@@ -502,7 +471,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       if (!find) {
         if (data.tags.map((tag) => tag.id).indexOf($scope.currentTagId) >= 0) {
           if (!$scope.editMode) {
-            forbidTransition = true;
             $scope.getBookmarks(null, null, null);
           }
           addBookmarkId = data.id;

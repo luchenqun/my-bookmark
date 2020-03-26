@@ -26,20 +26,14 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
   var timeagoInstance = timeago();
 
-  bookmarkService.autoLogin()
-    .then((data) => {
-      var login = data.logined;
-      var index = login ? dataService.LoginIndexNote : dataService.NotLoginIndexLogin;
-      pubSubService.publish('Common.menuActive', {
-        login: login,
-        index: index
-      });
-      getTags();
-      getNotes();
-    })
-    .catch((err) => {
-      dataService.netErrorHandle(err, $state)
+  get('own').then(user => {
+    pubSubService.publish('Common.menuActive', {
+      login: true,
+      index: dataService.LoginIndexNote
     });
+    getTags();
+    getNotes();
+  });
 
   $scope.changeCurrentPage = function (currentPage) {
     currentPage = parseInt(currentPage) || 0;
@@ -85,7 +79,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     }
   }
 
-  $scope.addNote = function (close) {
+  $scope.addNote = async function (close) {
     if ($scope.content == '') {
       toastr.error('不允许备忘录内容为空！', "提示");
       return;
@@ -100,7 +94,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $scope.tags.forEach((tag) => {
       if ($scope.currentTagId === tag.id) {
         tagName = tag.name;
-        tag.ncnt += 1;
+        tag.noteCount += 1;
       }
       if (!$scope.currentTagId) {
         if (tag.name == '未分类') {
@@ -111,27 +105,22 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     })
 
     var note = {
-      tag_id: $scope.currentTagId,
+      tagId: $scope.currentTagId,
       content: $scope.content,
     }
 
-    bookmarkService.addNote(note)
-      .then((data) => {
-        // 增加成功，重新获取一次备忘录
-        $scope.tags.forEach((tag) => {
-          tag.clicked = false;
-        })
-        $scope.preContent = $scope.content;
-        $scope.content = '';
-        $scope.currentTagId = null;
-        $scope.currentPage = 1;
-        $scope.searchWord = '';
-        getNotes();
-      })
-      .catch((err) => {
-        console.log('addNote err', err);
-        $scope.currentTagId = null;
-      });
+    await post("addNote", note);
+
+    // 增加成功，重新获取一次备忘录
+    $scope.tags.forEach((tag) => {
+      tag.clicked = false;
+    })
+    $scope.preContent = $scope.content;
+    $scope.content = '';
+    $scope.currentTagId = null;
+    $scope.currentPage = 1;
+    $scope.searchWord = '';
+    getNotes();
   }
 
   $scope.copy = function (content, $event) {
@@ -151,31 +140,21 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     });
   }
 
-  $scope.confirmDelNote = function () {
+  $scope.confirmDelNote = async function () {
     if ($scope.currentNoteId) {
       var params = {
         id: $scope.currentNoteId
       }
       ngDialog.close(dialog);
-      bookmarkService.delNote(params)
-        .then((data) => {
-          if (data.result == 1) {
-            $("#" + $scope.currentNoteId).transition({
-              animation: dataService.animation(),
-              duration: 500,
-              onComplete: function () {
-                $("#" + $scope.currentNoteId).remove();
-              }
-            });
-            toastr.success('备忘删除成功！', "提示");
-            $scope.totalItems -= 1;
-          } else {
-            toastr.error('没有找到对应的备忘录，删除失败！请刷新页面再尝试', "提示");
-          }
-        })
-        .catch((err) => {
-          toastr.error('备忘删除失败！错误提示：' + JSON.stringify(err), "提示");
-        });
+      await post('delNote', params)
+      $("#" + $scope.currentNoteId).transition({
+        animation: dataService.animation(),
+        duration: 500,
+        onComplete: function () {
+          $("#" + $scope.currentNoteId).remove();
+        }
+      });
+      $scope.totalItems -= 1;
     } else {
       toastr.error('删除失败！请刷新页面再尝试', "提示");
     }
@@ -190,7 +169,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     updateSelectTag(tagId);
   }
 
-  $scope.updateNote = function () {
+  $scope.updateNote = async function () {
     if (!$scope.content) {
       toastr.error('更新失败，更新内容不能为空', "提示");
       return;
@@ -211,30 +190,20 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     var params = {
       id: $scope.currentNoteId,
       content: $scope.content,
-      tag_id: $scope.currentTagId,
+      tagId: $scope.currentTagId,
     }
 
-    bookmarkService.updateNote(params)
-      .then((data) => {
-        if (data.result == 1) {
-          toastr.success('备忘更新成功！', "提示");
-          $scope.notes.forEach((note) => {
-            if (note.id == $scope.currentNoteId) {
-              note.content = $scope.content;
-              note.tagName = tagName;
-              note.tag_id = $scope.currentTagId;
-              toPos(note.id);
-            }
-          })
-          $scope.add = false;
-          $scope.edit = false;
-        } else {
-          toastr.error('备忘更新失败！请刷新页面再尝试', "提示");
-        }
-      })
-      .catch((err) => {
-        toastr.error('备忘更新失败！错误提示：' + JSON.stringify(err), "提示");
-      });
+    await post("updateNote", params);
+    $scope.notes.forEach((note) => {
+      if (note.id == $scope.currentNoteId) {
+        note.content = $scope.content;
+        note.tagName = tagName;
+        note.tag_id = $scope.currentTagId;
+        toPos(note.id);
+      }
+    })
+    $scope.add = false;
+    $scope.edit = false;
   }
 
   $scope.detailNote = function (content) {
@@ -301,28 +270,16 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       dataService.clipboard(`https://mybookmark.cn/api/notes/?shareNote=${note.id}`);
       toastr.info(`将地址 https://mybookmark.cn/api/notes/?shareNote=${note.id} 发给别人粘贴到浏览器地址栏就可以访问到你分享的备忘啦！`, "提示");
     }, time)
-
   }
 
-  $scope.updatePublic = function (note, public) {
+  $scope.updatePublic = async function (note, public) {
     var params = {
       id: note.id,
       public: public,
     }
 
-    bookmarkService.updateNotePublic(params)
-      .then((data) => {
-        if (data.result == 1) {
-          public == 1 && toastr.success('备忘已由私密状态转为公开状态', "提示");
-          public == 0 && toastr.success('备忘已由公开状态转为私密状态', "提示");
-          note.public = public;
-        } else {
-          toastr.error('备忘状态更新失败', "提示");
-        }
-      })
-      .catch((err) => {
-        toastr.error('备忘更新失败！错误提示：' + JSON.stringify(err), "提示");
-      });
+    await post("updateNode", params);
+    note.public = public;
   }
 
   function updateSelectTag(tagId) {
@@ -353,73 +310,62 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     })
   });
 
-  function getNotes(tagId) {
+  async function getNotes(tagId) {
     $scope.notes = [];
     $scope.loadBusy = true;
     var params = {
-      currentPage: $scope.currentPage,
-      perPageItems: perPageItems,
+      page: $scope.currentPage,
+      pageSize: perPageItems,
       searchWord: $scope.searchWord,
+      tagId: tagId || $scope.currentTagId
     };
-    if (tagId || $scope.currentTagId) {
-      params.tagId = tagId || $scope.currentTagId;
-    }
-    bookmarkService.getNotes(params)
-      .then((data) => {
-        $scope.notes = data.notes;
-        $scope.notes.forEach((note) => {
-          note.brief = note.content || "";
-          while (note.brief.indexOf("\n") > 0) {
-            note.brief = note.brief.replace(/\n/g, "");
-          }
-          note.brief = "       " + note.brief.substring(0, 200) + (note.content.length > 200 ? " ......" : "");
-        })
-        $scope.totalPages = Math.ceil(data.totalItems / perPageItems);
-        $scope.totalItems = data.totalItems;
-        $timeout(function () {
-          timeagoInstance.cancel();
-          timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
-          // 如果需要增加书签
-          if ($scope.key == 'A') {
-            $scope.key = null;
-            $scope.showAddNote();
-          }
-        }, 100)
-        $scope.loadBusy = false;
-        if ($scope.totalItems == 0) {
-          $(".js-note").removeClass("hidden");
+
+    try {
+      let reply = await get("notes", params);
+      $scope.notes = reply.data;
+      $scope.notes.forEach((note) => {
+        note.brief = note.content || "";
+        while (note.brief.indexOf("\n") > 0) {
+          note.brief = note.brief.replace(/\n/g, "");
         }
-        transition();
+        note.brief = "       " + note.brief.substring(0, 200) + (note.content.length > 200 ? " ......" : "");
       })
-      .catch((err) => {
-        $scope.notes = [];
-        $scope.loadBusy = false;
-      });
+      $scope.totalPages = reply.totalPages;
+      $scope.totalItems = reply.count;
+      $timeout(function () {
+        timeagoInstance.cancel();
+        timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+        // 如果需要增加书签
+        if ($scope.key == 'A') {
+          $scope.key = null;
+          $scope.showAddNote();
+        }
+      }, 100)
+      $scope.loadBusy = false;
+      if ($scope.totalItems == 0) {
+        $(".js-note").removeClass("hidden");
+      }
+      transition();
+    } catch (error) {
+      $scope.notes = [];
+      $scope.loadBusy = false;
+    }
   }
 
-  function getTags(params) {
+  async function getTags() {
     $scope.loadBusy = true;
-    bookmarkService.getTags(params)
-      .then((data) => {
-        $scope.tags = []
-        var find = false;
-        data.forEach((tag) => {
-          $scope.tags.push(tag);
-          if (tag.id == $scope.currentTagId) {
-            find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
-          }
-        })
-        if (!find) $scope.currentTagId = null;
+    $scope.tags = []
 
-        if ($scope.currentTagId) {
-          getTags($scope.currentTagId);
-        }
-        $scope.loadBusy = false;
-      })
-      .catch((err) => {
-        console.log('getTags err', err);
-        $scope.loadBusy = false;
-      });
+    let tags = await get('tags', { noteCount: true });
+    let find = false;
+    tags.forEach((tag) => {
+      $scope.tags.push(tag);
+      if (tag.id == $scope.currentTagId) {
+        find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
+      }
+    })
+    if (!find) $scope.currentTagId = null;
+    $scope.loadBusy = false;
   }
 
   $('.js-note-card').transition('hide');

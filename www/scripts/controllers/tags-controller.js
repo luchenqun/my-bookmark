@@ -91,12 +91,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     }
   }
 
-  $scope.jumpToUrl = function (url, id) {
+  $scope.jumpToUrl = async function (url, id) {
     if (!$scope.editMode) {
       $window.open(url, '_blank');
-      bookmarkService.clickBookmark({
-        id: id
-      });
+      await post("clickBookmark", { id });
+
       $scope.bookmarks.forEach(function (bookmark, index) {
         if (bookmark.id == id) {
           bookmark.click_count += 1;
@@ -149,18 +148,15 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       });
   }
 
-  $scope.editBookmark = function (bookmarkId) {
-    pubSubService.publish('bookmarksCtr.editBookmark', {
-      'bookmarkId': bookmarkId
-    });
+  $scope.editBookmark = function (id) {
+    console.log('publish bookmarksCtr.editBookmark', { id });
+    pubSubService.publish('bookmarksCtr.editBookmark', { id });
   }
 
-  $scope.detailBookmark = function (bookmark) {
+  $scope.detailBookmark = async function (bookmark) {
     bookmark.own = true;
     pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
-    bookmarkService.clickBookmark({
-      id: bookmark.id
-    });
+    await post("clickBookmark", { id: bookmark.id });
   }
 
   $scope.copy = function (url) {

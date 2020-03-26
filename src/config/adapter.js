@@ -30,7 +30,7 @@ exports.cache = {
 exports.model = {
   type: 'mysql',
   common: {
-    logConnect: isDev,
+    logConnect: false,
     logSql: isDev,
     logger: msg => think.logger.info(msg)
   },

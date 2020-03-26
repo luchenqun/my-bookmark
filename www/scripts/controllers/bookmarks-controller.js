@@ -52,11 +52,10 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     }
   }
 
-  $scope.jumpToUrl = function (url, id) {
+  $scope.jumpToUrl = async function (url, id) {
     $window.open(url, '_blank');
-    bookmarkService.clickBookmark({
-      id: id
-    });
+    await post("clickBookmark", { id });
+
 
     if ($scope.showStyle != 'navigate') {
       var bookmarks = $scope.showStyle == 'table' ? $scope.bookmarkData.bookmarks : $scope.bookmarkData;
@@ -107,13 +106,11 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
       });
   }
 
-  $scope.editBookmark = function (bookmarkId) {
-    pubSubService.publish('bookmarksCtr.editBookmark', {
-      'bookmarkId': bookmarkId
-    });
+  $scope.editBookmark = function (id) {
+    pubSubService.publish('bookmarksCtr.editBookmark', { id });
   }
 
-  $scope.detailBookmark = function (b) {
+  $scope.detailBookmark = async function (b) {
     var bookmark = $.extend(true, {}, b); // 利用jQuery执行深度拷贝
     bookmark.own = true;
     if ($scope.showStyle == 'navigate') {
@@ -123,9 +120,7 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
       }];
     }
     pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
-    bookmarkService.clickBookmark({
-      id: bookmark.id
-    });
+    await post("clickBookmark", { id: bookmark.id });
   }
 
   $scope.copy = function (url) {

@@ -1,6 +1,7 @@
 const Base = require('./base.js');
 const crypto = require('crypto');
 const fs = require('fs-extra');
+const read = require('node-readability');
 
 function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
@@ -84,8 +85,8 @@ module.exports = class extends Base {
       if (param.bookmarkCount) {
         tag.bookmarkCount = await this.model('bookmarks').where({ tagId: tag.id }).count();
       }
-      if (param.notes) {
-        tag.bookmarkCount = await this.model('notes').where({ tagId: tag.id }).count();
+      if (param.noteCount) {
+        tag.noteCount = await this.model('notes').where({ tagId: tag.id }).count();
       }
     }
     this.json({ code: 0, data: tags, msg: '' });
@@ -104,6 +105,19 @@ module.exports = class extends Base {
     }
   }
 
+  // 获取书签
+  // @todo 如果是自己的任意获取，如果是别人的必须公开才能获取
+  async bookmarkAction() {
+    let id = this.get("id");
+    try {
+      let data = await this.model('bookmarks').where({ id }).find();
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  // 添加书签
   async addBookmarkAction() {
     let bookmark = this.post();
     bookmark.userId = this.ctx.state.user.id;
@@ -140,6 +154,69 @@ module.exports = class extends Base {
     }
   }
 
+  // 点击书签
+  async clickBookmarkAction() {
+    let id = this.post("id");
+    try {
+      let data = await this.model('bookmarks').where({
+        userId: this.ctx.state.user.id,
+        id
+      }).update({
+        clickCount: ['exp', 'clickCount+1'],
+        lastClick: ['exp', 'NOW()']
+      });
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  // 更新书签
+  async updateBookmarkAction() {
+    let bookmark = this.post();
+    try {
+      let data = await this.model('bookmarks').where({
+        userId: this.ctx.state.user.id,
+        id: bookmark.id
+      }).update(bookmark);
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+  // 获取文章
+  async getArticleAction() {
+    let url = this.get("url");
+    async function readArticle(url) {
+      return new Promise(function (resolve, reject) {
+        read(url, (err, article, meta) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve({
+              title: article.title
+            });
+            article.close();
+          }
+        });
+      })
+    }
+
+    try {
+      let article = await readArticle(url);
+      this.json({
+        code: 0,
+        data: {
+          title: article.title
+        }
+      });
+    } catch (error) {
+      this.json({
+        code: 1,
+        msg: error.toString()
+      });
+    }
+  }
   // 新增留言
   async addAdviceAction() {
     let advice = this.post();
@@ -159,6 +236,55 @@ module.exports = class extends Base {
       this.json({ code: 0, data });
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });
+    }
+  }
+
+  // 新增
+  async addNoteAction() {
+    let note = this.post();
+    note.userId = this.ctx.state.user.id;
+    try {
+      let data = await this.model("notes").add(note);
+      this.json({ code: 0, data, msg: `备忘添加成功` });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  // 更新备忘
+  async updateNoteAction() {
+    let note = this.post();
+    note.userId = this.ctx.state.user.id;
+    try {
+      let data = await this.model('bookmarks').where({
+        userId: this.ctx.state.user.id,
+        id: note.id
+      }).update(note);
+      this.json({ code: 0, data, msg: `备忘更新成功` });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  // 更新
+  async delNoteAction() {
+    let note = this.post();
+    note.userId = this.ctx.state.user.id;
+    try {
+      let data = await this.model("notes").where(note).delete();
+      this.json({ code: 0, data, msg: `备忘删除成功` });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  async notesAction() {
+    let where = {};
+    try {
+      let data = await this.model('notes').where(where).order("createdAt DESC").page(this.get('page'), this.get('pageSize')).countSelect();
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
     }
   }
 };

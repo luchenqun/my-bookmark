@@ -26,12 +26,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
   $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
-  (async () => {
-    $scope.user = await get('own');
-    if (data.username === 'lcq') {
+  get('own').then(user => {
+    $scope.user = user;
+    if ($scope.user.username === 'lcq') {
       $scope.loginMenus[dataService.LoginIndexHot].show = false;
     }
-  })();
+  });
 
   $scope.toggleReady = function (ready) {
     if (ready) {

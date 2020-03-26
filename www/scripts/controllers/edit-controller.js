@@ -5,7 +5,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
   var cancelDefault = false;
   init();
 
-  $scope.$watch('url', function (newUrl, oldUrl, scope) {
+  $scope.$watch('url', async function (newUrl, oldUrl, scope) {
     $timeout(function () {
       $scope.urlError = $scope.url == '' && $('.ui.modal.js-add-bookmark').modal('is active');
     });
@@ -17,23 +17,21 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
           requestId: 0,
         }
         $scope.loadTitle = true;
-        bookmarkService.getArticle(params)
-          .then((data) => {
-            $scope.loadTitle = false;
-            $scope.originTitle = data.title;
-            $scope.title = data.title;
+        try {
+          let data = await get('getArticle', { url: newUrl });
+          $scope.loadTitle = false;
+          $scope.originTitle = data.title;
+          $scope.title = data.title;
 
-            if (!$scope.title) {
-              toastr.error('获取书签标题失败，请手动填入', "提示");
-            } else {
-              $scope.title = data.title.split('-')[0].trim();
-            }
-          })
-          .catch((err) => {
-            console.log('getTitle err', err);
-            toastr.error('获取书签标题失败：' + JSON.stringify(err) + '，请手动填入', "提示");
-            $scope.loadTitle = false;
-          })
+          if (!$scope.title) {
+            toastr.error('获取书签标题失败，请手动填入', "提示");
+          } else {
+            $scope.title = data.title.split('-')[0].trim();
+          }
+        } catch (error) {
+          toastr.error('获取书签标题失败：' + JSON.stringify(err) + '，请手动填入', "提示");
+          $scope.loadTitle = false;
+        }
       }
     }
   });
@@ -84,7 +82,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
       return;
     }
     if ($scope.tagsError) {
-      toastr.error('您至少要选择一个分类！最多选择三个分类！如果暂时没想到放到哪个分类，可以先选择未分类', "错误");
+      toastr.error('您至少要选择一个分类！如果暂时没想到放到哪个分类，可以先选择未分类', "错误");
       return;
     }
     if ($scope.titleError) {
@@ -98,16 +96,10 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
       $('.ui.modal.js-add-bookmark').modal('hide');
       pubSubService.publish('EditCtr.inserBookmarsSuccess', params);
     } else {
-      bookmarkService.updateBookmark(params)
-        .then((data) => {
-          $('.ui.modal.js-add-bookmark').modal('hide');
-          pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
-          toastr.success('[ ' + params.title + ' ] 更新成功，将自动重新更新书签！', "提示");
-        })
-        .catch((err) => {
-          console.log('updateBookmark err', err);
-          toastr.error('[ ' + params.title + ' ] 更新失败' + JSON.stringify(err), "提示");
-        });
+      await post('updateBookmark', params);
+      $('.ui.modal.js-add-bookmark').modal('hide');
+      pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
+      toastr.success('[ ' + params.title + ' ] 更新成功，将自动重新更新书签！', "提示");
     }
   }
 
@@ -168,7 +160,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     getTags();
   });
 
-  pubSubService.subscribe('bookmarksCtr.editBookmark', $scope, function (event, params) {
+  pubSubService.subscribe('bookmarksCtr.editBookmark', $scope, async function (event, params) {
     console.log('subscribe bookmarksCtr.editBookmark', params);
     $('.ui.modal.js-add-bookmark').modal({
       closable: false,
@@ -178,36 +170,24 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     }, 500);
     $scope.add = false;
     $scope.loadTags = true;
+    $scope.autoGettitle = false;
+
     cancelDefault = false;
-    bookmarkService.getBookmark(params)
-      .then((data) => {
-        console.log('getBookmark ', data);
 
-        var bookmark = data.bookmark;
-        $scope.autoGettitle = false;
-        $scope.id = (bookmark && bookmark.id) || '';
-        $scope.url = (bookmark && bookmark.url) || '';
-        $scope.title = (bookmark && bookmark.title) || '';
-        $scope.description = (bookmark && bookmark.description) || '';
-        $scope.tags = data.tags.map((tag) => {
-          tag.clicked = false;
-          return tag;
-        });
-        $scope.public = (bookmark && bookmark.id) || '1';
-        $('.ui.checkbox.js-public').checkbox((bookmark && bookmark.public && bookmark.public == '1') ? 'set checked' : 'set unchecked')
+    let bookmark = await get("bookmark", params);
+    let tags = await get("tags");
 
-        $timeout(function () {
-          data.bookmarkTags.forEach((tagId) => {
-            $scope.tags.forEach((tag) => {
-              if (tag.id == tagId) {
-                tag.clicked = true;
-              }
-            })
-          });
-        });
-        $scope.loadTags = false;
-      })
-      .catch((err) => console.log('updateBookmark err', err));
+    $scope.id = (bookmark && bookmark.id) || '';
+    $scope.url = (bookmark && bookmark.url) || '';
+    $scope.title = (bookmark && bookmark.title) || '';
+    $scope.description = (bookmark && bookmark.description) || '';
+    $scope.tags = tags.map((tag) => {
+      tag.clicked = bookmark.tagId == tag.id;
+      return tag;
+    });
+    $scope.public = (bookmark && bookmark.id) || '1';
+    $('.ui.checkbox.js-public').checkbox((bookmark && bookmark.public && bookmark.public == '1') ? 'set checked' : 'set unchecked')
+    $scope.loadTags = false;
   });
 
   pubSubService.subscribe('TagCtr.storeBookmark', $scope, function (event, bookmark) {

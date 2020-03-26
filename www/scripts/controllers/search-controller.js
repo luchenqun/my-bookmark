@@ -62,12 +62,11 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     toastr.warning("请输入搜索关键字再进行查询！", "提示");
   }
 
-  $scope.jumpToUrl = function (url, id) {
+  $scope.jumpToUrl = async function (url, id) {
     if (!$scope.edit) {
       $window.open(url);
-      bookmarkService.clickBookmark({
-        id: id
-      });
+      await post("clickBookmark", { id });
+
       $scope.searchBookmarks.forEach(function (bookmark) {
         if (bookmark.id == id && bookmark.own) {
           bookmark.click_count += 1;
@@ -111,10 +110,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
       });
   }
 
-  $scope.editBookmark = function (bookmarkId) {
-    pubSubService.publish('bookmarksCtr.editBookmark', {
-      'bookmarkId': bookmarkId
-    });
+  $scope.editBookmark = function (id) {
+    pubSubService.publish('bookmarksCtr.editBookmark', { id });
   }
 
   $scope.detailBookmark = function (bookmark) {

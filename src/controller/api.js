@@ -118,10 +118,11 @@ module.exports = class extends Base {
   // 根据书签id获取书签
   async getBookmarksByTagAction() {
     let tagId = this.get("tagId");
+    let showType = this.get("showType") || "createdAt";
     // tagId = -1 个人定制 从自己里面取
     // tagId = -2 全局定制 从非个人里面取
     let where = {};
-    let order = 'createdAt DESC';
+    let order = showType + ' DESC';
 
     if (tagId == -1) {
       where = { userId: this.ctx.state.user.id };
@@ -129,14 +130,6 @@ module.exports = class extends Base {
       where = { userId: ['!=', this.ctx.state.user.id] };
     } else {
       where = { tagId };
-    }
-
-    if (this.get('createdAt')) {
-      order = 'createdAt DESC';
-    } else if (this.get('clickCount')) {
-      order = 'clickCount DESC';
-    } else if (this.get('lastClick')) {
-      order = 'lastClick DESC';
     }
 
     try {

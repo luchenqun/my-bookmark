@@ -10,25 +10,23 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   })()
 
   // getTags({});
-
-  var pageSize = 20;
   var dialog = null;
   var forbidTransition = false;
   var addBookmarkId = -1;
   $scope.hoverBookmark = null;
-  $scope.order = [false, false, false];
-  $scope.order[($stateParams && $stateParams.orderIndex) || 1] = true;
+  $scope.showType = "createdAt";
   $scope.loadBookmarks = false;
   $scope.loadTags = false;
   $scope.tags = []; // 书签数据
   $scope.tagsIndex = []; // 书签索引
   $scope.bookmarkClicked = false;
   $scope.bookmarksByTag = [];
+  $scope.bookmarks = [];
   $scope.bookmarkCount = 0;
   $scope.totalPages = 0;
   $scope.currentPage = 1;
   $scope.inputPage = '';
-  $scope.currentTagId = ($stateParams && $stateParams.tagId) || '';
+  $scope.currentTagId = ($stateParams && $stateParams.tagId) || (-1);
   $scope.editMode = false;
   $scope.showMode = 'item';
   $scope.newTag = '';
@@ -38,13 +36,13 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.bookmarkNormalHover = false;
   $scope.costomTag = {
     id: -1,
-    cnt: 50,
+    bookmarkCount: 50,
     bookmarkClicked: false,
     name: '个人定制',
   }
   $scope.costomAllUsersTag = {
     id: -1,
-    cnt: 50,
+    bookmarkCount: 50,
     bookmarkClicked: false,
     name: '全站定制',
   }
@@ -56,123 +54,70 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     getTags();
   });
 
-  $scope.changeOrder = function (index) {
-    if (index < 0 || index >= $scope.order.length) {
-      return;
-    }
-    $scope.order = $scope.order.map(() => false);
-    $scope.order[index] = true;
-    $scope.bookmarksByTag = [];
+  $scope.getBookmarks = async function (tagId, page, showType) {
+    console.log(tagId, page, showType);
 
-    if ($scope.order[0]) {
-      $scope.bookmarkData.bookmarks.sort(clickCmp);
-      $scope.bookmarkData.bookmarks.forEach((bookmark) => {
-        if (bookmark.type == 1) {
-          $scope.bookmarksByTag.push(bookmark);
-        }
-      })
-    } else if ($scope.order[1]) {
-      $scope.bookmarkData.bookmarks.sort((a, b) => a.created_at >= b.created_at ? -1 : 1);
-      $scope.bookmarkData.bookmarks.forEach((bookmark) => {
-        if (bookmark.type == 2) {
-          $scope.bookmarksByTag.push(bookmark);
-        }
-      })
-    } else {
-      $scope.bookmarkData.bookmarks.sort((a, b) => a.last_click >= b.last_click ? -1 : 1);
-      $scope.bookmarkData.bookmarks.forEach((bookmark) => {
-        if (bookmark.type == 3) {
-          $scope.bookmarksByTag.push(bookmark);
-        }
-      })
-    }
-
-    $timeout(function () {
-      timeagoInstance.cancel();
-      timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
-    }, 100)
-  }
-
-  $scope.getBookmarks = async function (tagId, page) {
-    console.log(tagId, page)
     $scope.bookmarkClicked = true;
-    $scope.currentTagId = tagId;
-    $scope.currentPage = page;
+
+    tagId && ($scope.currentTagId = tagId);
+    page && ($scope.currentPage = page);
+    showType && ($scope.showType = showType);
+
     if (!forbidTransition) {
       $scope.loadBookmarks = true;
     }
+
     $scope.costomTag.bookmarkClicked = false;
     $scope.costomAllUsersTag.bookmarkClicked = false;
 
-    pageSize = ($scope.showMode == 'item') ? 50 : 20;
+    let pageSize = ($scope.showMode == 'item') ? 50 : 20;
 
     $scope.tags.forEach(function (tag) {
       tag.bookmarkClicked = false;
-      if (tag.id == tagId) {
+      if (tag.id == $scope.currentTagId) {
         tag.bookmarkClicked = true;
       }
     });
 
-    if (tagId == -1) {
-      $scope.costomTag.bookmarkClicked = true;
-    }
-
-    if (tagId == -2) {
-      $scope.costomAllUsersTag.bookmarkClicked = true;
-    }
-
     var params = {
-      tagId,
-      page,
+      tagId: $scope.currentTagId,
+      page: $scope.currentPage,
       pageSize,
-      createdAt: true
+      showType: $scope.showType
     };
     if (!forbidTransition) {
       $($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table').transition('hide');
     }
 
-    let data = await get('getBookmarksByTag', params);
-    console.log(data);
-    return;
+    let reply = await get('getBookmarksByTag', params);
+    $scope.bookmarks = reply.data;
+    $scope.totalPages = reply.totalPages;
+    $scope.inputPage = '';
+    $scope.loadBookmarks = false;
+    $scope.bookmarkCount = reply.count;
 
-    bookmarkService.getBookmarksByTag(params)
-      .then((data) => {
-        $scope.bookmarkData = data;
-        $scope.changeOrder($scope.order.indexOf(true));
-        $scope.bookmarkCount = $scope.bookmarkData.totalItems;
-        $scope.totalPages = tagId <= -1 ? 1 : Math.ceil($scope.bookmarkCount / pageSize);
+    pubSubService.publish('Common.menuActive', {
+      login: true,
+      index: dataService.LoginIndexTags
+    });
+    if (!forbidTransition) {
+      dataService.transition($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table');
+    }
 
-        $scope.inputPage = '';
-        $scope.loadBookmarks = false;
-
-        pubSubService.publish('Common.menuActive', {
-          login: true,
-          index: dataService.LoginIndexTags
-        });
-        if (!forbidTransition) {
-          dataService.transition($scope.showMode == 'item' ? '.js-tag-costomTag' : '.js-tags-table');
-        }
-        $timeout(function () {
-          dataService.transition('#' + addBookmarkId, {
-            duration: 1000,
-          });
-          addBookmarkId = -1;
-        }, 1000);
-        forbidTransition = false;
-      })
-      .catch((err) => {
-        console.log('getTags err', err);
-        $scope.loadBookmarks = false;
-        forbidTransition = false;
-        addBookmarkId = -1;
+    $timeout(function () {
+      dataService.transition('#' + addBookmarkId, {
+        duration: 1000,
       });
+      addBookmarkId = -1;
+    }, 1000);
+    forbidTransition = false;
   };
 
   $scope.changeCurrentPage = function (currentPage) {
     currentPage = parseInt(currentPage) || 0;
     console.log(currentPage);
     if (currentPage <= $scope.totalPages && currentPage >= 1) {
-      $scope.getBookmarks($scope.currentTagId, currentPage);
+      $scope.getBookmarks(null, currentPage, null);
       $scope.currentPage = currentPage;
     }
   }
@@ -189,7 +134,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
           bookmark.last_click = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
         }
       })
-      // $scope.changeOrder($scope.order.indexOf(true));
       $timeout(function () {
         timeagoInstance.cancel();
         timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
@@ -225,7 +169,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         $scope.tags.forEach((t1) => {
           $scope.waitDelBookmark.tags.forEach((t2) => {
             if (t1.id == t2.id) {
-              t1.cnt--;
+              t1.bookmarkCount--;
             }
           })
         })
@@ -272,7 +216,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
   $scope.toggleShowMode = function (showMode) {
     $scope.showMode = showMode;
-    $scope.getBookmarks($scope.currentTagId, 1);
+    $scope.getBookmarks(null, 1, null);
   }
 
   $scope.editTag = function (tag) {
@@ -501,28 +445,34 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     $scope.tags = [];
 
     let tags = await get('tags', { bookmarkCount: true });
+    tags.unshift({
+      id: -1,
+      bookmarkCount: 1,
+      bookmarkClicked: false,
+      name: '个人定制',
+      show: 1
+    })
+
     let find = false;
     for (let tag of tags) {
       tag.edit = false;
       tag.oldName = tag.name;
-      $scope.tags.push(tag);
       if (tag.id == $scope.currentTagId) {
+        tag.bookmarkClicked = true;
         find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
       }
+      $scope.tags.push(tag);
     }
 
-    if (!find && $scope.currentTagId !== -1 && $scope.currentTagId !== -2) {
+    if (!find) {
       $scope.currentTagId = -1;
-      $scope.costomTag.bookmarkClicked = true;
+      $scope.tags[0].bookmarkClicked = true;
     }
 
-    if ($scope.currentTagId) {
-      if (!$scope.editMode) {
-        await $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
-      }
-    } else {
-      toastr.info('您还没有书签分类，请点击菜单栏的添加按钮进行添加', "提示");
+    if (!$scope.editMode) {
+      await $scope.getBookmarks(null, null, null);
     }
+
     $scope.loadTags = false;
     pubSubService.publish('Common.menuActive', {
       login: true,
@@ -542,18 +492,18 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
           bookmark.tags = data.tags;
           bookmark.description = data.description;
           find = true;
-          if ($scope.order[bookmark.type - 1]) {
-            dataService.transition('#' + bookmark.id, {
-              duration: 1000,
-            });
-          }
+          // if ($scope.order[bookmark.type - 1]) {
+          //   dataService.transition('#' + bookmark.id, {
+          //     duration: 1000,
+          //   });
+          // }
         }
       })
       if (!find) {
         if (data.tags.map((tag) => tag.id).indexOf($scope.currentTagId) >= 0) {
           if (!$scope.editMode) {
             forbidTransition = true;
-            $scope.getBookmarks($scope.currentTagId, $scope.currentPage);
+            $scope.getBookmarks(null, null, null);
           }
           addBookmarkId = data.id;
         }
@@ -573,16 +523,4 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   setTimeout(() => {
     $('.js-tag-label .icon').popup();
   }, 3000);
-
-  function clickCmp(a, b) {
-    var click1 = parseInt(a.click_count);
-    var click2 = parseInt(b.click_count);
-    if (click1 > click2) {
-      return -1;
-    } else if (click1 == click2) {
-      return a.url > b.url ? -1 : 1;
-    } else {
-      return 1;
-    }
-  }
 }]);

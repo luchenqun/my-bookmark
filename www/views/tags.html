@@ -1,13 +1,7 @@
 <div class="ui segment js-tags">
   <div class="ui container" ng-show="!editMode" style="cursor:default">
-    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:costomTag.bookmarkClicked}" ng-click="getBookmarks(-1, 1)">
-      {{ costomTag.name }} ({{ costomTag.bookmarkCount || 0 }})
-    </div>
-    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.bookmarkCount && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1)">
+    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.bookmarkCount && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1, null)">
       {{ tag.name }} ({{ tag.bookmarkCount || 0 }})
-    </div>
-    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-class="{green:costomAllUsersTag.bookmarkClicked}" ng-click="getBookmarks(-2, 1)">
-      {{ costomAllUsersTag.name }} ({{ costomAllUsersTag.bookmarkCount || 0 }})
     </div>
     <div class="ui label js-tag-label" style="margin:3px 15px 8px 0px;cursor:default;">
       <i class="plus icon" data-content="点击添加分类" data-position="top center" ng-click="showAddTag()"></i>
@@ -64,15 +58,15 @@
     <tr>
       <th class="forbid_sorted">标题</th>
       <th class="forbid_sorted">链接</th>
-      <th style="width:90px;" ng-class="{descending: order[0], sorted:order[0]}" ng-click="changeOrder(0)" title="点击可对表格进行排序">点击次数</th>
-      <th style="width:100px;" ng-class="{descending: order[1], sorted:order[1]}" ng-click="changeOrder(1)" title="点击可对表格进行排序">创建日期</th>
-      <th style="width:100px;" ng-class="{descending: order[2], sorted:order[2]}" ng-click="changeOrder(2)" title="点击可对表格进行排序">最后点击</th>
+      <th style="width:90px;" ng-class="{descending: showType == 'createdAt', sorted:showType == 'createdAt'}" ng-click="getBookmarks(null, 1, 'createdAt')" title="点击可对表格进行排序">点击次数</th>
+      <th style="width:100px;" ng-class="{descending: showType == 'clickCount', sorted:showType == 'clickCount'}" ng-click="getBookmarks(null, 1, 'clickCount')" title="点击可对表格进行排序">创建日期</th>
+      <th style="width:100px;" ng-class="{descending: showType == 'lastClick', sorted:showType == 'lastClick'}" ng-click="getBookmarks(null, 1, 'lastClick')" title="点击可对表格进行排序">最后点击</th>
       <th style="width:150px;" class="forbid_sorted">分类</th>
       <th style="width:88px;" class="forbid_sorted">操作</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="bookmark in bookmarksByTag" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
+    <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
       <td>
         <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" />
         <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
@@ -90,7 +84,7 @@
         <span id="time{{bookmark.id}}" title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
       </td>
       <td>
-        <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="getBookmarks(tag.id, 1)">
+        <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="getBookmarks(tag.id, 1, null)">
           {{ tag.name }}
         </div>
       </td>
@@ -111,7 +105,7 @@
 </table>
 <div class="ui segment js-tag-costomTag" ng-if="bookmarkCount > 0 && showMode=='item'" style="margin-top:-15px;" ng-show="!loadBookmarks && !editMode">
   <div class="ui five column grid">
-    <div ng-repeat="bookmark in bookmarksByTag" class="column js-costomTag-item" ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}" ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)" ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}" id="{{bookmark.id}}">
+    <div ng-repeat="bookmark in bookmarks" class="column js-costomTag-item" ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}" ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)" ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}" id="{{bookmark.id}}">
       <img class="ui ui middle aligned tiny image bookmarkInfo" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" />
       <span>{{ bookmark.title}}</span>
     </div>
@@ -120,17 +114,17 @@
   <div class="ui grid">
     <div class="five wide column" style="margin-top:10px;">
       <div class="ui three column grid" style="cursor: default;">
-        <div class="column" ng-click="changeOrder(1)">
-          <i class="add to calendar large icon" ng-class="{green: order[1]}" style="margin-bottom:4px;"></i>
-          <span ng-class="{fontgreen: order[1]}" style="margin-left:-5px;">添加日期</span>
+        <div class="column" ng-click="getBookmarks(null, 1, 'createdAt')">
+          <i class="add to calendar large icon" ng-class="{green: showType == 'createdAt'}" style="margin-bottom:4px;"></i>
+          <span ng-class="{fontgreen: showType == 'createdAt'}" style="margin-left:-5px;">添加日期</span>
         </div>
-        <div class="column" ng-click="changeOrder(0)">
-          <i class="sort numeric descending large icon" ng-class="{green: order[0]}" style="margin-bottom:4px;"></i>
-          <span ng-class="{fontgreen: order[0]}" style="margin-left:-5px;">点击次数</span>
+        <div class="column" ng-click="getBookmarks(null, 1, 'clickCount')">
+          <i class="sort numeric descending large icon" ng-class="{green: showType == 'clickCount'}" style="margin-bottom:4px;"></i>
+          <span ng-class="{fontgreen: showType == 'clickCount'}" style="margin-left:-5px;">点击次数</span>
         </div>
-        <div class="column" ng-click="changeOrder(2)">
-          <i class="sort alphabet descending large icon" ng-class="{green: order[2]}" style="margin-bottom:4px;"></i>
-          <span ng-class="{fontgreen: order[2]}" style="margin-left:-5px;">最后点击</span>
+        <div class="column" ng-click="getBookmarks(null, 1, 'lastClick')">
+          <i class="sort alphabet descending large icon" ng-class="{green: showType == 'lastClick'}" style="margin-bottom:4px;"></i>
+          <span ng-class="{fontgreen: showType == 'lastClick'}" style="margin-left:-5px;">最后点击</span>
         </div>
       </div>
     </div>

@@ -17,7 +17,7 @@ app.factory('dataService', [function () {
 
     loginMenus: [{
       uiSref: 'bookmarks',
-      title: '书签'
+      title: '导航'
     }, {
       uiSref: 'tags',
       title: '分类'

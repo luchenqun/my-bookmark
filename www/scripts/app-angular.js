@@ -68,11 +68,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
       templateUrl: 'views/weixin-article.html',
       controller: 'weixinArticleCtr'
     })
-    .state('praise', {
-      url: '/praise',
-      templateUrl: 'views/praise.html',
-      controller: 'praiseCtr'
-    })
     .state('note', {
       url: '/note',
       templateUrl: 'views/note.html',

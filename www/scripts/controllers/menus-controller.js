@@ -1,4 +1,4 @@
-app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'pubSubService', 'bookmarkService', 'dataService', function ($scope, $stateParams, $state, $window, $timeout, $document, pubSubService, bookmarkService, dataService) {
+app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'pubSubService', 'dataService', function ($scope, $stateParams, $state, $window, $timeout, $document, pubSubService, dataService) {
   console.log("Hello menuCtr")
   $scope.login = false; /**< 是否登陆 */
   $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
@@ -26,11 +26,18 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
   $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
-  get('own').then(user => {
+  get('own', { full: true }).then(user => {
     $scope.user = user;
-    if ($scope.user.username === 'lcq') {
-      $scope.loginMenus[dataService.LoginIndexHot].show = false;
-    }
+    $timeout(() => {
+      $scope.searchHistory = JSON.parse(user.searchHistory || '[]');
+      $scope.quickUrl = JSON.parse(user.quickUrl || '{}');
+      $scope.searchHistory.forEach((item, index) => {
+        $scope.searchIcon(item);
+      })
+      if ($scope.user.username === 'lcq') {
+        $scope.loginMenus[dataService.LoginIndexHot].show = false;
+      }
+    })
   });
 
   $scope.toggleReady = function (ready) {
@@ -178,14 +185,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     });
   }
 
-  $scope.logout = function () {
-    bookmarkService.logout({})
-      .then((data) => {
-        console.log('logout..........', data)
-        $scope.login = false;
-        $state.go('login', {})
-      })
-      .catch((err) => console.log('logout err', err));
+  $scope.logout = async function () {
+    await post('logout');
+    axios.defaults.headers.common['Authorization'] = "";
+    localStorage.setItem("authorization", "");
+    $scope.login = false;
+    $state.go('login', {});
   }
 
   $scope.star = function () {
@@ -218,8 +223,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $('.ui.menu a.item:eq(' + index + ')').addClass('selected');
   }
 
-  function saveHistory() {
-    var datas = [];
+  async function saveHistory() {
+    let datas = [];
     $scope.searchHistory = $scope.searchHistory.slice(0, 15); // 最多保留15个历史记录
     $scope.searchHistory.forEach((item, index) => {
       datas.push({
@@ -227,40 +232,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         d: item.d,
       })
     })
-
-    var parmes = {
-      searchHistory: JSON.stringify(datas),
-    };
-    bookmarkService.updateSearchHistory(parmes)
-      .then((data) => {
-        if (data.retCode == 0) {
-          // toastr.success('历史搜索更新成功', "提示");
-        } else {
-          toastr.error('历史搜索更新失败。错误信息：' + data.msg, "错误");
-        }
-      })
-      .catch((err) => {
-        toastr.error('历史搜索更新失败。错误信息：' + JSON.stringify(err), "错误");
-      });
+    await post("updateUser", { searchHistory: JSON.stringify(datas) });
   }
-
-  (async () => {
-    let user = await get('own', { full: true });
-    $scope.searchHistory = JSON.parse(user.search_history || '[]');
-    $scope.quickUrl = JSON.parse(user.quick_url || '{}');
-    $scope.searchHistory.forEach((item, index) => {
-      $scope.searchIcon(item)
-    })
-    $timeout(function () {
-      var showStyle = (user && user.show_style) || 'navigate';
-      if (showStyle) {
-        $('.js-bookmark-dropdown' + ' .radio.checkbox').checkbox('set unchecked');
-        $('.js-radio-' + showStyle).checkbox('set checked');
-        $('.js-bookmark-dropdown' + ' .field.item').removeClass('active selected');
-        $('.js-field-' + showStyle).addClass('active selected');
-      }
-    }, 1000)
-  })();
 
   $timeout(function () {
     $('.suggest')
@@ -273,13 +246,12 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   }, 1000)
 
   // 在输入文字的时候也会触发，所以不要用Ctrl,Shift之类的按键
-  $document.bind("keydown", function (event) {
-    $scope.$apply(function () {
+  $document.bind("keydown", async function (event) {
+    $scope.$apply(async function () {
       var key = event.key.toUpperCase();
       if (key == 'CONTROL' || key == 'SHIFT' || key == 'ALT') {
+        // 有时候没有检测到keyup，会一直按无效，干脆过个3秒就认为你抬起来了。反正你按下我还是会给你标记为true的。
         $scope.longPress = true;
-        // 有时候没有检测到keyup，会一直按无效，干脆过个3秒就认为你抬起来了
-        // 反正你按下我还是会给你标记为true的。
         $timeout(function () {
           $scope.longPress = false;
         }, 3000)
@@ -335,22 +307,11 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
           var url = $scope.quickUrl[key];
           if (url) {
             $window.open(url, '_blank');
-            var params = {
-              url: url,
+            let data = await post('shortcutBookmark', { url });
+            if (!data) {
+              toastr.info('网址：' + url + "还没添加到你的书签系统，请添加！", "警告");
+              pubSubService.publish('TagCtr.storeBookmark', { url });
             }
-            bookmarkService.jumpQuickUrl(params)
-              .then((data) => {
-                if (!data.id) {
-                  toastr.info('网址：' + url + "还没添加到你的书签系统，请添加！", "警告");
-                  var bookmark = {
-                    url: url
-                  }
-                  pubSubService.publish('TagCtr.storeBookmark', bookmark);
-                }
-              })
-              .catch((err) => {
-
-              });
           }
         }
       }

@@ -7,7 +7,6 @@
         <a class="item" ng-class="{active:form[2]}" ng-click="changeForm(2)">上传导出 </a>
         <a class="item" ng-class="{active:form[3]}" ng-click="changeForm(3)">网站说明 </a>
         <a class="item" ng-class="{active:form[4]}" ng-click="changeForm(4)">全局链接 </a>
-        <a class="item" ng-class="{active:form[5]}" ng-click="changeForm(5)">更新日志 </a>
         <a class="item" ng-class="{active:form[6]}" ng-click="changeForm(6)">请喝咖啡 </a>
       </div>
     </div>
@@ -29,42 +28,19 @@
           <input type="password" placeholder="" ng-model="passwordNew2" />
         </div>
         <button class="ui button" type="submit" ng-click="resetPassword()">重置密码</button>
-        <h4 class="ui horizontal divider header">
-          书签默认显示方式配置
-        </h4>
-        <div class="inline fields js-default-show-style" ng-show="!loadShowStyle">
-          <div class="field" ng-click="updateDefaultShowStyle('navigate')">
-            <div class="ui radio checkbox js-radio-default-navigate">
-              <input type="radio" name="default-show-style" checked="checked" />
-              <label>导航</label>
-            </div>
-          </div>
-          <div class="field" ng-click="updateDefaultShowStyle('table')">
-            <div class="ui radio checkbox js-radio-default-table">
-              <input type="radio" name="default-show-style" />
-              <label>表格</label>
-            </div>
-          </div>
-          <!-- <div class="field" ng-click="updateDefaultShowStyle('card')">
-                        <div class="ui radio checkbox js-radio-default-card">
-                            <input type="radio" name="default-show-style">
-                            <label>卡片</label>
-                        </div>
-                    </div> -->
-        </div>
       </form>
       <div class="ui four statistics" style="margin-top:30px;" ng-show="form[1]">
         <div class="statistic">
           <div class="text value">
-            {{user.created_at.substring(0, 4)}}<br />
-            {{user.created_at.substring(5, 10)}}
+            {{user.createdAt.substring(0, 4)}}<br />
+            {{user.createdAt.substring(5, 10)}}
           </div>
           <div class="label">注册时间</div>
         </div>
         <div class="statistic">
           <div class="text value">
-            {{user.last_login.substring(0, 4)}}<br />
-            {{user.last_login.substring(5, 10)}}
+            {{user.lastLogin.substring(0, 4)}}<br />
+            {{user.lastLogin.substring(5, 10)}}
           </div>
           <div class="label">最近登陆</div>
         </div>
@@ -78,34 +54,11 @@
         <div class="statistic">
           <div class="value">
             <i class="bookmark icon"></i>
-            {{ bookmarkCnt }}
+            {{ bookmarkCount }}
           </div>
           <div class="label">书签数目</div>
         </div>
       </div>
-      <table class="ui celled table" ng-if="form[1]" ng-show="user.activeUsers.length > 0">
-        <thead>
-          <tr>
-            <th colspan="4">
-              用户活跃度排名
-            </th>
-          </tr>
-          <tr>
-            <th>用户名</th>
-            <th>邮箱</th>
-            <th>注册时间</th>
-            <th>最后登陆</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="activeUser in user.activeUsers">
-            <td>{{ activeUser.username }}</td>
-            <td>{{ activeUser.email }}</td>
-            <td>{{ activeUser.created_at }}</td>
-            <td>{{ activeUser.last_login }}</td>
-          </tr>
-        </tbody>
-      </table>
       <form class="ui form" ng-show="form[2]">
         <h2 class="ui dividing header">上传浏览器书签到系统</h2>
         <div id="fileuploader" style="min-width:100px">点我上传</div>
@@ -197,20 +150,6 @@
             </tr>
           </tbody>
         </table>
-      </div>
-      <div class="ui container js-p-info" ng-show="form[5]">
-        <div class="ui message" ng-repeat="updateLog in updateLogs">
-          <div class="header">{{ updateLog.date }}</div>
-          <ul class="list" style="cursor: default;">
-            <li ng-repeat="log in updateLog.logs">
-              <span title="点击可查看代码变化" ng-click="jumpCommit(log.href)">{{log.commit}}</span>
-            </li>
-          </ul>
-        </div>
-        <div ng-show="loadingLogs"><img class="ui centered medium image" src="/images/loading.gif" /></div>
-        <button class="fluid ui button" ng-click="getUpdateLog(logsUrl)" ng-show="!loadingLogs">
-          更早日志
-        </button>
       </div>
       <div class="ui container js-p-info" ng-show="form[6]">
         <h3 class="ui dividing header">赞赏说明</h3>

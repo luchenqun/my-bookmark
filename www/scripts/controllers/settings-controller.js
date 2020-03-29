@@ -1,4 +1,4 @@
-app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $stateParams, $filter, $state, $window, $timeout, bookmarkService, pubSubService, dataService) {
+app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', '$timeout', 'pubSubService', 'dataService', function ($scope, $stateParams, $filter, $state, $window, $timeout, pubSubService, dataService) {
   console.log('Hello settingsCtr......', $stateParams);
   if (dataService.smallDevice()) {
     $window.location = "http://m.mybookmark.cn/#/tags";
@@ -12,153 +12,56 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
   $scope.passwordNew2 = "";
   $scope.user = {};
   $scope.tagCnt = 0;
-  $scope.bookmarkCnt = 0;
-  $scope.loadShowStyle = false;
+  $scope.bookmarkCount = 0;
   $scope.form[($stateParams && $stateParams.formIndex) || 0] = true;
   $scope.key = '';
   $scope.url = '';
   $scope.quickUrl = {};
-  $scope.updateLogs = [];
-  $scope.logsUrl = 'https://github.com/luchenqun/my-bookmark/commits/master';
-  $scope.loadingLogs = false;
 
-  $scope.getUpdateLog = function (url) {
-    if ($scope.updateLogs.length > 0 && url == 'https://github.com/luchenqun/my-bookmark/commits/master') {
-      toastr.warning('没有更早的日志可供您查看了！', "错误");
-      return;
-    }
-
-    $scope.loadingLogs = true;
-    bookmarkService.getUpdateLog({
-      url: url
-    })
-      .then((data) => {
-        Array.prototype.push.apply($scope.updateLogs, data.updateLogs);
-        $scope.logsUrl = data.oldUrl;
-        $scope.loadingLogs = false;
-      })
-      .catch((err) => {
-        toastr.error('获取更新日志失败。错误信息：' + JSON.stringify(err), "错误");
-        $scope.loadingLogs = false;
-      });
-  }
-
-  $scope.changeForm = function (index) {
+  $scope.changeForm = async function (index) {
     console.log("changeForm = ", index);
     $scope.form = $scope.form.map(() => false);
     $scope.form[index] = true;
-    $scope.updateLogs = [];
-
     if (index == 0 || index == 1 || index == 4) {
-      $scope.loadShowStyle = true;
-      bookmarkService.userInfo({})
-        .then((data) => {
-          $scope.user = data;
-          if (index == 0) {
-            updateShowStyle(($scope.user && $scope.user.show_style) || 'navigate');
-            $scope.loadShowStyle = false;
-          }
-          if (index == 4) {
-            function objKeySort(obj) {
-              var newkey = Object.keys(obj).sort();
-              var newObj = {};
-              for (var i = 0; i < newkey.length; i++) {
-                newObj[newkey[i]] = obj[newkey[i]];
-              }
-              return newObj;//返回排好序的新对象
-            }
-
-            $scope.quickUrl = objKeySort(JSON.parse($scope.user.quick_url || '{}'));
-
-          }
-        })
-        .catch((err) => {
-          dataService.netErrorHandle(err, $state)
-          $scope.loadShowStyle = false;
-        });
-    }
-
-    if (index == 1) {
-      bookmarkService.getTags({})
-        .then((data) => {
-          $scope.tagCnt = data.length;
-          $scope.bookmarkCnt = 0;
-          data.forEach((tag) => {
-            $scope.bookmarkCnt += tag.cnt;
-          })
-        })
-        .catch((err) => {
-          dataService.netErrorHandle(err, $state)
-        });
-    }
-
-    if (index == 5) {
-      $scope.logsUrl = 'https://github.com/luchenqun/my-bookmark/commits/master'
-      $scope.getUpdateLog($scope.logsUrl);
+      let user = await get('own', { full: true });
+      let tags = await get('tags', { bookmarkCount: true, noteCount: true });
+      $timeout(() => {
+        $scope.user = user
+        $scope.quickUrl = objKeySort(JSON.parse($scope.user.quickUrl || '{}'));
+        $scope.bookmarkCount = 0;
+        $scope.tagCnt = tags.length;
+        for (const tag of tags) {
+          $scope.bookmarkCount += tag.bookmarkCount;
+        }
+      })
     }
   }
 
   $scope.changeForm($scope.form.indexOf(true)); // 马上调用一次
 
-  $scope.resetPassword = function () {
+  $scope.resetPassword = async function () {
     if (!$scope.passwordOrgin || !$scope.passwordNew1 || !$scope.passwordNew2) {
       toastr.error('原密码跟新密码不能为空', "错误");
       return;
     }
 
     if ($scope.passwordNew1 == $scope.passwordNew2) {
-      var parmes = {
-        passwordNew: $scope.passwordNew1,
-        passwordOrgin: $scope.passwordOrgin,
-      };
+      await post('resetUserPwd', { old: $scope.passwordOrgin, password: $scope.passwordNew1 });
+      await post('logout');
 
-      bookmarkService.resetPassword(parmes)
-        .then((data) => {
-          if (data.retCode == 0) {
-            toastr.success('密码更新成功，请重新登陆！', "提示");
-            // 注销登陆
-            bookmarkService.logout({})
-              .then((data) => {
-                console.log('logout..........', data)
-                pubSubService.publish('Common.menuActive', {
-                  login: false,
-                  index: dataService.NotLoginIndexLogin
-                });
-                $state.go('login', {})
-              })
-              .catch((err) => console.log('logout err', err));
-          } else {
-            toastr.error('密码更新失败。错误信息：' + data.msg, "错误");
-          }
-        })
-        .catch((err) => {
-          toastr.error('密码更新失败。错误信息：' + JSON.stringify(err), "错误");
-        });
+      axios.defaults.headers.common['Authorization'] = "";
+      localStorage.setItem("authorization", "");
+      pubSubService.publish('Common.menuActive', {
+        login: false,
+        index: dataService.NotLoginIndexLogin
+      });
+      $state.go('login', {})
     } else {
       toastr.error('新密码两次输入不一致', "错误");
     }
   }
 
-  $scope.updateDefaultShowStyle = function (showStyle) {
-    console.log(showStyle)
-    var parmes = {
-      showStyle: showStyle,
-    };
-    bookmarkService.updateShowStyle(parmes)
-      .then((data) => {
-        if (data.retCode == 0) {
-          toastr.success('书签默认显示风格配置更新成功', "提示");
-        } else {
-          toastr.error('书签默认显示风格配置。错误信息：' + data.msg, "错误");
-        }
-      })
-      .catch((err) => {
-        toastr.error('书签默认显示风格配置。错误信息：' + JSON.stringify(err), "错误");
-      });
-  }
-
-
-  $scope.quickKey = function (key) {
+  $scope.quickKey = async function (key) {
     key = key.toUpperCase();
     console.log('key = ', key);
     if (!(key >= 'A' && key <= 'Z')) {
@@ -170,7 +73,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     });
   }
 
-  $scope.addQuickUrl = function () {
+  $scope.addQuickUrl = async function () {
     if ($scope.url == '' || $scope.key == '') {
       toastr.warning('快捷键或者网站地址为空！', "警告");
     }
@@ -208,33 +111,18 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.key = '';
   }
 
-  $scope.delUrl = function (key) {
+  $scope.delUrl = async function (key) {
     delete $scope.quickUrl[key];
     saveQuickUrl();
   }
 
-  $scope.jumpCommit = function (url) {
-    $window.open(url, '_blank');
-  }
-
-  $scope.exportBookmark = function () {
+  $scope.exportBookmark = async function () {
     var userId = $scope.user && $scope.user.id;
     if (userId) {
-      // toastr.warning('功能正在开发中，敬请期待......', '提示');
-      // return;
       $window.open("api/download?userId=" + userId + "&type=exportbookmark");
     } else {
       toastr.warning('用户信息无法获取到，请尝试按刷新网页再尝试！', '提示');
     }
-  }
-
-  function updateShowStyle(showStyle) {
-    setTimeout(function () {
-      if (showStyle) {
-        $('.js-default-show-style' + ' .radio.checkbox').checkbox('set unchecked');
-        $('.js-radio-default-' + showStyle).checkbox('set checked');
-      }
-    }, 100)
   }
 
   setTimeout(function () {
@@ -265,24 +153,18 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     index: dataService.LoginIndexSettings
   });
 
-  function saveQuickUrl() {
-    var parmes = {
-      quickUrl: JSON.stringify($scope.quickUrl),
-    };
-    bookmarkService.updateQuickUrl(parmes)
-      .then((data) => {
-        if (data.retCode == 0) {
-          toastr.success('全局快捷键更新成功', "提示");
-          pubSubService.publish('Settings.quickUrl', {
-            quickUrl: $scope.quickUrl
-          });
-        } else {
-          toastr.error('全局快捷键更新失败。错误信息：' + data.msg, "错误");
-        }
-      })
-      .catch((err) => {
-        toastr.error('全局快捷键更新失败。错误信息：' + JSON.stringify(err), "错误");
-      });
+  async function saveQuickUrl() {
+    await post("updateUser", { quickUrl: JSON.stringify($scope.quickUrl) });
+    toastr.success('全局快捷键更新成功', "提示");
+  }
+
+  function objKeySort(obj) {
+    var newkey = Object.keys(obj).sort();
+    var newObj = {};
+    for (var i = 0; i < newkey.length; i++) {
+      newObj[newkey[i]] = obj[newkey[i]];
+    }
+    return newObj;//返回排好序的新对象
   }
 
   dataService.transition('.js-segment-settings');

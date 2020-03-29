@@ -47,26 +47,59 @@ module.exports = class extends Base {
       let post = this.post();
       post.password = md5(post.password); // 进行密码加密
 
-      let data = await this.model('users').where({ username: post.username, password: post.password }).find();
-      if (think.isEmpty(data)) {
+      let user = await this.model('users').where({ username: post.username, password: post.password }).find();
+      if (think.isEmpty(user)) {
         this.json({ code: 2, msg: "账号或者密码错误" });
       } else {
-        delete data.password;
+        delete user.password;
         const token = await this.session('user', {
-          id: data.id,
-          username: data.username
+          id: user.id,
+          username: user.username
         });
-        data.token = token;
-        this.json({ code: 0, data, msg: "登陆成功" });
+        user.token = token;
+        this.json({ code: 0, data: user, msg: "登陆成功" });
       }
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });
     }
   }
 
+  // 登出
+  async logoutAction() {
+    await this.session(null);
+    this.json({ code: 0, data: '', msg: "退出成功" });
+  }
+
+  async updateUserAction() {
+    let user = this.post();
+    try {
+      let data = await this.model('users').where({ id: this.ctx.state.user.id }).update(user);
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  async resetUserPwdAction() {
+    let old = md5(this.post("old"));
+    let password = md5(this.post("password"));
+
+    try {
+      let user = await this.model('users').where({ id: this.ctx.state.user.id, password: old }).find();
+      if (!think.isEmpty(user)) {
+        let data = await this.model('users').where({ id: this.ctx.state.user.id }).update({ password });
+        this.json({ code: 0, data, msg: "密码更新成功!" });
+      } else {
+        this.json({ code: 0, data: 0, msg: "旧密码认证失败!" });
+      }
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
   // 通过session获取自己信息
   async ownAction() {
-    let full = this.get().full;
+    let full = this.get("full");
     if (full) {
       let data = await this.model('users').where({ id: this.ctx.state.user.id }).find();
       delete data.password;
@@ -105,6 +138,52 @@ module.exports = class extends Base {
     }
   }
 
+  // 更新分类
+  async updateTagAction() {
+    let tag = this.post();
+    try {
+      let data = await this.model('tags').where({
+        userId: this.ctx.state.user.id,
+        id: tag.id
+      }).update(tag);
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  // 批量更新排序
+  async updateTagSortAction() {
+    let tags = this.post("tags");
+    try {
+      let data = 0;
+      for (const tag of tags) {
+        let count = await this.model('tags').where({
+          userId: this.ctx.state.user.id,
+          id: tag.id
+        }).update(tag);
+        data += count;
+      }
+      this.json({ code: 0, data, msg: '分类排序更新成功！' });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  // 删除分类
+  async delTagAction() {
+    let id = this.post("id");
+    let tagId = id;
+    let userId = this.ctx.state.user.id;
+    try {
+      let data = await this.model("tags").where({ id, userId }).delete();
+      data = await this.model("bookmarks").where({ tagId, userId }).delete();
+      this.json({ code: 0, data, msg: `分类删除成功` });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
   // 获取书签
   // @todo 如果是自己的任意获取，如果是别人的必须公开才能获取
   async bookmarkAction() {
@@ -122,10 +201,36 @@ module.exports = class extends Base {
     let bookmark = this.post();
     bookmark.userId = this.ctx.state.user.id;
     try {
+      // 没有分类的直接放未分类里面
+      if (!bookmark.tagId) {
+        const name = "未分类";
+        let tag = await this.model("tags").where({ name }).find();
+        if (!think.isEmpty(tag)) {
+          bookmark.tagId = tag.id;
+        } else {
+          let tagId = await this.model("tags").add({
+            userId: this.ctx.state.user.id,
+            name
+          });
+          bookmark.tagId = tagId;
+        }
+      }
       let res = await this.model("bookmarks").add(bookmark);
       this.json({ code: 0, data: res, msg: `书签 ${bookmark.title} 添加成功` });
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });
+    }
+  }
+
+  // 删除书签
+  async delBookmarkAction() {
+    let bookmark = this.post();
+    bookmark.userId = this.ctx.state.user.id;
+    try {
+      let data = await this.model("bookmarks").where(bookmark).delete();
+      this.json({ code: 0, data, msg: `书签删除成功` });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
     }
   }
 
@@ -166,6 +271,32 @@ module.exports = class extends Base {
         lastClick: ['exp', 'NOW()']
       });
       this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  // 快速跳转到网页
+  async shortcutBookmarkAction() {
+    let url = this.post("url");
+    try {
+      let bookmark = await this.model('bookmarks').where({
+        userId: this.ctx.state.user.id,
+        url
+      }).find();
+
+      if (!think.isEmpty(bookmark)) {
+        await this.model('bookmarks').where({
+          userId: this.ctx.state.user.id,
+          id: bookmark.id
+        }).update({
+          clickCount: ['exp', 'clickCount+1'],
+          lastClick: ['exp', 'NOW()']
+        });
+        this.json({ code: 0, data: true });
+      } else {
+        this.json({ code: 0, data: false });
+      }
     } catch (error) {
       this.json({ code: 1, msg: error.toString() });
     }
@@ -281,6 +412,10 @@ module.exports = class extends Base {
   async notesAction() {
     let where = {};
     try {
+      let searchWord = this.get('searchWord');
+      if (searchWord) {
+        where.content = ['like', `%${searchWord}%`]
+      }
       let data = await this.model('notes').where(where).order("createdAt DESC").page(this.get('page'), this.get('pageSize')).countSelect();
       this.json({ code: 0, data });
     } catch (error) {

@@ -1,4 +1,4 @@
-app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialog', 'pubSubService', 'dataService', function ($scope, $state, $timeout, $document, ngDialog, pubSubService, dataService) {
   console.log("Hello editCtr");
   var maxSelections = 3;
   var dialog = null;
@@ -92,13 +92,14 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     console.log("add bookmark", params);
 
     if ($scope.add) {
-      await post('addBookmark', params);
+      let id = await post('addBookmark', params);
       $('.ui.modal.js-add-bookmark').modal('hide');
+      params.id = id;
       pubSubService.publish('EditCtr.inserBookmarsSuccess', params);
     } else {
       await post('updateBookmark', params);
       $('.ui.modal.js-add-bookmark').modal('hide');
-      pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
+      pubSubService.publish('EditCtr.inserBookmarsSuccess', params);
       toastr.success('[ ' + params.title + ' ] 更新成功，将自动重新更新书签！', "提示");
     }
   }

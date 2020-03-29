@@ -1,4 +1,4 @@
-app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $state, $window, $stateParams, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$stateParams', '$timeout', '$document', 'ngDialog', 'pubSubService', 'dataService', function ($scope, $filter, $state, $window, $stateParams, $timeout, $document, ngDialog, pubSubService, dataService) {
   console.log("Hello tagsCtr...", $stateParams);
   if (dataService.smallDevice()) {
     $window.location = "http://m.mybookmark.cn/#/tags";
@@ -119,33 +119,23 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     });
   }
 
-  $scope.confirmDelBookmark = function (bookmarkId) {
-    var params = {
-      id: bookmarkId
-    }
+  $scope.confirmDelBookmark = async function (id) {
     ngDialog.close(dialog);
-    bookmarkService.delBookmark(params)
-      .then((data) => {
-        $("#" + bookmarkId).transition({
-          animation: dataService.animation(),
-          duration: 500,
-          onComplete: function () {
-            $("#" + bookmarkId).remove();
-          }
-        });
-        // 更新分类里面含有书签的数量
-        $scope.tags.forEach((t1) => {
-          $scope.waitDelBookmark.tags.forEach((t2) => {
-            if (t1.id == t2.id) {
-              t1.bookmarkCount--;
-            }
-          })
-        })
-        toastr.success($scope.waitDelBookmark.title + ' 书签删除成功！', "提示");
-      })
-      .catch((err) => {
-        toastr.error($scope.waitDelBookmark.title + ' 书签删除失败！错误提示：' + JSON.stringify(err), "提示");
-      });
+    await post("delBookmark", { id })
+    $("#" + id).transition({
+      animation: dataService.animation(),
+      duration: 500,
+      onComplete: function () {
+        $("#" + id).remove();
+      }
+    });
+
+    // 更新分类里面含有书签的数量
+    $scope.tags.forEach((tag) => {
+      if (tag.id == $scope.waitDelBookmark.tagId) {
+        tag.bookmarkCount--;
+      }
+    })
   }
 
   $scope.editBookmark = function (id) {
@@ -193,49 +183,31 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     tag.edit = true;
   }
 
-  $scope.updateTagShow = function (tag, show) {
-    var params = {
-      id: tag.id,
-      show: show,
-    }
-    bookmarkService.updateTagShow(params)
-      .then((data) => {
-        if (data.retCode == 0) {
-          toastr.success(tag.name + ' 更新成功！', "提示");
-          tag.show = show;
-        } else {
-          toastr.error(tag.name + ' 更新失败！错误提示：' + data.msg, "提示");
-        }
-      })
-      .catch((err) => {
-        toastr.error(tag.name + ' 更新失败！错误提示：' + err, "提示");
-      });
+  $scope.updateTagShow = async function (tag, show) {
+    await post("updateTag", { id: tag.id, show });
+    toastr.success(tag.name + ' 更新成功！', "提示");
+    $timeout(() => {
+      tag.show = show;
+    });
   }
 
-  $scope.updateTag = function (tag) {
+  $scope.updateTag = async function (tag) {
     if (tag.name == tag.oldName) {
       toastr.warning('您没有编辑分类', "警告");
-      return;
-    }
-    tag.edit = false;
-    var params = {
-      id: tag.id,
-      name: tag.name,
-    }
+    } else {
+      tag.edit = false;
+      var params = {
+        id: tag.id,
+        name: tag.name,
+      }
 
-    bookmarkService.updateTagName(params)
-      .then((data) => {
-        if (data.retCode == 0) {
-          toastr.success(tag.name + ' 更新成功！', "提示");
-        } else {
-          toastr.error(tag.name + ' 更新失败！错误提示：' + data.msg, "提示");
-          $scope.backTag(tag);
-        }
-      })
-      .catch((err) => {
-        toastr.error(tag.name + ' 更新失败！错误提示：' + err, "提示");
+      try {
+        await post('updateTag', params);
+        toastr.success(tag.name + ' 更新成功！', "提示");
+      } catch (error) {
         $scope.backTag(tag);
-      });
+      }
+    }
   }
 
   $scope.delTag = function (tag) {
@@ -248,43 +220,31 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     });
   }
 
-  $scope.confirmDelTag = function (tagId, tagName) {
+  $scope.confirmDelTag = async function (id, tagName) {
     ngDialog.close(dialog);
-    var params = {
-      del: (tagName == '未分类' || tagName == "收藏") ? false : true,
-      id: tagId,
-    }
-    bookmarkService.delTag(params)
-      .then((data) => {
-        if (data.retCode == 0) {
-          toastr.success('[ ' + tagName + ' ]分类删除成功！', "提示");
-          var index = -1;
-          $scope.tags.forEach((tag, i) => {
-            if (tag.id == tagId) {
-              index = i;
+    if (tagName == '未分类' || tagName == "收藏") {
+      toastr.error('默认分类不允许删除', "提示");
+    } else {
+      await post("delTag", { id });
+
+      let index = 0;
+      for (const tag of $scope.tags) {
+        if (tag.id == id) {
+          $("#tag" + id).transition({
+            animation: dataService.animation(),
+            duration: 500,
+            onComplete: function () {
+              $("#tag" + id).remove();
+              $scope.tags.splice(index, 1);
             }
-          })
-          if (index !== -1 && tagName != '未分类' && tagName != "收藏") {
-            $("#tag" + tagId).transition({
-              animation: dataService.animation(),
-              duration: 500,
-              onComplete: function () {
-                $("#tag" + tagId).remove();
-                $scope.tags.splice(index, 1);
-              }
-            });
-          } else {
-            getTags();
-          }
-        } else {
-          toastr.error('[ ' + tagName + ' ]分类删除失败！' + data.msg, "提示");
-          getTags();
+          });
+          break;
         }
-      })
-      .catch((err) => {
-        toastr.error('分类删除失败！错误提示：' + JSON.stringify(err), "提示");
-        getTags();
-      });
+        index++;
+      }
+
+      getTags();
+    }
   }
 
   $scope.showAddTag = function () {
@@ -301,7 +261,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     }
   }
 
-  $scope.addTag = function (tag) {
+  $scope.addTag = async function (tag) {
     console.log(tag);
     if ($scope.tags.length >= 30) {
       toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
@@ -319,17 +279,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
     if (tag) {
       ngDialog.close(dialog);
-
-      var tags = [];
-      tags.push(tag);
-      bookmarkService.addTags(tags)
-        .then((data) => {
-          toastr.success('[ ' + tag + ' ]插入分类成功！将自动更新分类信息<br />注意：分类页面只有分类下面有书签才显示分类', "提示");
-          getTags();
-        })
-        .catch((err) => {
-          toastr.warning('[ ' + tag + ' ]插入分类失败：' + JSON.stringify(err), "提示");
-        });
+      await post("addTag", { name: tag })
     } else {
       toastr.warning('您可能没有输入分类或者输入的分类有误', "提示");
     }
@@ -345,41 +295,27 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     $scope.tags.forEach((tag, index) => {
       $scope.tagsIndex[index] = {
         id: tag.id,
-        index: index,
+        sort: index,
       }
     })
-    console.log('storeTagIndex');
   }
 
-  $scope.updateTagIndex = function () {
+  $scope.updateTagIndex = async function () {
     // 要开个timer，因为释放鼠标模型还没更新
-    setTimeout(function () {
-      var needUpdate = false;
-      for (var i = 0; i < $scope.tags.length; i++) {
-        if ($scope.tags[i].id != $scope.tagsIndex[i].id) {
+    setTimeout(async () => {
+      let needUpdate = false;
+      for (let index = 0; index < $scope.tags.length; index++) {
+        if ($scope.tags[index].id != $scope.tagsIndex[index].id) {
           needUpdate = true;
         }
-        $scope.tagsIndex[i] = {
-          id: $scope.tags[i].id,
-          index: i,
+        $scope.tagsIndex[index] = {
+          id: $scope.tags[index].id,
+          sort: index,
         }
       }
       if (needUpdate) {
-        bookmarkService.updateTagsIndex($scope.tagsIndex)
-          .then((data) => {
-            if (data.retCode == 0) {
-              toastr.success('分类排序更新成功！', "提示");
-            } else {
-              toastr.error('分类排序更新失败！', "提示");
-              getTags();
-            }
-          })
-          .catch((err) => {
-            toastr.error('分类排序更新失败！错误提示：' + JSON.stringify(err), "提示");
-            getTags();
-          });
+        await post('updateTagSort', { tags: $scope.tagsIndex });
       }
-      console.log('updateTagIndex needUpdate = ' + needUpdate)
     }, 300)
   }
 
@@ -454,18 +390,12 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         if (bookmark.id == data.id) {
           bookmark.title = data.title;
           bookmark.url = data.url;
-          bookmark.tags = data.tags;
           bookmark.description = data.description;
           find = true;
-          // if ($scope.order[bookmark.type - 1]) {
-          //   dataService.transition('#' + bookmark.id, {
-          //     duration: 1000,
-          //   });
-          // }
         }
       })
       if (!find) {
-        if (data.tags.map((tag) => tag.id).indexOf($scope.currentTagId) >= 0) {
+        if ($scope.tags.map((tag) => tag.id).indexOf($scope.currentTagId) >= 0) {
           if (!$scope.editMode) {
             $scope.getBookmarks(null, null, null);
           }

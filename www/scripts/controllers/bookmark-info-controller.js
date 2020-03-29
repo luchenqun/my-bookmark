@@ -1,4 +1,4 @@
-app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$window', '$filter', '$document', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $timeout, $sce, $window, $filter, $document, $timeout, bookmarkService, pubSubService, dataService) {
+app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$window', '$filter', '$document', '$timeout', 'pubSubService', 'dataService', function ($scope, $state, $timeout, $sce, $window, $filter, $document, $timeout, pubSubService, dataService) {
   console.log("Hello bookmarkInfoCtr");
   $scope.bookmark = {}
   $scope.content = '';

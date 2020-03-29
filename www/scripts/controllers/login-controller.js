@@ -1,4 +1,4 @@
-app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStore', '$window', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $filter, $state, $http, $cookieStore, $window, bookmarkService, pubSubService, dataService) {
+app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStore', '$window', 'pubSubService', 'dataService', function ($scope, $filter, $state, $http, $cookieStore, $window, pubSubService, dataService) {
   console.log("Hello loginCtr...", $cookieStore.get("username"));
   if (dataService.smallDevice()) {
     $window.location = "http://m.mybookmark.cn/#/tags";

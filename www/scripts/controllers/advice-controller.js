@@ -1,4 +1,4 @@
-app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $timeout, bookmarkService, pubSubService, dataService) {
+app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'pubSubService', 'dataService', function ($scope, $state, $timeout, pubSubService, dataService) {
   console.log("Hello adviceCtr");
   if (dataService.smallDevice()) {
     $window.location = "http://m.mybookmark.cn/#/tags";

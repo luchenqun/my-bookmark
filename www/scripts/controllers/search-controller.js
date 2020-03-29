@@ -22,28 +22,27 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   $scope.bookmarkCount = 0;
   $scope.tags = []
   $scope.totalPages = 0;
-  $scope.currentPage = 1;
+  $scope.page = 1;
   $scope.inputPage = '';
   $scope.loading = false;
   $scope.waitDelBookmark = {};
   $scope.searchHotBookmarks = false;
   var timeagoInstance = timeago();
 
-  $scope.changeCurrentPage = function (currentPage) {
-    currentPage = parseInt(currentPage) || 0;
-    console.log(currentPage);
-    if (currentPage <= $scope.totalPages && currentPage >= 1) {
-      $scope.currentPage = currentPage;
+  $scope.changeCurrentPage = async function (page) {
+    page = parseInt(page) || 0;
+    console.log(page);
+    if (page <= $scope.totalPages && page >= 1) {
+      $scope.page = page;
       $scope.inputPage = '';
       $scope.search();
     }
   }
 
-  bookmarkService.getTags({})
-    .then((data) => {
-      $scope.tags = data;
-    })
-    .catch((err) => console.log('getTags err', err));
+  get('tags').then((tags) => {
+    $scope.tags = tags;
+  })
+
   // 默认登陆
   pubSubService.publish('Common.menuActive', {
     login: true,
@@ -52,7 +51,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
   var searchParams = {
     searchWord: $scope.searchWord,
-    currentPage: 1,
+    page: 1,
     perPageItems: perPageItems,
     userRange: '1', // 默认搜索自己的书签
   }
@@ -80,7 +79,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
   }
 
-  $scope.delBookmark = function (bookmark) {
+  $scope.delBookmark = async function (bookmark) {
     $scope.waitDelBookmark = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
     dialog = ngDialog.open({
       template: './views/dialog-del-bookmark.html',
@@ -89,67 +88,41 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     });
   }
 
-  $scope.confirmDelBookmark = function (bookmarkId) {
-    var params = {
-      id: bookmarkId
-    }
-    ngDialog.close(dialog);
-    bookmarkService.delBookmark(params)
-      .then((data) => {
-        $("#" + bookmarkId).transition({
-          animation: dataService.animation(),
-          duration: 500,
-          onComplete: function () {
-            $("#" + bookmarkId).remove();
-          }
-        });
-        toastr.success($scope.waitDelBookmark.title + ' 书签删除成功！', "提示");
-      })
-      .catch((err) => {
-        toastr.error($scope.waitDelBookmark.title + ' 书签删除失败！错误提示：' + JSON.stringify(err), "提示");
-      });
+  $scope.confirmDelBookmark = async function (id) {
+    await post("delBookmark", { id })
+    $("#" + id).transition({
+      animation: dataService.animation(),
+      duration: 500,
+      onComplete: function () {
+        $("#" + id).remove();
+      }
+    });
   }
 
-  $scope.editBookmark = function (id) {
+  $scope.editBookmark = async function (id) {
     pubSubService.publish('bookmarksCtr.editBookmark', { id });
   }
 
-  $scope.detailBookmark = function (bookmark) {
+  $scope.detailBookmark = async function (bookmark) {
     pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
   }
 
-  $scope.storeBookmark = function (bookmark) {
+  $scope.storeBookmark = async function (bookmark) {
     var b = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
     pubSubService.publish('TagCtr.storeBookmark', b);
   }
 
-  $scope.favoriteBookmark = function (b) {
-    var bookmark = {}
-    bookmark.description = '';
-    bookmark.title = b.title;
-    bookmark.url = b.url;
-    bookmark.public = 1;
-    bookmark.click_count = 1;
-
-    bookmarkService.favoriteBookmark(bookmark)
-      .then((data) => {
-        pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
-        if (data.title) {
-          toastr.success('[ ' + data.title + ' ] 收藏成功！', "提示");
-        } else {
-          toastr.error('[ ' + bookmark.title + ' ] 收藏失败！', "提示");
-        }
-      })
-      .catch((err) => {
-        toastr.error('[ ' + bookmark.title + ' ] 收藏失败，' + JSON.stringify(err), "提示");
-      });
+  $scope.favoriteBookmark = async function (bookmark) {
+    let id = await post("addBookmark", bookmark);
+    let bookmark = await get("bookmark", { id });
+    pubSubService.publish('EditCtr.inserBookmarsSuccess', bookmark);
   }
 
-  $scope.copy = function (url) {
+  $scope.copy = async function (url) {
     dataService.clipboard(url);
   }
 
-  $scope.search = function (page) {
+  $scope.search = async function (page) {
     var params = {}
     params.userRange = $('.js-user-range').dropdown('get value');
     if (params.userRange == '1') {
@@ -185,14 +158,14 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
       params.dateClickBegin = $scope.dateClickBegin;
       params.dateClickEnd = $scope.dateClickEnd;
     }
-    params.currentPage = page ? page : $scope.currentPage;
+    params.page = page ? page : $scope.page;
     params.perPageItems = perPageItems;
 
-    $scope.currentPage = params.currentPage;
+    $scope.page = params.page;
     searchBookmarks(params)
     console.log('search..', page, 'params = ', params)
   }
-  $scope.updateCreateDate = function () {
+  $scope.updateCreateDate = async function () {
     console.log($scope.dateCreateBegin, $scope.dateCreateEnd);
     if ($scope.dateCreateBegin && $scope.dateCreateEnd) {
       $('.js-create-date').dropdown('hide');
@@ -201,7 +174,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
   }
 
-  $scope.updateClickDate = function () {
+  $scope.updateClickDate = async function () {
     console.log($scope.dateClickBegin, $scope.dateClickEnd);
     if ($scope.dateClickBegin && $scope.dateClickEnd) {
       $('.js-click-date').dropdown('hide');
@@ -210,13 +183,13 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
   }
 
-  $scope.updateTagsSelect = function () {
+  $scope.updateTagsSelect = async function () {
     $('.ui.dropdown.js-search-tags .text').removeClass('default');
     var text = $('.ui.dropdown.js-search-tags .text').text().replace('selected', '个已选');
     $('.ui.dropdown.js-search-tags .text').text(text);
   }
 
-  $scope.setHoverBookmark = function (bookmark) {
+  $scope.setHoverBookmark = async function (bookmark) {
     $scope.hoverBookmark = bookmark;
   }
 

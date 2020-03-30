@@ -235,11 +235,10 @@ module.exports = class extends Base {
   }
 
   // 根据书签id获取书签
-  async getBookmarksByTagAction() {
+  async bookmarksByTagAction() {
     let tagId = this.get("tagId");
     let showType = this.get("showType") || "createdAt";
     // tagId = -1 个人定制 从自己里面取
-    // tagId = -2 全局定制 从非个人里面取
     let where = {};
     let order = showType + ' DESC';
 
@@ -253,6 +252,28 @@ module.exports = class extends Base {
 
     try {
       let data = await this.model('bookmarks').where(where).order(order).page(this.get('page'), this.get('pageSize')).countSelect();
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
+  async bookmarksSearchAction() {
+    let condition = {};
+    let keyword = this.get("keyword");
+    let username = this.get("username");
+    if (username) {
+
+    } else {
+      condition.userId = this.ctx.state.user.id;
+    }
+
+    if (keyword) {
+      condition.url = ['like', `%${keyword}%`];
+    }
+
+    try {
+      let data = await this.model('bookmarks').where(condition).page(this.get('page') || 1, this.get('pageSize') || 50).countSelect();
       this.json({ code: 0, data });
     } catch (error) {
       this.json({ code: 1, msg: error.toString() });
@@ -412,9 +433,9 @@ module.exports = class extends Base {
   async notesAction() {
     let where = {};
     try {
-      let searchWord = this.get('searchWord');
-      if (searchWord) {
-        where.content = ['like', `%${searchWord}%`]
+      let keyword = this.get('keyword');
+      if (keyword) {
+        where.content = ['like', `%${keyword}%`]
       }
       let data = await this.model('notes').where(where).order("createdAt DESC").page(this.get('page'), this.get('pageSize')).countSelect();
       this.json({ code: 0, data });

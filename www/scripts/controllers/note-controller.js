@@ -20,7 +20,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
   $scope.totalPages = 0;
   $scope.currentPage = 1;
   $scope.inputPage = '';
-  $scope.searchWord = $stateParams.searchWord
+  $scope.keyword = $stateParams.keyword
   $scope.key = $stateParams.key
   $scope.totalItems = 0;
 
@@ -119,7 +119,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $scope.content = '';
     $scope.currentTagId = null;
     $scope.currentPage = 1;
-    $scope.searchWord = '';
+    $scope.keyword = '';
     getNotes();
   }
 
@@ -316,7 +316,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     var params = {
       page: $scope.currentPage,
       pageSize: perPageItems,
-      searchWord: $scope.searchWord,
+      keyword: $scope.keyword,
       tagId: tagId || $scope.currentTagId
     };
 

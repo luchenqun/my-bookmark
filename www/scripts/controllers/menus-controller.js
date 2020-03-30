@@ -3,7 +3,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.login = false; /**< 是否登陆 */
   $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
   $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
-  $scope.searchWord = ''; /**< 搜索关键字 */
+  $scope.keyword = ''; /**< 搜索关键字 */
   $scope.showStyle = null;
   $scope.searchHistory = [];
   $scope.historyTypes = dataService.historyTypes;
@@ -70,9 +70,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
    * @func
    * @desc 点击搜索按钮搜索书签
    */
-  $scope.search = function (searchWord, searchOption) {
-    console.log('search......', searchWord);
-    if (!searchWord) {
+  $scope.search = function (keyword, searchOption) {
+    console.log('search......', keyword);
+    if (!keyword) {
       toastr.error('请输入搜索关键字', "错误");
       return;
     }
@@ -81,42 +81,42 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     // var searchOption = $('.js-search-option').dropdown('get value') || 0;
     if (searchOption == 0) {
       $state.go('search', {
-        searchWord: searchWord,
+        keyword: keyword,
       }, {
         reload: true,
       })
       updateMenuActive($scope.selectLoginIndex = 0);
     } else if (searchOption == 1) {
-      $window.open('https://www.google.com.hk/#newwindow=1&safe=strict&q=' + encodeURIComponent(searchWord), '_blank');
+      $window.open('https://www.google.com.hk/#newwindow=1&safe=strict&q=' + encodeURIComponent(keyword), '_blank');
     } else if (searchOption == 2) {
-      $window.open('https://github.com/search?utf8=%E2%9C%93&q=' + encodeURIComponent(searchWord) + '&type=', '_blank');
+      $window.open('https://github.com/search?utf8=%E2%9C%93&q=' + encodeURIComponent(keyword) + '&type=', '_blank');
     } else if (searchOption == 3) {
-      $window.open('https://stackoverflow.com/search?q=' + encodeURIComponent(searchWord), '_blank');
+      $window.open('https://stackoverflow.com/search?q=' + encodeURIComponent(keyword), '_blank');
     } else if (searchOption == 4) {
-      $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(searchWord), '_blank');
+      $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(keyword), '_blank');
     } else if (searchOption == 5) {
-      console.log('search note, word = ', searchWord);
+      console.log('search note, word = ', keyword);
       $state.go('note', {
-        searchWord: searchWord,
+        keyword: keyword,
       }, {
         reload: true,
       })
       updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
     }
 
-    if (!searchWord) {
+    if (!keyword) {
       return;
     }
 
     var newItem = {
       t: searchOption,
-      d: searchWord,
+      d: keyword,
     }
     $scope.searchIcon(newItem)
     var delIndex = -1;
     $scope.searchHistory.unshift(newItem);
     $scope.searchHistory.forEach((item, index) => {
-      if (index >= 1 && item.t == searchOption && item.d == searchWord) {
+      if (index >= 1 && item.t == searchOption && item.d == keyword) {
         delIndex = index;
       }
     })
@@ -125,7 +125,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     }
 
     // 大于30的不保存到数据库
-    if (searchWord.length <= 30) {
+    if (keyword.length <= 30) {
       saveHistory();
     }
   }
@@ -133,8 +133,8 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.searchByHistory = function (type, data, $event) {
     console.log("searchByHistory", type, data);
     $event && $event.stopPropagation();
-    $scope.searchWord = data;
-    $('.search-item').val($scope.searchWord);
+    $scope.keyword = data;
+    $('.search-item').val($scope.keyword);
 
     $('.js-search-option').dropdown('set value', type);
     var types = $scope.historyTypes;

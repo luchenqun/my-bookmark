@@ -57,7 +57,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       showType: $scope.showType
     };
 
-    let reply = await get('getBookmarksByTag', params);
+    let reply = await get('bookmarksByTag', params);
     $scope.bookmarks = reply.data;
     $scope.totalPages = reply.totalPages;
     $scope.inputPage = '';

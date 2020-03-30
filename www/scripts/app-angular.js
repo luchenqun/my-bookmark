@@ -72,7 +72,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
       url: '/note',
       templateUrl: 'views/note.html',
       params: {
-        searchWord: null,
+        keyword: null,
         key: null,
       },
       controller: 'noteCtr'
@@ -81,7 +81,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
       url: '/search',
       templateUrl: 'views/search.html',
       params: {
-        searchWord: null,
+        keyword: null,
       },
       controller: 'searchCtr'
     })

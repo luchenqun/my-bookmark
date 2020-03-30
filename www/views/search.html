@@ -143,19 +143,19 @@
       <td>
         <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor:default;">{{ bookmark.url }}</span>
       </td>
-      <td>{{ bookmark.click_count || bookmark.fav_count }}</td>
+      <td>{{ bookmark.clickCount || bookmark.favCount }}</td>
       <td>
-        <span title="{{bookmark.created_at}}" class="need_to_be_rendered" data-timeago="{{bookmark.created_at}}"></span>
+        <span title="{{bookmark.createdAt}}" class="need_to_be_rendered" data-timeago="{{bookmark.createdAt}}"></span>
       </td>
       <td>
-        <span id="time{{bookmark.id}}" title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
+        <span id="time{{bookmark.id}}" title="{{bookmark.lastClick}}" class="need_to_be_rendered" data-timeago="{{bookmark.lastClick}}"></span>
       </td>
       <td>
         <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-if="!searchHotBookmarks">
           {{ tag.name }}
         </div>
         <span ng-if="searchHotBookmarks">
-          {{ bookmark.created_by }}
+          {{ bookmark.createdBy }}
         </span>
       </td>
       <td>

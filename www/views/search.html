@@ -14,9 +14,9 @@
       <div class="text">搜索范围</div>
       <i class="dropdown icon"></i>
       <div class="menu">
-        <div class="active item" data-value="1">自己书签</div>
-        <div class="item" data-value="2">全站书签</div>
-        <div class="item" data-value="3">热门收藏</div>
+        <div class="active item" data-value="self">自己书签</div>
+        <div class="item" data-value="other">全站书签</div>
+        <div class="item" data-value="hot">热门收藏</div>
       </div>
     </div>
   </div>
@@ -25,8 +25,8 @@
       <div class="text">创建时间不限</div>
       <i class="dropdown icon"></i>
       <div class="menu">
-        <div class="active item" data-value="-1">创建时间不限</div>
-        <div class="item" data-value="0">今天</div>
+        <div class="active item" data-value="36500">创建时间不限</div>
+        <div class="item" data-value="1">今天</div>
         <div class="item" data-value="7">一周内</div>
         <div class="item" data-value="31">一月内</div>
         <div class="item" data-value="365">一年内</div>
@@ -59,8 +59,8 @@
       <div class="text">点击时间不限</div>
       <i class="dropdown icon"></i>
       <div class="menu">
-        <div class="active item" data-value="-1">点击时间不限</div>
-        <div class="item" data-value="0">今天</div>
+        <div class="active item" data-value="36500">点击时间不限</div>
+        <div class="item" data-value="1">今天</div>
         <div class="item" data-value="7">一周内</div>
         <div class="item" data-value="31">一月内</div>
         <div class="item" data-value="365">一年内</div>
@@ -89,9 +89,6 @@
     </div>
   </div>
   <div class="two wide column" ng-show="showSearch">
-    <div class="ui transparent icon input" ng-show="(!showTags) && (!searchHotBookmarks)">
-      <input class="prompt" type="text" placeholder="用户账号" ng-model="username" ng-keypress="($event.which === 13)?search(1):0" />
-    </div>
     <div class="ui grid container" style="padding-top: 8px;">
       <div class="ui multiple dropdown js-search-tags" style="padding:0;" ng-show="showTags" js-dropdown-tags-init>
         <div class="default text">分类选择</div>
@@ -104,7 +101,7 @@
   </div>
   <div class="two wide column" ng-show="showSearch">
     <div class="ui transparent input">
-      <input type="text" placeholder="标题，链接..." ng-model="searchWord" ng-keypress="($event.which === 13)?search(1):0" />
+      <input type="text" placeholder="标题，链接..." ng-model="keyword" ng-keypress="($event.which === 13)?search():0" />
     </div>
   </div>
   <div class=" left floated right aligned two wide column" ng-show=" showSearch">
@@ -151,8 +148,8 @@
         <span id="time{{bookmark.id}}" title="{{bookmark.lastClick}}" class="need_to_be_rendered" data-timeago="{{bookmark.lastClick}}"></span>
       </td>
       <td>
-        <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-if="!searchHotBookmarks">
-          {{ tag.name }}
+        <div class="ui label" tag-id="{{ tag.id }}" ng-if="!searchHotBookmarks">
+          {{ bookmark.tagName }}
         </div>
         <span ng-if="searchHotBookmarks">
           {{ bookmark.createdBy }}

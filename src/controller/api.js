@@ -261,19 +261,48 @@ module.exports = class extends Base {
   async bookmarksSearchAction() {
     let condition = {};
     let keyword = this.get("keyword");
-    let username = this.get("username");
-    if (username) {
+    let tagIds = this.get("tagIds") || [];
+    let range = this.get("range") || "self"; // self hot other
+    let createdAt = this.get("createdAt");
+    let lastClick = this.get("lastClick");
+    let tableName = "bookmarks";
 
-    } else {
+    if (range == "self") {
       condition.userId = this.ctx.state.user.id;
+    } else if (range == "hot") {
+      tableName = "hot_bookmarks";
+    } else if (range == "other") {
+      condition.userId = ['!=', this.ctx.state.user.id];
     }
-
     if (keyword) {
-      condition.url = ['like', `%${keyword}%`];
+      condition._complex = {
+        url: ['like', `%${keyword}%`],
+        title: ['like', `%${keyword}%`],
+        _logic: 'or'
+      }
+    }
+    if (tagIds.length > 0) {
+      condition.tagId = ['IN', tagIds];
+    }
+    if (createdAt) {
+      condition.createdAt = ['between', createdAt];
+    }
+    if (lastClick) {
+      condition.lastClick = ['between', lastClick];
     }
 
     try {
-      let data = await this.model('bookmarks').where(condition).page(this.get('page') || 1, this.get('pageSize') || 50).countSelect();
+      let data = await this.model(tableName).where(condition).page(this.get('page') || 1, this.get('pageSize') || 20).countSelect();
+      if (tableName == "bookmarks") {
+        let ids = [];
+        for (let bookmark of data.data) {
+          ids.push(bookmark.tagId);
+        }
+        let tags = await this.model('tags').where({ id: ['IN', ids] }).select();
+        for (let bookmark of data.data) {
+          bookmark.tagName = (tags.find((tag) => tag.id == bookmark.tagId) || { name: "未知分类" }).name;
+        }
+      }
       this.json({ code: 0, data });
     } catch (error) {
       this.json({ code: 1, msg: error.toString() });

@@ -55,7 +55,7 @@ app.directive('jsDataCreateInit', function ($compile) {
         startCalendar: $('.ui.calendar.js-date-create-begin')
       });
 
-      $('.js-create-date').dropdown('set value', -1);
+      $('.js-create-date').dropdown('set value', '36500');
     },
   };
 });
@@ -84,7 +84,7 @@ app.directive('jsDataClickInit', function ($compile) {
         },
         startCalendar: $('.ui.calendar.js-date-click-begin')
       });
-      $('.js-click-date').dropdown('set value', -1);
+      $('.js-click-date').dropdown('set value', '36500');
     },
   };
 });
@@ -96,14 +96,14 @@ app.directive('jsDropdownUserRangeInit', function ($compile, $timeout) {
       $('.ui.dropdown.js-user-range').dropdown({
         onChange: function (value, text, $choice) {
           $timeout(function () {
-            $scope.showTags = (value == '1');
-            $scope.searchHotBookmarks = (value == '3');
+            $scope.showTags = (value == 'self');
+            $scope.searchHotBookmarks = (value == 'hot');
             $scope.bookmarks = [];
             $scope.totalPages = 0
           })
         },
       });
-      $('.js-user-range').dropdown('set value', '1');
+      $('.js-user-range').dropdown('set value', 'self');
     },
   };
 });

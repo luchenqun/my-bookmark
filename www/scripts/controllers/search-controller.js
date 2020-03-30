@@ -1,11 +1,11 @@
-app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'pubSubService', 'dataService', function ($scope, $state, $stateParams, $filter, $window, $timeout, $document, ngDialog, pubSubService, dataService) {
   console.log("Hello searchCtr...", $stateParams);
   if (dataService.smallDevice()) {
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
 
-  const perPageItems = 20;
+  const pageSize = 20;
   var dialog = null;
   $scope.hoverBookmark = null;
   $scope.searchBookmarks = []; // 书签数据
@@ -16,13 +16,11 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   $scope.dateCreateEnd = '';
   $scope.dateClickBegin = '';
   $scope.dateClickEnd = '';
-  $scope.clickCount = '';
-  $scope.username = '';
-  $scope.userRange = '';
+  $scope.range = 'self';
   $scope.bookmarkCount = 0;
   $scope.tags = []
   $scope.totalPages = 0;
-  $scope.page = 1;
+  $scope.currentPage = 1;
   $scope.inputPage = '';
   $scope.loading = false;
   $scope.waitDelBookmark = {};
@@ -31,9 +29,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
   $scope.changeCurrentPage = async function (page) {
     page = parseInt(page) || 0;
-    console.log(page);
     if (page <= $scope.totalPages && page >= 1) {
-      $scope.page = page;
+      $scope.currentPage = page;
       $scope.inputPage = '';
       $scope.search();
     }
@@ -49,26 +46,14 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     index: dataService.LoginIndexBookmarks
   });
 
-  var searchParams = {
-    keyword: $scope.keyword,
-    page: 1,
-    perPageItems: perPageItems,
-    userRange: '1', // 默认搜索自己的书签
-  }
-  if ($scope.keyword) {
-    searchBookmarks(searchParams);
-  } else {
-    toastr.warning("请输入搜索关键字再进行查询！", "提示");
-  }
-
   $scope.jumpToUrl = async function (url, id) {
     if (!$scope.edit) {
       $window.open(url);
       await post("clickBookmark", { id });
 
       $scope.searchBookmarks.forEach(function (bookmark) {
-        if (bookmark.id == id && bookmark.own) {
-          bookmark.click_count += 1;
+        if (bookmark.id == id) {
+          bookmark.clickCount += 1;
           bookmark.lastClick = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
         }
       })
@@ -122,49 +107,53 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     dataService.clipboard(url);
   }
 
-  $scope.search = async function (page) {
-    var params = {}
-    params.userRange = $('.js-user-range').dropdown('get value');
-    if (params.userRange == '1') {
-      var tags = $('.js-search-tags').dropdown('get value')
-      if (tags) {
-        params.tags = tags;
+  $scope.search = async function () {
+    let params = {};
+
+    params.range = $('.js-user-range').dropdown('get value');
+
+    if (params.range == 'self') {
+      let tagIds = $('.js-search-tags').dropdown('get value');
+      if (tagIds) {
+        params.tagIds = tagIds;
       }
-    } else if ($scope.username) {
-      params.username = $scope.username
     }
+
     if ($scope.keyword) {
       params.keyword = $scope.keyword;
     }
 
-    var dateCreate = $('.js-create-date').dropdown('get value') || undefined;
-    console.log('dateCreate = ', dateCreate)
-    if (dateCreate) {
-      if (dateCreate != -1) {
-        params.dateCreate = dateCreate;
-      }
-    } else {
-      params.dateCreateBegin = $scope.dateCreateBegin;
-      params.dateCreateEnd = $scope.dateCreateEnd;
+    let createdAt = parseInt($('.js-create-date').dropdown('get value') || 0);
+    console.log('dateCreate = ', createdAt)
+    if (createdAt > 0) {
+      params.createdAt = dayjs(Date.now() - createdAt * 24 * 60 * 60 * 1000).format('YYYY-MM-DD HH:mm:ss') + "," + dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+    } else if ($scope.dateCreateBegin && $scope.dateCreateEnd) {
+      params.createdAt = dayjs($scope.dateCreateBegin).format('YYYY-MM-DD HH:mm:ss') + "," + dayjs($scope.dateCreateEnd).format('YYYY-MM-DD HH:mm:ss');
     }
 
-    var dateClick = $('.js-click-date').dropdown('get value') || undefined;
-    console.log('dateClick = ', dateClick)
-    if (dateClick) {
-      if (dateClick != -1) {
-        params.dateClick = dateClick
-      }
-    } else {
-      params.dateClickBegin = $scope.dateClickBegin;
-      params.dateClickEnd = $scope.dateClickEnd;
+    let lastClick = parseInt($('.js-click-date').dropdown('get value') || 0);
+    console.log('lastClick = ', lastClick)
+    if (lastClick > 0) {
+      params.lastClick = dayjs(Date.now() - lastClick * 24 * 60 * 60 * 1000).format('YYYY-MM-DD HH:mm:ss') + "," + dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+    } else if ($scope.dateClickBegin && $scope.dateClickEnd) {
+      params.lastClick = dayjs($scope.dateClickBegin).format('YYYY-MM-DD HH:mm:ss') + "," + dayjs($scope.dateClickEnd).format('YYYY-MM-DD HH:mm:ss');
     }
-    params.page = page ? page : $scope.page;
-    params.perPageItems = perPageItems;
 
-    $scope.page = params.page;
-    searchBookmarks(params)
-    console.log('search..', page, 'params = ', params)
+    params.page = $scope.currentPage || 1;
+    params.pageSize = pageSize;
+    console.log('params = ', params)
+
+    let reply = await get('bookmarksSearch', params);
+
+    $timeout(() => {
+      $scope.searchBookmarks = reply.data;
+      $scope.totalPages = reply.totalPages;
+      $scope.bookmarkCount = reply.count;
+      $scope.loading = false;
+    })
+    transition();
   }
+
   $scope.updateCreateDate = async function () {
     console.log($scope.dateCreateBegin, $scope.dateCreateEnd);
     if ($scope.dateCreateBegin && $scope.dateCreateEnd) {
@@ -225,40 +214,32 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   });
 
   async function searchBookmarks(params) {
+    console.log(params);
+
     $scope.loading = true;
     $('.js-table-search').transition('hide');
-    if ($scope.searchHotBookmarks) {
-      console.log(params);
-      bookmarkService.searchHotBookmarks(params)
-        .then((data) => {
-          $scope.searchBookmarks = [];
-          data.bookmarks.forEach((bookmark) => {
-            bookmark.tags = [{
-              id: -1,
-              name: bookmark.created_by, // 给转存用
-            }]
-            bookmark.createdAt = $filter('date')(new Date(bookmark.createdAt), "yyyy-MM-dd HH:mm:ss");
-            bookmark.lastClick = $filter('date')(new Date(bookmark.lastClick), "yyyy-MM-dd HH:mm:ss");
-            $scope.searchBookmarks.push(bookmark);
-          })
-          $scope.bookmarkCount = data.totalItems;
-          $scope.totalPages = Math.ceil($scope.bookmarkCount / perPageItems);
-          $scope.loading = false;
-          transition();
-        })
-        .catch((err) => {
-          console.log('searchHotBookmarks err', err);
-          $scope.loading = false;
-        });
-    } else {
-      console.log(params);
-      let reply = await get('bookmarksSearch', params);
-      $scope.searchBookmarks = reply.data;
-      $scope.totalPages = reply.totalPages;
-      $scope.bookmarkCount = reply.count;
-      $scope.loading = false;
-      transition();
-    }
+
+    // bookmarkService.searchHotBookmarks(params)
+    //   .then((data) => {
+    //     $scope.searchBookmarks = [];
+    //     data.bookmarks.forEach((bookmark) => {
+    //       bookmark.tags = [{
+    //         id: -1,
+    //         name: bookmark.created_by, // 给转存用
+    //       }]
+    //       bookmark.createdAt = $filter('date')(new Date(bookmark.createdAt), "yyyy-MM-dd HH:mm:ss");
+    //       bookmark.lastClick = $filter('date')(new Date(bookmark.lastClick), "yyyy-MM-dd HH:mm:ss");
+    //       $scope.searchBookmarks.push(bookmark);
+    //     })
+    //     $scope.bookmarkCount = data.totalItems;
+    //     $scope.totalPages = Math.ceil($scope.bookmarkCount / pageSize);
+    //     $scope.loading = false;
+    //     transition();
+    //   })
+    //   .catch((err) => {
+    //     console.log('searchHotBookmarks err', err);
+    //     $scope.loading = false;
+    //   });
   }
 
   function transition() {
@@ -273,5 +254,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
       duration: 500,
     });
   }
+
+  $scope.search();
 
 }]);

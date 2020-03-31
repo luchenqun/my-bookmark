@@ -215,8 +215,8 @@ module.exports = class extends Base {
           bookmark.tagId = tagId;
         }
       }
-      let res = await this.model("bookmarks").add(bookmark);
-      this.json({ code: 0, data: res, msg: `书签 ${bookmark.title} 添加成功` });
+      let data = await this.model("bookmarks").add(bookmark);
+      this.json({ code: 0, data, msg: `书签 ${bookmark.title} 添加成功` });
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });
     }

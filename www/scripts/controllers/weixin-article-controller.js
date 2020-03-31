@@ -1,4 +1,4 @@
-app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', '$filter', '$window', '$timeout', '$document', 'ngDialog', 'bookmarkService', 'pubSubService', 'dataService', function ($scope, $state, $sce, $stateParams, $filter, $window, $timeout, $document, ngDialog, bookmarkService, pubSubService, dataService) {
+app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$window', '$timeout', '$document', 'pubSubService', 'dataService', function ($scope, $state, $sce, $filter, $window, $timeout, $document, pubSubService, dataService) {
   console.log("Hello weixinArticleCtr...");
   if (dataService.smallDevice()) {
     $window.location = "http://m.mybookmark.cn/#/tags";
@@ -23,30 +23,22 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
   $scope.toastrId = 0;
   $scope.random = 0;
   $scope.channels = JSON.parse(`[{"id":1,"name":"热门", "clicked": true},{"id":2,"name":"搞笑"},{"id":3,"name":"养生堂"},{"id":4,"name":"私房话"},{"id":5,"name":"八卦精"},{"id":6,"name":"科技咖"},{"id":7,"name":"财经迷"},{"id":8,"name":"汽车控"},{"id":9,"name":"生活家"},{"id":10,"name":"时尚圈"},{"id":11,"name":"育儿"},{"id":12,"name":"旅游"},{"id":13,"name":"职场"},{"id":14,"name":"美食"},{"id":15,"name":"历史"},{"id":16,"name":"教育"},{"id":17,"name":"星座"},{"id":18,"name":"体育"},{"id":19,"name":"军事"},{"id":20,"name":"游戏"},{"id":21,"name":"萌宠"}]`);
-  $scope.callCount = parseInt((localStorage && localStorage.getItem('weixin' + key)) || 1);
-  $scope.maxCallCount = 100;
   $scope.user = {};
   var timeagoInstance = timeago();
 
-  bookmarkService.autoLogin()
-    .then((data) => {
-      var login = data.logined;
-      var index = login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot;
-      $scope.user = data.user || {};
-      pubSubService.publish('Common.menuActive', {
-        login: login,
-        index: index
-      });
-    })
-    .catch((err) => {
-      console.log('autoLogin err', err)
+  get('own').then((user) => {
+    $scope.user = user;
+    pubSubService.publish('Common.menuActive', {
+      login: true,
+      index: dataService.LoginIndexHot
     });
+  })
 
-  $scope.jumpToUrl = function (url) {
+  $scope.jumpToUrl = async function (url) {
     $window.open(url, '_blank');
   }
 
-  $scope.favoriteBookmark = function (b) {
+  $scope.favoriteBookmark = async function (b) {
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
     var login = (menusScope && menusScope.login) || false;
     if (!login) {
@@ -54,28 +46,16 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
       return;
     }
 
-    var bookmark = {}
-    bookmark.description = '';
+    let bookmark = {}
     bookmark.title = b.title;
     bookmark.url = b.url;
-    bookmark.public = 1;
-    bookmark.click_count = 1;
 
-    bookmarkService.favoriteBookmark(bookmark)
-      .then((data) => {
-        pubSubService.publish('EditCtr.inserBookmarsSuccess', data);
-        if (data.title) {
-          toastr.success('[ ' + data.title + ' ] 收藏成功！', "提示");
-        } else {
-          toastr.error('[ ' + bookmark.title + ' ] 收藏失败！', "提示");
-        }
-      })
-      .catch((err) => {
-        toastr.error('[ ' + bookmark.title + ' ] 收藏失败，' + JSON.stringify(err), "提示");
-      });
+    let id = await post("addBookmark", bookmark);
+    bookmark = await get("bookmark", { id })
+    pubSubService.publish('EditCtr.inserBookmarsSuccess', bookmark);
   }
 
-  $scope.storeBookmark = function (bookmark) {
+  $scope.storeBookmark = async function (bookmark) {
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
     var login = (menusScope && menusScope.login) || false;
     if (!login) {
@@ -83,17 +63,17 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     } else {
       var b = $.extend(true, {}, bookmark); // 利用jQuery执行深度拷贝
       b.tags = [{
-        name: b.created_by
+        name: b.createdBy
       }]
       pubSubService.publish('TagCtr.storeBookmark', b);
     }
   }
 
-  $scope.copy = function (url) {
+  $scope.copy = async function (url) {
     dataService.clipboard(url);
   }
 
-  $scope.detailBookmark = function (b) {
+  $scope.detailBookmark = async function (b) {
     if (!b.content) {
       $scope.jumpToUrl(b.url);
       return;
@@ -106,7 +86,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     }, 10)
   }
 
-  $scope.close = function () {
+  $scope.close = async function () {
     $('.js-weixin-content').modal('setting', 'transition', dataService.animation()).modal('hide');
   }
 
@@ -134,7 +114,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     })
   });
 
-  $scope.randomHotBookmarks = function () {
+  $scope.randomHotBookmarks = async function () {
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
     var login = (menusScope && menusScope.login) || false;
     if (login) {
@@ -143,17 +123,16 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
       var now = new Date();
       var dayGap = parseInt(Math.abs(now - beginDay) / (1000 * 60 * 60 * 24)) + 1;
       $scope.curDay = -(parseInt(Math.random() * 1000000) % dayGap);
-      getHotBookmarksbyCache();
     } else {
       $scope.toastrId = toastr.info('您只有先登录，才能使用查看随机热门标签', "提示");
     }
   }
 
-  $scope.setHoverBookmark = function (bookmark) {
+  $scope.setHoverBookmark = async function (bookmark) {
     $scope.hoverBookmark = bookmark;
   }
 
-  $scope.changeCurrentPage = function (currentPage) {
+  $scope.changeCurrentPage = async function (currentPage) {
     currentPage = parseInt(currentPage) || 0;
     console.log(currentPage);
     if (currentPage <= $scope.totalPages && currentPage >= 1) {
@@ -162,7 +141,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     }
   }
 
-  $scope.getWeixinArticles = function (channelId, page) {
+  $scope.getWeixinArticles = async function (channelId, page) {
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
     var login = (menusScope && menusScope.login) || false;
     var index = login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot;
@@ -178,37 +157,25 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     $scope.totalPages = 0;
     var start = (page - 1) * perPageItems;
     var api = `https://api.jisuapi.com/weixinarticle/get?channelid=${channelId}&start=${start}&num=${perPageItems}&appkey=e95887468ab87d69`;
-    if (localStorage) {
-      var count = parseInt(localStorage.getItem('weixin' + key) || 1);
-      if (count <= $scope.maxCallCount || $scope.user.username === 'lcq') {
-        $.ajax({
-          url: api,
-          type: 'get',
-          dataType: "jsonp",
-          jsonp: "callback",
-          success: function (body) {
-            dealBody(body);
-            if (channelId == 1 && page == 1) {
-              getHotBookmarksbyAPI();
-            } else {
-              $scope.randomHotBookmarks();
-            }
-          },
-          error: function (json) {
-            $scope.loadBusy = false;
-            toastr.error('获取热门失败！失败原因：' + json.msg, "提示");
-            getHotBookmarksbyCache();
-          }
-        });
-        localStorage.setItem('weixin' + key, count + 1)
-        $scope.callCount = count + 1;
-      } else {
-        getHotBookmarksbyCache();
-        toastr.warning('每天只允许实时调用 100 次剩下的只从缓存中获取', "提示");
+    $.ajax({
+      url: api,
+      type: 'get',
+      dataType: "jsonp",
+      jsonp: "callback",
+      success: function (body) {
+        dealBody(body);
+        if (channelId == 1 && page == 1) {
+          getHotBookmarksbyAPI();
+        } else {
+          $scope.randomHotBookmarks();
+        }
+      },
+      error: function (json) {
+        $scope.loadBusy = false;
+        toastr.error('获取热门失败！失败原因：' + json.msg, "提示");
+        getHotBookmarksbyAPI();
       }
-    } else {
-      getHotBookmarksbyCache();
-    }
+    });
   }
 
   function getHotBookmarksbyAPI() {
@@ -242,22 +209,22 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
               var b = {};
               b.title = bookmark.title;
               b.url = bookmark.url;
-              b.favicon_url = bookmark.sourceLogo || defaultFavicon;
-              b.created_by = bookmark.sourceName;
-              b.snap_url = defaultSnap;
+              b.faviconUrl = bookmark.sourceLogo || defaultFavicon;
+              b.createdBy = bookmark.sourceName;
+              b.snapUrl = defaultSnap;
               if (bookmark.imageList.length >= 1) {
                 if (bookmark.imageList[0].url) {
-                  b.snap_url = (json.data.pageNo == 1 ? (bookmark.imageList[0].url.match(alterRex) != null ? defaultSnap : bookmark.imageList[0].url) : defaultSnap);
+                  b.snapUrl = (json.data.pageNo == 1 ? (bookmark.imageList[0].url.match(alterRex) != null ? defaultSnap : bookmark.imageList[0].url) : defaultSnap);
                 } else {
                   for (var i = 0; i < bookmark.images.length; i++) {
                     if (bookmark.images[i]) {
-                      b.snap_url = bookmark.images[i];
+                      b.snapUrl = bookmark.images[i];
                       break;
                     }
                   }
                 }
               }
-              b.fav_count = bookmark.favCount;
+              b.favCount = bookmark.favCount;
               b.created_at = $filter('date')(new Date(bookmark.createtime < bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
               b.last_click = $filter('date')(new Date(bookmark.createtime > bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
               b.id = bookmark.articleId;
@@ -274,37 +241,6 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
     });
   }
 
-  function getHotBookmarksbyCache() {
-    $scope.loadBusy = true;
-    var date = curentDate($scope.curDay, "yyyyMMdd");
-    if (date < "20160715") {
-      toastr.info('您已将将所有的热门标签都加载完了！', "提示");
-      $scope.loadBusy = false;
-      return; // 这是最早的了。
-    }
-    var params = {
-      date: date,
-    }
-    bookmarkService.getHotBookmarks(params)
-      .then((data) => {
-        data.forEach((bookmark) => {
-          bookmark.created_at = $filter('date')(new Date(bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
-          bookmark.index = $scope.bookmarks.length - 1;
-          $scope.bookmarks.push(bookmark);
-        })
-        $scope.curDay--;
-        $scope.loadBusy = false;
-        if (data && data.length == 0) {
-          getHotBookmarksbyCache(); // 没有继续请求
-        }
-      })
-      .catch((err) => {
-        toastr.error("getHotBookmarksbyCache: " + JSON.stringify(err), "提示");
-        $scope.curDay--;
-        $scope.loadBusy = false;
-        getHotBookmarksbyCache(); // 没有继续请求
-      });
-  }
 
   // TODO: 我要将编辑按钮固定在容器的右上角
 
@@ -344,11 +280,11 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$stateParams', 
           b.index = index;
           b.title = articl.title;
           b.url = articl.url;
-          b.favicon_url = defaultFavicon;
-          b.created_by = articl.weixinname;
+          b.faviconUrl = defaultFavicon;
+          b.createdBy = articl.weixinname;
           b.account = articl.weixinaccount;
-          b.snap_url = articl.pic || defaultSnap;
-          b.fav_count = articl.likenum;
+          b.snapUrl = articl.pic || defaultSnap;
+          b.favCount = articl.likenum;
           b.created_at = timeagoInstance.format(cdate, 'zh_CN');
           b.content = articl.content
           b.content = b.content.replace(/https:\/\/mmbiz.qpic.cn/gi, "http://img01.store.sogou.com/net/a/04/link?appid=100520029&url=https://mmbiz.qpic.cn")

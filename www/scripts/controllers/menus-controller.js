@@ -27,16 +27,16 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
   get('own', { full: true }).then(user => {
-    $scope.user = user;
     $timeout(() => {
+      $scope.user = user;
       $scope.searchHistory = JSON.parse(user.searchHistory || '[]');
       $scope.quickUrl = JSON.parse(user.quickUrl || '{}');
       $scope.searchHistory.forEach((item, index) => {
         $scope.searchIcon(item);
       })
-      if ($scope.user.username === 'lcq') {
-        $scope.loginMenus[dataService.LoginIndexHot].show = false;
-      }
+      // if ($scope.user.username === 'lcq') {
+      //   $scope.loginMenus[dataService.LoginIndexHot].show = false;
+      // }
     })
   });
 

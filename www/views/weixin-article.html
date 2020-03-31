@@ -1,10 +1,7 @@
 <!-- 高度至少要设置1000，元素少时才能触发滚动条事件 -->
 <div class="ui segment js-hot-card js-weixin-articles">
-  <div class="ui container" style="cursor:default;" ng-if="callCount <= maxCallCount">
+  <div class="ui container" style="cursor:default;">
     <div class="ui label" style="margin:3px 20px 8px 0px;cursor:default;" ng-class="{green:channel.id===channelId}" ng-repeat="channel in channels" ng-click="getWeixinArticles(channel.id, 1)">{{ channel.name }} {{ channel.total ? ('('+channel.total+')') : '' }}</div>
-  </div>
-  <div class="ui center aligned container" style="cursor:default;" ng-if="callCount > maxCallCount && (!loadBusy)">
-    <i class="random big link icon" title="随机刷一批" ng-click="randomHotBookmarks()"></i>
   </div>
 
   <div class="ui massive text centered inline loader js-hot-loader" style="margin: 50px 0px 120px 0px;" ng-class="{active:loadBusy, disabled:!loadBusy}">
@@ -20,12 +17,12 @@
         </div>
       </div>
       <div class="image hot-image" href="{{ bookmark.url }}" style="cursor:pointer" ng-click="detailBookmark(bookmark)">
-        <img ng-src="{{bookmark.snap_url}}" />
+        <img ng-src="{{bookmark.snapUrl}}" />
       </div>
       <div class="extra content" ng-show="!bookmark.edit">
-        <img class="ui avatar image" style="width:16px;height:16px;" ng-src="{{bookmark.favicon_url}}" />
-        <span class="sourceName" title="{{ bookmark.created_by }}">{{ bookmark.created_by }}</span>
-        <span class="favCount" ng-if="bookmark.fav_count">·{{ bookmark.fav_count }}人收藏</span>
+        <img class="ui avatar image" style="width:16px;height:16px;" ng-src="{{bookmark.faviconUrl}}" />
+        <span class="sourceName" title="{{ bookmark.createdBy }}">{{ bookmark.createdBy }}</span>
+        <span class="favCount" ng-if="bookmark.favCount">·{{ bookmark.favCount }}人收藏</span>
         <i class="ellipsis horizontal icon right floated" style="margin-top:6px;" ng-mouseover="bookmark.edit=true;"></i>
       </div>
       <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;">
@@ -41,7 +38,7 @@
     <div class="header">{{ bookmark.title }}</div>
     <div class="scrolling content js-main-content">
       <div class="ui center aligned container" style="margin: 10px 0px">
-        <span style="color: #4383BF" title="公众号名称">{{bookmark.created_by}}</span>
+        <span style="color: #4383BF" title="公众号名称">{{bookmark.createdBy}}</span>
         &nbsp;&nbsp;
         <span title="公众号账号">{{bookmark.account}}</span>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -51,7 +48,7 @@
       <p ng-bind-html="bookmark.content"></p>
       <div class="ui divider"></div>
       <div class="ui container">
-        <img class="ui middle aligned mini image" ng-src="{{bookmark.favicon_url}}" style="width:16px;height:16px;padding:0;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="点击跳转到原页面(如果过期，需要在微信中才能打开)" />
+        <img class="ui middle aligned mini image" ng-src="{{bookmark.faviconUrl}}" style="width:16px;height:16px;padding:0;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="点击跳转到原页面(如果过期，需要在微信中才能打开)" />
         <span title="点击复制链接" ng-click="copy(bookmark.url)" class="urlSpan">{{bookmark.url}} </span>
       </div>
       <div class="ui divider"></div>

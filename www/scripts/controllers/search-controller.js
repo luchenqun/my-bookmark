@@ -5,10 +5,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     return;
   }
 
-  const pageSize = 20;
-  var dialog = null;
   $scope.hoverBookmark = null;
-  $scope.searchBookmarks = []; // 书签数据
+  $scope.bookmarks = []; // 书签数据
   $scope.showSearch = false; //
   $scope.showTags = false; //
   $scope.keyword = ($stateParams && $stateParams.keyword) || ''
@@ -18,14 +16,17 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   $scope.dateClickEnd = '';
   $scope.range = 'self';
   $scope.bookmarkCount = 0;
-  $scope.tags = []
+  $scope.tags = [];
+  $scope.user = [];
   $scope.totalPages = 0;
   $scope.currentPage = 1;
   $scope.inputPage = '';
   $scope.loading = false;
   $scope.waitDelBookmark = {};
   $scope.searchHotBookmarks = false;
+
   var timeagoInstance = timeago();
+  var dialog = null;
 
   $scope.changeCurrentPage = async function (page) {
     page = parseInt(page) || 0;
@@ -36,9 +37,8 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
   }
 
-  get('tags').then((tags) => {
-    $scope.tags = tags;
-  })
+  get('tags').then((tags) => $scope.tags = tags)
+  get('own').then((user) => $scope.user = user)
 
   // 默认登陆
   pubSubService.publish('Common.menuActive', {
@@ -51,7 +51,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
       $window.open(url);
       await post("clickBookmark", { id });
 
-      $scope.searchBookmarks.forEach(function (bookmark) {
+      $scope.bookmarks.forEach(function (bookmark) {
         if (bookmark.id == id) {
           bookmark.clickCount += 1;
           bookmark.lastClick = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -140,13 +140,13 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     }
 
     params.page = $scope.currentPage || 1;
-    params.pageSize = pageSize;
+    params.pageSize = 20;
     console.log('params = ', params)
 
     let reply = await get('bookmarksSearch', params);
 
     $timeout(() => {
-      $scope.searchBookmarks = reply.data;
+      $scope.bookmarks = reply.data;
       $scope.totalPages = reply.totalPages;
       $scope.bookmarkCount = reply.count;
       $scope.loading = false;
@@ -203,44 +203,15 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
 
   pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function (event, data) {
     console.log('subscribe EditCtr.inserBookmarsSuccess', JSON.stringify(data));
-    $scope.searchBookmarks.forEach((bookmark) => {
+    $scope.bookmarks.forEach((bookmark) => {
       if (bookmark.id == data.id) {
         bookmark.title = data.title;
         bookmark.url = data.url;
         bookmark.description = data.description;
-        bookmark.tags = data.tags;
+        // bookmark.tags = data.tags; @todo
       }
     })
   });
-
-  async function searchBookmarks(params) {
-    console.log(params);
-
-    $scope.loading = true;
-    $('.js-table-search').transition('hide');
-
-    // bookmarkService.searchHotBookmarks(params)
-    //   .then((data) => {
-    //     $scope.searchBookmarks = [];
-    //     data.bookmarks.forEach((bookmark) => {
-    //       bookmark.tags = [{
-    //         id: -1,
-    //         name: bookmark.created_by, // 给转存用
-    //       }]
-    //       bookmark.createdAt = $filter('date')(new Date(bookmark.createdAt), "yyyy-MM-dd HH:mm:ss");
-    //       bookmark.lastClick = $filter('date')(new Date(bookmark.lastClick), "yyyy-MM-dd HH:mm:ss");
-    //       $scope.searchBookmarks.push(bookmark);
-    //     })
-    //     $scope.bookmarkCount = data.totalItems;
-    //     $scope.totalPages = Math.ceil($scope.bookmarkCount / pageSize);
-    //     $scope.loading = false;
-    //     transition();
-    //   })
-    //   .catch((err) => {
-    //     console.log('searchHotBookmarks err', err);
-    //     $scope.loading = false;
-    //   });
-  }
 
   function transition() {
     $timeout(function () {

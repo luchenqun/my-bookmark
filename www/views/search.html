@@ -129,7 +129,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="bookmark in searchBookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
+    <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
       <td>
         <img class="ui ui middle aligned mini image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.favicon_url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="searchHotBookmarks" />
         <img class="ui ui middle aligned mini image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="!searchHotBookmarks" />
@@ -156,16 +156,16 @@
         </span>
       </td>
       <td>
-        <span ng-show="bookmark.own">
+        <span ng-show="bookmark.userId == user.id">
           <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签" />
         </span>
-        <span ng-show="bookmark.own">
+        <span ng-show="bookmark.userId == user.id">
           <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签" />
         </span>
-        <span ng-show="!bookmark.own">
+        <span ng-show="bookmark.userId != user.id">
           <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏" />
         </span>
-        <span ng-show="!bookmark.own">
+        <span ng-show="bookmark.userId != user.id">
           <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签" />
         </span>
         <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情" />

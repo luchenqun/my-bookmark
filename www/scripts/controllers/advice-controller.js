@@ -9,7 +9,7 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'pubSubService', 'd
   $scope.advices = [];
   $scope.user = {};
 
-  get('own').then(user => {
+  get('user').then(user => {
     $scope.user = user;
     pubSubService.publish('Common.menuActive', {
       login: true,
@@ -28,14 +28,14 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'pubSubService', 'd
       return;
     }
 
-    await post('addAdvice', {
+    await post('adviceAdd', {
       comment: $scope.comment,
     });
     await getAdvices();
   }
 
   async function getAdvices() {
-    let data = await post("getAdvices");
+    let data = await get("advices");
     data.forEach(element => {
       element.imgData = new Identicon(md5(element.username)).toString();
     });

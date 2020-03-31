@@ -7,7 +7,7 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
 
   (async () => {
     try {
-      await get('own');
+      await get('user');
       pubSubService.publish('loginCtr.login', { 'login': true });
       $state.go('tags');
     } catch (error) {

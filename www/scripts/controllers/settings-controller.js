@@ -23,7 +23,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.form = $scope.form.map(() => false);
     $scope.form[index] = true;
     if (index == 0 || index == 1 || index == 4) {
-      let user = await get('own', { full: true });
+      let user = await get('user', { full: true });
       let tags = await get('tags', { bookmarkCount: true, noteCount: true });
       $timeout(() => {
         $scope.user = user
@@ -46,8 +46,8 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     }
 
     if ($scope.passwordNew1 == $scope.passwordNew2) {
-      await post('resetUserPwd', { old: $scope.passwordOrgin, password: $scope.passwordNew1 });
-      await post('logout');
+      await post('userResetPwd', { old: $scope.passwordOrgin, password: $scope.passwordNew1 });
+      await post('userLogout');
 
       axios.defaults.headers.common['Authorization'] = "";
       localStorage.setItem("authorization", "");
@@ -154,7 +154,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
   });
 
   async function saveQuickUrl() {
-    await post("updateUser", { quickUrl: JSON.stringify($scope.quickUrl) });
+    await post("userUpdate", { quickUrl: JSON.stringify($scope.quickUrl) });
     toastr.success('全局快捷键更新成功', "提示");
   }
 

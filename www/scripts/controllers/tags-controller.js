@@ -94,7 +94,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.jumpToUrl = async function (url, id) {
     if (!$scope.editMode) {
       $window.open(url, '_blank');
-      await post("clickBookmark", { id });
+      await post("bookmarkClick", { id });
 
       $scope.bookmarks.forEach(function (bookmark, index) {
         if (bookmark.id == id) {
@@ -121,7 +121,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
   $scope.confirmDelBookmark = async function (id) {
     ngDialog.close(dialog);
-    await post("delBookmark", { id })
+    await post("bookmarkDel", { id })
     $("#" + id).transition({
       animation: dataService.animation(),
       duration: 500,
@@ -146,7 +146,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.detailBookmark = async function (bookmark) {
     bookmark.own = true;
     pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
-    await post("clickBookmark", { id: bookmark.id });
+    await post("bookmarkClick", { id: bookmark.id });
   }
 
   $scope.copy = function (url) {
@@ -184,7 +184,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   }
 
   $scope.updateTagShow = async function (tag, show) {
-    await post("updateTag", { id: tag.id, show });
+    await post("tagUpdate", { id: tag.id, show });
     toastr.success(tag.name + ' 更新成功！', "提示");
     $timeout(() => {
       tag.show = show;
@@ -202,7 +202,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       }
 
       try {
-        await post('updateTag', params);
+        await post('tagUpdate', params);
         toastr.success(tag.name + ' 更新成功！', "提示");
       } catch (error) {
         $scope.backTag(tag);
@@ -225,7 +225,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     if (tagName == '未分类' || tagName == "收藏") {
       toastr.error('默认分类不允许删除', "提示");
     } else {
-      await post("delTag", { id });
+      await post("tagDel", { id });
 
       let index = 0;
       for (const tag of $scope.tags) {
@@ -279,7 +279,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
     if (tag) {
       ngDialog.close(dialog);
-      await post("addTag", { name: tag })
+      await post("tagAdd", { name: tag })
     } else {
       toastr.warning('您可能没有输入分类或者输入的分类有误', "提示");
     }
@@ -314,7 +314,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         }
       }
       if (needUpdate) {
-        await post('updateTagSort', { tags: $scope.tagsIndex });
+        await post('tagSort', { tags: $scope.tagsIndex });
       }
     }, 300)
   }

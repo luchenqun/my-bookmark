@@ -26,7 +26,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
   $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
-  get('own', { full: true }).then(user => {
+  get('user', { full: true }).then(user => {
     $timeout(() => {
       $scope.user = user;
       $scope.searchHistory = JSON.parse(user.searchHistory || '[]');
@@ -186,7 +186,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   }
 
   $scope.logout = async function () {
-    await post('logout');
+    await post('userLogout');
     axios.defaults.headers.common['Authorization'] = "";
     localStorage.setItem("authorization", "");
     $scope.login = false;
@@ -232,7 +232,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         d: item.d,
       })
     })
-    await post("updateUser", { searchHistory: JSON.stringify(datas) });
+    await post("userUpdate", { searchHistory: JSON.stringify(datas) });
   }
 
   $timeout(function () {
@@ -307,7 +307,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
           var url = $scope.quickUrl[key];
           if (url) {
             $window.open(url, '_blank');
-            let data = await post('shortcutBookmark', { url });
+            let data = await post('bookmarShortcutk', { url });
             if (!data) {
               toastr.info('网址：' + url + "还没添加到你的书签系统，请添加！", "警告");
               pubSubService.publish('TagCtr.storeBookmark', { url });

@@ -38,7 +38,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   }
 
   get('tags').then((tags) => $scope.tags = tags)
-  get('own').then((user) => $scope.user = user)
+  get('user').then((user) => $scope.user = user)
 
   // 默认登陆
   pubSubService.publish('Common.menuActive', {
@@ -49,7 +49,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   $scope.jumpToUrl = async function (url, id) {
     if (!$scope.edit) {
       $window.open(url);
-      await post("clickBookmark", { id });
+      await post("bookmarkClick", { id });
 
       $scope.bookmarks.forEach(function (bookmark) {
         if (bookmark.id == id) {
@@ -74,7 +74,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   }
 
   $scope.confirmDelBookmark = async function (id) {
-    await post("delBookmark", { id })
+    await post("bookmarkDel", { id })
     $("#" + id).transition({
       animation: dataService.animation(),
       duration: 500,
@@ -98,7 +98,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   }
 
   $scope.favoriteBookmark = async function (bookmark) {
-    let id = await post("addBookmark", bookmark);
+    let id = await post("bookmarkAdd", bookmark);
     bookmark = await get("bookmark", { id });
     pubSubService.publish('EditCtr.inserBookmarsSuccess', bookmark);
   }

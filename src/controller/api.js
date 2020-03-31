@@ -9,7 +9,7 @@ function md5(str) {
 
 module.exports = class extends Base {
   async __before() {
-    if (['register', 'login'].indexOf(this.ctx.action) >= 0) {
+    if (['userRegister', 'userLogin'].indexOf(this.ctx.action) >= 0) {
       return;
     }
     try {
@@ -29,7 +29,7 @@ module.exports = class extends Base {
   }
 
   // 注册
-  async registerAction() {
+  async userRegisterAction() {
     try {
       let post = this.post();
       post.password = md5(post.password); // 进行密码加密
@@ -42,7 +42,7 @@ module.exports = class extends Base {
   }
 
   // 登陆
-  async loginAction() {
+  async userLoginAction() {
     try {
       let post = this.post();
       post.password = md5(post.password); // 进行密码加密
@@ -65,12 +65,12 @@ module.exports = class extends Base {
   }
 
   // 登出
-  async logoutAction() {
+  async userLogoutAction() {
     await this.session(null);
     this.json({ code: 0, data: '', msg: "退出成功" });
   }
 
-  async updateUserAction() {
+  async userUpdateAction() {
     let user = this.post();
     try {
       let data = await this.model('users').where({ id: this.ctx.state.user.id }).update(user);
@@ -80,7 +80,7 @@ module.exports = class extends Base {
     }
   }
 
-  async resetUserPwdAction() {
+  async userResetPwdAction() {
     let old = md5(this.post("old"));
     let password = md5(this.post("password"));
 
@@ -98,10 +98,11 @@ module.exports = class extends Base {
   }
 
   // 通过session获取自己信息
-  async ownAction() {
+  async userAction() {
     let full = this.get("full");
+    let id = this.get("id");
     if (full) {
-      let data = await this.model('users').where({ id: this.ctx.state.user.id }).find();
+      let data = await this.model('users').where({ id: id || this.ctx.state.user.id }).find();
       delete data.password;
       this.json({ code: 0, data, msg: '' });
     } else {
@@ -125,7 +126,7 @@ module.exports = class extends Base {
     this.json({ code: 0, data: tags, msg: '' });
   }
 
-  async addTagAction() {
+  async tagAddAction() {
     let name = this.post().name;
     try {
       let res = await this.model("tags").add({
@@ -139,7 +140,7 @@ module.exports = class extends Base {
   }
 
   // 更新分类
-  async updateTagAction() {
+  async tagUpdateAction() {
     let tag = this.post();
     try {
       let data = await this.model('tags').where({
@@ -153,7 +154,7 @@ module.exports = class extends Base {
   }
 
   // 批量更新排序
-  async updateTagSortAction() {
+  async tagSortAction() {
     let tags = this.post("tags");
     try {
       let data = 0;
@@ -171,7 +172,7 @@ module.exports = class extends Base {
   }
 
   // 删除分类
-  async delTagAction() {
+  async tagDelAction() {
     let id = this.post("id");
     let tagId = id;
     let userId = this.ctx.state.user.id;
@@ -197,7 +198,7 @@ module.exports = class extends Base {
   }
 
   // 添加书签
-  async addBookmarkAction() {
+  async bookmarkAddAction() {
     let bookmark = this.post();
     bookmark.userId = this.ctx.state.user.id;
     try {
@@ -223,7 +224,7 @@ module.exports = class extends Base {
   }
 
   // 删除书签
-  async delBookmarkAction() {
+  async bookmarkDelAction() {
     let bookmark = this.post();
     bookmark.userId = this.ctx.state.user.id;
     try {
@@ -310,7 +311,7 @@ module.exports = class extends Base {
   }
 
   // 点击书签
-  async clickBookmarkAction() {
+  async bookmarkClickAction() {
     let id = this.post("id");
     try {
       let data = await this.model('bookmarks').where({
@@ -327,7 +328,7 @@ module.exports = class extends Base {
   }
 
   // 快速跳转到网页
-  async shortcutBookmarkAction() {
+  async bookmarShortcutAction() {
     let url = this.post("url");
     try {
       let bookmark = await this.model('bookmarks').where({
@@ -353,7 +354,7 @@ module.exports = class extends Base {
   }
 
   // 更新书签
-  async updateBookmarkAction() {
+  async bookmarkUpdateAction() {
     let bookmark = this.post();
     try {
       let data = await this.model('bookmarks').where({
@@ -366,7 +367,7 @@ module.exports = class extends Base {
     }
   }
   // 获取文章
-  async getArticleAction() {
+  async articleAction() {
     let url = this.get("url");
     async function readArticle(url) {
       return new Promise(function (resolve, reject) {
@@ -399,7 +400,7 @@ module.exports = class extends Base {
     }
   }
   // 新增留言
-  async addAdviceAction() {
+  async adviceAddAction() {
     let advice = this.post();
     advice.userId = this.ctx.state.user.id;
     try {
@@ -411,7 +412,7 @@ module.exports = class extends Base {
   }
 
   // 获取所有留言
-  async getAdvicesAction() {
+  async advicesAction() {
     try {
       let data = await this.model("advices").order("createdAt DESC").select();
       this.json({ code: 0, data });
@@ -421,7 +422,7 @@ module.exports = class extends Base {
   }
 
   // 新增
-  async addNoteAction() {
+  async noteAddAction() {
     let note = this.post();
     note.userId = this.ctx.state.user.id;
     try {
@@ -433,11 +434,10 @@ module.exports = class extends Base {
   }
 
   // 更新备忘
-  async updateNoteAction() {
+  async noteUpdateAction() {
     let note = this.post();
-    note.userId = this.ctx.state.user.id;
     try {
-      let data = await this.model('bookmarks').where({
+      let data = await this.model('notes').where({
         userId: this.ctx.state.user.id,
         id: note.id
       }).update(note);
@@ -448,7 +448,7 @@ module.exports = class extends Base {
   }
 
   // 更新
-  async delNoteAction() {
+  async noteDelAction() {
     let note = this.post();
     note.userId = this.ctx.state.user.id;
     try {

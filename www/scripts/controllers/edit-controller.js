@@ -18,7 +18,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
         }
         $scope.loadTitle = true;
         try {
-          let data = await get('getArticle', { url: newUrl });
+          let data = await get('article', { url: newUrl });
           $scope.loadTitle = false;
           $scope.originTitle = data.title;
           $scope.title = data.title;
@@ -92,12 +92,12 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     console.log("add bookmark", params);
 
     if ($scope.add) {
-      let id = await post('addBookmark', params);
+      let id = await post('bookmarkAdd', params);
       $('.ui.modal.js-add-bookmark').modal('hide');
       params.id = id;
       pubSubService.publish('EditCtr.inserBookmarsSuccess', params);
     } else {
-      await post('updateBookmark', params);
+      await post('bookmarkUpdate', params);
       $('.ui.modal.js-add-bookmark').modal('hide');
       pubSubService.publish('EditCtr.inserBookmarsSuccess', params);
       toastr.success('[ ' + params.title + ' ] 更新成功，将自动重新更新书签！', "提示");
@@ -137,7 +137,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
 
     if (tag) {
       ngDialog.close(dialog);
-      await post('addTag', { name: tag });
+      await post('tagAdd', { name: tag });
       await getTags();
     } else {
       toastr.warning('您可能没有输入分类或者输入的分类有误', "提示");

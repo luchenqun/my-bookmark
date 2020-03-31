@@ -26,7 +26,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
   var timeagoInstance = timeago();
 
-  get('own').then(user => {
+  get('user').then(user => {
     pubSubService.publish('Common.menuActive', {
       login: true,
       index: dataService.LoginIndexNote
@@ -109,7 +109,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       content: $scope.content,
     }
 
-    await post("addNote", note);
+    await post("noteAdd", note);
 
     // 增加成功，重新获取一次备忘录
     $scope.tags.forEach((tag) => {
@@ -146,7 +146,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         id: $scope.currentNoteId
       }
       ngDialog.close(dialog);
-      await post('delNote', params)
+      await post('noteDel', params)
       $("#" + $scope.currentNoteId).transition({
         animation: dataService.animation(),
         duration: 500,
@@ -193,7 +193,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       tagId: $scope.currentTagId,
     }
 
-    await post("updateNote", params);
+    await post("noteUpdate", params);
     $scope.notes.forEach((note) => {
       if (note.id == $scope.currentNoteId) {
         note.content = $scope.content;

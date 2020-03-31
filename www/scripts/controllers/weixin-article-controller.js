@@ -26,7 +26,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$win
   $scope.user = {};
   var timeagoInstance = timeago();
 
-  get('own').then((user) => {
+  get('user').then((user) => {
     $scope.user = user;
     pubSubService.publish('Common.menuActive', {
       login: true,
@@ -50,7 +50,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$win
     bookmark.title = b.title;
     bookmark.url = b.url;
 
-    let id = await post("addBookmark", bookmark);
+    let id = await post("bookmarkAdd", bookmark);
     bookmark = await get("bookmark", { id })
     pubSubService.publish('EditCtr.inserBookmarsSuccess', bookmark);
   }

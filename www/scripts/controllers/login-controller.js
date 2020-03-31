@@ -38,7 +38,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStor
     };
     $cookieStore.put("username", $scope.username);
 
-    let data = await post('login', params);
+    let data = await post('userLogin', params);
 
     // 更新token信息
     axios.defaults.headers.common['Authorization'] = data.token;
@@ -81,7 +81,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStor
       email: $scope.emailRegister,
       password: $scope.passwordRegister1,
     };
-    await post('register', user);
+    await post('userRegister', user);
 
     $('.ui.modal.js-register').modal('hide');
     $scope.username = $scope.usernameRegister;

@@ -42,7 +42,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
   $scope.jumpToUrl = async function (url, id) {
     $window.open(url, '_blank');
     if ($scope.bookmark.own) {
-      await post('clickBookmark', { id });
+      await post('bookmarkClick', { id });
       $scope.bookmark.clickCount += 1;
       $scope.bookmark.lastClick = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss");
     }

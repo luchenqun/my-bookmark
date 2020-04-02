@@ -127,22 +127,29 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
 
   setTimeout(function () {
     $("#fileuploader").uploadFile({
-      url: "/api/uploadBookmarkFile",
+      url: "/api/bookmarkUpload",
       multiple: false,
       dragDrop: true,
       fileName: "bookmark",
       acceptFiles: "text/html",
       maxFileSize: 10 * 1024 * 1024, // 最大10M
       dragdropWidth: "100%",
-      onSuccess: function (files, response, xhr, pd) {
-        toastr.success('文件上传成功，3秒钟自动跳转到书签页面', "提示");
-        setTimeout(function () {
-          pubSubService.publish('Common.menuActive', {
-            login: true,
-            index: dataService.LoginIndexBookmarks
-          });
-          $state.go('bookmarks', {})
-        }, 3000);
+      headers: {
+        Authorization: localStorage.getItem("authorization"),
+      },
+      onSuccess: function (files, response) {
+        console.log(files, response);
+        if (response.code == 0) {
+          setTimeout(function () {
+            pubSubService.publish('Common.menuActive', {
+              login: true,
+              index: dataService.LoginIndexBookmarks
+            });
+            $state.go('bookmarks', {})
+          }, 3000);
+        } else {
+          toastr.success('文件上传失败：' + response.msg, "提示");
+        }
       },
     });
     $(".ui.pointing.menu .item").removeClass("selected");

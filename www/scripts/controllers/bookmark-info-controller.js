@@ -20,7 +20,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
       }, 500);
       $scope.loading = true;
       try {
-        let data = get("getArticle", { url: bookmark.url });
+        let data = get("article", { url: bookmark.url });
         $scope.content = data.content ? $sce.trustAsHtml(data.content) : $sce.trustAsHtml('<p>数据获取失败，可能是服务器不允许获取，或者是https网站！</p>');
         setTimeout(function () {
           $('.ui.modal.js-bookmark-info').modal && $('.ui.modal.js-bookmark-info').modal("refresh");

@@ -1,6 +1,7 @@
 const Base = require('./base.js');
 const crypto = require('crypto');
 const fs = require('fs-extra');
+const path = require('path');
 const read = require('node-readability');
 
 function md5(str) {
@@ -366,6 +367,23 @@ module.exports = class extends Base {
       this.json({ code: 1, msg: error.toString() });
     }
   }
+
+  // 书签上传
+  async bookmarkUploadAction() {
+    // size: 367450,
+    // path: 'C:\\Users\\lucq\\AppData\\Local\\Temp\\upload_4ae3b14dacaa107076d3bddd471ebe39.html',
+    // name: 'exportbookmark-lcq-20200402084709.html',
+    // type: 'text/html',
+    const file = this.file();
+    this.json({ code: 0 });
+    // const fileName = this.ctx.state.user.username;
+    // if (file) {
+    //   const filepath = path.join(think.ROOT_PATH, `runtime/upload/${fileName}.html`);
+    //   think.mkdir(path.dirname(filepath));
+    //   await rename(file.path, filepath);
+    // }
+  }
+
   // 获取文章
   async articleAction() {
     let url = this.get("url");

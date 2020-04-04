@@ -117,12 +117,8 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
   }
 
   $scope.exportBookmark = async function () {
-    var userId = $scope.user && $scope.user.id;
-    if (userId) {
-      $window.open("api/download?userId=" + userId + "&type=exportbookmark");
-    } else {
-      toastr.warning('用户信息无法获取到，请尝试按刷新网页再尝试！', '提示');
-    }
+    let data = await get('bookmarkBackup');
+    console.log(data);
   }
 
   setTimeout(function () {
@@ -130,7 +126,6 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
       url: "/api/bookmarkUpload",
       multiple: false,
       dragDrop: true,
-      fileName: "bookmark",
       acceptFiles: "text/html",
       maxFileSize: 10 * 1024 * 1024, // 最大10M
       dragdropWidth: "100%",
@@ -145,8 +140,9 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
               login: true,
               index: dataService.LoginIndexBookmarks
             });
-            $state.go('bookmarks', {})
+            $state.go('tags', {})
           }, 3000);
+          toastr.success(response.msg, "提示");
         } else {
           toastr.success('文件上传失败：' + response.msg, "提示");
         }

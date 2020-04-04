@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const fs = require('fs-extra');
 const path = require('path');
 const read = require('node-readability');
+const cheerio = require('cheerio');
 
 function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
@@ -374,14 +375,97 @@ module.exports = class extends Base {
     // path: 'C:\\Users\\lucq\\AppData\\Local\\Temp\\upload_4ae3b14dacaa107076d3bddd471ebe39.html',
     // name: 'exportbookmark-lcq-20200402084709.html',
     // type: 'text/html',
-    const file = this.file();
-    this.json({ code: 0 });
-    // const fileName = this.ctx.state.user.username;
-    // if (file) {
-    //   const filepath = path.join(think.ROOT_PATH, `runtime/upload/${fileName}.html`);
-    //   think.mkdir(path.dirname(filepath));
-    //   await rename(file.path, filepath);
-    // }
+    const file = this.file("file");
+
+    let bookmarks = [];
+
+    let now = new Date().getTime();
+    let fileName = 'uploadbookmark-' + this.ctx.state.user.username + '-' + now + '.html';
+    if (file) {
+      const filePath = path.join(think.ROOT_PATH, `runtime/upload/${fileName}`);
+      await fs.ensureDir(path.dirname(filePath));
+      await fs.move(file.path, filePath);
+      let data = await fs.readFile(filePath);
+      let $ = cheerio.load(data.toString());
+
+      let anchors = $("dl").find("a");
+      anchors.each(async (i, e) => {
+        let url = $(e).attr("href");
+        let title = $(e).text() || "无标题";
+        if (title.length > 255) {
+          title = title.substring(255);
+        }
+        title = title.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/gi, "");
+        let attrCreatedAt = $(e).attr("add_date");
+        let attrLastClick = $(e).attr("last_click");
+        let attrClickCount = $(e).attr("click_count");
+        let createdAt = think.datetime(attrCreatedAt ? parseInt(attrCreatedAt) * 1000 : new Date());
+        let lastClick = think.datetime(attrLastClick ? parseInt(attrLastClick) * 1000 : new Date());
+        let clickCount = attrClickCount ? parseInt(attrClickCount) : 1;
+
+        // 只允许用一个标签
+        let tagName = "未分类";
+        $(e).parents("dl").each(function (ii, ee) {
+          let folder = $(ee).prev();
+          let temp = folder.text().replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' ');
+          if (temp != "Bookmarks" && temp != "书签栏" && temp != "" && temp != undefined) { tagName = temp; }
+        });
+        bookmarks.push({ title, url, createdAt, lastClick, tagName, clickCount, userId: this.ctx.state.user.id })
+      });
+    }
+
+    let count = 0;
+    let repeat = 0;
+    let tags = await this.model('tags').where({ userId: this.ctx.state.user.id }).select();
+    for (let bookmark of bookmarks) {
+      let find = await this.model('bookmarks').where({ userId: this.ctx.state.user.id, url: bookmark.url }).find();
+      if (think.isEmpty(find)) {
+        let tag = tags.find(item => item.name == bookmark.tagName);
+        if (tag) {
+          bookmark.tagId = tag.id;
+        } else {
+          bookmark.tagId = await this.model("tags").add({ userId: this.ctx.state.user.id, name: bookmark.tagName });
+          tags.push({
+            id: bookmark.tagId,
+            name: bookmark.tagName
+          })
+        }
+        delete bookmark.tagName;
+        await this.model("bookmarks").add(bookmark);
+        count++;
+      } else {
+        repeat++;
+      }
+    }
+    this.json({ code: 0, data: count, msg: `书签传入${bookmarks.length}个，重复书签${repeat}个，成功导入${count}个。` });
+  }
+
+  // 书签备份
+  async bookmarkBackupAction() {
+    let init = '<TITLE>Bookmarks</TITLE><H1>Bookmarks</H1><DL id="0"></DL>';
+    let $ = cheerio.load(init, {
+      decodeEntities: false,
+      xmlMode: true,
+    });
+    let time = (date) => parseInt(new Date(date).getTime() / 1000); // 日期转时间
+
+    let tags = await this.model('tags').where({ userId: this.ctx.state.user.id }).order('sort ASC, lastUse DESC').select();
+    for (const tag of tags) {
+      $('#0').append(`<DT><H3>${tag.name}</H3></DT><DL id="${tag.id}"></DL>`);
+      let bookmarks = await this.model('bookmarks').where({ tagId: tag.id }).select();
+      for (const bookmark of bookmarks) {
+        $('#' + tag.id).append(`<DT><A HREF="${bookmark.url}" ADD_DATE="${time(bookmark.createdAt)}" LAST_CLICK="${time(bookmark.lastClick)}" CLICK_COUNT="${bookmark.clickCount}" >${bookmark.title}</A></DT>`)
+      }
+    }
+    let now = new Date().getTime()
+    let fileName = 'exportbookmark-' + this.ctx.state.user.username + '-' + now + '.html';
+    let filePath = path.join(think.ROOT_PATH, 'runtime', 'backup', fileName);
+
+    await fs.ensureFile(filePath);
+    await fs.writeFile(filePath, $.xml());
+    this.json({ code: 0, data: `runtime/backup/${fileName}` });
+    setTimeout(() => fs.remove(filePath), 10000);
+    // await this.download(filePath, fileName)
   }
 
   // 获取文章

@@ -2,7 +2,7 @@
   "apps": [{
     "name": "my-bookmark",
     "script": "production.js",
-    "cwd": "D:\Work\Code\my-bookmark",
+    "cwd": "/var/www/my-bookmark",
     "exec_mode": "fork",
     "max_memory_restart": "1G",
     "autorestart": true,

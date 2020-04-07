@@ -41,7 +41,6 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStor
     let data = await post('userLogin', params);
 
     // 更新token信息
-    axios.defaults.headers.common['Authorization'] = data.token;
     localStorage.setItem("authorization", data.token);
 
     pubSubService.publish('loginCtr.login', { login: true });

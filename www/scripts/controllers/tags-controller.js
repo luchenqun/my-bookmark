@@ -341,14 +341,15 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     })
   });
 
-  async function getTags() {
+  async function updateTags(_tags) {
+    let tags = JSON.parse(JSON.stringify(_tags));
+
     $scope.loadTags = true;
     $scope.tags = [];
 
-    let tags = await get('tags', { bookmarkCount: true });
     tags.unshift({
       id: -1,
-      bookmarkCount: 1,
+      bookmarkCount: '...',
       bookmarkClicked: false,
       name: '个人定制',
       show: 1
@@ -362,16 +363,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         tag.bookmarkClicked = true;
         find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
       }
-      $scope.tags.push(tag);
     }
 
     if (!find) {
       $scope.currentTagId = -1;
-      $scope.tags[0].bookmarkClicked = true;
-    }
-
-    if (!$scope.editMode) {
-      await $scope.getBookmarks(null, null, null);
+      tags[0].bookmarkClicked = true;
     }
 
     $scope.loadTags = false;
@@ -379,6 +375,30 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       login: true,
       index: dataService.LoginIndexTags
     });
+
+    $timeout(() => {
+      $scope.tags = tags;
+      if (!$scope.editMode) {
+        $scope.getBookmarks(null, null, null);
+      }
+    })
+  }
+
+  async function getTags() {
+    // 通过缓存tags，如果回来的tags跟缓存的一致，那么这个时间差就省下来了
+    let tags = JSON.parse(localStorage.getItem("tags") || "[]");
+    if (tags.length > 0) {
+      get('tags', { bookmarkCount: true }).then((_tags) => {
+        if (JSON.stringify(tags) != JSON.stringify(_tags)) {
+          localStorage.setItem("tags", JSON.stringify(tags));
+          updateTags(tags);
+        }
+      });
+    } else {
+      tags = await get('tags', { bookmarkCount: true });
+      localStorage.setItem("tags", JSON.stringify(tags));
+    }
+    updateTags(tags);
   }
 
   pubSubService.subscribe('EditCtr.inserBookmarsSuccess', $scope, function (event, data) {

@@ -79,7 +79,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         duration: 1000,
       });
       addBookmarkId = -1;
-    }, 1000);
+    });
   };
 
   $scope.changeCurrentPage = function (currentPage) {

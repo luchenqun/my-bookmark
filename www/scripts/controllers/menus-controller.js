@@ -307,7 +307,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
           var url = $scope.quickUrl[key];
           if (url) {
             $window.open(url, '_blank');
-            let data = await post('bookmarShortcutk', { url });
+            let data = await post('bookmarShortcut', { url });
             if (!data) {
               toastr.info('网址：' + url + "还没添加到你的书签系统，请添加！", "警告");
               pubSubService.publish('TagCtr.storeBookmark', { url });

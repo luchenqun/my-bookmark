@@ -1,31 +1,24 @@
 var app = angular.module('bookmarkApp', ['ui.router', 'ngCookies', 'infinite-scroll', 'angular-sortable-view', 'ngDialog']);
 
 axios.defaults.baseURL = '/api/';
-axios.defaults.headers.common['Authorization'] = localStorage.getItem("authorization");
 
 function get(url, params) {
+  params = params || {};
   return new Promise((resolve, reject) => {
-    axios.get(url, {
-      params: params || {}
-    }).then(res => {
-      resolve(res);
-    }).catch(err => {
-      reject(err)
-    })
+    axios.get(url, { params }).then(res => resolve(res)).catch(err => reject(err))
   });
 }
 
 function post(url, params) {
   return new Promise((resolve, reject) => {
-    axios.post(url, params || {})
-      .then(res => {
-        resolve(res);
-      })
-      .catch(err => {
-        reject(err)
-      })
+    axios.post(url, params || {}).then(res => resolve(res)).catch(err => reject(err))
   });
 }
+
+axios.interceptors.request.use(config => {
+  config.headers.Authorization = localStorage.getItem("authorization");
+  return config;
+})
 
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {

@@ -114,6 +114,8 @@ module.exports = class extends Base {
 
   // 获取分类信息
   async tagsAction() {
+    /*
+    // 这里的查询太慢，使用原始的sql查询先替代
     let param = this.get();
     let tags = await this.model('tags').where({ userId: this.ctx.state.user.id }).order('sort ASC, lastUse DESC').select();
     // 这个分类包含的书签与备忘录的个数
@@ -125,6 +127,10 @@ module.exports = class extends Base {
         tag.noteCount = await this.model('notes').where({ tagId: tag.id }).count();
       }
     }
+    */
+    let sql = "SELECT t.*, tb.bookmarkCount, tg.noteCount FROM `tags` as t LEFT OUTER JOIN ( SELECT `tagId`, COUNT(tagId) as bookmarkCount FROM bookmarks GROUP BY tagId ) tb ON t.id = tb.tagId  LEFT OUTER JOIN ( SELECT `tagId`, COUNT(tagId) as noteCount FROM notes GROUP BY tagId ) tg ON t.id = tg.tagId where t.userId = " + this.ctx.state.user.id;
+    let tags = await this.model('tags').query(sql);
+
     this.json({ code: 0, data: tags, msg: '' });
   }
 

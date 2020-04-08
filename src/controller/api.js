@@ -577,6 +577,7 @@ module.exports = class extends Base {
       if (params.tagId) {
         where.tagId = params.tagId;
       }
+      where.userId = this.ctx.state.user.id;
       let data = await this.model('notes').where(where).order("createdAt DESC").page(this.get('page'), this.get('pageSize')).countSelect();
       this.json({ code: 0, data })
     } catch (error) {

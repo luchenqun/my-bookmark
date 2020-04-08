@@ -37,16 +37,16 @@
     <div class="ui right aligned grid" ng-show="note.detail">
       <div class="sixteen wide column" style="margin:0px 20px 0px 0px;padding:20px 0px 0px 0px;">
         <div class="extra content" ng-show="true" ng-mouseleave="note.edit=false;" style="height:50px;">
-          <div class="ui mini label" ng-click="clickTag(note.tag_id)" style="margin:3px 0px 0px 10px;cursor:default;">{{ note.tagName || "未分类" }}</div>
+          <div class="ui mini label" ng-click="clickTag(note.tagId)" style="margin:3px 0px 0px 10px;cursor:default;">{{ note.tagName || "未分类" }}</div>
           <span style="margin:0 8px;">
-            <span title="添加于{{note.created_at}}" class="need_to_be_rendered" data-timeago="{{ note.created_at }}"></span>
+            <span title="添加于{{note.createdAt}}" class="need_to_be_rendered" data-timeago="{{ note.createdAt }}"></span>
             <span style="margin-left:-3px;">添加</span>
           </span>
           <i ng-if="note.public == 0" class="black lock icon" title="点击公开备忘" ng-click="updatePublic(note, 1)"></i>
           <i ng-if="note.public == 1" class="black open lock icon" title="点击不公开备忘" ng-click="updatePublic(note, 0)"></i>
           <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/delete.png" ng-click="delNote(note.id, note.content)" title="删除备忘" />
           <label for="noteedit">
-            <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id, note.content, note.tag_id)" title="编辑备忘" />
+            <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/edit-bookmark.png" ng-click="editNote(note.id, note.content, note.tagId)" title="编辑备忘" />
           </label>
           <img class="ui mini spaced image" id="noteid{{note.id}}" style="width:16px;height:16px;margin:0 8px;" ng-src="./images/copy.png" id="url{{bookmark.id}}" ng-click="copy(note.content)" title="复制备忘" />
           <i class="black share alternate icon" title="复制分享地址" ng-click="share(note)"></i>

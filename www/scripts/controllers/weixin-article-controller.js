@@ -225,8 +225,8 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$win
                 }
               }
               b.favCount = bookmark.favCount;
-              b.created_at = $filter('date')(new Date(bookmark.createtime < bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
-              b.last_click = $filter('date')(new Date(bookmark.createtime > bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
+              b.createdAt = $filter('date')(new Date(bookmark.createtime < bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
+              b.lastClick = $filter('date')(new Date(bookmark.createtime > bookmark.updatetime ? bookmark.createtime : bookmark.updatetime), "yyyy-MM-dd HH:mm:ss");
               b.id = bookmark.articleId;
               b.index = $scope.bookmarks.length - 1;
               $scope.bookmarks.push(b);

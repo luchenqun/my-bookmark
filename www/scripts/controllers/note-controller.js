@@ -195,7 +195,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       if (note.id == $scope.currentNoteId) {
         note.content = $scope.content;
         note.tagName = tagName;
-        note.tag_id = $scope.currentTagId;
+        note.tagId = $scope.currentTagId;
         toPos(note.id);
       }
     })
@@ -292,7 +292,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       var key = event.key.toUpperCase();
       if ($scope.hoverNote && dataService.keyShortcuts()) {
         if (key == 'E') {
-          $scope.editNote($scope.hoverNote.id, $scope.hoverNote.content, $scope.hoverNote.tag_id)
+          $scope.editNote($scope.hoverNote.id, $scope.hoverNote.content, $scope.hoverNote.tagId)
         } else if (key == 'I') {
           $scope.detailNote($scope.hoverNote.content)
         } else if (key == 'D') {
@@ -304,7 +304,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     })
   });
 
-  let count = 1;
   async function getNotes(tagId) {
     $scope.notes = [];
     $scope.loading = true;
@@ -314,7 +313,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       keyword: $scope.keyword,
       tagId: tagId || $scope.currentTagId
     };
-    // if (count++ % 2) return;
 
     let reply = await get("notes", params);
     $timeout(function () {
@@ -325,14 +323,14 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
           note.brief = note.brief.replace(/\n/g, "");
         }
         note.brief = "       " + note.brief.substring(0, 200) + (note.content.length > 200 ? " ......" : "");
+        let tag = $scope.tags.find(tag => tag.id == note.tagId);
+        tag && (note.tagName = tag.name);
       })
 
       $scope.notes = notes;
       $scope.totalPages = reply.totalPages;
       $scope.totalItems = reply.count;
 
-      timeagoInstance.cancel();
-      timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
       // 如果需要增加书签
       if ($scope.key == 'A') {
         $scope.key = null;
@@ -343,6 +341,11 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
         $(".js-note").removeClass("hidden");
       }
     })
+
+    $timeout(() => {
+      timeagoInstance.cancel();
+      timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+    }, 50);
   }
 
   async function updateTags(_tags) {

@@ -35,7 +35,7 @@
         <div class="content" style="cursor: move" sv-handle>
           <div class="description">
             <p>书签：{{ tag.bookmarkCount || 0 }}个</p>
-            <p>{{ tag.last_use }}</p>
+            <p>{{ tag.lastUse }}</p>
           </div>
         </div>
         <div class="extra content">
@@ -58,8 +58,8 @@
     <tr>
       <th class="forbid_sorted">标题</th>
       <th class="forbid_sorted">链接</th>
-      <th style="width:90px;" ng-class="{descending: showType == 'createdAt', sorted:showType == 'createdAt'}" ng-click="getBookmarks(null, 1, 'createdAt')" title="点击可对表格进行排序">点击次数</th>
-      <th style="width:100px;" ng-class="{descending: showType == 'clickCount', sorted:showType == 'clickCount'}" ng-click="getBookmarks(null, 1, 'clickCount')" title="点击可对表格进行排序">创建日期</th>
+      <th style="width:90px;" ng-class="{descending: showType == 'clickCount', sorted:showType == 'clickCount'}" ng-click="getBookmarks(null, 1, 'clickCount')" title="点击可对表格进行排序">点击次数</th>
+      <th style="width:100px;" ng-class="{descending: showType == 'createdAt', sorted:showType == 'createdAt'}" ng-click="getBookmarks(null, 1, 'createdAt')" title="点击可对表格进行排序">添加日期</th>
       <th style="width:100px;" ng-class="{descending: showType == 'lastClick', sorted:showType == 'lastClick'}" ng-click="getBookmarks(null, 1, 'lastClick')" title="点击可对表格进行排序">最后点击</th>
       <th style="width:150px;" class="forbid_sorted">分类</th>
       <th style="width:88px;" class="forbid_sorted">操作</th>
@@ -76,16 +76,16 @@
       <td>
         <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor:default;">{{ bookmark.url }}</span>
       </td>
-      <td>{{ bookmark.click_count }}</td>
+      <td>{{ bookmark.clickCount }}</td>
       <td>
         <span title="{{bookmark.createdAt}}" class="need_to_be_rendered" data-timeago="{{bookmark.createdAt}}"></span>
       </td>
       <td>
-        <span id="time{{bookmark.id}}" title="{{bookmark.last_click}}" class="need_to_be_rendered" data-timeago="{{bookmark.last_click}}"></span>
+        <span id="time{{bookmark.id}}" title="{{bookmark.lastClick}}" class="need_to_be_rendered" data-timeago="{{bookmark.lastClick}}"></span>
       </td>
       <td>
-        <div class="ui label" ng-repeat="tag in bookmark.tags" tag-id="{{ tag.id }}" ng-click="getBookmarks(tag.id, 1, null)">
-          {{ tag.name }}
+        <div class="ui label">
+          {{ bookmark.tagName }}
         </div>
       </td>
       <td>

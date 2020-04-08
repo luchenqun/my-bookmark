@@ -9,8 +9,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     await getTags();
   })()
 
-  var dialog = null;
-  var addBookmarkId = -1;
+  let dialog = null;
+  let addBookmarkId = -1; // 新增一个书签会重新刷新页面
+  let timeagoInstance = timeago();
+
   $scope.hoverBookmark = null;
   $scope.showType = "createdAt";
   $scope.loading = true;
@@ -27,7 +29,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.waitDelTag = {};
   $scope.waitDelBookmark = {};
   $scope.bookmarkNormalHover = false;
-  var timeagoInstance = timeago();
 
   pubSubService.subscribe('MenuCtr.tags', $scope, function (event, data) {
     console.log('subscribe MenuCtr.tags', data);
@@ -57,7 +58,13 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     };
 
     let reply = await get('bookmarksByTag', params);
-    $scope.bookmarks = reply.data;
+    let bookmarks = reply.data;
+    for (bookmark of bookmarks) {
+      let tag = $scope.tags.find(tag => tag.id == bookmark.tagId);
+      tag && (bookmark.tagName = tag.name);
+    }
+
+    $scope.bookmarks = bookmarks;
     $scope.totalPages = reply.totalPages;
     $scope.inputPage = '';
     $scope.loading = false;
@@ -67,6 +74,14 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         tag.bookmarkCount = reply.count;
       }
     }
+
+    let id = setInterval(() => {
+      if (document.querySelectorAll('.need_to_be_rendered').length > 0) {
+        timeagoInstance.cancel();
+        timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+        clearInterval(id);
+      }
+    }, 10);
 
     pubSubService.publish('Common.menuActive', {
       login: true,
@@ -78,7 +93,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         duration: 1000,
       });
       addBookmarkId = -1;
-    });
+    }, 10);
   };
 
   $scope.changeCurrentPage = function (currentPage) {

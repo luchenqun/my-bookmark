@@ -522,7 +522,7 @@ module.exports = class extends Base {
   // 获取所有留言
   async advicesAction() {
     try {
-      let data = await this.model("advices").order("createdAt DESC").select();
+      let data = await this.model("advices").join('users ON users.id = advices.userId').order("createdAt DESC").field('advices.*,users.username').select();
       this.json({ code: 0, data });
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });

@@ -37,7 +37,7 @@ app.controller('adviceCtr', ['$scope', '$state', '$timeout', 'pubSubService', 'd
   async function getAdvices() {
     let data = await get("advices");
     data.forEach(element => {
-      element.imgData = new Identicon(md5(element.username)).toString();
+      element.imgData = new Identicon(md5(element.userId)).toString();
     });
     $scope.comment = "";
     $timeout(function () {

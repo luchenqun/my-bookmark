@@ -235,7 +235,7 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
   async function getTags() {
     let tags = await get('tags');
     tags.sort((a, b) => {
-      if (a.last_use > b.last_use) return -1;
+      if (a.lastUse > b.lastUse) return -1;
       return 1;
     })
     tags.forEach((tag) => {

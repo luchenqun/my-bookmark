@@ -387,14 +387,14 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     // 通过缓存tags，如果回来的tags跟缓存的一致，那么这个时间差就省下来了
     let tags = JSON.parse(localStorage.getItem("tags") || "[]");
     if (tags.length > 0) {
-      get('tags', { bookmarkCount: true }).then((_tags) => {
+      get('tags').then((_tags) => {
         if (JSON.stringify(tags) != JSON.stringify(_tags)) {
           localStorage.setItem("tags", JSON.stringify(tags));
           updateTags(tags);
         }
       });
     } else {
-      tags = await get('tags', { bookmarkCount: true });
+      tags = await get('tags');
       localStorage.setItem("tags", JSON.stringify(tags));
     }
     updateTags(tags);

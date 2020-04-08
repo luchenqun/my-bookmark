@@ -5,10 +5,9 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     return;
   }
 
-  const perPageItems = 35;
   var dialog = null;
   $scope.hoverNote = null;
-  $scope.loadBusy = false;
+  $scope.loading = false;
   $scope.add = false;
   $scope.edit = false;
   $scope.preContent = '';
@@ -26,14 +25,12 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
   var timeagoInstance = timeago();
 
-  get('user').then(user => {
-    pubSubService.publish('Common.menuActive', {
-      login: true,
-      index: dataService.LoginIndexNote
-    });
-    getTags();
-    getNotes();
+  pubSubService.publish('Common.menuActive', {
+    login: true,
+    index: dataService.LoginIndexNote
   });
+
+  getTags();
 
   $scope.changeCurrentPage = function (currentPage) {
     currentPage = parseInt(currentPage) || 0;
@@ -236,9 +233,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $scope.totalItems = 0;
     updateSelectTag(id);
 
-    if ($scope.add || $scope.edit) {
-
-    } else {
+    if (!($scope.add || $scope.edit)) {
       $scope.currentPage = 1;
       getNotes($scope.currentTagId);
     }
@@ -287,7 +282,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       tag.clicked = false;
       if (tag.id == tagId) {
         tag.clicked = true;
-        t = tag;
       }
     })
   }
@@ -310,73 +304,81 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     })
   });
 
+  let count = 1;
   async function getNotes(tagId) {
     $scope.notes = [];
-    $scope.loadBusy = true;
+    $scope.loading = true;
     var params = {
       page: $scope.currentPage,
-      pageSize: perPageItems,
+      pageSize: 35,
       keyword: $scope.keyword,
       tagId: tagId || $scope.currentTagId
     };
+    // if (count++ % 2) return;
 
-    try {
-      let reply = await get("notes", params);
-      $scope.notes = reply.data;
-      $scope.notes.forEach((note) => {
+    let reply = await get("notes", params);
+    $timeout(function () {
+      let notes = reply.data;
+      notes.forEach((note) => {
         note.brief = note.content || "";
         while (note.brief.indexOf("\n") > 0) {
           note.brief = note.brief.replace(/\n/g, "");
         }
         note.brief = "       " + note.brief.substring(0, 200) + (note.content.length > 200 ? " ......" : "");
       })
+
+      $scope.notes = notes;
       $scope.totalPages = reply.totalPages;
       $scope.totalItems = reply.count;
-      $timeout(function () {
-        timeagoInstance.cancel();
-        timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
-        // 如果需要增加书签
-        if ($scope.key == 'A') {
-          $scope.key = null;
-          $scope.showAddNote();
-        }
-      }, 100)
-      $scope.loadBusy = false;
+
+      timeagoInstance.cancel();
+      timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+      // 如果需要增加书签
+      if ($scope.key == 'A') {
+        $scope.key = null;
+        $scope.showAddNote();
+      }
+      $scope.loading = false;
       if ($scope.totalItems == 0) {
         $(".js-note").removeClass("hidden");
       }
-      transition();
-    } catch (error) {
-      $scope.notes = [];
-      $scope.loadBusy = false;
-    }
+    })
   }
 
-  async function getTags() {
-    $scope.loadBusy = true;
-    $scope.tags = []
+  async function updateTags(_tags) {
+    let tags = JSON.parse(JSON.stringify(_tags));
+    $scope.loading = true;
+    $scope.tags = [];
 
-    let tags = await get('tags', { noteCount: true });
     let find = false;
     tags.forEach((tag) => {
-      $scope.tags.push(tag);
       if (tag.id == $scope.currentTagId) {
         find = true; // 如果是删了分类返回来，那么要重新默认选中第一个分类
       }
     })
     if (!find) $scope.currentTagId = null;
-    $scope.loadBusy = false;
+
+    $timeout(() => {
+      $scope.loading = false;
+      $scope.tags = tags;
+      getNotes();
+    })
   }
 
-  $('.js-note-card').transition('hide');
-
-  function transition() {
-    var className = 'js-note-card';
-    $('.' + className).transition('hide');
-    $('.' + className).transition({
-      animation: dataService.animation(),
-      duration: 500,
-    });
+  async function getTags() {
+    // 通过缓存tags，如果回来的tags跟缓存的一致，那么这个时间差就省下来了
+    let tags = JSON.parse(localStorage.getItem("tags") || "[]");
+    if (tags.length > 0) {
+      get('tags').then((_tags) => {
+        if (JSON.stringify(tags) != JSON.stringify(_tags)) {
+          localStorage.setItem("tags", JSON.stringify(tags));
+        }
+      });
+    } else {
+      tags = await get('tags');
+      localStorage.setItem("tags", JSON.stringify(tags));
+    }
+    updateTags(tags);
   }
 
   function toPos(id) {

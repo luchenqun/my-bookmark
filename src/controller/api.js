@@ -568,14 +568,17 @@ module.exports = class extends Base {
   }
 
   async notesAction() {
+    let params = this.get();
     let where = {};
     try {
-      let keyword = this.get('keyword');
-      if (keyword) {
-        where.content = ['like', `%${keyword}%`]
+      if (params.keyword) {
+        where.content = ['like', `%${params.keyword}%`]
+      }
+      if (params.tagId) {
+        where.tagId = params.tagId;
       }
       let data = await this.model('notes').where(where).order("createdAt DESC").page(this.get('page'), this.get('pageSize')).countSelect();
-      this.json({ code: 0, data });
+      this.json({ code: 0, data })
     } catch (error) {
       this.json({ code: 1, msg: error.toString() });
     }

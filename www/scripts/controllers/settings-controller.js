@@ -24,7 +24,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $scope.form[index] = true;
     if (index == 0 || index == 1 || index == 4) {
       let user = await get('user', { full: true });
-      let tags = await get('tags', { bookmarkCount: true, noteCount: true });
+      let tags = await get('tags');
       $timeout(() => {
         $scope.user = user
         $scope.quickUrl = objKeySort(JSON.parse($scope.user.quickUrl || '{}'));

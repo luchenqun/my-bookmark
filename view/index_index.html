@@ -3,7 +3,7 @@
   <!-- 百度统计 -->
   <script>
     var _hmt = _hmt || [];
-    (function() {
+    (function () {
       var hm = document.createElement("script");
       hm.src = "https://hm.baidu.com/hm.js?01351b0343ccf42968923cff21a4a851";
       var s = document.getElementsByTagName("script")[0];
@@ -26,34 +26,45 @@
     <link href="css/externe/ngDialog-theme-default.css" rel="stylesheet" />
     <link href="css/externe/ngDialog-theme-plain.css" rel="stylesheet" />
     <script type="text/javascript">
-      window.onload = function() {
+      window.onload = function () {
         var clipboard = new ClipboardJS(document.getElementById("clipboard"));
-        clipboard.on("success", function(e) {
+        clipboard.on("success", function (e) {
           var text = e.text.length >= 180 ? e.text.substr(0, 180) + "..." : e.text;
           toastr.success(text + "<br/>已复制到您的剪切板", "提示");
           e.clearSelection();
         });
-        clipboard.on("error", function(e) {
+        clipboard.on("error", function (e) {
           var text = e.text.length >= 180 ? e.text.substr(0, 180) + "..." : e.text;
           toastr.error(text + "<br/>复制失败", "提示");
         });
       };
+      let resizeContainer = () => {
+        let count = 1;
+        let id = setInterval(() => {
+          if (count++ >= 100) {
+            clearInterval(id);
+          }
+          $("#js-container").css("left", ($(window).width() - $("#js-container").width()) / 2);
+        }, 10);
+      };
+      window.onresize = resizeContainer;
+      resizeContainer();
     </script>
   </head>
 
   <body ng-app="bookmarkApp">
-    <div class="ui container">
+    <div class="ui container" id="js-container" style="position: absolute;left: 86;">
       <!-- directive：菜单 -->
       <menus></menus>
-      <div class="ui container" style="width:100%;height:2px"></div>
+      <div class="ui container" style="width: 100%; height: 2px;"></div>
       <div class="ui container">
         <div ui-view></div>
       </div>
-      <div class="ui container" style="width:100%;height:10px"></div>
-      <div class="foot" style="margin-bottom:10px;">
+      <div class="ui container" style="width: 100%; height: 10px;"></div>
+      <div class="foot" style="margin-bottom: 10px;">
         <div class="ui segment container">我爱佳佳与这个世界&nbsp;&nbsp;|&nbsp;&nbsp;Copyleft ©All Rights Reserved LCQ&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://m.mybookmark.cn/">移动设备访问</a>&nbsp;&nbsp;|&nbsp;&nbsp;联系我(QQ:530485521)&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://github.com/luchenqun/my-bookmark" target="_blank">网站源码</a>&nbsp;&nbsp;|&nbsp;&nbsp;V1.5.0&nbsp;&nbsp;|&nbsp;&nbsp;<span>加载失败，请按F5！(●'◡'●)</span><br /></div>
         <!-- 主要用来配合clipboard.min.js复制文本的 -->
-        <div id="clipboard" data-clipboard-text="i love this world and jiajia!" style="opacity:0;cursor:default">
+        <div id="clipboard" data-clipboard-text="i love this world and jiajia!" style="opacity: 0; cursor: default;">
           <span>Copy</span>
         </div>
       </div>

@@ -13,8 +13,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   var addBookmarkId = -1;
   $scope.hoverBookmark = null;
   $scope.showType = "createdAt";
-  $scope.loading = false;
-  $scope.loadTags = false;
+  $scope.loading = true;
   $scope.tags = []; // 书签数据
   $scope.tagsIndex = []; // 书签索引
   $scope.bookmarks = [];
@@ -344,7 +343,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   async function updateTags(_tags) {
     let tags = JSON.parse(JSON.stringify(_tags));
 
-    $scope.loadTags = true;
+    $scope.loading = true;
     $scope.tags = [];
 
     tags.unshift({
@@ -370,13 +369,13 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       tags[0].bookmarkClicked = true;
     }
 
-    $scope.loadTags = false;
     pubSubService.publish('Common.menuActive', {
       login: true,
       index: dataService.LoginIndexTags
     });
 
     $timeout(() => {
+      $scope.loading = false;
       $scope.tags = tags;
       if (!$scope.editMode) {
         $scope.getBookmarks(null, null, null);
@@ -427,7 +426,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
   pubSubService.subscribe('EditCtr.addTagsSuccess', $scope, function (event, data) {
     console.log('subscribe EditCtr.addTagsSuccess', data);
-
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
     if (menusScope.login && menusScope.selectLoginIndex == 1) {
       getTags();

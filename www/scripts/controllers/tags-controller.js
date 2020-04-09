@@ -72,16 +72,19 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     for (let tag of $scope.tags) {
       if (tag.id == $scope.currentTagId) {
         tag.bookmarkCount = reply.count;
+        break;
       }
     }
 
-    let id = setInterval(() => {
-      if (document.querySelectorAll('.need_to_be_rendered').length > 0) {
-        timeagoInstance.cancel();
-        timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
-        clearInterval(id);
-      }
-    }, 10);
+    if ($scope.showMode == 'table' && bookmarks.length > 0) {
+      let id = setInterval(() => {
+        if (document.querySelectorAll('.need_to_be_rendered').length > 0) {
+          timeagoInstance.cancel();
+          timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+          clearInterval(id);
+        }
+      }, 10);
+    }
 
     pubSubService.publish('Common.menuActive', {
       login: true,
@@ -153,14 +156,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   }
 
   $scope.editBookmark = function (id) {
-    console.log('publish bookmarksCtr.editBookmark', { id });
     pubSubService.publish('bookmarksCtr.editBookmark', { id });
   }
 
   $scope.detailBookmark = async function (bookmark) {
-    bookmark.own = true;
     pubSubService.publish('TagCtr.showBookmarkInfo', bookmark);
-    await post("bookmarkClick", { id: bookmark.id });
   }
 
   $scope.copy = function (url) {
@@ -404,8 +404,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     if (tags.length > 0) {
       get('tags').then((_tags) => {
         if (JSON.stringify(tags) != JSON.stringify(_tags)) {
-          localStorage.setItem("tags", JSON.stringify(tags));
-          updateTags(tags);
+          localStorage.setItem("tags", JSON.stringify(_tags));
+          updateTags(_tags);
         }
       });
     } else {

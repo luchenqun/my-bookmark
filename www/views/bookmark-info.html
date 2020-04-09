@@ -29,17 +29,11 @@
             <div class="column" ng-if="bookmark.clickCount">
               <i class="hand pointer icon"></i>点击次数：{{bookmark.clickCount}}
             </div>
-            <div class="column" ng-if="bookmark.fav_count">
-              <i class="heart icon"></i>收藏人数：{{bookmark.fav_count}}
-            </div>
-            <div class="column" ng-if="!bookmark.created_by">
+            <div class="column" ng-if="bookmark.tagName">
               <i class="tags icon"></i>书签分类：
-              <div class="ui label" ng-repeat="tag in bookmark.tags">
-                {{ tag.name }}
+              <div class="ui label">
+                {{ bookmark.tagName }}
               </div>
-            </div>
-            <div class="column" ng-if="bookmark.created_by">
-              <i class="info circle icon"></i>来源信息：{{bookmark.created_by}}
             </div>
           </div>
         </div>

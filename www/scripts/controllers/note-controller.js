@@ -374,7 +374,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     if (tags.length > 0) {
       get('tags').then((_tags) => {
         if (JSON.stringify(tags) != JSON.stringify(_tags)) {
-          localStorage.setItem("tags", JSON.stringify(tags));
+          localStorage.setItem("tags", JSON.stringify(_tags));
+          updateTags(_tags);
         }
       });
     } else {

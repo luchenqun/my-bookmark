@@ -262,7 +262,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   }
 
   $scope.showAddTag = function () {
-    if ($scope.tags.length < 30) {
+    if ($scope.tags.length < 50) {
       console.log('showAddTag..........')
       $scope.newTag = "";
       dialog = ngDialog.open({
@@ -271,7 +271,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         scope: $scope
       });
     } else {
-      toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
+      toastr.error('标签个数总数不能超过50个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
     }
   }
 

@@ -56,7 +56,7 @@
         <p>
           对不起，您的风筝已掉线，请时光倒流回前一秒。<br />
           <span id="totalSecond">5</span>秒后自动
-          <a href="http://mybookmark.cn" class="backhome"><span>返回首页</span></a>
+          <a href="https://mybookmark.cn" class="backhome"><span>返回首页</span></a>
         </p>
       </div>
     </div>
@@ -71,7 +71,7 @@
     }
     setInterval(function() {
       if (second < 0) {
-        location.href = "http://mybookmark.cn";
+        location.href = document.location.origin;
       } else {
         if (navigator.appName.indexOf("Explorer") > -1) {
           document.getElementById("totalSecond").innerText = second--;

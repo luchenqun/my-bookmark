@@ -262,8 +262,8 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       time = 1000;
     }
     setTimeout(() => {
-      dataService.clipboard(`https://mybookmark.cn/api/notes/?shareNote=${note.id}`);
-      toastr.info(`将地址 https://mybookmark.cn/api/notes/?shareNote=${note.id} 发给别人粘贴到浏览器地址栏就可以访问到你分享的备忘啦！`, "提示");
+      dataService.clipboard(`${document.location.origin}/api/noteShare/?id=${note.id}`);
+      toastr.info(`将地址 ${document.location.origin}/api/noteShare/?id=${note.id} 发给别人粘贴到浏览器地址栏就可以访问到你分享的备忘啦！`, "提示");
     }, time)
   }
 
@@ -273,7 +273,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
       public: public,
     }
 
-    await post("updateNode", params);
+    await post("noteUpdate", params);
     note.public = public;
   }
 

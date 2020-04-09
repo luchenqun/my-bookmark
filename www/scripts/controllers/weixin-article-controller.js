@@ -285,7 +285,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$win
           b.account = articl.weixinaccount;
           b.snapUrl = articl.pic || defaultSnap;
           b.favCount = articl.likenum;
-          b.created_at = timeagoInstance.format(cdate, 'zh_CN');
+          b.createdAt = timeagoInstance.format(cdate, 'zh_CN');
           b.content = articl.content
           b.content = b.content.replace(/https:\/\/mmbiz.qpic.cn/gi, "http://img01.store.sogou.com/net/a/04/link?appid=100520029&url=https://mmbiz.qpic.cn")
           b.content = b.content.replace(/http:\/\/mmbiz.qpic.cn/gi, "http://img01.store.sogou.com/net/a/04/link?appid=100520029&url=https://mmbiz.qpic.cn")

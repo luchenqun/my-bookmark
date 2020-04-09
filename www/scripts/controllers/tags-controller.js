@@ -20,7 +20,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.tagsIndex = []; // 书签索引
   $scope.bookmarks = [];
   $scope.totalPages = 0;
-  $scope.currentPage = 1;
+  $scope.currentPage = 0;
   $scope.inputPage = '';
   $scope.currentTagId = ($stateParams && $stateParams.tagId) || (-1);
   $scope.editMode = false;
@@ -40,7 +40,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
     $scope.bookmarks = [];
     tagId && ($scope.currentTagId = tagId);
-    page && ($scope.currentPage = page);
+    Number.isInteger(page) && ($scope.currentPage = page);
     showType && ($scope.showType = showType);
     $scope.loading = true;
 

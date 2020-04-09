@@ -4,7 +4,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
   $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
   $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
   $scope.keyword = ''; /**< 搜索关键字 */
-  $scope.showStyle = null;
   $scope.searchHistory = [];
   $scope.historyTypes = dataService.historyTypes;
   $scope.quickUrl = {};
@@ -166,17 +165,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $timeout(function () {
       type && data && $('.js-history-popup').removeClass('hidden').addClass('visible');
     }, 500)
-  }
-
-  $scope.updateShowStyle = function (showStyle) {
-    console.log('updateShowStyle', showStyle);
-    $scope.showStyle = showStyle;
-    $('.js-radio-' + showStyle).checkbox('set checked');
-    $state.go('bookmarks', {
-      showStyle: showStyle,
-    }, {
-      reload: true,
-    })
   }
 
   $scope.showAddBookmarkMoadl = function () {

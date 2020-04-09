@@ -81,7 +81,6 @@ app.factory('dataService', [function () {
       return $(selector).length >= 1;
     },
     historyTypes: ['书签', '谷歌', 'Github', '栈溢出', '百度', '备忘录'],
-    showStyles: ['navigate', 'costomTag', 'card', 'table'],
     forbidQuickKey: {
       'A': '在任意界面，已用做新增备忘录',
       'C': '在有关书签页面，用作复制书签链接',

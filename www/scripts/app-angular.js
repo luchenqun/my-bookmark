@@ -51,9 +51,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
     .state('bookmarks', {
       url: '/bookmarks',
       templateUrl: 'views/bookmarks.html',
-      params: {
-        showStyle: null,
-      },
       controller: 'bookmarksCtr'
     })
     .state('weixin-article', {
@@ -103,9 +100,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
     .state('login', {
       url: '/login',
       templateUrl: 'views/login.html',
-      params: {
-        showStyle: 'table',
-      },
       controller: 'loginCtr'
     })
     .state('/', {

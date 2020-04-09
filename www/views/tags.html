@@ -1,6 +1,6 @@
 <div class="ui segment js-tags" ng-show="!loading || tags.length > 0">
   <div class="ui container" ng-show="!editMode" style="cursor:default">
-    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.bookmarkCount && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, 1, null)">
+    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.bookmarkCount && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, (tag.id == -1 ? 0 : 1), null)">
       {{ tag.name }} ({{ tag.bookmarkCount || 0 }})
     </div>
     <div class="ui label js-tag-label" style="margin:3px 15px 8px 0px;cursor:default;">
@@ -112,7 +112,7 @@
   </div>
   <div class="ui divider"></div>
   <div class="ui grid">
-    <div class="five wide column" style="margin-top:10px;">
+    <div class="five wide column" style="margin-top:10px;" ng-show="currentPage>0">
       <div class="ui three column grid" style="cursor: default;">
         <div class="column" ng-click="getBookmarks(null, 1, 'createdAt')">
           <i class="add to calendar large icon" ng-class="{green: showType == 'createdAt'}" style="margin-bottom:4px;"></i>
@@ -127,6 +127,8 @@
           <span ng-class="{fontgreen: showType == 'lastClick'}" style="margin-left:-5px;">最后点击</span>
         </div>
       </div>
+    </div>
+    <div class="five wide column" style="margin-top:10px;" ng-show="currentPage==0">
     </div>
     <div class="eleven wide column">
       <pagination></pagination>

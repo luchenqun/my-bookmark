@@ -61,7 +61,7 @@
       </div>
       <form class="ui form" ng-show="form[2]">
         <h2 class="ui dividing header">上传浏览器书签到系统</h2>
-        <div id="fileuploader" style="min-width:100px">点我上传</div>
+        <div id="fileuploader" style="min-width: 100px;">点我上传</div>
         <div class="ui container js-p-info">
           <p>注意事项</p>
           <p>1、导入的方法是将浏览器里面收藏的网站导出HTML文件。然后将导出的HTML文件点击上面的<code>Upload</code>按钮上传到服务器。目前只测试过谷歌浏览器跟IE浏览器的书签导入。但是因为浏览器的标签是可以支持互相导入的，我觉得应该是没问题的。如果不成功，可以先将其他浏览器的书签导入谷歌浏览器再导出。</p>
@@ -72,7 +72,8 @@
           <p>6、注意：从浏览器导入进系统的书签，没有浏览器目录的树形结构，在浏览器没有目录的标签，统统转入系统未分类目录下面。</p>
         </div>
         <h2 class="ui dividing header">导出为浏览器书签</h2>
-        <button class="fluid ui button" ng-click="exportBookmark()">导出书签</button>
+        <button class="fluid ui button" ng-class="{loading : loading}" ng-click="exportBookmark()">导出书签</button>
+        <p ng-if="href">如果没有自动下载，请点击此<a ng-href="{{href}}" target="_blank">{{href}}</a>进行下载，十分钟有效！若已下载，则此下载链接无效！</p>
       </form>
       <div class="ui container js-p-info" ng-show="form[3]">
         <h3 class="ui dividing header">为什么要做个网络书签</h3>
@@ -116,11 +117,11 @@
         <div class="ui form">
           <div class="inline fields">
             <div class="five wide field">
-              <label style="min-width:55px;">快捷键：</label>
+              <label style="min-width: 55px;">快捷键：</label>
               <input type="text" placeholder="请按相应的快捷键" ng-model="key" ng-keypress="quickKey($event.key)" />
             </div>
             <div class="nine wide field">
-              <label style="min-width:66px;">网站地址：</label>
+              <label style="min-width: 66px;">网站地址：</label>
               <input type="text" placeholder="请输入你需要快捷打开的网站地址" ng-model="url" />
             </div>
             <div class="two wide field">
@@ -132,20 +133,20 @@
         <table class="ui selectable sortable celled table js-quick-url-table">
           <thead>
             <tr>
-              <th style="width:80px;">快捷键</th>
+              <th style="width: 80px;">快捷键</th>
               <th>网站地址</th>
-              <th style="width:45px;">操作</th>
+              <th style="width: 45px;">操作</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="(key, value) in quickUrl">
               <td>{{key}}</td>
               <td>
-                <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{value}}" err-src="./images/default.ico" style="width:16px;height:16px;" />
+                <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{value}}" err-src="./images/default.ico" style="width: 16px; height: 16px;" />
                 <span>{{value}}</span>
               </td>
               <td>
-                <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delUrl(key)" title="删除书签" />
+                <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px;" ng-src="./images/delete.png" ng-click="delUrl(key)" title="删除书签" />
               </td>
             </tr>
           </tbody>

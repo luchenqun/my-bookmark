@@ -18,9 +18,12 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
   $scope.key = '';
   $scope.url = '';
   $scope.quickUrl = {};
+  $scope.loading = false;
+  $scope.href = "";
 
   $scope.changeForm = async function (index) {
     console.log("changeForm = ", index);
+    $scope.href = "";
     $scope.form = $scope.form.map(() => false);
     $scope.form[index] = true;
     if (index == 0 || index == 1 || index == 4) {
@@ -113,8 +116,13 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
   }
 
   $scope.exportBookmark = async function () {
+    $scope.loading = true;
     let fileName = await get('bookmarkBackup');
-    $window.open(`${document.location.origin}/api/bookmarkDownload?fileName=${fileName}`, '_blank');
+    $timeout(() => {
+      $scope.href = `${document.location.origin}/api/bookmarkDownload?fileName=${fileName}`;
+      $scope.loading = false;
+      $window.open($scope.href, '_blank');
+    })
   }
 
   setTimeout(function () {

@@ -1,6 +1,6 @@
 app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'pubSubService', 'dataService', function ($scope, $stateParams, $state, $window, $timeout, $document, pubSubService, dataService) {
   console.log("Hello menuCtr")
-  $scope.login = false;
+  $scope.login = true;
   $scope.selectLoginIndex = 0; // 默认登陆之后的选择的菜单索引，下表从 0 开始 
   $scope.selectNotLoginIndex = 0; // 默认未登陆之后的选择的菜单索引，下表从 0 开始
   $scope.keyword = '';

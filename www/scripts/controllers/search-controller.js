@@ -4,6 +4,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
+  pubSubService.publish('Menus.active');
 
   $scope.hoverBookmark = null;
   $scope.bookmarks = []; // 书签数据
@@ -36,15 +37,11 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
       $scope.search();
     }
   }
+  pubSubService.subscribe('Common.user', $scope, function (event, user) {
+    $scope.user = user;
+  });
 
   get('tags').then((tags) => $scope.tags = tags)
-  get('user').then((user) => $scope.user = user)
-
-  // 默认登陆
-  pubSubService.publish('Common.menuActive', {
-    login: true,
-    index: dataService.LoginIndexBookmarks
-  });
 
   $scope.jumpToUrl = async function (url, id) {
     if (!$scope.edit) {

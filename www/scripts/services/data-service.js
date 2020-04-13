@@ -7,13 +7,11 @@ app.factory('dataService', [function () {
     LoginIndexHot: 3,
     LoginIndexSettings: 4,
     LoginIndexAdvice: 5,
-    LoginIndexPraise: 6,
 
     // 非登陆索引
     NotLoginIndexHome: 0,
     NotLoginIndexLogin: 1,
     NotLoginIndexHot: 2,
-    NotLoginIndexPraise: 3,
 
     loginMenus: [{
       uiSref: 'bookmarks',

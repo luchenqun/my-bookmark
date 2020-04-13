@@ -4,4 +4,5 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
+  pubSubService.publish('Menus.active');
 }]);

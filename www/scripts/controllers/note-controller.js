@@ -4,6 +4,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
+  pubSubService.publish('Menus.active');
 
   var dialog = null;
   $scope.hoverNote = null;
@@ -24,11 +25,6 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
   $scope.totalItems = 0;
 
   var timeagoInstance = timeago();
-
-  pubSubService.publish('Common.menuActive', {
-    login: true,
-    index: dataService.LoginIndexNote
-  });
 
   getTags();
 

@@ -4,6 +4,7 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
+  pubSubService.publish('Menus.active');
 
   $scope.forbidQuickKey = dataService.forbidQuickKey
   $scope.form = [false, false, false, false, false, false, false];
@@ -50,10 +51,6 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
       await post('userLogout');
 
       localStorage.setItem("authorization", "");
-      pubSubService.publish('Common.menuActive', {
-        login: false,
-        index: dataService.NotLoginIndexLogin
-      });
       $state.go('login', {})
     } else {
       toastr.error('新密码两次输入不一致', "错误");
@@ -135,10 +132,6 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
         console.log(files, response);
         if (response.code == 0) {
           setTimeout(function () {
-            pubSubService.publish('Common.menuActive', {
-              login: true,
-              index: dataService.LoginIndexBookmarks
-            });
             $state.go('tags', {})
           }, 3000);
           toastr.success(response.msg, "提示");
@@ -149,11 +142,6 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
     });
     $(".ui.pointing.menu .item").removeClass("selected");
   }, 500);
-
-  pubSubService.publish('Common.menuActive', {
-    login: true,
-    index: dataService.LoginIndexSettings
-  });
 
   async function saveQuickUrl() {
     await post("userUpdate", { quickUrl: JSON.stringify($scope.quickUrl) });

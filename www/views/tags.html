@@ -1,50 +1,50 @@
 <div class="ui segment js-tags" ng-show="!loading || tags.length > 0">
-  <div class="ui container" ng-show="!editMode" style="cursor:default">
-    <div class="ui label" style="margin:3px 15px 8px 0px;cursor:default;" ng-if="tag.bookmarkCount && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, (tag.id == -1 ? 0 : 1), null)">
+  <div class="ui container" ng-show="!editMode" style="cursor: default;">
+    <div class="ui label" style="margin: 3px 15px 8px 0px; cursor: default;" ng-if="tag.bookmarkCount && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, (tag.id == -1 ? 0 : 1), null)">
       {{ tag.name }} ({{ tag.bookmarkCount || 0 }})
     </div>
-    <div class="ui label js-tag-label" style="margin:3px 15px 8px 0px;cursor:default;">
+    <div class="ui label js-tag-label" style="margin: 3px 15px 8px 0px; cursor: default;">
       <i class="plus icon" data-content="点击添加分类" data-position="top center" ng-click="showAddTag()"></i>
       <i class="pencil alternate icon" data-content="点击进入分类编辑模式" data-position="top center" ng-click="toggleMode(true)"></i>
-      <i class="table icon" style="margin-right:0px;" data-content="点击以条目显示" data-position="top center" ng-show="showMode=='table'" ng-click="toggleShowMode('item')"></i>
-      <i class="list icon" style="margin-right:0px;" data-content="点击以表格显示" data-position="top center" ng-show="showMode=='item'" ng-click="toggleShowMode('table')"></i>
+      <i class="table icon" style="margin-right: 0px;" data-content="点击以条目显示" data-position="top center" ng-show="showMode=='table'" ng-click="toggleShowMode('item')"></i>
+      <i class="list icon" style="margin-right: 0px;" data-content="点击以表格显示" data-position="top center" ng-show="showMode=='item'" ng-click="toggleShowMode('table')"></i>
     </div>
   </div>
   <div class="ui container" ng-show="editMode" ng-mousedown="storeTagIndex()" ng-mouseup="updateTagIndex()">
     <p>提示：拖拽分类即可进行排序。如果添加新的分类，返回之后不会显示添加的分类，因为默认只显示有书签的分类。</p>
     <div class="ui six stackable cards" sv-root sv-part="tags">
-      <div class="card" style="background-color:#F5F5F5;" ng-click="showAddTag()" data-tooltip="添加书签">
+      <div class="card" style="background-color: #f5f5f5;" ng-click="showAddTag()" data-tooltip="添加书签">
         <div class="image">
           <img src="./images/add-tag.png" />
         </div>
       </div>
-      <div class="card" style="background-color:#F5F5F5;" ng-click="toggleMode(false)" data-tooltip="退出编辑模式">
+      <div class="card" style="background-color: #f5f5f5;" ng-click="toggleMode(false)" data-tooltip="退出编辑模式">
         <div class="image">
           <img src="./images/back-tag.png" />
         </div>
       </div>
-      <div class="card" ng-repeat="tag in tags" id="tag{{tag.id}}" sv-element>
+      <div class="card" ng-repeat="tag in tags" id="tag{{tag.id}}" ng-if="tag.id > -1" sv-element>
         <div class="content">
           <div class="header" ng-if="!tag.edit">{{ tag.name }}</div>
-          <div class="ui large fluid transparent input" style="height:19px;" ng-if="tag.edit">
-            <input type="text" ng-model="tag.name" style="font-size:18px;" id="tagedit{{tag.id}}" />
-            <i class="checkmark icon" style="cursor:pointer;" ng-click="updateTag(tag)" title="更新分类"></i>
-            <i class="mail forward icon" style="cursor:pointer;" ng-click="backTag(tag)" title="放弃更新"></i>
+          <div class="ui large fluid transparent input" style="height: 19px;" ng-if="tag.edit">
+            <input type="text" ng-model="tag.name" style="font-size: 18px;" id="tagedit{{tag.id}}" />
+            <i class="checkmark icon" style="cursor: pointer;" ng-click="updateTag(tag)" title="更新分类"></i>
+            <i class="mail forward icon" style="cursor: pointer;" ng-click="backTag(tag)" title="放弃更新"></i>
           </div>
         </div>
-        <div class="content" style="cursor: move" sv-handle>
+        <div class="content" style="cursor: move;" sv-handle>
           <div class="description">
             <p>书签：{{ tag.bookmarkCount || 0 }}个</p>
             <p>{{ tag.lastUse }}</p>
           </div>
         </div>
         <div class="extra content">
-          <img class="ui mini spaced image right floated" style="width:16px;height:16px;margin:0 5px" ng-src="./images/delete.png" ng-click="delTag(tag)" title="删除分类" />
+          <img class="ui mini spaced image right floated" style="width: 16px; height: 16px; margin: 0 5px;" ng-src="./images/delete.png" ng-click="delTag(tag)" title="删除分类" />
           <label for="tagedit{{tag.id}}" ng-show="!tag.edit">
-            <img class="ui mini spaced image right floated" style="width:16px;height:16px;margin:0 5px" ng-src="./images/edit-bookmark.png" ng-click="editTag(tag)" title="编辑分类" />
+            <img class="ui mini spaced image right floated" style="width: 16px; height: 16px; margin: 0 5px;" ng-src="./images/edit-bookmark.png" ng-click="editTag(tag)" title="编辑分类" />
           </label>
-          <i class="eye black icon right floated" style="cursor:pointer;" ng-if="tag.show" ng-click="updateTagShow(tag, 0)" title="点击隐藏分类"></i>
-          <i class="eye black slash icon right floated" style="cursor:pointer;" ng-if="!tag.show" ng-click="updateTagShow(tag, 1)" title="点击显示分类"></i>
+          <i class="eye black icon right floated" style="cursor: pointer;" ng-if="tag.show" ng-click="updateTagShow(tag, 0)" title="点击隐藏分类"></i>
+          <i class="eye black slash icon right floated" style="cursor: pointer;" ng-if="!tag.show" ng-click="updateTagShow(tag, 1)" title="点击显示分类"></i>
         </div>
       </div>
     </div>
@@ -53,28 +53,28 @@
 <div class="ui huge text centered inline loader" style="margin-top: 10px;" ng-class="{active:loading, disabled: !loading}">
   正在加载中...
 </div>
-<table class="ui selectable sortable celled table js-tags-table" ng-if="showMode=='table'" style="margin-top:-15px;" ng-show="!loading && !editMode">
+<table class="ui selectable sortable celled table js-tags-table" ng-if="showMode=='table'" style="margin-top: -15px;" ng-show="!loading && !editMode">
   <thead>
     <tr>
       <th class="forbid_sorted">标题</th>
       <th class="forbid_sorted">链接</th>
-      <th style="width:90px;" ng-class="{descending: showType == 'clickCount', sorted:showType == 'clickCount'}" ng-click="getBookmarks(null, 1, 'clickCount')" title="点击可对表格进行排序">点击次数</th>
-      <th style="width:100px;" ng-class="{descending: showType == 'createdAt', sorted:showType == 'createdAt'}" ng-click="getBookmarks(null, 1, 'createdAt')" title="点击可对表格进行排序">添加日期</th>
-      <th style="width:100px;" ng-class="{descending: showType == 'lastClick', sorted:showType == 'lastClick'}" ng-click="getBookmarks(null, 1, 'lastClick')" title="点击可对表格进行排序">最后点击</th>
-      <th style="width:150px;" class="forbid_sorted">分类</th>
-      <th style="width:88px;" class="forbid_sorted">操作</th>
+      <th style="width: 90px;" ng-class="{descending: showType == 'clickCount', sorted:showType == 'clickCount'}" ng-click="getBookmarks(null, 1, 'clickCount')" title="点击可对表格进行排序">点击次数</th>
+      <th style="width: 100px;" ng-class="{descending: showType == 'createdAt', sorted:showType == 'createdAt'}" ng-click="getBookmarks(null, 1, 'createdAt')" title="点击可对表格进行排序">添加日期</th>
+      <th style="width: 100px;" ng-class="{descending: showType == 'lastClick', sorted:showType == 'lastClick'}" ng-click="getBookmarks(null, 1, 'lastClick')" title="点击可对表格进行排序">最后点击</th>
+      <th style="width: 150px;" class="forbid_sorted">分类</th>
+      <th style="width: 88px;" class="forbid_sorted">操作</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
       <td>
-        <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" />
-        <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
+        <img class="ui ui middle aligned tiny image" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width: 16px; height: 16px; cursor: pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" />
+        <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor: pointer;">
           {{ bookmark.title }}
         </span>
       </td>
       <td>
-        <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor:default;">{{ bookmark.url }}</span>
+        <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor: default;">{{ bookmark.url }}</span>
       </td>
       <td>{{ bookmark.clickCount }}</td>
       <td>
@@ -89,9 +89,9 @@
         </div>
       </td>
       <td>
-        <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签" />
-        <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签" />
-        <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情" />
+        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px;" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签" />
+        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px;" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签" />
+        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px;" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情" />
       </td>
     </tr>
   </tbody>
@@ -103,33 +103,32 @@
     </tr>
   </tfoot>
 </table>
-<div class="ui segment js-tag-costomTag" ng-if="showMode=='item'" style="margin-top:-15px;" ng-show="!loading && !editMode">
+<div class="ui segment js-tag-costomTag" ng-if="showMode=='item'" style="margin-top: -15px;" ng-show="!loading && !editMode">
   <div class="ui five column grid">
     <div ng-repeat="bookmark in bookmarks" class="column js-costomTag-item" ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}" ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)" ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}" id="{{bookmark.id}}">
-      <img class="ui ui middle aligned tiny image bookmarkInfo" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" />
+      <img class="ui ui middle aligned tiny image bookmarkInfo" ng-src="http://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width: 16px; height: 16px;" ng-click="detailBookmark(bookmark);$event.stopPropagation()" />
       <span>{{ bookmark.title}}</span>
     </div>
   </div>
   <div class="ui divider"></div>
   <div class="ui grid">
-    <div class="five wide column" style="margin-top:10px;" ng-show="currentPage>0">
+    <div class="five wide column" style="margin-top: 10px;" ng-show="currentPage>0">
       <div class="ui three column grid" style="cursor: default;">
         <div class="column" ng-click="getBookmarks(null, 1, 'createdAt')">
-          <i class="add to calendar large icon" ng-class="{green: showType == 'createdAt'}" style="margin-bottom:4px;"></i>
-          <span ng-class="{fontgreen: showType == 'createdAt'}" style="margin-left:-5px;">添加日期</span>
+          <i class="add to calendar large icon" ng-class="{green: showType == 'createdAt'}" style="margin-bottom: 4px;"></i>
+          <span ng-class="{fontgreen: showType == 'createdAt'}" style="margin-left: -5px;">添加日期</span>
         </div>
         <div class="column" ng-click="getBookmarks(null, 1, 'clickCount')">
-          <i class="sort numeric descending large icon" ng-class="{green: showType == 'clickCount'}" style="margin-bottom:4px;"></i>
-          <span ng-class="{fontgreen: showType == 'clickCount'}" style="margin-left:-5px;">点击次数</span>
+          <i class="sort numeric descending large icon" ng-class="{green: showType == 'clickCount'}" style="margin-bottom: 4px;"></i>
+          <span ng-class="{fontgreen: showType == 'clickCount'}" style="margin-left: -5px;">点击次数</span>
         </div>
         <div class="column" ng-click="getBookmarks(null, 1, 'lastClick')">
-          <i class="sort alphabet descending large icon" ng-class="{green: showType == 'lastClick'}" style="margin-bottom:4px;"></i>
-          <span ng-class="{fontgreen: showType == 'lastClick'}" style="margin-left:-5px;">最后点击</span>
+          <i class="sort alphabet descending large icon" ng-class="{green: showType == 'lastClick'}" style="margin-bottom: 4px;"></i>
+          <span ng-class="{fontgreen: showType == 'lastClick'}" style="margin-left: -5px;">最后点击</span>
         </div>
       </div>
     </div>
-    <div class="five wide column" style="margin-top:10px;" ng-show="currentPage==0">
-    </div>
+    <div class="five wide column" style="margin-top: 10px;" ng-show="currentPage==0"></div>
     <div class="eleven wide column">
       <pagination></pagination>
     </div>

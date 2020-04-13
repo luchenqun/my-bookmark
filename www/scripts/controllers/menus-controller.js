@@ -1,43 +1,48 @@
 app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$timeout', '$document', 'pubSubService', 'dataService', function ($scope, $stateParams, $state, $window, $timeout, $document, pubSubService, dataService) {
   console.log("Hello menuCtr")
-  $scope.login = false; /**< 是否登陆 */
-  $scope.selectLoginIndex = 0; /**< 默认登陆之后的选择的菜单索引，下表从 0 开始 */
-  $scope.selectNotLoginIndex = 0; /**< 默认未登陆之后的选择的菜单索引，下表从 0 开始 */
-  $scope.keyword = ''; /**< 搜索关键字 */
+  $scope.login = false;
+  $scope.selectLoginIndex = 0; // 默认登陆之后的选择的菜单索引，下表从 0 开始 
+  $scope.selectNotLoginIndex = 0; // 默认未登陆之后的选择的菜单索引，下表从 0 开始
+  $scope.keyword = '';
   $scope.searchHistory = [];
   $scope.historyTypes = dataService.historyTypes;
   $scope.quickUrl = {};
   $scope.longPress = false;
   $scope.user = {};
+  $scope.loaded = false; // 是否加载完毕
 
-  // 防止在登陆的情况下，在浏览器里面直接输入url，这时候要更新菜单选项
-  pubSubService.subscribe('Common.menuActive', $scope, function (event, params) {
-    console.log("subscribe Common.menuActive, login = " + params.login + ", index = " + params.index);
-    $scope.login = (params && params.login) || false;
-    var index = $scope.login ? ($scope.selectLoginIndex = (params && params.index) || 0) : ($scope.selectNotLoginIndex = (params && params.index) || 0);
-    updateMenuActive(index);
+  pubSubService.subscribe('Login', $scope, function (event, login) {
+    $scope.login = login;
   });
 
-  pubSubService.subscribe('Settings.quickUrl', $scope, function (event, params) {
-    $scope.quickUrl = params.quickUrl;
+  function sleep(time) { return new Promise((resolve) => setTimeout(resolve, time)); }
+
+  pubSubService.subscribe('Menus.active', $scope, async function () {
+    while (!$scope.loaded) { await sleep(10); }
+    updateMenuActive();
   });
 
   $scope.loginMenus = dataService.loginMenus; // 登陆之后显示的菜单数据。uiSerf：内部跳转链接。
   $scope.notLoginMenus = dataService.notLoginMenus; // 未登陆显示的菜单数据
 
-  get('user', { full: true }).then(user => {
-    $timeout(() => {
-      $scope.user = user;
-      $scope.searchHistory = JSON.parse(user.searchHistory || '[]');
-      $scope.quickUrl = JSON.parse(user.quickUrl || '{}');
-      $scope.searchHistory.forEach((item, index) => {
-        $scope.searchIcon(item);
-      })
-      // if ($scope.user.username === 'lcq') {
-      //   $scope.loginMenus[dataService.LoginIndexHot].show = false;
-      // }
+  (async () => {
+    $timeout(async () => {
+      try {
+        let user = await get('user', { full: true });
+        $scope.login = true;
+        $scope.user = user;
+        $scope.searchHistory = JSON.parse(user.searchHistory || '[]');
+        $scope.quickUrl = JSON.parse(user.quickUrl || '{}');
+        for (const item of $scope.searchHistory) {
+          $scope.searchIcon(item);
+        }
+      } catch (error) {
+        $scope.login = false;
+      }
+      pubSubService.publish('Common.user', $scope.user);
+      $scope.loaded = true;
     })
-  });
+  })()
 
   $scope.toggleReady = function (ready) {
     if (ready) {
@@ -84,7 +89,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
       }, {
         reload: true,
       })
-      updateMenuActive($scope.selectLoginIndex = 0);
     } else if (searchOption == 1) {
       $window.open('https://www.google.com.hk/#newwindow=1&safe=strict&q=' + encodeURIComponent(keyword), '_blank');
     } else if (searchOption == 2) {
@@ -95,12 +99,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
       $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(keyword), '_blank');
     } else if (searchOption == 5) {
       console.log('search note, word = ', keyword);
-      $state.go('note', {
-        keyword: keyword,
-      }, {
-        reload: true,
-      })
-      updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
+      $state.go('note', { keyword }, { reload: true })
     }
 
     if (!keyword) {
@@ -186,29 +185,31 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     $window.open(url, '_blank');
   }
 
-  $scope.showUpdate = function () {
-    $state.go('settings', {
-      formIndex: 5,
-    });
-    pubSubService.publish('Common.menuActive', {
-      login: true,
-      index: dataService.LoginIndexSettings
-    });
-  }
-
   $scope.coffee = function () {
     $state.go('settings', {
       formIndex: 6,
     });
-    pubSubService.publish('Common.menuActive', {
-      login: true,
-      index: dataService.LoginIndexSettings
-    });
   }
 
-  function updateMenuActive(index) {
+  async function updateMenuActive() {
+    await sleep(10); // 阻塞 10ms 是因为 document.location.hash 还没切换过来等待切换
+    let mapIndex = {
+      "#/bookmarks": dataService.LoginIndexBookmarks,
+      "#/tags": dataService.LoginIndexTags,
+      "#/note": dataService.LoginIndexNote,
+      "#/weixin-article": $scope.login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot,
+      "#/settings": dataService.LoginIndexSettings,
+      "#/advice": dataService.LoginIndexAdvice,
+      "#/": $scope.login ? dataService.LoginIndexBookmarks : dataService.NotLoginIndexHome,
+      "#/login": dataService.NotLoginIndexLogin,
+    }
+
+    console.log('updateMenuActive', $scope.login, document.location.hash, mapIndex[document.location.hash]);
+
+    $scope.selectLoginIndex = mapIndex[document.location.hash];
+    $scope.selectNotLoginIndex = mapIndex[document.location.hash];
     $('.ui.menu a.item').removeClass('selected');
-    $('.ui.menu a.item:eq(' + index + ')').addClass('selected');
+    $('.ui.menu a.item:eq(' + mapIndex[document.location.hash] + ')').addClass('selected');
   }
 
   async function saveHistory() {
@@ -249,7 +250,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         // 全局处理添加备忘录
         if (key == 'A') {
           if ($scope.selectLoginIndex !== dataService.LoginIndexNote) {
-            updateMenuActive($scope.selectLoginIndex = dataService.LoginIndexNote);
             $state.go('note', { key: key }, { reload: true })
           }
           return;
@@ -269,10 +269,6 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         }
 
         if (key == ',' || key == '.' || key == '/') {
-          pubSubService.publish('Common.menuActive', {
-            login: $scope.login,
-            index: dataService.LoginIndexTags
-          });
           var stateParams = {
             tagId: -1,
             orderIndex: (key == ',' ? 0 : (key == '.' ? 1 : 2)),
@@ -283,11 +279,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         // 数字键用来切换菜单
         if (!isNaN(key)) {
           var num = parseInt(key);
-          if (num < 0 || num > 6) return;
-          pubSubService.publish('Common.menuActive', {
-            login: $scope.login,
-            index: num - 1
-          });
+          if (num < 0 || num > 6 || (!$scope.login)) return;
           $state.go(dataService.loginMenus[num - 1].uiSref, {}, {
             reload: true,
           })

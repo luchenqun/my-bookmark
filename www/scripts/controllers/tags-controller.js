@@ -4,6 +4,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
+  pubSubService.publish('Menus.active');
 
   (async () => {
     await getTags();
@@ -29,11 +30,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.waitDelTag = {};
   $scope.waitDelBookmark = {};
   $scope.bookmarkNormalHover = false;
-
-  pubSubService.subscribe('MenuCtr.tags', $scope, function (event, data) {
-    console.log('subscribe MenuCtr.tags', data);
-    getTags();
-  });
 
   $scope.getBookmarks = async function (tagId, page, showType) {
     console.log(tagId, page, showType);
@@ -85,11 +81,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
         }
       }, 10);
     }
-
-    pubSubService.publish('Common.menuActive', {
-      login: true,
-      index: dataService.LoginIndexTags
-    });
 
     $timeout(function () {
       dataService.transition('#' + addBookmarkId, {
@@ -365,7 +356,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       id: -1,
       bookmarkCount: '...',
       bookmarkClicked: false,
-      name: '个人定制',
+      name: '全部',
       show: 1
     })
 
@@ -383,11 +374,6 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       $scope.currentTagId = -1;
       tags[0].bookmarkClicked = true;
     }
-
-    pubSubService.publish('Common.menuActive', {
-      login: true,
-      index: dataService.LoginIndexTags
-    });
 
     $timeout(() => {
       $scope.loading = false;

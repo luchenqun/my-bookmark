@@ -4,6 +4,7 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$win
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
+  pubSubService.publish('Menus.active');
 
   $scope.hoverBookmark = null;
   $scope.bookmarks = []; // 书签数据
@@ -23,13 +24,6 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$win
   $scope.random = 0;
   $scope.channels = JSON.parse(`[{"id":1,"name":"热门", "clicked": true},{"id":2,"name":"搞笑"},{"id":3,"name":"养生堂"},{"id":4,"name":"私房话"},{"id":5,"name":"八卦精"},{"id":6,"name":"科技咖"},{"id":7,"name":"财经迷"},{"id":8,"name":"汽车控"},{"id":9,"name":"生活家"},{"id":10,"name":"时尚圈"},{"id":11,"name":"育儿"},{"id":12,"name":"旅游"},{"id":13,"name":"职场"},{"id":14,"name":"美食"},{"id":15,"name":"历史"},{"id":16,"name":"教育"},{"id":17,"name":"星座"},{"id":18,"name":"体育"},{"id":19,"name":"军事"},{"id":20,"name":"游戏"},{"id":21,"name":"萌宠"}]`);
   var timeagoInstance = timeago();
-
-  get('user').then((user) => {
-    pubSubService.publish('Common.menuActive', {
-      login: true,
-      index: dataService.LoginIndexHot
-    });
-  })
 
   $scope.jumpToUrl = async function (url) {
     $window.open(url, '_blank');
@@ -116,12 +110,6 @@ app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$win
 
   $scope.getWeixinArticles = async function (channelId, page) {
     var menusScope = $('div[ng-controller="menuCtr"]').scope();
-    var login = (menusScope && menusScope.login) || false;
-    var index = login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot;
-    pubSubService.publish('Common.menuActive', {
-      login: login,
-      index: index
-    });
     $scope.bookmarks = []
     $scope.bookmark = {}
     $scope.loadBusy = true;

@@ -4,18 +4,9 @@ app.controller('homeCtr', ['$scope', '$stateParams', '$filter', '$state', '$wind
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
+  pubSubService.publish('Menus.active');
 
-  (async () => {
-    try {
-      await get('user');
-      pubSubService.publish('loginCtr.login', { 'login': true });
-      $state.go('tags');
-    } catch (error) {
-      pubSubService.publish('Common.menuActive', {
-        login: false,
-        index: dataService.NotLoginIndexHome
-      });
-    }
-  })();
-  
+  pubSubService.subscribe('Common.user', $scope, function (event, user) {
+    user.id && $state.go('tags');
+  });
 }]);

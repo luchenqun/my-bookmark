@@ -1,13 +1,13 @@
 app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStore', '$window', 'pubSubService', 'dataService', function ($scope, $filter, $state, $http, $cookieStore, $window, pubSubService, dataService) {
-  console.log("Hello loginCtr...", $cookieStore.get("username"));
+  console.log("Hello loginCtr...");
   if (dataService.smallDevice()) {
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;
   }
+  pubSubService.publish('Menus.active');
 
-  pubSubService.publish('Common.menuActive', {
-    login: false,
-    index: dataService.NotLoginIndexLogin
+  pubSubService.subscribe('Common.user', $scope, function (event, user) {
+    user.id && $state.go('tags');
   });
 
   $scope.username = $cookieStore.get("username") || "";
@@ -39,12 +39,12 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStor
     $cookieStore.put("username", $scope.username);
 
     let data = await post('userLogin', params);
+    pubSubService.publish('Login', true);
 
     // 更新token信息
     localStorage.setItem("authorization", data.token);
 
-    pubSubService.publish('loginCtr.login', { login: true });
-    $state.go('tags')
+    $state.go('tags');
   }
 
   $scope.showRegister = async function () {

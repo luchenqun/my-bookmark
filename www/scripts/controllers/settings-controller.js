@@ -49,7 +49,6 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
       await post('userResetPwd', { old: $scope.passwordOrgin, password: $scope.passwordNew1 });
       await post('userLogout');
 
-      axios.defaults.headers.common['Authorization'] = "";
       localStorage.setItem("authorization", "");
       pubSubService.publish('Common.menuActive', {
         login: false,

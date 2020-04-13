@@ -113,8 +113,8 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
   }
 
   $scope.exportBookmark = async function () {
-    let data = await get('bookmarkBackup');
-    console.log(data);
+    let fileName = await get('bookmarkBackup');
+    $window.open(`${document.location.origin}/api/bookmarkDownload?fileName=${fileName}`, '_blank');
   }
 
   setTimeout(function () {

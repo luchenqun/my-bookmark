@@ -11,7 +11,7 @@ function md5(str) {
 
 module.exports = class extends Base {
   async __before() {
-    if (['userRegister', 'userLogin', 'noteShare'].indexOf(this.ctx.action) >= 0) {
+    if (['userRegister', 'userLogin', 'noteShare', 'bookmarkDownload'].indexOf(this.ctx.action) >= 0) {
       return;
     }
     try {
@@ -508,9 +508,26 @@ module.exports = class extends Base {
 
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, $.xml());
-    this.json({ code: 0, data: `runtime/backup/${fileName}` });
-    setTimeout(() => fs.remove(filePath), 10000);
-    // await this.download(filePath, fileName)
+    this.json({ code: 0, data: fileName });
+
+    setTimeout(async () => {
+      let exists = await fs.pathExists(filePath);
+      if (exists) {
+        await fs.remove(filePath);
+      }
+    }, 1000 * 60 * 10); // 十分钟内没下载就给删掉
+  }
+
+  async bookmarkDownloadAction() {
+    let fileName = this.get('fileName');
+    let filePath = path.join(think.ROOT_PATH, 'runtime', 'backup', fileName);
+    let exists = await fs.pathExists(filePath);
+    if (exists) {
+      await this.download(filePath);
+      await fs.remove(filePath);
+    } else {
+      this.body = "文件不存在！";
+    }
   }
 
   // 获取文章

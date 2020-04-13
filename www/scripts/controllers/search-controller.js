@@ -42,6 +42,7 @@ app.controller('searchCtr', ['$scope', '$state', '$stateParams', '$filter', '$wi
   });
 
   get('tags').then((tags) => $scope.tags = tags)
+  get('user').then((user) => $scope.user = user)
 
   $scope.jumpToUrl = async function (url, id) {
     if (!$scope.edit) {

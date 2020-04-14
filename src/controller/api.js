@@ -11,7 +11,7 @@ function md5(str) {
 
 module.exports = class extends Base {
   async __before() {
-    if (['userRegister', 'userLogin', 'noteShare', 'bookmarkDownload'].indexOf(this.ctx.action) >= 0) {
+    if (['userRegister', 'userLogin', 'noteShare', 'bookmarkDownload', 'hotBookmarks', 'hotBookmarksRandom'].indexOf(this.ctx.action) >= 0) {
       return;
     }
     try {

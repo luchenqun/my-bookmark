@@ -544,6 +544,17 @@ module.exports = class extends Base {
     }
   }
 
+  // 随机获取收趣的热门书签
+  async hotBookmarksRandomAction() {
+    try {
+      let sql = `SELECT * FROM hot_bookmarks ORDER BY RAND() LIMIT 50;`;
+      let data = await this.model('hot_bookmarks').query(sql);
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
   // 获取文章
   async articleAction() {
     let url = this.get("url");

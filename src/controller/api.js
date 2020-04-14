@@ -530,6 +530,20 @@ module.exports = class extends Base {
     }
   }
 
+  // 获取收趣的热门书签
+  async hotBookmarksAction() {
+    let page = this.get('page');
+    let pageSize = parseInt(this.get('pageSize') || 50);
+    try {
+      // 如果是第0页而且是个人定制的，把 最近点击 与 最近新增 的返回去。
+      let data = {};
+      data = await this.model('hot_bookmarks').order('id DESC').page(page || 1, pageSize).countSelect();
+      this.json({ code: 0, data });
+    } catch (error) {
+      this.json({ code: 1, msg: error.toString() });
+    }
+  }
+
   // 获取文章
   async articleAction() {
     let url = this.get("url");

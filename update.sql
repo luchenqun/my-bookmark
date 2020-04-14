@@ -44,10 +44,10 @@ CHANGE COLUMN `fav_count` `clickCount`  smallint(6) NULL DEFAULT 1 AFTER `url`,
 CHANGE COLUMN `created_by` `tagName`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `clickCount`,
 CHANGE COLUMN `snap_url` `snap`  varchar(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `last_click`,
 CHANGE COLUMN `favicon_url` `icon`  varchar(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `snap`,
-ADD COLUMN `createAt`  datetime NULL AFTER `tagName`,
-ADD COLUMN `lastClick`  datetime NULL AFTER `createAt`,
+ADD COLUMN `createdAt`  datetime NULL AFTER `tagName`,
+ADD COLUMN `lastClick`  datetime NULL AFTER `createdAt`,
 MODIFY COLUMN `id`  int(11) NOT NULL AUTO_INCREMENT FIRST;
-UPDATE hot_bookmarks SET createAt = FROM_UNIXTIME(created_at/1000), lastClick = FROM_UNIXTIME(last_click/1000);
+UPDATE hot_bookmarks SET createdAt = FROM_UNIXTIME(created_at/1000), lastClick = FROM_UNIXTIME(last_click/1000);
 ALTER TABLE `hot_bookmarks`
 DROP COLUMN `created_at`,
 DROP COLUMN `last_click`;

@@ -13,6 +13,7 @@
     "cheerio": "^1.0.0-rc.3",
     "fs-extra": "^9.0.0",
     "node-readability": "^3.0.0",
+    "request": "^2.88.2",
     "think-cache": "^1.0.0",
     "think-cache-file": "^1.0.8",
     "think-logger3": "^1.0.0",

@@ -33,6 +33,9 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
         $scope.user = user;
         $scope.searchHistory = JSON.parse(user.searchHistory || '[]');
         $scope.quickUrl = JSON.parse(user.quickUrl || '{}');
+        if (user.username === 'lcq') {
+          $scope.loginMenus[dataService.LoginIndexHot].show = false;
+        }
         for (const item of $scope.searchHistory) {
           $scope.searchIcon(item);
         }

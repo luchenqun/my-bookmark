@@ -69,7 +69,7 @@ CREATE TABLE `hot_bookmarks` (
   `createdAt` datetime DEFAULT now(),       -- 创建时间(updatetime)
   `lastClick` datetime DEFAULT now(),       -- 最后一次点击时间(createtime)
   `snap` varchar(1024) DEFAULT NULL,        -- 截图链接(imageList[0])
-  `icon` varchar(1024) DEFAULT NULL         -- icon链接(sourceLogo)
+  `icon` varchar(1024) DEFAULT NULL,        -- icon链接(sourceLogo)
   PRIMARY KEY (`id`)
 );
 
@@ -77,10 +77,10 @@ CREATE TABLE `hot_bookmarks` (
 drop table if exists notes;
 CREATE TABLE `notes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
-  `userId` int(11) NOT NULL,               -- 用户id
+  `userId` int(11) NOT NULL,                -- 用户id
   `content` text NOT NULL,                  -- 备忘内容
-  `tagId` int(11) NOT NULL,                -- 分类id
-  `createdAt` datetime DEFAULT now(),      -- 创建时间
+  `tagId` int(11) NOT NULL,                 -- 分类id
+  `createdAt` datetime DEFAULT now(),       -- 创建时间
   `public` tinyint(4) DEFAULT '0',          -- 是否公开 1 公开，0 不公开
   PRIMARY KEY (`id`)
 );

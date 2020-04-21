@@ -44,6 +44,11 @@ app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$
   $scope.changeForm($scope.form.indexOf(true)); // 马上调用一次
 
   $scope.resetPassword = async function () {
+    if($scope.user.username == 'test') {
+      toastr.error('此用户不允许修改密码', "错误");
+      return;
+    }
+
     if (!$scope.passwordOrgin || !$scope.passwordNew1 || !$scope.passwordNew2) {
       toastr.error('原密码跟新密码不能为空', "错误");
       return;

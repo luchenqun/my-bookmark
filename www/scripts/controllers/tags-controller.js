@@ -8,6 +8,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
   (async () => {
     await getTags();
+    $scope.user = await get('user');
   })()
 
   let dialog = null;
@@ -18,6 +19,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.showType = "createdAt";
   $scope.loading = true;
   $scope.tags = []; // 书签数据
+  $scope.user = {};
   $scope.tagsIndex = []; // 书签索引
   $scope.bookmarks = [];
   $scope.totalPages = 0;
@@ -345,6 +347,10 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       }
     })
   });
+
+  $scope.globalTag = function () {
+    $state.go('settings', { formIndex: 4 });
+  }
 
   async function updateTags(_tags) {
     let tags = JSON.parse(JSON.stringify(_tags));

@@ -346,7 +346,7 @@ module.exports = class extends Base {
         for (let bookmark of data.data) {
           ids.push(bookmark.tagId);
         }
-        let tags = await this.model('tags').where({ id: ['IN', ids] }).select();
+        let tags = ids.length > 0 ? await this.model('tags').where({ id: ['IN', ids] }).select() : [];
         for (let bookmark of data.data) {
           bookmark.tagName = (tags.find((tag) => tag.id == bookmark.tagId) || { name: "未知分类" }).name;
         }
@@ -615,6 +615,21 @@ module.exports = class extends Base {
     let note = this.post();
     note.userId = this.ctx.state.user.id;
     try {
+      // 没有分类的直接放未分类里面
+      if (!note.tagId) {
+        const name = "未分类";
+        let tag = await this.model("tags").where({ name }).find();
+        if (!think.isEmpty(tag)) {
+          note.tagId = tag.id;
+        } else {
+          let tagId = await this.model("tags").add({
+            userId: this.ctx.state.user.id,
+            name
+          });
+          note.tagId = tagId;
+        }
+      }
+
       let data = await this.model("notes").add(note);
       this.json({ code: 0, data, msg: `备忘添加成功` });
     } catch (error) {

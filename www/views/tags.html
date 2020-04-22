@@ -3,7 +3,7 @@
     <div class="ui label" style="margin: 3px 15px 8px 0px; cursor: default;" ng-if="tag.bookmarkCount && tag.show" ng-repeat="tag in tags" ng-class="{green:tag.bookmarkClicked}" ng-click="getBookmarks(tag.id, (tag.id == -1 ? 0 : 1), null)">
       {{ tag.name }} ({{ tag.bookmarkCount || 0 }})
     </div>
-    <div class="ui label" ng-if="user.username != 'lcq'" style="margin: 3px 15px 8px 0px; cursor: default;" ng-click="globalTag()">
+    <div class="ui label" ng-if="user.username != 'lcq'" style="margin: 3px 15px 8px 0px; cursor: default;visibility: hidden;" ng-click="globalTag()">
       全局书签
     </div>
     <div class="ui label js-tag-label" style="margin: 3px 15px 8px 0px; cursor: default;">

@@ -32,7 +32,7 @@ module.exports = [{
             createdAt: think.datetime(item.updatetime > item.createtime ? item.createtime : item.updatetime),
             lastClick: think.datetime(item.updatetime <= item.createtime ? item.createtime : item.updatetime),
             snap: item.images_upd,
-            icon: item.sourceLogo
+            icon: item.sourceLogo.replace("http://shouqu", "https://shouqu")
           })
         }
         await think.model('hot_bookmarks').addMany(dataList, { replace: true });

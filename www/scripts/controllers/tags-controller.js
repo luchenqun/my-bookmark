@@ -19,7 +19,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.showType = "createdAt";
   $scope.loading = true;
   $scope.tags = []; // 书签数据
-  $scope.user = {};
+  $scope.user = { username: "test" };
   $scope.tagsIndex = []; // 书签索引
   $scope.bookmarks = [];
   $scope.totalPages = 0;

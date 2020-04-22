@@ -305,10 +305,14 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
     $scope.loading = true;
     var params = {
       page: $scope.currentPage,
-      pageSize: 35,
-      keyword: $scope.keyword,
-      tagId: tagId || $scope.currentTagId
+      pageSize: 35
     };
+
+    if (tagId || $scope.currentTagId) {
+      params.tagId = tagId || $scope.currentTagId;
+    } else if ($scope.keyword) {
+      params.keyword = $scope.keyword;
+    }
 
     let reply = await get("notes", params);
     $timeout(function () {

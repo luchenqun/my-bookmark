@@ -9,6 +9,9 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   (async () => {
     await getTags();
     $scope.user = await get('user');
+    if ($scope.user.username != 'lcq') {
+      $(".globalTag").show(); // 自己知道这个功能，不显示
+    }
   })()
 
   let dialog = null;

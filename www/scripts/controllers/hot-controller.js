@@ -1,5 +1,5 @@
-app.controller('weixinArticleCtr', ['$scope', '$state', '$sce', '$filter', '$window', '$timeout', '$document', 'pubSubService', 'dataService', function ($scope, $state, $sce, $filter, $window, $timeout, $document, pubSubService, dataService) {
-  console.log("Hello weixinArticleCtr...");
+app.controller('hotCtr', ['$scope', '$state', '$sce', '$filter', '$window', '$timeout', '$document', 'pubSubService', 'dataService', function ($scope, $state, $sce, $filter, $window, $timeout, $document, pubSubService, dataService) {
+  console.log("Hello hotCtr...");
   if (dataService.smallDevice()) {
     $window.location = "http://m.mybookmark.cn/#/tags";
     return;

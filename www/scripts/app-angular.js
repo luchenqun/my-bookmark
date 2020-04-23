@@ -53,10 +53,10 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
       templateUrl: 'views/bookmarks.html',
       controller: 'bookmarksCtr'
     })
-    .state('weixin-article', {
-      url: '/weixin-article',
-      templateUrl: 'views/weixin-article.html',
-      controller: 'weixinArticleCtr'
+    .state('hot', {
+      url: '/hot',
+      templateUrl: 'views/hot.html',
+      controller: 'hotCtr'
     })
     .state('note', {
       url: '/note',

@@ -1,5 +1,5 @@
 # 在线书签管理工具
-![image](https://github.com/luchenqun/my-bookmark/blob/master/www/images/screenshot.gif)   
+![image](https://mybookmark.cn/images/screenshot.gif)   
 
 1 在线体验(demo)
 -------------

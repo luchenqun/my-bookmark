@@ -111,7 +111,7 @@ source /home/lcq/schema.sql; // 执行schema.sql文件创建数据库表格。�
 3、如果你是全新部署，你可忽略此步骤。如果之前部署过此应用，那么需要执行update.sql文件需要升级。注意：升级之前，请务必备份数据库！确认是否需要运行此升级sql文件也很简单，看一下你之前的数据库mybookmarks下面有没有`tags_bookmarks`这个数据表。如果有，那么需要执行。执行方法还是如上类似`source /home/lcq/update.sql;`。  
 4、安装Node.js。Node.js版本至少要求12.0以上。不会的话，请按照上面步骤1、3提供的方法自行解决。   
 5、克隆代码`git clone git@github.com:luchenqun/my-bookmark.git`，切换到项目根目录下面，执行`npm install`安装package。   
-6、在根目录，更新`pm2.json`文件，只需要更新`cwd`项即可。该项为你项目所在的路径。更新`src/config/adapter.js`下面`exports.model`关于你的MySQL的账号密码信息。注意，该账号必须要有写数据库的权限！
+6、在根目录，更新`pm2.json`文件，只需要更新`cwd`项即可。该项为你项目所在的路径。更新`src/config/adapter.js`下面`exports.model`关于你的MySQL的账号密码信息。注意，该账号必须要有写数据库的权限！  
 7、如果上面的都做好了，执行命令`npm install pm2 -g`安装pm2模块。再执行命令`pm2 startOrReload pm2.json`。以后如果项目代码有升级，更新代码之后，执行此命令即可重启该应用。   
 8、在浏览器里面输入：127.0.0.1:2000。  
 9、如果需要域名部署的话，推荐使用nginx作为HTTP和反向代理服务器，根目录有一份`nginx.conf`文件，你只需要更新`root`项即可使用。相关知识，请自行百度。

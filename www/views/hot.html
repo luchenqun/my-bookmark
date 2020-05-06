@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="image hot-image" href="{{ bookmark.url }}" style="cursor: pointer;" ng-click="detailBookmark(bookmark)">
-        <img ng-src="{{bookmark.snap}}" err-src="{{bookmark.snap.replace('https://', 'http://')}}" />
+        <img ng-src="{{bookmark.snap}}" err-src="{{bookmark.snap.startsWith('https://') ? bookmark.snap.replace('https://', 'http://') : './images/default.jpg'}}" />
       </div>
       <div class="extra content" ng-show="!bookmark.edit">
         <img class="ui avatar image" style="width: 16px; height: 16px;" ng-src="{{bookmark.icon}}" />

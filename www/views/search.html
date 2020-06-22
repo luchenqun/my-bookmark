@@ -131,8 +131,8 @@
   <tbody>
     <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
       <td>
-        <img class="ui ui middle aligned mini image" ng-src="https://favicon.luchenqun.com/?url={{bookmark.favicon_url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="searchHotBookmarks" />
-        <img class="ui ui middle aligned mini image" ng-src="https://favicon.luchenqun.com/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="!searchHotBookmarks" />
+        <img class="ui ui middle aligned mini image" ng-src="https://favicon.lucq.fun/?url={{bookmark.favicon_url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="searchHotBookmarks" />
+        <img class="ui ui middle aligned mini image" ng-src="https://favicon.lucq.fun/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="!searchHotBookmarks" />
         <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
           {{ bookmark.title }}
         </span>

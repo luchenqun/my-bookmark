@@ -9,7 +9,7 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
     $('.ui.modal.js-bookmark-info').modal({
       closable: false,
     }).modal('setting', 'transition', dataService.animation()).modal('show');
-    bookmark.favicon_url = 'https://favicon.luchenqun.com/?url=' + bookmark.url;
+    bookmark.favicon_url = 'https://favicon.lucq.fun/?url=' + bookmark.url;
     $scope.bookmark = bookmark;
     $scope.bookmark.description = $sce.trustAsHtml(bookmark.description);
     $scope.content = $sce.trustAsHtml(bookmark.content) || '';

@@ -48,6 +48,6 @@
     </div>
   </div>
   <div class="ui huge menu js-not-login-in" ng-if="!login">
-    <a class="item" ng-class="{selected:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ui-sref-opts="{reload: true}" ng-repeat="menu in notLoginMenus" js-menu-init>{{ menu.title}}</a>
+    <a class="item" ng-class="{selected:$index==selectNotLoginIndex}" ui-sref="{{ menu.uiSref}}" ui-sref-opts="{reload: true}" ng-repeat="menu in notLoginMenus" ng-show="menu.show !== false" js-menu-init>{{ menu.title}}</a>
   </div>
 </div>

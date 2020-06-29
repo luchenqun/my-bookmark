@@ -24,8 +24,7 @@ app.factory('dataService', [function () {
       title: '备忘'
     }, {
       uiSref: 'hot',
-      title: '热门',
-      show: false
+      title: '热门'
     }, {
       uiSref: 'settings',
       title: '设置'
@@ -41,8 +40,7 @@ app.factory('dataService', [function () {
       title: '登录'
     }, {
       uiSref: 'hot',
-      title: '热门',
-      show: false
+      title: '热门'
     }],
     animationIndex: 0,
     animation: function () {

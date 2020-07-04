@@ -31,14 +31,16 @@ app.factory('dataService', [function () {
       title: '设置'
     }, {
       uiSref: 'advice',
-      title: '留言'
+      title: '留言',
+      show: false
     }],
     notLoginMenus: [{
       uiSref: '/',
       title: '首页'
     }, {
       uiSref: 'login',
-      title: '登录'
+      title: '登录',
+      show: localStorage.getItem("login") || false,
     }, {
       uiSref: 'hot',
       title: '热门',

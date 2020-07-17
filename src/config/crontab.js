@@ -22,7 +22,11 @@ module.exports = [{
         let data = JSON.parse(body).data;
         let list = data.list;
         let dataList = [];
-        for (const item of list) {
+        for (let item of list) {
+          if (item.images_upd.indexOf(',http') >= 0) {
+            item.images_upd = item.images_upd.split(',http')[0];
+          }
+
           dataList.push({
             id: item.articleId,
             title: item.title,

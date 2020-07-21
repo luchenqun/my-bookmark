@@ -5,4 +5,5 @@ app.controller('bookmarksCtr', ['$scope', '$state', '$stateParams', '$filter', '
     return;
   }
   pubSubService.publish('Menus.active');
+  $state.go('tags');
 }]);

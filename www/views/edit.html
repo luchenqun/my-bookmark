@@ -1,8 +1,6 @@
 <div class="ui long modal js-add-bookmark" ng-controller="editCtr">
   <!-- <i class="close icon"></i> -->
-  <div class="header">
-    {{ add ? '添加书签' : '编辑书签'}}
-  </div>
+  <div class="header">{{ add ? '添加书签' : '编辑书签'}}</div>
   <div class="content">
     <div class="ui form">
       <div class="required field">
@@ -30,9 +28,9 @@
         <div class="ui active inverted dimmer" ng-class="{active:loadTags, disabled: !loadTags}">
           <div class="ui text loader">正在获取分类...</div>
         </div>
-        <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id, !tag.clicked)" ng-show="!loadTags">{{ tag.name }}</div>
-        <div class="ui label" style="margin:3px 10px 8px 0px;cursor:default;" title="添加新分类" ng-click="showAddTag()" ng-show="!loadTags">
-          <i style="margin-left:10px;" class="plus icon"></i>
+        <div class="ui label" style="margin: 3px 10px 8px 0px; cursor: default" ng-class="{green:tag.clicked}" ng-repeat="tag in tags" ng-click="clickTag(tag.id, !tag.clicked)" ng-show="!loadTags">{{ tag.name }}</div>
+        <div class="ui label" style="margin: 3px 10px 8px 0px; cursor: default" title="添加新分类" ng-click="showAddTag()" ng-show="!loadTags">
+          <i style="margin-left: 10px" class="plus icon"></i>
         </div>
       </div>
       <div class="field">
@@ -48,7 +46,7 @@
     </div>
   </div>
   <div class="actions">
-    <div class="ui cancel button" ng-click="cancel()" style="cursor:default;">取消</div>
-    <div class="ui green button" ng-click="ok()" style="cursor:default;">发送</div>
+    <div class="ui cancel button" ng-click="cancel()" style="cursor: default">取消</div>
+    <div class="ui green button" ng-click="ok()" style="cursor: default">发送</div>
   </div>
 </div>

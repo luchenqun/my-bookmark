@@ -1,12 +1,8 @@
-<div class="ui huge text centered inline loader" ng-class="{active:loading, disabled: !loading}">
-  加载中，请稍候...
-</div>
-<div class="ui grid" style="height:45px;padding-top:5px;" ng-show="!loading">
-  <div class="fourteen wide column" ng-show="!showSearch">
-    共为您找到相关书签约{{bookmarkCount}}个
-  </div>
+<div class="ui huge text centered inline loader" ng-class="{active:loading, disabled: !loading}">加载中，请稍候...</div>
+<div class="ui grid" style="height: 45px; padding-top: 5px" ng-show="!loading">
+  <div class="fourteen wide column" ng-show="!showSearch">共为您找到相关书签约{{bookmarkCount}}个</div>
   <div class="left floated right aligned two wide column" ng-show="!showSearch">
-    <img class="ui ui middle aligned tiny image" ng-src="./images/cocktail.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch" />
+    <img class="ui ui middle aligned tiny image" ng-src="./images/cocktail.png" style="width: 16px; height: 16px" ng-click="showSearch = !showSearch" />
     <span ng-click="showSearch = !showSearch">搜索工具</span>
   </div>
   <div class="two wide column" ng-show="showSearch">
@@ -89,8 +85,8 @@
     </div>
   </div>
   <div class="two wide column" ng-show="showSearch">
-    <div class="ui grid container" style="padding-top: 8px;">
-      <div class="ui multiple dropdown js-search-tags" style="padding:0;" ng-show="showTags" js-dropdown-tags-init>
+    <div class="ui grid container" style="padding-top: 8px">
+      <div class="ui multiple dropdown js-search-tags" style="padding: 0" ng-show="showTags" js-dropdown-tags-init>
         <div class="default text">分类选择</div>
         <i class="dropdown icon"></i>
         <div class="menu" ng-click="updateTagsSelect()">
@@ -104,13 +100,13 @@
       <input type="text" placeholder="标题，链接..." ng-model="keyword" ng-keypress="($event.which === 13)?search():0" />
     </div>
   </div>
-  <div class=" left floated right aligned two wide column" ng-show=" showSearch">
+  <div class="left floated right aligned two wide column" ng-show=" showSearch">
     <div class="ui grid">
       <div class="four wide column">
         <i class="search icon" title="搜索" ng-click="currentPage=1;search()"></i>
       </div>
       <div class="twelve wide column">
-        <img class="ui ui middle aligned tiny image" ng-src="./images/hide.png" style="width:16px;height:16px" ng-click="showSearch = !showSearch" />
+        <img class="ui ui middle aligned tiny image" ng-src="./images/hide.png" style="width: 16px; height: 16px" ng-click="showSearch = !showSearch" />
         <span ng-click="showSearch = !showSearch">收起</span>
       </div>
     </div>
@@ -121,24 +117,22 @@
     <tr>
       <th>标题</th>
       <th>链接</th>
-      <th style="width:90px;">{{ searchHotBookmarks ? '收藏人数' : '点击次数'}}</th>
-      <th style="width:100px;">创建日期</th>
-      <th style="width:100px;">最后点击</th>
-      <th style="width:150px;">{{ searchHotBookmarks ? '来源信息' : '分类'}}</th>
-      <th style="width:88px;">操作</th>
+      <th style="width: 90px">{{ searchHotBookmarks ? '收藏人数' : '点击次数'}}</th>
+      <th style="width: 100px">创建日期</th>
+      <th style="width: 100px">最后点击</th>
+      <th style="width: 150px">{{ searchHotBookmarks ? '来源信息' : '分类'}}</th>
+      <th style="width: 88px">操作</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="bookmark in bookmarks" id="{{ bookmark.id }}" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
       <td>
-        <img class="ui ui middle aligned mini image" ng-src="https://favicon.lucq.fun/?url={{bookmark.favicon_url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="searchHotBookmarks" />
-        <img class="ui ui middle aligned mini image" ng-src="https://favicon.lucq.fun/?url={{bookmark.url}}" err-src="./images/default.ico" style="width:16px;height:16px;cursor:pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="!searchHotBookmarks" />
-        <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor:pointer;">
-          {{ bookmark.title }}
-        </span>
+        <img class="ui ui middle aligned mini image" ng-src="https://favicon.lucq.fun/?url={{bookmark.favicon_url}}" err-src="./images/default.ico" style="width: 16px; height: 16px; cursor: pointer" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="searchHotBookmarks" />
+        <img class="ui ui middle aligned mini image" ng-src="https://favicon.lucq.fun/?url={{bookmark.url}}" err-src="./images/default.ico" style="width: 16px; height: 16px; cursor: pointer" ng-click="jumpToUrl(bookmark.url, bookmark.id)" ng-if="!searchHotBookmarks" />
+        <span ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{bookmark.title}}" style="cursor: pointer"> {{ bookmark.title }} </span>
       </td>
       <td>
-        <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor:default;">{{ bookmark.url }}</span>
+        <span title="{{bookmark.url}} 点击复制链接" ng-click="copy(bookmark.url)" style="cursor: default">{{ bookmark.url }}</span>
       </td>
       <td>{{ bookmark.clickCount || bookmark.favCount }}</td>
       <td>
@@ -148,27 +142,23 @@
         <span id="time{{bookmark.id}}" title="{{bookmark.lastClick}}" class="need_to_be_rendered" data-timeago="{{bookmark.lastClick}}"></span>
       </td>
       <td>
-        <div class="ui label" tag-id="{{ tag.id }}" ng-if="!searchHotBookmarks">
-          {{ bookmark.tagName }}
-        </div>
-        <span ng-if="searchHotBookmarks">
-          {{ bookmark.createdBy }}
-        </span>
+        <div class="ui label" tag-id="{{ tag.id }}" ng-if="!searchHotBookmarks">{{ bookmark.tagName }}</div>
+        <span ng-if="searchHotBookmarks"> {{ bookmark.createdBy }} </span>
       </td>
       <td>
         <span ng-show="bookmark.userId == user.id">
-          <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签" />
+          <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px" ng-src="./images/delete.png" ng-click="delBookmark(bookmark)" title="删除书签" />
         </span>
         <span ng-show="bookmark.userId == user.id">
-          <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签" />
+          <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px" ng-src="./images/edit-bookmark.png" ng-click="editBookmark(bookmark.id)" title="编辑书签" />
         </span>
         <span ng-show="bookmark.userId != user.id">
-          <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏" />
+          <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏" />
         </span>
         <span ng-show="bookmark.userId != user.id">
-          <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签" />
+          <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签" />
         </span>
-        <img class="ui mini spaced image" style="width:16px;height:16px;margin:0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情" />
+        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 1px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情" />
       </td>
     </tr>
   </tbody>

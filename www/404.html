@@ -52,7 +52,7 @@
 
   <body>
     <div>
-      <div id="content" style="height: 530px;">
+      <div id="content" style="height: 530px">
         <p>
           对不起，您的风筝已掉线，请时光倒流回前一秒。<br />
           <span id="totalSecond">5</span>秒后自动
@@ -69,7 +69,7 @@
     } else {
       second = document.getElementById("totalSecond").textContent;
     }
-    setInterval(function() {
+    setInterval(function () {
       if (second < 0) {
         location.href = document.location.origin;
       } else {

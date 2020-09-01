@@ -19,7 +19,7 @@ app.factory('dataService', [function () {
       show: false
     }, {
       uiSref: 'tags',
-      title: '分类'
+      title: '书签'
     }, {
       uiSref: 'note',
       title: '备忘'

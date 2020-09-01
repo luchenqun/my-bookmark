@@ -1,35 +1,31 @@
 <!-- 高度至少要设置1000，元素少时才能触发滚动条事件 -->
 <div class="ui segment js-hot-card js-weixin-articles">
-  <div class="ui container" style="cursor: default;">
-    <div class="ui label" style="margin: 3px 15px 8px 0px; cursor: default;" ng-class="{green:channel.id===channelId}" ng-repeat="channel in channels" ng-click="getWeixinArticles(channel.id, 1)">{{ channel.name }}</div>
+  <div class="ui container" style="cursor: default">
+    <div class="ui label" style="margin: 3px 15px 8px 0px; cursor: default" ng-class="{green:channel.id===channelId}" ng-repeat="channel in channels" ng-click="getWeixinArticles(channel.id, 1)">{{ channel.name }}</div>
   </div>
 
-  <div class="ui massive text centered inline loader js-hot-loader" style="margin: 50px 0px 120px 0px;" ng-class="{active:loading, disabled:!loading}">
-    正在加载中...
-  </div>
+  <div class="ui massive text centered inline loader js-hot-loader" style="margin: 50px 0px 120px 0px" ng-class="{active:loading, disabled:!loading}">正在加载中...</div>
 
-  <div class="ui divider" style="margin: 3px 0px 8px 0px;"></div>
+  <div class="ui divider" style="margin: 3px 0px 8px 0px"></div>
   <div class="ui five stackable cards" ng-if="!loading">
     <div class="card" ng-repeat="bookmark in bookmarks" ng-mouseover="setHoverBookmark(bookmark)" ng-mouseleave="setHoverBookmark(null)">
-      <div class="content" style="max-height: 70px; cursor: pointer;" ng-click="detailBookmark(bookmark)">
-        <div class="description bookmarkTitle" title="{{bookmark.title}}">
-          {{bookmark.title}}
-        </div>
+      <div class="content" style="max-height: 70px; cursor: pointer" ng-click="detailBookmark(bookmark)">
+        <div class="description bookmarkTitle" title="{{bookmark.title}}">{{bookmark.title}}</div>
       </div>
-      <div class="image hot-image" href="{{ bookmark.url }}" style="cursor: pointer;" ng-click="detailBookmark(bookmark)">
+      <div class="image hot-image" href="{{ bookmark.url }}" style="cursor: pointer" ng-click="detailBookmark(bookmark)">
         <img ng-src="{{bookmark.snap}}" err-src="{{bookmark.snap.startsWith('https://') ? bookmark.snap.replace('https://', 'http://') : './images/default.jpg'}}" />
       </div>
       <div class="extra content" ng-show="!bookmark.edit">
-        <img class="ui avatar image" style="width: 16px; height: 16px;" ng-src="{{bookmark.icon}}" />
+        <img class="ui avatar image" style="width: 16px; height: 16px" ng-src="{{bookmark.icon}}" />
         <span class="sourceName" title="{{ bookmark.tagName }}">{{ bookmark.tagName }}</span>
         <span class="clickCount" ng-if="bookmark.clickCount">·{{ bookmark.clickCount }}人收藏</span>
-        <i class="ellipsis horizontal icon right floated" style="margin-top: 6px;" ng-mouseover="bookmark.edit=true;"></i>
+        <i class="ellipsis horizontal icon right floated" style="margin-top: 6px" ng-mouseover="bookmark.edit=true;"></i>
       </div>
       <div class="extra content" ng-show="bookmark.edit" ng-mouseleave="bookmark.edit=false;">
-        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 8px; margin-top: 4px;" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏" />
-        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 8px; margin-top: 4px;" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签" />
-        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 8px; margin-top: 4px;" ng-src="./images/copy.png" ng-click="copy(bookmark.url)" title="复制链接" />
-        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 8px; margin-top: 4px;" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情" />
+        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 8px; margin-top: 4px" ng-src="./images/favorite.png" ng-click="favoriteBookmark(bookmark)" title="一键收藏" />
+        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 8px; margin-top: 4px" ng-src="./images/store-bookmark.png" ng-click="storeBookmark(bookmark)" title="转存到我的书签" />
+        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 8px; margin-top: 4px" ng-src="./images/copy.png" ng-click="copy(bookmark.url)" title="复制链接" />
+        <img class="ui mini spaced image" style="width: 16px; height: 16px; margin: 0 8px; margin-top: 4px" ng-src="./images/detail.png" ng-click="detailBookmark(bookmark)" title="书签详情" />
       </div>
     </div>
   </div>
@@ -37,8 +33,8 @@
     <i class="close icon" ng-click="close()"></i>
     <div class="header">{{ bookmark.title }}</div>
     <div class="scrolling content js-main-content">
-      <div class="ui center aligned container" style="margin: 10px 0px;">
-        <span style="color: #4383bf;" title="公众号名称">{{bookmark.tagName}}</span>
+      <div class="ui center aligned container" style="margin: 10px 0px">
+        <span style="color: #4383bf" title="公众号名称">{{bookmark.tagName}}</span>
         &nbsp;&nbsp;
         <span title="公众号账号">{{bookmark.account}}</span>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -48,16 +44,16 @@
       <p ng-bind-html="bookmark.content"></p>
       <div class="ui divider"></div>
       <div class="ui container">
-        <img class="ui middle aligned mini image" ng-src="{{bookmark.icon}}" style="width: 16px; height: 16px; padding: 0; cursor: pointer;" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="点击跳转到原页面(如果过期，需要在微信中才能打开)" />
+        <img class="ui middle aligned mini image" ng-src="{{bookmark.icon}}" style="width: 16px; height: 16px; padding: 0; cursor: pointer" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="点击跳转到原页面(如果过期，需要在微信中才能打开)" />
         <span title="点击复制链接" ng-click="copy(bookmark.url)" class="urlSpan">{{bookmark.url}} </span>
       </div>
       <div class="ui divider"></div>
       <div class="ui grid" ng-if="bookmark.content">
         <div class="eight wide column">
-          <div style="float: left; cursor: pointer;" ng-click="detailBookmark(bookmarks[bookmark.index-1])" ng-if="bookmarks[bookmark.index-1]"><i class="chevron left icon"></i> {{ bookmarks[bookmark.index-1].title }}</div>
+          <div style="float: left; cursor: pointer" ng-click="detailBookmark(bookmarks[bookmark.index-1])" ng-if="bookmarks[bookmark.index-1]"><i class="chevron left icon"></i> {{ bookmarks[bookmark.index-1].title }}</div>
         </div>
         <div class="eight wide column">
-          <div style="float: right; cursor: pointer;" ng-click="detailBookmark(bookmarks[bookmark.index+1])" ng-if="bookmarks[bookmark.index+1]">{{ bookmarks[bookmark.index+1].title }} <i class="chevron right icon"></i></div>
+          <div style="float: right; cursor: pointer" ng-click="detailBookmark(bookmarks[bookmark.index+1])" ng-if="bookmarks[bookmark.index+1]">{{ bookmarks[bookmark.index+1].title }} <i class="chevron right icon"></i></div>
         </div>
       </div>
     </div>
@@ -67,7 +63,7 @@
   </div>
   <div class="ui grid">
     <div class="four wide column">
-      <div ng-if="count" style="margin-top: 14px;">共计 {{count}} 个</div>
+      <div ng-if="count" style="margin-top: 14px">共计 {{count}} 个</div>
     </div>
     <div class="twelve wide column">
       <pagination></pagination>

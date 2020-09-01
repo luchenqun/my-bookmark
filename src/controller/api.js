@@ -225,6 +225,10 @@ module.exports = class extends Base {
         }
       }
       let data = await this.model("bookmarks").add(bookmark);
+      await this.model('tags').where({
+        userId: this.ctx.state.user.id,
+        id: bookmark.tagId
+      }).update({ lastUse: think.datetime(new Date()) });
       this.json({ code: 0, data, msg: `书签 ${bookmark.title} 添加成功` });
     } catch (error) {
       this.json({ code: 1, data: '', msg: error.toString() });

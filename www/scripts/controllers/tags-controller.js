@@ -273,7 +273,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
 
   $scope.addTag = async function (tag) {
     console.log(tag);
-    if ($scope.tags.length >= 30) {
+    if ($scope.tags.length >= 50) {
       toastr.error('标签个数总数不能超过30个！不允许再添加新分类，如有需求，请联系管理员。', "提示");
       return;
     }

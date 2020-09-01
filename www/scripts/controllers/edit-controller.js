@@ -188,7 +188,9 @@ app.controller('editCtr', ['$scope', '$state', '$timeout', '$document', 'ngDialo
     });
     $scope.public = (bookmark && bookmark.id) || '1';
     $('.ui.checkbox.js-public').checkbox((bookmark && bookmark.public && bookmark.public == '1') ? 'set checked' : 'set unchecked')
-    $scope.loadTags = false;
+    $timeout(function () {
+      $scope.loadTags = false;
+    }, 10);
   });
 
   pubSubService.subscribe('TagCtr.storeBookmark', $scope, function (event, bookmark) {

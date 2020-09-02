@@ -363,6 +363,7 @@ app.controller('noteCtr', ['$scope', '$state', '$stateParams', '$filter', '$wind
 
     $timeout(() => {
       $scope.loading = false;
+      tags.sort((a, b) => a.sort - b.sort);
       $scope.tags = tags;
       getNotes();
     })

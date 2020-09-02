@@ -366,7 +366,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       bookmarkCount: '...',
       bookmarkClicked: false,
       name: '全部',
-      show: 1
+      show: 1,
+      sort: -1
     })
 
     let find = false;
@@ -383,6 +384,8 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       $scope.currentTagId = -1;
       tags[0].bookmarkClicked = true;
     }
+
+    tags.sort((a, b) => a.sort - b.sort);
 
     $timeout(() => {
       $scope.loading = false;

@@ -40,11 +40,10 @@
       </div>
     </div>
   </div>
-  <div class="ui divider"></div>
-  <div class="content" style="padding:0 20px">
-    <div class="description js-content">
-      <p ng-bind-html="content"></p>
-      <img class="ui centered medium image" src="/images/loading.gif" ng-show="loading">
+  <div class="ui divider" ng-if="bookmark.description"></div>
+  <div class="content" ng-if="bookmark.description" style="margin-top:-14px;">
+    <div class="description">
+      <pre class="note-content" style="font-size: 16px;">{{ bookmark.description }}</pre>
     </div>
   </div>
   <div class="actions">

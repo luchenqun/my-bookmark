@@ -12,31 +12,6 @@ app.controller('bookmarkInfoCtr', ['$scope', '$state', '$timeout', '$sce', '$win
     bookmark.favicon_url = 'https://favicon.lucq.fun/?url=' + bookmark.url;
     $scope.bookmark = bookmark;
     $scope.bookmark.description = $sce.trustAsHtml(bookmark.description);
-    $scope.content = $sce.trustAsHtml(bookmark.content) || '';
-    if (!$scope.content) {
-      $timeout(function () {
-        $('.ui.modal.js-bookmark-info').modal("refresh");
-        $("p").css("word-wrap", "break-word");
-      }, 500);
-      $scope.loading = true;
-      try {
-        let data = get("article", { url: bookmark.url });
-        $scope.content = data.content ? $sce.trustAsHtml(data.content) : $sce.trustAsHtml('<p>数据获取失败，可能是服务器不允许获取，或者是https网站！</p>');
-        setTimeout(function () {
-          $('.ui.modal.js-bookmark-info').modal && $('.ui.modal.js-bookmark-info').modal("refresh");
-        }, 100);
-      } catch (error) {
-
-      }
-      $scope.loading = false;
-    } else {
-      setTimeout(function () {
-        $('.ui.modal.js-bookmark-info').modal && $('.ui.modal.js-bookmark-info').modal("refresh");
-      }, 10);
-      setTimeout(function () {
-        $('.modals').animate({ scrollTop: 0 }, 100);
-      }, 500);
-    }
   });
 
   $scope.jumpToUrl = async function (url, id) {

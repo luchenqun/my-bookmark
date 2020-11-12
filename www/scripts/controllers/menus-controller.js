@@ -200,7 +200,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
       "#/bookmarks": dataService.LoginIndexBookmarks,
       "#/tags": dataService.LoginIndexTags,
       "#/note": dataService.LoginIndexNote,
-      "#/weixin-article": $scope.login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot,
+      "#/hot": $scope.login ? dataService.LoginIndexHot : dataService.NotLoginIndexHot,
       "#/settings": dataService.LoginIndexSettings,
       "#/advice": dataService.LoginIndexAdvice,
       "#/": $scope.login ? dataService.LoginIndexBookmarks : dataService.NotLoginIndexHome,

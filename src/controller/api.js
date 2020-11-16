@@ -606,6 +606,9 @@ module.exports = class extends Base {
   async adviceAddAction() {
     let advice = this.post();
     advice.userId = this.ctx.state.user.id;
+    if (this.ctx.state.user.username == 'test') {
+      return this.json({ code: 400, data: '', msg: `Test user forbid advice!` });
+    }
     try {
       let res = await this.model("advices").add(advice);
       this.json({ code: 0, data: res, msg: `留言 添加成功` });

@@ -10,7 +10,11 @@ COPY production.js /app/production.js
 COPY schema.sql /app/schema.sql
 
 WORKDIR /app
-RUN npm install && service mysql start && mysql -u root < /app/schema.sql
+RUN sed -i 's/test/root/g' /app/src/config/adapter.js \
+  && sed -i 's/123456//g' /app/src/config/adapter.js \
+  && npm install \
+  && service mysql start \
+  && mysql -u root < /app/schema.sql
 
 EXPOSE  3306
 EXPOSE  2000

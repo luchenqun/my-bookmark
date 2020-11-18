@@ -1,7 +1,4 @@
-CREATE USER 'test'@'127.0.0.1' IDENTIFIED BY '123456'; -- 创建一个以用户名为test，密码为123456的用户
-GRANT ALL ON *.* TO 'test'@'%';  -- 给刚创建的test用户数据库所有的权限
-
-CREATE DATABASE mybookmarks DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; -- 创建mybookmarks数据库
+CREATE DATABASE mybookmarks DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci; -- 创建mybookmarks数据库
 USE mybookmarks;
 
 -- 用户信息表

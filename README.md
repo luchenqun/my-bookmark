@@ -109,6 +109,8 @@ sudo sh get-docker.sh --mirror Aliyun
 
 安装好docker环境之后，执行命令 `docker run -dit -p 2000:2000 -p 3306:3306 luchenqun/mybookmark` 安装并启动应用即可。然后在浏览器输入： `http://你的IP:2000/` 即可访问书签应用。安装好的环境默认了一个账号`test`，密码为`123456`。
 
+如果你停止容器之后再次启动容器，你需要进入容器执行命令`service mysql start`启动MySQL服务。
+
 如果MySQL需要远程访问，那么你需要进入容器之后更新 `/etc/mysql/mysql.conf.d/mysqld.cnf`，将绑定地址 `127.0.0.1` 改为 `0.0.0.0`。然后执行命令`service mysql restart`重启数据库服务。安装后的 MySQL默认有两个账户，一个是root账户，无密码。一个是在文件`/etc/mysql/debian.cnf`有个账号密码。当然这些账号都是只能在本地访问的，你需要手动创建一个可供远程访问的账号。
 
 7 安装部署指南

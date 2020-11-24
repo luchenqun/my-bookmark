@@ -15,6 +15,7 @@ RUN USER=`sed -n '4,4p' /etc/mysql/debian.cnf | awk  'BEGIN { FS = "= " } ; { pr
   && PASSWORD=`sed -n '5,5p' /etc/mysql/debian.cnf | awk  'BEGIN { FS = "= " } ; { print $2 }'` \
   && sed -i "s/123456/${PASSWORD}/g" /app/src/config/adapter.js \
   && npm install --production --registry=https://registry.npm.taobao.org \
+  && rm -rf /var/run/mysqld/mysqld.sock.lock \
   && service mysql start \
   && mysql -u root < /app/schema.sql \
   && touch /usr/local/bin/start.sh \

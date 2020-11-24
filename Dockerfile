@@ -15,13 +15,13 @@ RUN USER=`sed -n '4,4p' /etc/mysql/debian.cnf | awk  'BEGIN { FS = "= " } ; { pr
   && PASSWORD=`sed -n '5,5p' /etc/mysql/debian.cnf | awk  'BEGIN { FS = "= " } ; { print $2 }'` \
   && sed -i "s/123456/${PASSWORD}/g" /app/src/config/adapter.js \
   && npm install --production --registry=https://registry.npm.taobao.org \
+  && service mysql start \
+  && mysql -u root < /app/schema.sql \
   && touch /usr/local/bin/start.sh \
   && chmod 777 /usr/local/bin/start.sh \
   && echo "#!/bin/bash" >> /usr/local/bin/start.sh \
   && echo "service mysql restart" >> /usr/local/bin/start.sh \
   && echo "node /app/production.js" >> /usr/local/bin/start.sh
-
-RUN service mysql start && mysql -u root < /app/schema.sql
 
 EXPOSE  3306
 EXPOSE  2000

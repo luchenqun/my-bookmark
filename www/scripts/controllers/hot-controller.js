@@ -165,7 +165,7 @@ app.controller('hotCtr', ['$scope', '$state', '$sce', '$filter', '$window', '$ti
           bookmark.snap = articl.pic || defaultSnap;
           bookmark.clickCount = articl.likenum;
           bookmark.createdAt = timeagoInstance.format(articl.addtime * 1000, 'zh_CN');
-          bookmark.content = articl.content.replace(/https:\/\/mmbiz.qpic.cn/gi, "https://favicon.lucq.fun/qpic&url=https://mmbiz.qpic.cn").replace(/http:\/\/mmbiz.qpic.cn/gi, "https://favicon.lucq.fun/qpic&url=https://mmbiz.qpic.cn");
+          bookmark.content = articl.content.replace(/https:\/\/mmbiz.qpic.cn/gi, "https://favicon.lucq.fun/qpic?url=https://mmbiz.qpic.cn").replace(/http:\/\/mmbiz.qpic.cn/gi, "https://favicon.lucq.fun/qpic?url=https://mmbiz.qpic.cn");
           bookmark.content = $sce.trustAsHtml(bookmark.content);
           $scope.bookmarks.push(bookmark);
         })

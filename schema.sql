@@ -1,9 +1,8 @@
-CREATE DATABASE mybookmarks DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci; -- 创建mybookmarks数据库
+CREATE DATABASE IF NOT EXISTS mybookmarks DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci; -- 创建mybookmarks数据库
 USE mybookmarks;
 
 -- 用户信息表
-drop table if exists users;
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,       -- id
   `username` varchar(255) NOT NULL,           -- 用户名
   `password` varchar(255) NOT NULL,           -- 密码
@@ -19,8 +18,7 @@ CREATE TABLE `users` (
 );
 
 -- 书签表
-drop table if exists bookmarks;
-CREATE TABLE `bookmarks` (
+CREATE TABLE IF NOT EXISTS `bookmarks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,    -- id
   `userId` int(11) NOT NULL,               -- 用户id
   `tagId` int(11) NOT NULL,                -- 分类id (只允许一个书签对应一个分类)
@@ -36,8 +34,7 @@ CREATE TABLE `bookmarks` (
 );
 
 -- 书签分类表
-drop table if exists tags;
-CREATE TABLE `tags` (
+CREATE TABLE IF NOT EXISTS `tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,    -- id
   `userId` int(11) NOT NULL,               -- 用户id
   `name` varchar(32) NOT NULL,             -- 标签
@@ -50,8 +47,7 @@ CREATE TABLE `tags` (
 );
 
 -- 建议留言
-drop table if exists advices;
-CREATE TABLE `advices` (
+CREATE TABLE IF NOT EXISTS `advices` (
   `id` int(11) NOT NULL AUTO_INCREMENT,    -- id
   `userId` int(11) NOT NULL,               -- 用户id
   `comment` text NOT NULL,                 -- 评论
@@ -62,8 +58,7 @@ CREATE TABLE `advices` (
 );
 
 -- 热门表
-drop table if exists hot_bookmarks;
-CREATE TABLE `hot_bookmarks` (
+CREATE TABLE IF NOT EXISTS `hot_bookmarks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id(articleId)
   `title` varchar(255) DEFAULT NULL,        -- 标题(title)
   `url` varchar(1024) DEFAULT NULL,         -- 链接(url)
@@ -77,8 +72,7 @@ CREATE TABLE `hot_bookmarks` (
 );
 
 -- 备忘录
-drop table if exists notes;
-CREATE TABLE `notes` (
+CREATE TABLE IF NOT EXISTS `notes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,     -- id
   `userId` int(11) NOT NULL,                -- 用户id
   `content` text NOT NULL,                  -- 备忘内容

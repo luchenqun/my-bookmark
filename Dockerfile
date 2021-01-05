@@ -4,7 +4,6 @@ LABEL maintainer="luchenqun@qq.com"
 RUN mkdir -p /app
 COPY src /app/src
 COPY view /app/view
-COPY www /app/www
 COPY package.json /app/package.json
 COPY production.js /app/production.js
 COPY schema.sql /app/schema.sql

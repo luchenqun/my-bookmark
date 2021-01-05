@@ -13,8 +13,8 @@ module.exports = [
     handle: 'resource',
     enable: true,
     options: {
-      root: path.join(think.ROOT_PATH, 'www'),
-      publicPath: /^\/(scripts|css|views|images|favicon\.ico)/
+      root: path.join(think.ROOT_PATH, 'view'),
+      publicPath: /^\/(scripts|css|views|images|admin\.jpg|favicon\.ico)/
     }
   },
   {

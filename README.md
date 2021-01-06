@@ -79,8 +79,6 @@ my-bookmark/
 │   └── index.js                  # 后台测试文件
 ├── update.sql                    # MySQL更新文件
 ├── view/                         # 网站主页显示文件夹
-│   └── index_index.html          # 网站主页
-├── www                           # 网站实现文件夹
 │   ├── 404.html                  # 默认404页面
 │   ├── css/                      # 样式表文件夹
 │   │   ├── externe/              # 外部引入引来的css文件
@@ -93,7 +91,8 @@ my-bookmark/
 │   │   ├── directives/           # 所有的AngularJS指令
 │   │   ├── externe/              # 外部引入的JS文件
 │   │   └── services/             # 所有的AngularJS服务文件
-│   └── views/                    # 页面实现文件
+│   ├── views/                    # 页面实现文件
+│   └── index.html                # 网站主页
 └── README.md                     # 项目工程说明文件
 ```   
 

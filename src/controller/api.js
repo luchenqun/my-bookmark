@@ -59,6 +59,7 @@ module.exports = class extends Base {
           username: user.username
         });
         user.token = token;
+        await this.model('users').where({ id: user.id }).update({ lastLogin: ['exp', 'NOW()'] });
         this.json({ code: 0, data: user, msg: "登陆成功" });
       }
     } catch (error) {

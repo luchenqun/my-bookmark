@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `lastLogin` datetime DEFAULT now(),         -- 最后一次登录时间
   `searchHistory` varchar(512) DEFAULT NULL,  -- 历史搜索记录
   `avatar` varchar(512) DEFAULT NULL,         -- 头像地址
-  `quickUrl` varchar(2048) DEFAULT '{\"B\":\"https://www.baidu.com/\",\"G\":\"https://www.google.com.hk/\",\"V\":\"https://www.v2ex.com/\",\"L\":\"http://luchenqun.com/\",\"H\":\"https://github.com/\",\"Q\":\"http://www.iqiyi.com/\",\"J\":\"https://www.jd.com/\"}',   -- 全局快捷地址
+  `quickUrl` varchar(2048) DEFAULT '{\"B\":\"https://www.baidu.com/\",\"G\":\"https://www.google.com.hk/\",\"H\":\"https://github.com/\"}',   -- 全局快捷地址
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)

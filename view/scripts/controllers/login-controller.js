@@ -70,7 +70,7 @@ app.controller('loginCtr', ['$scope', '$filter', '$state', '$http', '$cookieStor
       toastr.error('账号只能是数字字母，且长度必须为3到12位', "错误");
       return;
     }
-    if (!/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test($scope.emailRegister)) {
+    if (!/^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test($scope.emailRegister)) {
       toastr.error('邮箱格式输入有误', "错误");
       return;
     }

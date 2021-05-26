@@ -1,8 +1,10 @@
 app.controller('settingsCtr', ['$scope', '$stateParams', '$filter', '$state', '$window', '$timeout', 'pubSubService', 'dataService', function ($scope, $stateParams, $filter, $state, $window, $timeout, pubSubService, dataService) {
   console.log('Hello settingsCtr......', $stateParams);
   if (dataService.smallDevice()) {
-    $window.location = "http://m.mybookmark.cn/#/tags";
-    return;
+    if ($window.location.hostname.indexOf("b.lucq.fun") >= 0) {
+      $window.location = "http://mb.lucq.fun/#/tags";
+      return;
+    }
   }
   pubSubService.publish('Menus.active');
 

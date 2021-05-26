@@ -99,7 +99,7 @@ app.controller('menuCtr', ['$scope', '$stateParams', '$state', '$window', '$time
     } else if (searchOption == 3) {
       $window.open('https://stackoverflow.com/search?q=' + encodeURIComponent(keyword), '_blank');
     } else if (searchOption == 4) {
-      $window.open('http://www.baidu.com/s?tn=mybookmark.cn&ch=3&ie=utf-8&wd=' + encodeURIComponent(keyword), '_blank');
+      $window.open('http://www.baidu.com/s?tn=b.lucq.fun&ch=3&ie=utf-8&wd=' + encodeURIComponent(keyword), '_blank');
     } else if (searchOption == 5) {
       console.log('search note, word = ', keyword);
       $state.go('note', { keyword }, { reload: true })

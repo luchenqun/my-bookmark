@@ -1,4 +1,4 @@
-<div class="ui right floated pagination menu" ng-if="totalPages>0">
+<div class="ui right floated pagination menu" ng-if="totalPages>0" style="height: 20px">
   <a class="icon item" ng-click="changeCurrentPage(1)" ng-show="currentPage>1">
     <i class="angle double left icon"></i>
   </a>
@@ -7,13 +7,13 @@
   </a>
   <a class="item" ng-if="currentPage > 1" ng-click="changeCurrentPage(1)">1</a>
   <a class="item" style="cursor: not-allowed" ng-if="currentPage-3>2">.....</a>
-  <a class="item" ng-if="currentPage-3>1" ng-click="changeCurrentPage(currentPage-3)">{{currentPage-3}}</a>
+  <!-- <a class="item" ng-if="currentPage-3>1" ng-click="changeCurrentPage(currentPage-3)">{{currentPage-3}}</a> -->
   <a class="item" ng-if="currentPage-2>1" ng-click="changeCurrentPage(currentPage-2)">{{currentPage-2}}</a>
   <a class="item" ng-if="currentPage-1>1" ng-click="changeCurrentPage(currentPage-1)">{{currentPage-1}}</a>
   <a class="item active" ng-show="currentPage>0">{{ currentPage }}</a>
   <a class="item" ng-if="currentPage+1<totalPages" ng-click="changeCurrentPage(currentPage+1)">{{currentPage+1}}</a>
   <a class="item" ng-if="currentPage+2<totalPages" ng-click="changeCurrentPage(currentPage+2)">{{currentPage+2}}</a>
-  <a class="item" ng-if="currentPage+3<totalPages" ng-click="changeCurrentPage(currentPage+3)">{{currentPage+3}}</a>
+  <!-- <a class="item" ng-if="currentPage+3<totalPages" ng-click="changeCurrentPage(currentPage+3)">{{currentPage+3}}</a> -->
   <a class="item" style="cursor: not-allowed" ng-if="currentPage+3<totalPages-1">.....</a>
   <a class="item" ng-if="currentPage < totalPages" ng-click="changeCurrentPage(totalPages)">{{totalPages}}</a>
   <a class="icon item" ng-click="changeCurrentPage(currentPage+1)" ng-show="currentPage<totalPages">

@@ -47,7 +47,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     showType && ($scope.showType = showType);
     $scope.loading = true;
 
-    let pageSize = ($scope.showMode == 'item') ? 50 : 20;
+    let pageSize = ($scope.showMode == 'item') ? 65 : 20;
 
     for (let tag of $scope.tags) {
       tag.bookmarkClicked = (tag.id == $scope.currentTagId);

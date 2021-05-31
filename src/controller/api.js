@@ -425,43 +425,111 @@ module.exports = class extends Base {
     // path: 'C:\\Users\\lucq\\AppData\\Local\\Temp\\upload_4ae3b14dacaa107076d3bddd471ebe39.html',
     // name: 'exportbookmark-lcq-20200402084709.html',
     // type: 'text/html',
-    const file = this.file("file");
+
+    const getRootFolder = function (body) {
+      let h3 = body.find("h3").first();
+      // let isChrome = typeof h3.attr("personal_toolbar_folder") === "string";
+      // let isIE = typeof h3.attr("item_id") === "string";
+      // let isFireFox = h3.text() === "Mozilla Firefox";
+      let isSafari = typeof h3.attr("folded") === "string";
+      return isSafari ? body : body.children("dl").first();
+    };
+
+    const parseByString = function (content) {
+      let $ = cheerio.load(content, { decodeEntities: false });
+      let body = $("body");
+      let root = [];
+      let rdt = getRootFolder(body).children("dt");
+      let parseNode = function (node) {
+        let eq0 = node.children().eq(0);
+        let title = eq0.html() || "无标题";
+        let type = "site";
+        let href = "";
+        let attrCreatedAt = "";
+        let attrLastClick = "";
+        let attrClickCount = "";
+
+        let children = [];
+        switch (eq0[0].name) {
+          case "h3":
+            // folder
+            type = "folder";
+            let dl = node.children("dl").first();
+            let dts = dl.children();
+            let ls = dts.toArray().map(function (ele) {
+              if (ele.name !== "dt")
+                return null;
+              return parseNode($(ele));
+            });
+            children = ls.filter(function (item) { return item !== null; });
+          case "a":
+            // site
+            href = eq0.attr("href") || "";
+            attrCreatedAt = eq0.attr("add_date");
+            attrLastClick = eq0.attr("last_click");
+            attrClickCount = eq0.attr("click_count");
+        }
+        // 处理name
+        if (title.length > 255) {
+          title = title.substring(255);
+        }
+        title = title.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/gi, "");
+
+        return {
+          title,
+          type,
+          url: href,
+          createdAt: think.datetime(attrCreatedAt ? parseInt(attrCreatedAt) * 1000 : new Date()),
+          lastClick: think.datetime(attrLastClick ? parseInt(attrLastClick) * 1000 : new Date()),
+          clickCount: attrClickCount ? parseInt(attrClickCount) : 1,
+          children: children
+        };
+      };
+      rdt.each(function (_, item) {
+        let node = $(item);
+        let child = parseNode(node);
+        root.push(child);
+      });
+      return root;
+    };
+
+    const parseByPath = function (path) {
+      var content = fs.readFileSync(path, 'utf-8');
+      return parseByString(content);
+    };
+
+    const userId = this.ctx.state.user.id;
+
+    const flatBookmarks = (originBookmarks, tagName, bookmarks) => {
+      for (let bookmark of originBookmarks) {
+        if (bookmark.type == "site") {
+          bookmarks.push({
+            title: bookmark.title,
+            url: bookmark.url,
+            createdAt: bookmark.createdAt,
+            lastClick: bookmark.lastClick,
+            tagName,
+            clickCount: bookmark.clickCount,
+            userId
+          });
+        } else if (bookmark.type == "folder") {
+          flatBookmarks(bookmark.children, tagName == '未分类' ? bookmark.title : tagName, bookmarks);
+        }
+      }
+    }
 
     let bookmarks = [];
 
+    const file = this.file("file");
     let now = new Date().getTime();
     let fileName = 'uploadbookmark-' + this.ctx.state.user.username + '-' + now + '.html';
     if (file) {
       const filePath = path.join(think.ROOT_PATH, `runtime/upload/${fileName}`);
       await fs.ensureDir(path.dirname(filePath));
       await fs.move(file.path, filePath);
-      let data = await fs.readFile(filePath);
-      let $ = cheerio.load(data.toString());
-
-      let anchors = $("dl").find("a");
-      anchors.each(async (i, e) => {
-        let url = $(e).attr("href");
-        let title = $(e).text() || "无标题";
-        if (title.length > 255) {
-          title = title.substring(255);
-        }
-        title = title.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/gi, "");
-        let attrCreatedAt = $(e).attr("add_date");
-        let attrLastClick = $(e).attr("last_click");
-        let attrClickCount = $(e).attr("click_count");
-        let createdAt = think.datetime(attrCreatedAt ? parseInt(attrCreatedAt) * 1000 : new Date());
-        let lastClick = think.datetime(attrLastClick ? parseInt(attrLastClick) * 1000 : new Date());
-        let clickCount = attrClickCount ? parseInt(attrClickCount) : 1;
-
-        // 只允许用一个标签
-        let tagName = "未分类";
-        $(e).parents("dl").each(function (ii, ee) {
-          let folder = $(ee).prev();
-          let temp = folder.text().replace(/(^\s*)|(\s*$)/g, '').replace(/\s+/g, ' ');
-          if (temp != "Bookmarks" && temp != "书签栏" && temp != "" && temp != undefined) { tagName = temp; }
-        });
-        bookmarks.push({ title, url, createdAt, lastClick, tagName, clickCount, userId: this.ctx.state.user.id })
-      });
+      let originBookmarks = parseByPath(filePath);
+      Array.isArray(originBookmarks) && originBookmarks.length >= 0 && (originBookmarks[0].title = "未分类");
+      flatBookmarks(originBookmarks, originBookmarks[0].title, bookmarks); // 传上来的树级目录改为只有一级目录
     }
 
     let count = 0;
@@ -492,27 +560,56 @@ module.exports = class extends Base {
 
   // 书签备份
   async bookmarkBackupAction() {
-    let init = '<TITLE>Bookmarks</TITLE><H1>Bookmarks</H1><DL id="0"></DL>';
-    let $ = cheerio.load(init, {
-      decodeEntities: false,
-      xmlMode: true,
-    });
+    const sample =
+      `<!DOCTYPE NETSCAPE-Bookmark-file-1>
+    <!-- This is an automatically generated file.
+         It will be read and overwritten.
+         DO NOT EDIT! -->
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+    <TITLE>Bookmarks</TITLE>
+    <H1>Bookmarks</H1>
+    <DL><p>
+        <DT><H3 ADD_DATE="1606958496" LAST_MODIFIED="1622450430" PERSONAL_TOOLBAR_FOLDER="true">书签栏</H3>
+        <DL><p>
+            <DT><H3 ADD_DATE="1622427860" LAST_MODIFIED="1622450436">JavaScript</H3>
+            <DL><p>
+                <DT><A HREF="https://github.com/luchenqun/my-bookmark/issues" ADD_DATE="1622427872">Issues · luchenqun/my-bookmark</A>
+                <DT><A HREF="https://mail.google.com/mail/u/0/#inbox" ADD_DATE="1622450430">收件箱 - lcq530485521@gmail.com - Gmail</A>
+            </DL><p>
+        </DL><p>
+    </DL><p>`
+
     let time = (date) => parseInt(new Date(date).getTime() / 1000); // 日期转时间
+    let left = `<!DOCTYPE NETSCAPE-Bookmark-file-1>
+<!-- This is an automatically generated file.
+      It will be read and overwritten.
+      DO NOT EDIT! -->
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<TITLE>Bookmarks</TITLE>
+<H1>Bookmarks</H1>
+<DL><p>
+    <DT><H3 ADD_DATE="1606958496" LAST_MODIFIED="1622450430" PERSONAL_TOOLBAR_FOLDER="true">书签栏</H3>
+    <DL><p>\n`;
+    let middle = '';
+    let right = `    </DL><p>
+</DL><p>`;
 
     let tags = await this.model('tags').where({ userId: this.ctx.state.user.id }).order('sort ASC, lastUse DESC').select();
     for (const tag of tags) {
-      $('#0').append(`<DT><H3>${tag.name}</H3></DT><DL id="${tag.id}"></DL>`);
+      let tagStr = `        <DT><H3 ADD_DATE="${tag.lastUse}" LAST_MODIFIED="${tag.lastUse}">${tag.name}</H3>\n        <DL><p>\n`;
       let bookmarks = await this.model('bookmarks').where({ tagId: tag.id }).select();
       for (const bookmark of bookmarks) {
-        $('#' + tag.id).append(`<DT><A HREF="${bookmark.url}" ADD_DATE="${time(bookmark.createdAt)}" LAST_CLICK="${time(bookmark.lastClick)}" CLICK_COUNT="${bookmark.clickCount}" >${bookmark.title}</A></DT>`)
+        tagStr += `           <DT><A HREF="${bookmark.url}" ADD_DATE="${time(bookmark.createdAt)}" LAST_CLICK="${time(bookmark.lastClick)}" CLICK_COUNT="${bookmark.clickCount}">${bookmark.title}</A>\n`
       }
+      tagStr += `        </DL><p>\n`;
+      middle += bookmarks.length > 0 ? tagStr : '';
     }
     let now = new Date().getTime()
     let fileName = 'exportbookmark-' + this.ctx.state.user.username + '-' + now + '.html';
     let filePath = path.join(think.ROOT_PATH, 'runtime', 'backup', fileName);
 
     await fs.ensureFile(filePath);
-    await fs.writeFile(filePath, $.xml());
+    await fs.writeFile(filePath, left + middle + right);
     this.json({ code: 0, data: fileName });
 
     setTimeout(async () => {

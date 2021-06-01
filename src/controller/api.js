@@ -456,11 +456,7 @@ module.exports = class extends Base {
             type = "folder";
             let dl = node.children("dl").first();
             let dts = dl.children();
-            let ls = dts.toArray().map(function (ele) {
-              if (ele.name !== "dt")
-                return null;
-              return parseNode($(ele));
-            });
+            let ls = dts.toArray().map(function (ele) { return ele.name !== "dt" ? null : parseNode($(ele)); });
             children = ls.filter(function (item) { return item !== null; });
           case "a":
             // site
@@ -521,8 +517,7 @@ module.exports = class extends Base {
     let bookmarks = [];
 
     const file = this.file("file");
-    let now = new Date().getTime();
-    let fileName = 'uploadbookmark-' + this.ctx.state.user.username + '-' + now + '.html';
+    let fileName = 'uploadbookmark-' + this.ctx.state.user.username + '-' + think.datetime(new Date(), "YYYYMMDDHHmmss") + '.html';
     if (file) {
       const filePath = path.join(think.ROOT_PATH, `runtime/upload/${fileName}`);
       await fs.ensureDir(path.dirname(filePath));
@@ -580,6 +575,7 @@ module.exports = class extends Base {
     </DL><p>`
 
     let time = (date) => parseInt(new Date(date).getTime() / 1000); // 日期转时间
+    let now = new Date();
     let left = `<!DOCTYPE NETSCAPE-Bookmark-file-1>
 <!-- This is an automatically generated file.
       It will be read and overwritten.
@@ -588,7 +584,7 @@ module.exports = class extends Base {
 <TITLE>Bookmarks</TITLE>
 <H1>Bookmarks</H1>
 <DL><p>
-    <DT><H3 ADD_DATE="1606958496" LAST_MODIFIED="1622450430" PERSONAL_TOOLBAR_FOLDER="true">书签栏</H3>
+    <DT><H3 ADD_DATE="${time(now)}" LAST_MODIFIED="${time(now)}" PERSONAL_TOOLBAR_FOLDER="true">书签栏</H3>
     <DL><p>\n`;
     let middle = '';
     let right = `    </DL><p>
@@ -596,7 +592,7 @@ module.exports = class extends Base {
 
     let tags = await this.model('tags').where({ userId: this.ctx.state.user.id }).order('sort ASC, lastUse DESC').select();
     for (const tag of tags) {
-      let tagStr = `        <DT><H3 ADD_DATE="${tag.lastUse}" LAST_MODIFIED="${tag.lastUse}">${tag.name}</H3>\n        <DL><p>\n`;
+      let tagStr = `        <DT><H3 ADD_DATE="${time(tag.lastUse)}" LAST_MODIFIED="${time(tag.lastUse)}">${tag.name}</H3>\n        <DL><p>\n`;
       let bookmarks = await this.model('bookmarks').where({ tagId: tag.id }).select();
       for (const bookmark of bookmarks) {
         tagStr += `           <DT><A HREF="${bookmark.url}" ADD_DATE="${time(bookmark.createdAt)}" LAST_CLICK="${time(bookmark.lastClick)}" CLICK_COUNT="${bookmark.clickCount}">${bookmark.title}</A>\n`
@@ -604,8 +600,7 @@ module.exports = class extends Base {
       tagStr += `        </DL><p>\n`;
       middle += bookmarks.length > 0 ? tagStr : '';
     }
-    let now = new Date().getTime()
-    let fileName = 'exportbookmark-' + this.ctx.state.user.username + '-' + now + '.html';
+    let fileName = 'exportbookmark-' + this.ctx.state.user.username + '-' + think.datetime(new Date(), "YYYYMMDDHHmmss") + '.html';
     let filePath = path.join(think.ROOT_PATH, 'runtime', 'backup', fileName);
 
     await fs.ensureFile(filePath);

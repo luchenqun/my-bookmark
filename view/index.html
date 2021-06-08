@@ -39,11 +39,11 @@
         });
 
         if (window.location.hostname.indexOf("mybookmark.cn") >= 0) {
-          toastr.warning("域名【mybookmark.cn】将于2021年11月份到期，届时将不再续费无法访问。后续将使用新域名【http://b.lucq.fun】为您提供服务。60秒后会自动跳转到新的域名。", "提示");
+          toastr.warning("域名【mybookmark.cn】将于2021年11月份到期，届时将不再续费无法访问。后续将使用新域名【http://b.lucq.fun】为您提供服务。5分钟后会自动跳转到新的域名。", "提示");
           $(".js-domain").removeClass("hidden");
           setTimeout(function () {
             window.location = "http://b.lucq.fun/#/tags";
-          }, 60000);
+          }, 30000);
         }
       };
       let resizeContainer = () => {
@@ -66,7 +66,7 @@
         <div class="header">域名更换提示！</div>
         <ul class="list">
           <li>域名【mybookmark.cn】将于2021年11月份到期，届时将不再续费无法访问。目前已使用新域名【<a href="http://b.lucq.fun/">http://b.lucq.fun</a>】为您提供服务。</li>
-          <li>60秒后会自动跳转到新的域名。<a href="http://b.lucq.fun/">立即跳转</a></li>
+          <li>5分钟后会自动跳转到新的域名。<a href="http://b.lucq.fun/">立即跳转</a></li>
         </ul>
       </div>
       <!-- directive：菜单 -->

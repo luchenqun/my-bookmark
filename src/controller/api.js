@@ -212,7 +212,6 @@ module.exports = class extends Base {
     bookmark.userId = this.ctx.state.user.id;
     try {
       let bookmarkFind = await this.model('bookmarks').where({ userId: this.ctx.state.user.id, url: bookmark.url }).find();
-      console.log("bookmarkFind", bookmarkFind, bookmark)
       if (!think.isEmpty(bookmarkFind)) {
         await this.model('bookmarks').where({
           userId: this.ctx.state.user.id,

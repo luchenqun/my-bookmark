@@ -211,6 +211,18 @@ module.exports = class extends Base {
     let bookmark = this.post();
     bookmark.userId = this.ctx.state.user.id;
     try {
+      let bookmarkFind = await this.model('bookmarks').where({ userId: this.ctx.state.user.id, url: bookmark.url }).find();
+      console.log("bookmarkFind", bookmarkFind, bookmark)
+      if (!think.isEmpty(bookmarkFind)) {
+        await this.model('bookmarks').where({
+          userId: this.ctx.state.user.id,
+          id: bookmarkFind.id
+        }).update({
+          createdAt: ['exp', 'NOW()']
+        });
+        this.json({ code: 0, data: bookmarkFind, msg: `书签 ${bookmark.title} 已存在，更新创建日期！` });
+        return
+      }
       // 没有分类的直接放未分类里面
       if (!bookmark.tagId) {
         const name = "未分类";

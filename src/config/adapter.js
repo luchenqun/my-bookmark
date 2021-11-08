@@ -66,7 +66,7 @@ exports.session = {
     tokenName: 'authorization', // if tokenType not 'cookie', this will be token name, 'jwt' is default 后端字母要小写
     sign: {
       // sign options is not required
-      expiresIn: '604800s' // 7天过期
+      expiresIn: '2592000s' // 30天过期
     },
     verify: {
       // verify options is not required

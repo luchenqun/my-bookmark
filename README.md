@@ -110,6 +110,11 @@ sudo sh get-docker.sh --mirror Aliyun
 
 如果MySQL需要远程访问，那么你需要进入容器之后更新 `/etc/mysql/mysql.conf.d/mysqld.cnf`，将绑定地址 `127.0.0.1` 改为 `0.0.0.0`。然后执行命令`service mysql restart`重启数据库服务。安装后的 MySQL默认有两个账户，一个是root账户，无密码。一个是在文件`/etc/mysql/debian.cnf`有个账号密码。当然这些账号都是只能在本地访问的，你需要手动创建一个可供远程访问的账号。
 
+另外，有人做了arm架构的docker，如果有需要的请按如下命令执行安装
+```
+docker run -itd --name mybookmark -p 2000-2000 -p 3306-3306 740162752/bookmark
+```
+
 7 安装部署指南
 -------------
 这种适合动手能力比较强的人员。

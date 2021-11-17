@@ -112,7 +112,7 @@ sudo sh get-docker.sh --mirror Aliyun
 
 另外，有人做了arm架构的docker，如果有需要的请按如下命令执行安装
 ```
-docker run -itd --name mybookmark -p 2000-2000 -p 3306-3306 740162752/bookmark
+docker run -itd --name mybookmark -p 2000:2000 -p 3306:3306 740162752/bookmark
 ```
 
 7 安装部署指南

@@ -12,6 +12,10 @@ function md5(str) {
 module.exports = class extends Base {
   async __before() {
     if (['userRegister', 'userLogin', 'noteShare', 'bookmarkDownload', 'hotBookmarks', 'hotBookmarksRandom'].indexOf(this.ctx.action) >= 0) {
+      this.header("Access-Control-Allow-Origin", this.header("origin") || "*");
+      this.header("Access-Control-Allow-Headers", "x-requested-with");
+      this.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
+      this.header('Access-Control-Allow-Credentials', true);
       return;
     }
     try {
@@ -804,24 +808,29 @@ module.exports = class extends Base {
 
   async noteShareAction() {
     let id = this.get("id");
+    let json = this.get("json");
     let note = await this.model('notes').where({ id, public: 1 }).find();
-    let body = think.isEmpty(note) ? "备忘为非公开或者已删除!" : note.content;
-    this.body = `<body style="margin:0px;height:100%;">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-        <script>
-          if(screen && screen.availWidth <= 1024) {
-            setTimeout(() => {
-              document.getElementById("note-div").style.width = "100%";
-              document.getElementById("note-div").style["background-color"] = "#F3F4F5";
-              document.getElementById("note").style.width = "95%";
-            }, 100);
-          }
-        </script>
-      </head>
-      <div id="note-div" style="text-align:center;">
-        <pre id="note" style="background-color:RGB(243,244,245); padding:0px 10px 0px 10px; margin:0px; width:60%; min-height:100%;display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">\n\n${body}\n\n</pre>
-      </div>
-    </body>`;
+    if (json) {
+      this.json(JSON.parse(note.content))
+    } else {
+      let body = think.isEmpty(note) ? "备忘为非公开或者已删除!" : note.content;
+      this.body = `<body style="margin:0px;height:100%;">
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+          <script>
+            if(screen && screen.availWidth <= 1024) {
+              setTimeout(() => {
+                document.getElementById("note-div").style.width = "100%";
+                document.getElementById("note-div").style["background-color"] = "#F3F4F5";
+                document.getElementById("note").style.width = "95%";
+              }, 100);
+            }
+          </script>
+        </head>
+        <div id="note-div" style="text-align:center;">
+          <pre id="note" style="background-color:RGB(243,244,245); padding:0px 10px 0px 10px; margin:0px; width:60%; min-height:100%;display: inline-block;text-align: left; font-size: 15px; font-family:italic arial,sans-serif;word-wrap: break-word;white-space: pre-wrap;">\n\n${body}\n\n</pre>
+        </div>
+      </body>`;
+    }
   }
 };

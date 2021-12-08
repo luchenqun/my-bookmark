@@ -12,10 +12,6 @@ function md5(str) {
 module.exports = class extends Base {
   async __before() {
     if (['userRegister', 'userLogin', 'noteShare', 'bookmarkDownload', 'hotBookmarks', 'hotBookmarksRandom'].indexOf(this.ctx.action) >= 0) {
-      this.header("Access-Control-Allow-Origin", this.header("origin") || "*");
-      this.header("Access-Control-Allow-Headers", "x-requested-with");
-      this.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
-      this.header('Access-Control-Allow-Credentials', true);
       return;
     }
     try {

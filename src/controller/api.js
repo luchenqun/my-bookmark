@@ -281,29 +281,19 @@ module.exports = class extends Base {
       if (page == 0 && tagId == -1) {
         let count = await this.model('bookmarks').where(condition).count('id');
         let totalPages = Math.ceil(count / pageSize);
-        // 按照 2:2:1取数据
-        let length = Math.ceil(pageSize * 2 / 5);
+        // 按照 1:1取数据
+        let length = Math.ceil(pageSize / 2);
         let bookmarks = await this.model('bookmarks').where(condition).order('createdAt DESC').limit(0, length).select(); // 这个取一半
 
         // 取最近点击部分数据
         let cnt = 0;
-        let bookmarks2 = await this.model('bookmarks').where(condition).order('lastClick DESC').limit(0, pageSize * 2).select(); // 这个多取一点，有可能跟上面的重复了
+        let bookmarks2 = await this.model('bookmarks').where(condition).order('lastClick DESC').limit(0, pageSize * 4).select(); // 这个多取一点，有可能跟上面的重复了
         for (const bookmark of bookmarks2) {
           let find = bookmarks.find(item => item.id == bookmark.id);
           if (!find) {
             bookmarks.push(bookmark);
             cnt++;
             if (cnt >= length) break;
-          }
-        }
-
-        // 取点击次数最多部分
-        let bookmarks3 = await this.model('bookmarks').where(condition).order('clickCount DESC').limit(0, pageSize * 2).select(); // 这个多取一点，有可能跟上面的重复了
-        for (const bookmark of bookmarks3) {
-          let find = bookmarks.find(item => item.id == bookmark.id);
-          if (!find) {
-            bookmarks.push(bookmark);
-            if (bookmarks.length >= pageSize) break;
           }
         }
 

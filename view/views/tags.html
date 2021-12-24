@@ -100,8 +100,8 @@
   <div class="ui five column grid">
     <div ng-repeat="bookmark in bookmarks" class="column js-costomTag-item" ng-class="{bookmarkNormalHover:bookmarkNormalHover, bookmark:(!bookmarkNormalHover)}" ng-mouseover="bookmarkNormalHover=true; setHoverBookmark(bookmark)" ng-mouseleave="bookmarkNormalHover=false; setHoverBookmark(null)" ng-click="jumpToUrl(bookmark.url, bookmark.id)" title="{{ bookmark.title }}" id="{{bookmark.id}}">
       <img class="ui ui middle aligned tiny image bookmarkInfo" ng-src="https://favicon.lucq.fun/?url={{bookmark.url}}" err-src="./images/default.ico" style="width: 16px; height: 16px" ng-click="detailBookmark(bookmark);$event.stopPropagation()" />
-      <span ng-if="(currentPage==0) && ($index==0 || $index==pageSize*2/5 || $index==pageSize*4/5)" style="font-weight: bold">{{bookmark.title}}</span>
-      <span ng-if="(currentPage!=0) || ($index!=0 && $index!=pageSize*2/5 && $index!=pageSize*4/5)">{{bookmark.title}}</span>
+      <span ng-if="(currentPage==0) && ($index==0 || $index==pageSize/2)" style="font-weight: bold">{{bookmark.title}}</span>
+      <span ng-if="(currentPage!=0) || ($index!=0 && $index!=pageSize/2)">{{bookmark.title}}</span>
     </div>
   </div>
   <div class="ui divider" style="width:100%;margin:14px 15px"></div>

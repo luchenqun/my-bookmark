@@ -88,6 +88,11 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
           clearInterval(id);
         }
       }, 10);
+    } else if ($scope.showMode == 'item' && bookmarks.length == $scope.pageSize) {
+      $timeout(() => {
+        $("#" + bookmarks[bookmarks.length * 2 / 5 - 1].id).after(`<div class="ui divider" style="width:100%;margin:0px 15px"></div>`);
+        $("#" + bookmarks[bookmarks.length * 4 / 5 - 1].id).after(`<div class="ui divider" style="width:100%;margin:0px 15px"></div>`);
+      }, 100);
     }
 
     $timeout(function () {

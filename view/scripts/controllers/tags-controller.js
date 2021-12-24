@@ -29,6 +29,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
   $scope.bookmarks = [];
   $scope.totalPages = 0;
   $scope.currentPage = 0;
+  $scope.pageSize = 75;
   $scope.inputPage = '';
   $scope.currentTagId = ($stateParams && $stateParams.tagId) || (-1);
   $scope.editMode = false;
@@ -47,7 +48,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
     showType && ($scope.showType = showType);
     $scope.loading = true;
 
-    let pageSize = ($scope.showMode == 'item') ? 65 : 20;
+    let pageSize = ($scope.showMode == 'item') ? $scope.pageSize : 20;
 
     for (let tag of $scope.tags) {
       tag.bookmarkClicked = (tag.id == $scope.currentTagId);

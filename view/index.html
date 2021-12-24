@@ -61,7 +61,7 @@
   </head>
 
   <body ng-app="bookmarkApp">
-    <div class="ui container" id="js-container" style="position: absolute; left: 86">
+    <div class="ui container" id="js-container" style="position: absolute; left: 86;width: 70%;">
       <div class="ui error hidden message js-domain" style="margin-bottom: 3px">
         <div class="header">域名更换提示！</div>
         <ul class="list">
@@ -124,5 +124,10 @@
     <script src="scripts/externe/md5.js"></script>
     <script src="scripts/externe/pnglib.js"></script>
     <script src="scripts/externe/identicon.js"></script>
+    <style>
+      .ui.container {
+        width: 100%;
+      }
+    </style>
   </body>
 </html>

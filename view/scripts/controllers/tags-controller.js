@@ -90,7 +90,7 @@ app.controller('tagsCtr', ['$scope', '$filter', '$state', '$window', '$statePara
       }, 10);
     } else if ($scope.showMode == 'item' && bookmarks.length > $scope.pageSize / 2 && $scope.currentTagId == -1) {
       $timeout(() => {
-        $("#" + bookmarks[bookmarks.length / 2 - 1].id).after(`<div class="ui divider" style="width:100%;margin:0px 15px"></div>`);
+        $("#" + bookmarks[bookmarks.length / 2 - 1].id).after(`<div class="ui divider" style="width:100%;margin:0px 15px -1px 15px"></div>`);
       }, 100);
     }
 

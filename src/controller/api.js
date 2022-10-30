@@ -530,28 +530,35 @@ module.exports = class extends Base {
 
     let count = 0;
     let repeat = 0;
-    let tags = await this.model('tags').where({ userId: this.ctx.state.user.id }).select();
+    let fail = 0;
+    let failStr = "";
+    let tags = await this.model("tags").where({ userId: this.ctx.state.user.id }).select();
     for (let bookmark of bookmarks) {
-      let find = await this.model('bookmarks').where({ userId: this.ctx.state.user.id, url: bookmark.url }).find();
+      let find = await this.model("bookmarks").where({ userId: this.ctx.state.user.id, url: bookmark.url }).find();
       if (think.isEmpty(find)) {
-        let tag = tags.find(item => item.name == bookmark.tagName);
+        let tag = tags.find((item) => item.name == bookmark.tagName);
         if (tag) {
           bookmark.tagId = tag.id;
         } else {
           bookmark.tagId = await this.model("tags").add({ userId: this.ctx.state.user.id, name: bookmark.tagName });
           tags.push({
             id: bookmark.tagId,
-            name: bookmark.tagName
-          })
+            name: bookmark.tagName,
+          });
         }
         delete bookmark.tagName;
-        await this.model("bookmarks").add(bookmark);
+        try {
+          await this.model("bookmarks").add(bookmark);
+        } catch (error) {
+          fail++;
+          failStr += bookmark.title + ",";
+        }
         count++;
       } else {
         repeat++;
       }
     }
-    this.json({ code: 0, data: count, msg: `书签传入${bookmarks.length}个，重复书签${repeat}个，成功导入${count}个。` });
+    this.json({ code: 0, data: count, msg: `书签传入${bookmarks.length}个，重复书签${repeat}个，${fail}个导入失败:${failStr}，成功导入${count}个。` });
   }
 
   // 书签备份

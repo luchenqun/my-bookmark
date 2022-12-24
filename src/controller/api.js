@@ -346,7 +346,7 @@ module.exports = class extends Base {
     }
 
     try {
-      let data = await this.model(tableName).where(condition).page(this.get('page') || 1, this.get('pageSize') || 20).countSelect();
+      let data = await this.model(tableName).where(condition).order('createdAt DESC').page(this.get('page') || 1, this.get('pageSize') || 20).countSelect();
       if (tableName == "bookmarks") {
         let ids = [];
         for (let bookmark of data.data) {

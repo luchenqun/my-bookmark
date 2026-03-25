@@ -333,6 +333,10 @@ const apiRoutes: FastifyPluginAsync = async (fastify) => {
         return reply.send(fail(1, '参数错误'));
       }
 
+      if (user.username === 'test') {
+        return reply.send(ok(0, 'test账号不允许修改密码!'));
+      }
+
       const result = await verifyPassword(body.old, user.passwordHash, user.passwordAlgo);
       if (!result.valid) {
         return reply.send(ok(0, '旧密码认证失败!'));

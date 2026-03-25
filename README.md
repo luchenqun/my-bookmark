@@ -26,8 +26,8 @@
 - 支持导出书签
 - 支持备忘录功能
 - 支持全局快捷链接配置
-- 保留旧前端主要接口兼容能力
-- 已去掉旧项目里的 `hot_bookmarks` 真实业务，只保留兼容空接口
+- 增加[Chrome插件](https://chromewebstore.google.com/detail/%E4%B9%A6%E7%AD%BE%E5%BF%AB%E9%80%9F%E6%B7%BB%E5%8A%A0/ihhmiedcjcoibfidjmacmfmgohbjgjid)，可在任意界面快速添加书签至系统。如果你无法访问该插件，可以按照[Chrome如何安装插件（开发版本/自制）](https://jingyan.baidu.com/article/f3ad7d0f58d6b609c3345b80.html)方法安装插件，插件请到[bookmark-plugin](https://github.com/luchenqun/bookmark-plugin)下载。   
+- 适配手机平板，手机端请访问[mb.lucq.fun](http://mb.lucq.fun/)。
 
 ## 主要技术栈
 

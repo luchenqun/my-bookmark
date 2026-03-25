@@ -1,5 +1,7 @@
 import { buildApp } from './app.js';
-import { formatStartupUrls, resolvePort } from './lib/startup.js';
+import { formatStartupUrls, loadRuntimeEnv, resolvePort } from './lib/startup.js';
+
+loadRuntimeEnv();
 
 const app = await buildApp();
 const port = resolvePort();

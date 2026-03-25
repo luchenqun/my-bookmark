@@ -1,3 +1,7 @@
+export function loadRuntimeEnv(path = '.env') {
+  process.loadEnvFile(path);
+}
+
 export function resolvePort(env: NodeJS.ProcessEnv = process.env) {
   return Number(env.PORT || 8157);
 }

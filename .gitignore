@@ -1,0 +1,13 @@
+node_modules/
+dist/
+
+.env
+.DS_Store
+
+data/*.db
+data/backup/
+data/upload/
+data/migration-report.json
+data/suspicious-bookmark-urls.json
+
+coverage/

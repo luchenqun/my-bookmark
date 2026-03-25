@@ -1,0 +1,31 @@
+<div class="ui segment js-segment-advice">
+  <div class="ui form">
+    <div class="required field">
+      <label>留言内容</label>
+      <textarea rows="4" placeholder="" ng-model="comment"></textarea>
+    </div>
+    <div class="field">
+      <div class="actions">
+        <div class="ui green button" ng-click="ok()">提交</div>
+      </div>
+    </div>
+  </div>
+  <div class="ui divider"></div>
+  <div class="ui comments" style="max-width: 100%">
+    <h3 class="ui header">最新100条留言</h3>
+    <div class="comment" ng-repeat="advice in advices">
+      <a class="avatar">
+        <img ng-if="advice.username == 'lcq'" src="./images/admin.jpg" />
+        <img ng-if="advice.username != 'lcq'" ng-src="data:image/png;base64,{{advice.imgData}}" />
+      </a>
+      <div class="content">
+        <a class="author">{{ advice.username }}</a>
+        <div class="metadata">
+          <span class="date">{{ advice.createdAt }}</span>
+        </div>
+        <div class="text">{{ advice.comment }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="ui huge text centered inline loader" style="margin-top: 10px" ng-class="{active:loading, disabled: !loading}">正在加载中...</div>
+</div>

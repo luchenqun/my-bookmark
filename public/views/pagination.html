@@ -1,0 +1,29 @@
+<div class="ui right floated pagination menu" ng-if="totalPages>0" style="height: 20px">
+  <a class="icon item" ng-click="changeCurrentPage(1)" ng-show="currentPage>1">
+    <i class="angle double left icon"></i>
+  </a>
+  <a class="icon item" ng-click="changeCurrentPage(currentPage-1)" ng-show="currentPage>=2">
+    <i class="angle left icon"></i>
+  </a>
+  <a class="item" ng-if="currentPage > 1" ng-click="changeCurrentPage(1)">1</a>
+  <a class="item" style="cursor: not-allowed" ng-if="currentPage-3>2">.....</a>
+  <!-- <a class="item" ng-if="currentPage-3>1" ng-click="changeCurrentPage(currentPage-3)">{{currentPage-3}}</a> -->
+  <a class="item" ng-if="currentPage-2>1" ng-click="changeCurrentPage(currentPage-2)">{{currentPage-2}}</a>
+  <a class="item" ng-if="currentPage-1>1" ng-click="changeCurrentPage(currentPage-1)">{{currentPage-1}}</a>
+  <a class="item active" ng-show="currentPage>0">{{ currentPage }}</a>
+  <a class="item" ng-if="currentPage+1<totalPages" ng-click="changeCurrentPage(currentPage+1)">{{currentPage+1}}</a>
+  <a class="item" ng-if="currentPage+2<totalPages" ng-click="changeCurrentPage(currentPage+2)">{{currentPage+2}}</a>
+  <!-- <a class="item" ng-if="currentPage+3<totalPages" ng-click="changeCurrentPage(currentPage+3)">{{currentPage+3}}</a> -->
+  <a class="item" style="cursor: not-allowed" ng-if="currentPage+3<totalPages-1">.....</a>
+  <a class="item" ng-if="currentPage < totalPages" ng-click="changeCurrentPage(totalPages)">{{totalPages}}</a>
+  <a class="icon item" ng-click="changeCurrentPage(currentPage+1)" ng-show="currentPage<totalPages">
+    <i class="angle right icon"></i>
+  </a>
+  <a class="icon item" ng-click="changeCurrentPage(totalPages)" ng-show="currentPage<=totalPages-1">
+    <i class="angle double right icon"></i>
+  </a>
+  <div class="ui transparent input item" style="width: 100px">
+    <input type="text" placeholder="跳转至..." ng-model="inputPage" ng-keypress="($event.which === 13)?changeCurrentPage(inputPage):0" />
+    <i class="arrow right icon" ng-click="changeCurrentPage(inputPage)"></i>
+  </div>
+</div>

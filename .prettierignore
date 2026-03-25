@@ -1,0 +1,13 @@
+node_modules
+dist
+data
+coverage
+package-lock.json
+
+public/images
+public/favicon.ico
+public/admin.jpg
+public/css/externe
+public/scripts/externe
+public/views/bookmark-info.html
+public/views/login.html

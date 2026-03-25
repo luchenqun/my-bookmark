@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            Int        @id @default(autoincrement())
+  username      String     @unique
+  passwordHash  String
+  passwordAlgo  String
+  email         String
+  createdAt     DateTime   @default(now())
+  lastLogin     DateTime   @default(now())
+  searchHistory String?
+  avatar        String?
+  quickUrl      String
+  tags          Tag[]
+  bookmarks     Bookmark[]
+  advices       Advice[]
+  notes         Note[]
+
+  @@map("users")
+}
+
+model Tag {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  name      String
+  lastUse   DateTime   @default(now())
+  sort      Int        @default(0)
+  show      Int        @default(1)
+  user      User       @relation(fields: [userId], references: [id])
+  bookmarks Bookmark[]
+  notes     Note[]
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("tags")
+}
+
+model Bookmark {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  tagId       Int
+  title       String
+  description String?
+  url         String
+  public      Int      @default(0)
+  clickCount  Int      @default(1)
+  createdAt   DateTime @default(now())
+  lastClick   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  tag         Tag      @relation(fields: [tagId], references: [id])
+
+  @@index([userId])
+  @@index([tagId])
+  @@index([userId, createdAt])
+  @@index([userId, lastClick])
+  @@map("bookmarks")
+}
+
+model Advice {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  comment   String
+  createdAt DateTime @default(now())
+  state     Int      @default(0)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("advices")
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  content   String
+  tagId     Int
+  createdAt DateTime @default(now())
+  public    Int      @default(0)
+  user      User     @relation(fields: [userId], references: [id])
+  tag       Tag      @relation(fields: [tagId], references: [id])
+
+  @@index([userId])
+  @@index([tagId])
+  @@map("notes")
+}

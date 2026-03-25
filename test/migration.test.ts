@@ -328,4 +328,71 @@ describe('migration normalization', () => {
       rmSync(tempDir, { force: true, recursive: true });
     }
   });
+
+  it('reports import progress after each inserted chunk', async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'bookmark-migration-progress-test-'));
+    const databasePath = join(tempDir, 'migration.db');
+    const databaseUrl = `file:${databasePath}`;
+
+    execFileSync('npx', ['prisma', 'db', 'push', '--force-reset', '--url', databaseUrl], {
+      cwd: join(import.meta.dirname, '..'),
+      stdio: 'ignore'
+    });
+
+    const prisma = createPrismaClient(databaseUrl);
+    const progress: Array<{ inserted: number; table: string; total: number }> = [];
+
+    try {
+      await importNormalizedRows(
+        prisma,
+        {
+          advices: [],
+          bookmarks: [],
+          notes: [],
+          report: buildDefaultMigrationReport(),
+          tags: Array.from({ length: 1001 }, (_value, index) => ({
+            id: index + 1,
+            userId: 1,
+            name: `Tag ${index + 1}`,
+            lastUse: new Date('2026-03-25T00:00:00.000Z'),
+            sort: index,
+            show: 1
+          })),
+          users: [
+            {
+              id: 1,
+              username: 'demo',
+              passwordHash: md5('demo'),
+              passwordAlgo: 'md5_legacy',
+              email: 'demo@example.com',
+              createdAt: new Date('2026-03-25T00:00:00.000Z'),
+              lastLogin: new Date('2026-03-25T00:00:00.000Z'),
+              searchHistory: '[]',
+              avatar: null,
+              quickUrl: '{}'
+            }
+          ]
+        },
+        {
+          batchSize: 1000,
+          onProgress: async (update) => {
+            progress.push({
+              inserted: update.inserted,
+              table: update.table,
+              total: update.total
+            });
+          }
+        }
+      );
+
+      expect(progress).toEqual([
+        { inserted: 1, table: 'users', total: 1 },
+        { inserted: 1000, table: 'tags', total: 1001 },
+        { inserted: 1001, table: 'tags', total: 1001 }
+      ]);
+    } finally {
+      await prisma.$disconnect();
+      rmSync(tempDir, { force: true, recursive: true });
+    }
+  });
 });

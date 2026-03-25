@@ -171,12 +171,27 @@ export interface NormalizedLegacyRows {
 
 export interface ImportNormalizedRowsOptions {
   batchSize?: number;
+  onProgress?: (update: {
+    inserted: number;
+    table: 'advices' | 'bookmarks' | 'notes' | 'tags' | 'users';
+    total: number;
+  }) => Promise<void> | void;
   reset?: boolean;
 }
 
-async function insertInChunks<T>(items: T[], batchSize: number, insertChunk: (chunk: T[]) => Promise<void>) {
+async function insertInChunks<T>(
+  items: T[],
+  batchSize: number,
+  insertChunk: (chunk: T[]) => Promise<void>,
+  onChunkInserted?: (inserted: number, total: number) => Promise<void> | void
+) {
   for (let index = 0; index < items.length; index += batchSize) {
-    await insertChunk(items.slice(index, index + batchSize));
+    const chunk = items.slice(index, index + batchSize);
+    await insertChunk(chunk);
+
+    if (onChunkInserted) {
+      await onChunkInserted(Math.min(index + chunk.length, items.length), items.length);
+    }
   }
 }
 
@@ -460,6 +475,21 @@ export async function normalizeLegacyRows(input: NormalizeLegacyRowsInput): Prom
 
 export async function importNormalizedRows(prisma: PrismaClient, rows: NormalizedLegacyRows, options: ImportNormalizedRowsOptions = {}) {
   const batchSize = options.batchSize ?? 1000;
+  const notifyProgress = async (
+    table: 'advices' | 'bookmarks' | 'notes' | 'tags' | 'users',
+    inserted: number,
+    total: number
+  ) => {
+    if (!options.onProgress) {
+      return;
+    }
+
+    await options.onProgress({
+      inserted,
+      table,
+      total
+    });
+  };
 
   await prisma.$transaction(async (tx) => {
     if (options.reset !== false) {
@@ -475,7 +505,7 @@ export async function importNormalizedRows(prisma: PrismaClient, rows: Normalize
         await tx.user.createMany({
           data: chunk
         });
-      });
+      }, async (inserted, total) => notifyProgress('users', inserted, total));
     }
 
     if (rows.tags.length > 0) {
@@ -483,7 +513,7 @@ export async function importNormalizedRows(prisma: PrismaClient, rows: Normalize
         await tx.tag.createMany({
           data: chunk
         });
-      });
+      }, async (inserted, total) => notifyProgress('tags', inserted, total));
     }
 
     if (rows.bookmarks.length > 0) {
@@ -491,7 +521,7 @@ export async function importNormalizedRows(prisma: PrismaClient, rows: Normalize
         await tx.bookmark.createMany({
           data: chunk
         });
-      });
+      }, async (inserted, total) => notifyProgress('bookmarks', inserted, total));
     }
 
     if (rows.advices.length > 0) {
@@ -499,7 +529,7 @@ export async function importNormalizedRows(prisma: PrismaClient, rows: Normalize
         await tx.advice.createMany({
           data: chunk
         });
-      });
+      }, async (inserted, total) => notifyProgress('advices', inserted, total));
     }
 
     if (rows.notes.length > 0) {
@@ -507,7 +537,7 @@ export async function importNormalizedRows(prisma: PrismaClient, rows: Normalize
         await tx.note.createMany({
           data: chunk
         });
-      });
+      }, async (inserted, total) => notifyProgress('notes', inserted, total));
     }
   });
 

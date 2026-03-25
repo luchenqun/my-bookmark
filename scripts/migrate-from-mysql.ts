@@ -13,23 +13,33 @@ async function main() {
     await restoreDumpToDockerMysql(config);
   }
 
+  console.log(`Connecting to MySQL ${config.mysqlHost}:${config.mysqlPort}/${config.mysqlDatabase}...`);
   const legacyConnection = await createLegacyMysqlConnection(config);
 
   try {
+    console.log('Reading legacy rows from MySQL...');
     const dataset = await readLegacyDataset(legacyConnection);
     const sourceCounts = summarizeLegacyDataset(dataset);
+    console.log(`Loaded legacy rows: ${JSON.stringify(sourceCounts)}`);
+
     const report = buildDefaultMigrationReport();
+    console.log('Normalizing legacy rows...');
     const normalized = await normalizeLegacyRows({
       ...dataset,
       report
     });
 
+    console.log(`Resetting SQLite schema at ${config.sqliteUrl}...`);
     ensureSqliteSchema(config.sqliteUrl);
 
     const prisma = createPrismaClient(config.sqliteUrl);
 
     try {
+      console.log('Importing normalized rows into SQLite...');
       const importedCounts = await importNormalizedRows(prisma, normalized, {
+        onProgress: async (update) => {
+          console.log(`[import] ${update.table}: ${update.inserted}/${update.total}`);
+        },
         reset: false
       });
 

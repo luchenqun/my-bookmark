@@ -39,6 +39,24 @@ describe('auth api', () => {
     expect(typeof body.data.token).toBe('string');
   });
 
+  it('accepts the legacy trailing-slash login route used by the extension', async () => {
+    const response = await context.app.inject({
+      method: 'POST',
+      url: '/api/userLogin/',
+      payload: {
+        username: 'demo',
+        password: 'demo'
+      }
+    });
+
+    expect(response.statusCode).toBe(200);
+
+    const body = response.json();
+    expect(body.code).toBe(0);
+    expect(body.data.username).toBe('demo');
+    expect(typeof body.data.token).toBe('string');
+  });
+
   it('rejects protected api without authorization token', async () => {
     const response = await context.app.inject({
       method: 'GET',
@@ -47,6 +65,31 @@ describe('auth api', () => {
 
     expect(response.statusCode).toBe(401);
     expect(response.json().code).toBe(401);
+  });
+
+  it('accepts the legacy trailing-slash tags route used by the extension', async () => {
+    const loginResponse = await context.app.inject({
+      method: 'POST',
+      url: '/api/userLogin',
+      payload: {
+        username: 'demo',
+        password: 'demo'
+      }
+    });
+
+    const token = loginResponse.json().data.token as string;
+
+    const response = await context.app.inject({
+      method: 'GET',
+      url: '/api/tags/',
+      headers: {
+        authorization: token
+      }
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().code).toBe(0);
+    expect(response.json().data.length).toBeGreaterThan(0);
   });
 
   it('does not allow the strict test account to reset its password', async () => {

@@ -14,7 +14,10 @@ interface BuildAppOptions {
 
 export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({
-    logger: options.logger ?? false
+    logger: options.logger ?? false,
+    routerOptions: {
+      ignoreTrailingSlash: true
+    }
   });
 
   app.get('/health', async () => {

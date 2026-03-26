@@ -23,7 +23,7 @@ app.controller('bookmarkInfoCtr', [
         })
         .modal('setting', 'transition', dataService.animation())
         .modal('show');
-      bookmark.favicon_url = 'https://favicon.lucq.fun/?url=' + bookmark.url;
+      bookmark.favicon_url = '/favicon?url=' + bookmark.url;
       $scope.bookmark = bookmark;
       $scope.bookmark.description = $sce.trustAsHtml(bookmark.description);
     });

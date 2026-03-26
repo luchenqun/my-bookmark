@@ -103,7 +103,7 @@
       <td>
         <img
           class="ui ui middle aligned tiny image"
-          ng-src="https://favicon.lucq.fun/?url={{bookmark.url}}"
+          ng-src="/favicon?url={{bookmark.url}}"
           err-src="./images/default.ico"
           style="width: 16px; height: 16px; cursor: pointer"
           ng-click="jumpToUrl(bookmark.url, bookmark.id)"
@@ -158,7 +158,7 @@
     >
       <img
         class="ui ui middle aligned tiny image bookmarkInfo"
-        ng-src="https://favicon.lucq.fun/?url={{bookmark.url}}"
+        ng-src="/favicon?url={{bookmark.url}}"
         err-src="./images/default.ico"
         style="width: 16px; height: 16px"
         ng-click="detailBookmark(bookmark);$event.stopPropagation()"

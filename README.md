@@ -98,6 +98,72 @@ Local: http://localhost:8157
 Network: http://127.0.0.1:8157
 ```
 
+## 使用 Docker 镜像部署
+
+已发布镜像：
+
+- Docker Hub: [`luchenqun/mybookmark`](https://hub.docker.com/repository/docker/luchenqun/mybookmark)
+
+### 1. 拉取镜像
+
+```bash
+docker pull luchenqun/mybookmark:latest
+```
+
+### 2. 启动容器
+
+项目默认监听 `8157` 端口，默认 SQLite 数据库位于容器内的 `./data/app.db`。实际部署时建议把数据目录挂载到宿主机，避免容器重建后数据丢失。
+
+```bash
+docker run -d \
+  --name mybookmark \
+  -p 8157:8157 \
+  -e JWT_SECRET='请改成你自己的密钥' \
+  -e DATABASE_URL='file:./data/app.db' \
+  -v $(pwd)/data:/app/data \
+  luchenqun/mybookmark:latest
+```
+
+启动后可通过以下地址访问：
+
+```text
+http://localhost:8157
+```
+
+### 3. 常用容器命令
+
+查看日志：
+
+```bash
+docker logs -f mybookmark
+```
+
+停止容器：
+
+```bash
+docker stop mybookmark
+```
+
+删除容器：
+
+```bash
+docker rm -f mybookmark
+```
+
+### 4. 升级镜像
+
+```bash
+docker pull luchenqun/mybookmark:latest
+docker rm -f mybookmark
+docker run -d \
+  --name mybookmark \
+  -p 8157:8157 \
+  -e JWT_SECRET='请改成你自己的密钥' \
+  -e DATABASE_URL='file:./data/app.db' \
+  -v $(pwd)/data:/app/data \
+  luchenqun/mybookmark:latest
+```
+
 ## 常用命令
 
 ### 开发与运行

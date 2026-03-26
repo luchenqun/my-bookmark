@@ -1,5 +1,10 @@
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { buildApp } from '../src/app.js';
 import { buildTestApp } from './helpers.js';
 
 let context: Awaited<ReturnType<typeof buildTestApp>>;
@@ -108,5 +113,37 @@ describe('auth api', () => {
 
     expect(oldPasswordLoginResponse.json().code).toBe(0);
     expect(newPasswordLoginResponse.json().code).toBe(2);
+  });
+
+  it('registers a user against a brand new sqlite database file', async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'bookmark-empty-db-'));
+    const databaseUrl = `file:${join(tempDir, 'app.db')}`;
+    const app = await buildApp({
+      databaseUrl,
+      jwtSecret: 'test-secret',
+      logger: false
+    });
+
+    try {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/userRegister',
+        payload: {
+          username: 'fresh-user',
+          password: 'fresh-pass',
+          email: 'fresh@example.com'
+        }
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({
+        code: 0,
+        data: expect.any(Number),
+        msg: '注册成功'
+      });
+    } finally {
+      await app.close();
+      rmSync(tempDir, { force: true, recursive: true });
+    }
   });
 });

@@ -62,11 +62,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
       templateUrl: 'views/bookmarks.html',
       controller: 'bookmarksCtr'
     })
-    .state('hot', {
-      url: '/hot',
-      templateUrl: 'views/hot.html',
-      controller: 'hotCtr'
-    })
     .state('note', {
       url: '/note',
       templateUrl: 'views/note.html',

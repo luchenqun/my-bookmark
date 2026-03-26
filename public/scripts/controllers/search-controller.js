@@ -37,7 +37,6 @@ app.controller('searchCtr', [
     $scope.inputPage = '';
     $scope.loading = false;
     $scope.waitDelBookmark = {};
-    $scope.searchHotBookmarks = false;
 
     var timeagoInstance = timeago();
     var dialog = null;

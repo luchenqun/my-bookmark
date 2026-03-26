@@ -118,14 +118,6 @@ img.operator {
   padding-right: 20px;
 }
 
-.hot-image {
-  max-width: 100%;
-  max-height: 160px;
-  min-height: 160px;
-  background-color: yellow;
-  overflow: hidden;
-}
-
 .sourceName {
   display: inline-block;
   position: relative;

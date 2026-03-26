@@ -110,7 +110,7 @@ describe('main api compatibility', () => {
     expect(searchResponse.json().data.data.some((item: { id: number }) => item.id === bookmarkId)).toBe(true);
   });
 
-  it('adds notes, adds advice, and returns empty hot responses', async () => {
+  it('adds notes and advice in old api shape', async () => {
     const token = await loginDemo();
     const tagsResponse = await context.app.inject({
       method: 'GET',
@@ -161,35 +161,9 @@ describe('main api compatibility', () => {
       }
     });
 
-    const hotResponse = await context.app.inject({
-      method: 'GET',
-      url: '/api/hotBookmarks'
-    });
-
-    const hotRandomResponse = await context.app.inject({
-      method: 'GET',
-      url: '/api/hotBookmarksRandom'
-    });
-
     expect(noteAddResponse.statusCode).toBe(200);
     expect(notesResponse.json().data.data.some((item: { content: string }) => item.content === 'new test note')).toBe(true);
     expect(adviceAddResponse.json().code).toBe(0);
     expect(advicesResponse.json().data.some((item: { comment: string }) => item.comment === 'new advice')).toBe(true);
-    expect(hotResponse.json()).toEqual({
-      code: 0,
-      data: {
-        count: 0,
-        totalPages: 0,
-        pageSize: 0,
-        currentPage: 1,
-        data: []
-      },
-      msg: ''
-    });
-    expect(hotRandomResponse.json()).toEqual({
-      code: 0,
-      data: [],
-      msg: ''
-    });
   });
 });

@@ -779,11 +779,7 @@ const apiRoutes: FastifyPluginAsync = async (fastify) => {
         pageSize?: string;
       };
       const { currentPage, pageSize, skip } = toPagination(query.page, query.pageSize);
-      const range = query.range || 'self';
-
-      if (range === 'hot') {
-        return reply.send(ok(toCountSelect([], 0, currentPage, pageSize)));
-      }
+      const range = query.range === 'other' ? 'other' : 'self';
 
       const tagIds = Array.isArray(query.tagIds)
         ? query.tagIds.map((value) => Number(value))
@@ -1016,22 +1012,6 @@ const apiRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.send(ok(advices.map((advice) => serializeAdvice(advice))));
     }
   );
-
-  fastify.get('/hotBookmarks', async (_request, reply) => {
-    return reply.send(
-      ok({
-        count: 0,
-        totalPages: 0,
-        pageSize: 0,
-        currentPage: 1,
-        data: []
-      })
-    );
-  });
-
-  fastify.get('/hotBookmarksRandom', async (_request, reply) => {
-    return reply.send(ok([]));
-  });
 
   fastify.get(
     '/bookmarkBackup',

@@ -36,7 +36,7 @@ export default fp<AuthPluginOptions>(
       const token = readAuthorizationToken(request.headers.authorization);
 
       if (!token) {
-        reply.code(401).send({
+        reply.send({
           code: 401,
           data: '',
           msg: '请先登录'
@@ -48,7 +48,7 @@ export default fp<AuthPluginOptions>(
         const payload = await fastify.jwt.verify<{ id: number; username: string }>(token);
         request.user = payload;
       } catch {
-        reply.code(401).send({
+        reply.send({
           code: 401,
           data: '',
           msg: '请先登录'

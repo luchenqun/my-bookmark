@@ -63,7 +63,7 @@ describe('auth api', () => {
       url: '/api/tags'
     });
 
-    expect(response.statusCode).toBe(401);
+    expect(response.statusCode).toBe(200);
     expect(response.json().code).toBe(401);
   });
 

@@ -25,6 +25,20 @@ describe('startup logging', () => {
     expect(resolvePort({})).toBe(8157);
   });
 
+  it('ignores a missing local .env file', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'bookmark-startup-'));
+
+    try {
+      delete process.env.PORT;
+      process.chdir(tempDir);
+
+      expect(() => loadRuntimeEnv()).not.toThrow();
+      expect(resolvePort()).toBe(8157);
+    } finally {
+      rmSync(tempDir, { force: true, recursive: true });
+    }
+  });
+
   it('loads PORT from a local .env file before resolving startup port', () => {
     const tempDir = mkdtempSync(join(tmpdir(), 'bookmark-startup-'));
 

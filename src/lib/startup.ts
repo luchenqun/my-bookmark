@@ -1,5 +1,13 @@
 export function loadRuntimeEnv(path = '.env') {
-  process.loadEnvFile(path);
+  try {
+    process.loadEnvFile(path);
+  } catch (error) {
+    const errno = error as NodeJS.ErrnoException;
+
+    if (errno.code !== 'ENOENT') {
+      throw error;
+    }
+  }
 }
 
 export function resolvePort(env: NodeJS.ProcessEnv = process.env) {

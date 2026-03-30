@@ -214,4 +214,48 @@ describe('main api compatibility', () => {
     expect(noteShareResponse.statusCode).toBe(200);
     expect(noteShareResponse.body).toContain('shared note content');
   });
+
+  it('serves noteShare html responses as utf-8 and escapes html content', async () => {
+    const token = await loginDemo();
+    const tagsResponse = await context.app.inject({
+      method: 'GET',
+      url: '/api/tags',
+      headers: {
+        authorization: token
+      }
+    });
+    const tagId = tagsResponse.json().data[0].id as number;
+
+    const noteAddResponse = await context.app.inject({
+      method: 'POST',
+      url: '/api/noteAdd',
+      headers: {
+        authorization: token
+      },
+      payload: {
+        tagId,
+        content: '<script>alert(\"xss\")</script>中文',
+        public: 1
+      }
+    });
+
+    const noteId = noteAddResponse.json().data as number;
+
+    const noteShareResponse = await context.app.inject({
+      method: 'GET',
+      url: `/api/noteShare?id=${noteId}`
+    });
+
+    const missingNoteShareResponse = await context.app.inject({
+      method: 'GET',
+      url: '/api/noteShare?id=999999999'
+    });
+
+    expect(noteShareResponse.statusCode).toBe(200);
+    expect(noteShareResponse.headers['content-type']).toContain('text/html; charset=utf-8');
+    expect(noteShareResponse.body).toContain('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;中文');
+    expect(noteShareResponse.body).not.toContain('<script>alert("xss")</script>');
+    expect(missingNoteShareResponse.headers['content-type']).toContain('text/html; charset=utf-8');
+    expect(missingNoteShareResponse.body).toContain('备忘为非公开或者已删除!');
+  });
 });

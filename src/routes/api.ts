@@ -24,6 +24,10 @@ function formatDate(value: Date | null | undefined) {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
+function escapeHtml(value: string) {
+  return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+}
+
 function parseDate(value?: string) {
   if (!value) {
     return null;
@@ -968,7 +972,7 @@ const apiRoutes: FastifyPluginAsync = async (fastify) => {
         return reply.send({ message: '备忘为非公开或者已删除!' });
       }
 
-      return reply.type('text/html').send('备忘为非公开或者已删除!');
+      return reply.type('text/html; charset=utf-8').send('备忘为非公开或者已删除!');
     }
 
     if (query.json) {
@@ -979,7 +983,7 @@ const apiRoutes: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    return reply.type('text/html').send(`<pre>${note.content}</pre>`);
+    return reply.type('text/html; charset=utf-8').send(`<pre>${escapeHtml(note.content)}</pre>`);
   });
 
   fastify.post(

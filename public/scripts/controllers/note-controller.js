@@ -265,9 +265,9 @@ app.controller('noteCtr', [
 
     $scope.share = function (note) {
       var time = 100;
-      if (note.public == '0') {
+      if (Number(note.public) === 0) {
         toastr.info('由于打算分享备忘，系统会自动将备忘的私密状态转为公开状态');
-        $scope.updatePublic(note, '1');
+        $scope.updatePublic(note, 1);
         time = 1000;
       }
       setTimeout(() => {
@@ -283,7 +283,7 @@ app.controller('noteCtr', [
       };
 
       await post('noteUpdate', params);
-      note.public = public;
+      note.public = Number(public);
     };
 
     function updateSelectTag(tagId) {

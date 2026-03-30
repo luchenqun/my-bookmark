@@ -166,4 +166,52 @@ describe('main api compatibility', () => {
     expect(adviceAddResponse.json().code).toBe(0);
     expect(advicesResponse.json().data.some((item: { comment: string }) => item.comment === 'new advice')).toBe(true);
   });
+
+  it('shares a note after noteUpdate receives string public values', async () => {
+    const token = await loginDemo();
+    const tagsResponse = await context.app.inject({
+      method: 'GET',
+      url: '/api/tags',
+      headers: {
+        authorization: token
+      }
+    });
+    const tagId = tagsResponse.json().data[0].id as number;
+
+    const noteAddResponse = await context.app.inject({
+      method: 'POST',
+      url: '/api/noteAdd',
+      headers: {
+        authorization: token
+      },
+      payload: {
+        tagId,
+        content: 'shared note content',
+        public: 0
+      }
+    });
+
+    const noteId = noteAddResponse.json().data as number;
+
+    const noteUpdateResponse = await context.app.inject({
+      method: 'POST',
+      url: '/api/noteUpdate',
+      headers: {
+        authorization: token
+      },
+      payload: {
+        id: noteId,
+        public: '1'
+      }
+    });
+
+    const noteShareResponse = await context.app.inject({
+      method: 'GET',
+      url: `/api/noteShare?id=${noteId}`
+    });
+
+    expect(noteUpdateResponse.json().code).toBe(0);
+    expect(noteShareResponse.statusCode).toBe(200);
+    expect(noteShareResponse.body).toContain('shared note content');
+  });
 });

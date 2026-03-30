@@ -862,17 +862,25 @@ const apiRoutes: FastifyPluginAsync = async (fastify) => {
         return;
       }
 
-      const body = (request.body || {}) as Partial<Note> & { id?: number };
-      if (!body.id) {
+      const body = (request.body || {}) as Partial<Note> & {
+        id?: number | string;
+        tagId?: number | string;
+        public?: number | string;
+      };
+      const id = Number(body.id || 0);
+      const tagId = body.tagId === undefined ? undefined : Number(body.tagId);
+      const publicValue = body.public === undefined ? undefined : Number(body.public);
+
+      if (!id) {
         return reply.send(fail(1, '缺少备忘 id'));
       }
 
       await fastify.prisma.note.update({
-        where: { id: Number(body.id) },
+        where: { id },
         data: {
           ...(typeof body.content === 'string' ? { content: body.content } : {}),
-          ...(typeof body.tagId === 'number' ? { tagId: body.tagId } : {}),
-          ...(typeof body.public === 'number' ? { public: body.public } : {})
+          ...(Number.isInteger(tagId) ? { tagId } : {}),
+          ...(publicValue === 0 || publicValue === 1 ? { public: publicValue } : {})
         }
       });
 

@@ -21,7 +21,7 @@
   "dependencies": {
     "@fastify/jwt": "^10.0.0",
     "@fastify/multipart": "^9.4.0",
-    "@fastify/static": "^9.0.0",
+    "@fastify/static": "^9.1.1",
     "@prisma/adapter-better-sqlite3": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "better-sqlite3": "^12.8.0",
